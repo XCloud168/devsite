@@ -5,9 +5,11 @@ import { ThemeToggle } from "@/components/theme-toggle";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
 import Link from "next/link";
+import { AuthButton } from "./auth-button";
 
 export function Header() {
   const t = useTranslations("navigation");
+  const siteName = useTranslations("metadata").raw("siteName");
 
   const navigation = [
     { name: t("home"), href: "/" },
@@ -23,22 +25,22 @@ export function Header() {
           {/* Logo */}
           <Link href="/" className="flex items-center space-x-2">
             <Image
-              src="/logo.svg"
+              src="/images/logo.svg"
               alt="Logo"
               width={32}
               height={32}
-              className="w-8 h-8"
+              className="h-8 w-8"
             />
-            <span className="font-bold text-xl">{t("home")}</span>
+            <span className="text-xl font-bold">{siteName}</span>
           </Link>
 
           {/* Navigation */}
-          <nav className="flex items-center space-x-6 mx-6">
+          <nav className="mx-6 flex items-center space-x-6">
             {navigation.map((item) => (
               <Link
                 key={item.href}
                 href={item.href}
-                className="text-sm font-medium transition-colors hover:text-foreground/80 text-foreground/60"
+                className="text-sm font-medium text-foreground/60 transition-colors hover:text-foreground/80"
               >
                 {item.name}
               </Link>
@@ -46,6 +48,7 @@ export function Header() {
           </nav>
 
           <div className="flex items-center gap-2">
+            <AuthButton />
             <LanguageSwitcher />
             <ThemeToggle />
           </div>

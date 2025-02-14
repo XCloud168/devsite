@@ -3,6 +3,7 @@
         "title": "My Blog"
     },
     "metadata": {
+        "siteName": "DevSite",
         "title": "My Blog",
         "description": "Personal Blog Website"
     },
@@ -25,5 +26,47 @@
         "cancel": "Cancel",
         "edit": "Edit",
         "delete": "Delete"
+    },
+    "Error": {
+        "pageNotFound": "Page Not Found",
+        "pageNotFoundDesc": "Sorry, we couldn't find the page you're looking for. Please check the URL or return to the homepage.",
+        "somethingWrong": "Something went wrong!",
+        "errorDesc": "An error occurred while processing your request. Please try again.",
+        "tryAgain": "Try Again",
+        "backToHome": "Back to Home"
+    },
+    "auth": {
+        "signIn": "Sign In",
+        "signOut": "Sign Out",
+        "signInWithGoogle": "Continue with Google",
+        "signInWithX": "Continue with X",
+        "signInWithEmail": "Continue with Email",
+        "email": "Email address",
+        "welcomeBack": "Welcome Back",
+        "signInToContinue": "Choose how you'd like to sign in",
+        "or": "or",
+        "bySigningIn": "By signing in, you agree to our",
+        "terms": "Terms of Service",
+        "and": "and",
+        "privacy": "Privacy Policy",
+        "backToOptions": "Back to sign in options",
+        "signInError": "Unable to sign in. Please try again",
+        "signOutError": "Unable to sign out. Please try again",
+        "invalidEmail": "Please enter a valid email address",
+        "sendOTP": "Send Code",
+        "resendOTP": "Resend",
+        "otpSent": "Verification code sent",
+        "otpError": "Failed to send verification code",
+        "enterOTP": "Enter verification code",
+        "verifyOTP": "Verify",
+        "verifyingOTP": "Verifying...",
+        "invalidOTP": "Invalid verification code",
+        "inviteCodePlaceholder": "Enter invite code (optional)",
+        "inviteCodeDescription": "If you have an invite code, enter it here. You can continue without one.",
+        "inviteCodeError": "Invalid or already used invite code",
+        "enterInviteCode": "Enter invite code",
+        "invalidInviteCode": "Invalid invite code",
+        "continue": "Continue",
+        "skipInviteCode": "Skip"
     }
 }

@@ -3,6 +3,7 @@
         "title": "我的博客"
     },
     "metadata": {
+        "siteName": "DevSite",
         "title": "我的博客",
         "description": "个人博客网站"
     },
@@ -25,5 +26,47 @@
         "cancel": "取消",
         "edit": "编辑",
         "delete": "删除"
+    },
+    "Error": {
+        "pageNotFound": "页面未找到",
+        "pageNotFoundDesc": "抱歉，我们找不到您要访问的页面。请检查网址是否正确，或返回首页。",
+        "somethingWrong": "出错了！",
+        "errorDesc": "处理您的请求时发生错误。请重试。",
+        "tryAgain": "重试",
+        "backToHome": "返回首页"
+    },
+    "auth": {
+        "signIn": "登录",
+        "signOut": "退出登录",
+        "signInWithGoogle": "使用 Google 账号登录",
+        "signInWithX": "使用 X 账号登录",
+        "signInWithEmail": "使用邮箱登录",
+        "email": "邮箱地址",
+        "welcomeBack": "欢迎回来",
+        "signInToContinue": "请选择登录方式",
+        "or": "或",
+        "bySigningIn": "登录即表示您同意我们的",
+        "terms": "服务条款",
+        "and": "和",
+        "privacy": "隐私政策",
+        "backToOptions": "返回登录选项",
+        "signInError": "登录失败，请重试",
+        "signOutError": "退出登录失败，请重试",
+        "invalidEmail": "请输入有效的邮箱地址",
+        "sendOTP": "发送验证码",
+        "resendOTP": "重新发送",
+        "otpSent": "验证码已发送",
+        "otpError": "发送验证码失败，请重试",
+        "enterOTP": "输入验证码",
+        "verifyOTP": "验证",
+        "verifyingOTP": "验证中...",
+        "invalidOTP": "验证码无效",
+        "inviteCodePlaceholder": "输入邀请码（可选）",
+        "inviteCodeDescription": "如果您有邀请码，请在此输入。没有邀请码也可以继续。",
+        "inviteCodeError": "邀请码无效或已被使用",
+        "enterInviteCode": "输入邀请码",
+        "invalidInviteCode": "邀请码无效",
+        "continue": "继续",
+        "skipInviteCode": "跳过"
     }
 }
