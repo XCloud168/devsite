@@ -1,17 +1,21 @@
 "use client";
 
+import { LanguageSwitcher } from "@/components/language-switcher";
 import { ThemeToggle } from "@/components/theme-toggle";
+import { useTranslations } from "next-intl";
 import Image from "next/image";
 import Link from "next/link";
 
-const navigation = [
-  { name: "首页", href: "/" },
-  { name: "博客", href: "/blog" },
-  { name: "项目", href: "/projects" },
-  { name: "关于", href: "/about" },
-];
-
 export function Header() {
+  const t = useTranslations("navigation");
+
+  const navigation = [
+    { name: t("home"), href: "/" },
+    { name: t("blog"), href: "/blog" },
+    { name: t("projects"), href: "/projects" },
+    { name: t("about"), href: "/about" },
+  ];
+
   return (
     <header className="sticky top-0 z-50 w-full bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container flex h-14 items-center">
@@ -19,13 +23,13 @@ export function Header() {
           {/* Logo */}
           <Link href="/" className="flex items-center space-x-2">
             <Image
-              src="/logo.png"
+              src="/logo.svg"
               alt="Logo"
               width={32}
               height={32}
               className="w-8 h-8"
             />
-            <span className="font-bold text-xl">MyBlog</span>
+            <span className="font-bold text-xl">{t("home")}</span>
           </Link>
 
           {/* Navigation */}
@@ -41,8 +45,10 @@ export function Header() {
             ))}
           </nav>
 
-          {/* Theme Toggle */}
-          <ThemeToggle />
+          <div className="flex items-center gap-2">
+            <LanguageSwitcher />
+            <ThemeToggle />
+          </div>
         </div>
       </div>
     </header>

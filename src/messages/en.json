@@ -1,0 +1,29 @@
+{
+    "home": {
+        "title": "My Blog"
+    },
+    "metadata": {
+        "title": "My Blog",
+        "description": "Personal Blog Website"
+    },
+    "navigation": {
+        "home": "Home",
+        "blog": "Blog",
+        "projects": "Projects",
+        "about": "About"
+    },
+    "theme": {
+        "toggle": "Toggle theme",
+        "light": "Light",
+        "dark": "Dark"
+    },
+    "common": {
+        "loading": "Loading...",
+        "error": "Error",
+        "success": "Success",
+        "save": "Save",
+        "cancel": "Cancel",
+        "edit": "Edit",
+        "delete": "Delete"
+    }
+}
