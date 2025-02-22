@@ -1,5 +1,6 @@
 import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
+import { QueryProvider } from "@/providers/query-provider";
 import type { Metadata } from "next";
 import { NextIntlClientProvider } from "next-intl";
 import { getLocale, getMessages } from "next-intl/server";
@@ -45,10 +46,12 @@ export default async function RootLayout({
             enableSystem={false}
             disableTransitionOnChange
           >
-            <div className="relative flex min-h-screen flex-col">
-              <main className="flex-1">{children}</main>
-              <Toaster richColors position="bottom-right" />
-            </div>
+            <QueryProvider>
+              <div className="relative flex min-h-screen flex-col">
+                <main className="flex-1">{children}</main>
+                <Toaster richColors position="bottom-right" />
+              </div>
+            </QueryProvider>
           </ThemeProvider>
         </NextIntlClientProvider>
       </body>

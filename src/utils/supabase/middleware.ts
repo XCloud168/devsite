@@ -6,7 +6,6 @@ const nonAuthPath = [
   "/auth/register",
   "/auth/callback",
   "/auth/reset-password",
-  "/",
 ];
 
 const protectedPath = ["/posts"];
@@ -56,10 +55,7 @@ export async function updateSession(request: NextRequest) {
     return supabaseResponse;
   }
 
-  if (
-    user &&
-    protectedPath.some((e) => request.nextUrl.pathname.startsWith(e))
-  ) {
+  if (user && nonAuthPath.some((e) => request.nextUrl.pathname.startsWith(e))) {
     return NextResponse.redirect(new URL("/", request.url));
   }
 

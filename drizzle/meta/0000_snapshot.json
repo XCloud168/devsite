@@ -1,11 +1,11 @@
 {
-  "id": "0998e30a-02a0-4ae3-8a4d-f9fc40661104",
+  "id": "3176d105-5a6a-42d2-8554-89f57b090a86",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
-    "public.site_posts": {
-      "name": "site_posts",
+    "public.site_blogs": {
+      "name": "site_blogs",
       "schema": "",
       "columns": {
         "id": {
@@ -15,7 +15,7 @@
           "notNull": true,
           "identity": {
             "type": "byDefault",
-            "name": "site_posts_id_seq",
+            "name": "site_blogs_id_seq",
             "schema": "public",
             "increment": "1",
             "startWith": "1",
@@ -25,11 +25,30 @@
             "cycle": false
           }
         },
-        "name": {
-          "name": "name",
+        "title": {
+          "name": "title",
           "type": "varchar(256)",
           "primaryKey": false,
           "notNull": false
+        },
+        "content": {
+          "name": "content",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "author_id": {
+          "name": "author_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "status": {
+          "name": "status",
+          "type": "varchar(256)",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "'draft'"
         },
         "created_at": {
           "name": "created_at",
@@ -47,11 +66,11 @@
         }
       },
       "indexes": {
-        "name_idx": {
-          "name": "name_idx",
+        "title_idx": {
+          "name": "title_idx",
           "columns": [
             {
-              "expression": "name",
+              "expression": "title",
               "isExpression": false,
               "asc": true,
               "nulls": "last"
@@ -63,7 +82,21 @@
           "with": {}
         }
       },
-      "foreignKeys": {},
+      "foreignKeys": {
+        "site_blogs_author_id_site_profiles_id_fk": {
+          "name": "site_blogs_author_id_site_profiles_id_fk",
+          "tableFrom": "site_blogs",
+          "tableTo": "site_profiles",
+          "columnsFrom": [
+            "author_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
       "compositePrimaryKeys": {},
       "uniqueConstraints": {},
       "policies": {},
@@ -173,11 +206,10 @@
           "onDelete": "no action",
           "onUpdate": "no action"
         },
-        "site_profiles_inviter_id_users_id_fk": {
-          "name": "site_profiles_inviter_id_users_id_fk",
+        "site_profiles_inviter_id_site_profiles_id_fk": {
+          "name": "site_profiles_inviter_id_site_profiles_id_fk",
           "tableFrom": "site_profiles",
-          "tableTo": "users",
-          "schemaTo": "auth",
+          "tableTo": "site_profiles",
           "columnsFrom": [
             "inviter_id"
           ],

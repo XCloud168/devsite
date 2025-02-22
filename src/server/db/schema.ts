@@ -1,11 +1,11 @@
-import { sql } from "drizzle-orm";
+import { relations } from "drizzle-orm";
 import {
   boolean,
   index,
   integer,
-  pgPolicy,
   pgRole,
   pgTableCreator,
+  text,
   timestamp,
   uuid,
   varchar,
@@ -39,7 +39,7 @@ export const profiles = pgTable(
         }
         return code;
       }),
-    inviterId: uuid("inviter_id").references((): any => users.id),
+    inviterId: uuid("inviter_id").references((): any => profiles.id),
     inviterSkipped: boolean("inviter_skipped").default(false),
     avatarUrl: varchar("avatar_url", { length: 256 }),
     createdAt: timestamp("created_at", { withTimezone: true })
@@ -56,11 +56,14 @@ export const profiles = pgTable(
   ],
 ).enableRLS();
 
-export const posts = pgTable(
-  "posts",
+export const blogs = pgTable(
+  "blogs",
   {
     id: integer("id").primaryKey().generatedByDefaultAsIdentity(),
-    name: varchar("name", { length: 256 }),
+    title: varchar("title", { length: 256 }),
+    content: text("content"),
+    authorId: uuid("author_id").references((): any => profiles.id),
+    status: varchar("status", { length: 256 }).default("draft"), // 'draft' 草稿，'published' 发布
     createdAt: timestamp("created_at", { withTimezone: true })
       .defaultNow()
       .notNull(),
@@ -69,5 +72,19 @@ export const posts = pgTable(
       .notNull()
       .$onUpdate(() => new Date()),
   },
-  (example) => [index("name_idx").on(example.name)],
+  (blog) => [index("title_idx").on(blog.title)],
 ).enableRLS();
+
+export const blogsRelations = relations(blogs, ({ one }) => ({
+  author: one(profiles, {
+    fields: [blogs.authorId],
+    references: [profiles.id],
+  }),
+}));
+
+export const profilesRelations = relations(profiles, ({ one }) => ({
+  inviter: one(profiles, {
+    fields: [profiles.inviterId],
+    references: [profiles.id],
+  }),
+}));
