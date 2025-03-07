@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { getPaginatedBlogs } from "@/services/blogs";
+import { blogs } from "@/server/api";
 import Link from "next/link";
 import { BlogsList } from "./_components/blogs-list";
 
@@ -12,7 +12,7 @@ interface PostsPageProps {
 export default async function PostsPage({ searchParams }: PostsPageProps) {
   const { page } = await searchParams;
   const currentPage = Number(page) || 1;
-  const data = await getPaginatedBlogs(currentPage);
+  const data = await blogs.getPaginatedBlogs(currentPage);
 
   return (
     <div className="container py-8">

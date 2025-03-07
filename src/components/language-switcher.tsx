@@ -8,7 +8,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Locale } from "@/i18n/config";
-import { setUserLocale } from "@/services/locale";
+import { setUserLocale } from "@/server/locale";
 import { Languages } from "lucide-react";
 import { useLocale } from "next-intl";
 

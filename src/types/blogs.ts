@@ -14,16 +14,3 @@ export interface Blog {
   status: string | null;
   author: Author | null;
 }
-
-export interface PaginationInfo {
-  currentPage: number;
-  totalPages: number;
-  totalCount: number;
-  hasNextPage: boolean;
-  hasPrevPage: boolean;
-}
-
-export interface PaginatedBlogs {
-  data: Blog[];
-  pagination: PaginationInfo;
-}

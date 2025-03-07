@@ -1,11 +1,13 @@
 "use client";
 
-import type { PaginatedBlogs } from "@/types/blogs";
-import { Pagination } from "./pagination";
+import { Pagination } from "../../../components/pagination";
+import type { Blog } from "@/types/blogs";
+import type { Paginated } from "@/types/pagination";
 
-interface BlogsListProps {
-  data: PaginatedBlogs;
-}
+// 假设有一个获取博客数据的函数返回值可以用来推导类型
+type BlogsListProps = {
+  data: Paginated<Blog>;
+};
 
 export function BlogsList({ data }: BlogsListProps) {
   const { data: allBlogs, pagination } = data;

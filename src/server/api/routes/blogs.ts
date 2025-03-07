@@ -1,13 +1,16 @@
+import "server-only";
+
 import { db } from "@/server/db";
 import { blogs } from "@/server/db/schema";
-import type { PaginatedBlogs } from "@/types/blogs";
+import type { Blog } from "@/types/blogs";
+import { Paginated } from "@/types/pagination";
 import { count, desc } from "drizzle-orm";
 
 export const ITEMS_PER_PAGE = 10;
 
 export async function getPaginatedBlogs(
   page: number = 1,
-): Promise<PaginatedBlogs> {
+): Promise<Paginated<Blog>> {
   const offset = (page - 1) * ITEMS_PER_PAGE;
 
   // 并行执行分页查询和计数查询
