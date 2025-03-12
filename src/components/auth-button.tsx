@@ -5,54 +5,27 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { createClient } from "@/utils/supabase/client";
-import type { User } from "@supabase/supabase-js";
-import { Loader2, LogIn, LogOut, User as UserIcon } from "lucide-react";
+import { useAuth } from "@/hooks/use-auth";
+import { LogIn, LogOut, Settings, UserIcon } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
-import { useCallback, useEffect, useState } from "react";
-import { toast } from "sonner";
 
 export function AuthButton() {
   const t = useTranslations();
   const router = useRouter();
-  const [user, setUser] = useState<User | null>(null);
-  const [loading, setLoading] = useState(true);
-  const supabase = createClient();
+  const { user, signOut } = useAuth();
 
-  useEffect(() => {
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, session) => {
-      setUser(session?.user ?? null);
-      setLoading(false);
-    });
-
-    return () => {
-      subscription.unsubscribe();
-    };
-  }, [supabase.auth]);
-
-  const handleSignOut = useCallback(async () => {
+  const handleSignOut = async () => {
     try {
-      const { error } = await supabase.auth.signOut();
-      if (error) throw error;
+      await signOut();
+      router.push("/");
     } catch (error) {
       console.error("Error signing out:", error);
-      toast.error(t("auth.signOutError"));
     }
-  }, [supabase.auth, t]);
-
-  if (loading) {
-    return (
-      <Button variant="ghost" disabled>
-        <Loader2 className="h-4 w-4" />
-        {t("common.loading")}
-      </Button>
-    );
-  }
+  };
 
   if (user) {
     return (
@@ -64,6 +37,11 @@ export function AuthButton() {
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
+          <DropdownMenuItem onClick={() => router.push("/my")}>
+            <Settings className="mr-2 h-4 w-4" />
+            {t("profile.title")}
+          </DropdownMenuItem>
+          <DropdownMenuSeparator />
           <DropdownMenuItem onClick={handleSignOut}>
             <LogOut className="mr-2 h-4 w-4" />
             {t("auth.signOut")}
