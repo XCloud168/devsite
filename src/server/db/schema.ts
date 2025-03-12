@@ -295,6 +295,7 @@ export const projectsRelations = relations(projects, ({many}) => ({
 	projectUrls: many(projectUrls),
 	signals: many(signals),
 	tweetInfos: many(tweetInfo),
+	announcements: many(announcement),
 }));
 
 export const projectUrlsRelations = relations(projectUrls, ({one}) => ({
@@ -352,4 +353,76 @@ export const tweetInfoRelations = relations(tweetInfo, ({one, many}) => ({
 
 export const tweetUsersRelations = relations(tweetUsers, ({many}) => ({
 	tweetInfos: many(tweetInfo),
+}));
+
+export const announcement = pgTable("announcement", {
+    id: uuid("id").primaryKey(),
+    title: varchar("title", { length: 255 }),
+    content: text("content"),
+    isDeal: boolean("is_deal").default(false),
+    dateCreated: timestamp("date_created", { withTimezone: true}).defaultNow(),
+    projectsId: uuid("projects_id").references((): any => projects.id),
+    status: varchar("status", { length: 255 }).default('draft'),
+    sentiment: varchar("sentiment", { length: 255 }),
+    signalTime: timestamp("signal_time", { withTimezone: true}),
+    signalPrice: numeric("signal_price", { precision: 24, scale: 12 }),
+    
+    // 24小时数据
+    highRate24H: numeric("high_rate_24h", { precision: 10, scale: 2 }).default(sql`'0'`),
+    lowRate24H: numeric("low_rate_24h", { precision: 10, scale: 2 }).default(sql`'0'`),
+    highPrice24H: numeric("high_price_24h", { precision: 24, scale: 12 }),
+    lowPrice24H: numeric("low_price_24h", { precision: 24, scale: 12 }),
+    lowPriceTime24H: timestamp("low_price_time_24h", { withTimezone: true}),
+    highPriceTime24H: timestamp("high_price_time_24h", { withTimezone: true}),
+    
+    // 7天数据
+    highRate7D: numeric("high_rate_7d", { precision: 10, scale: 2 }).default(sql`'0'`),
+    lowRate7D: numeric("low_rate_7d", { precision: 10, scale: 2 }).default(sql`'0'`),
+    highPrice7D: numeric("high_price_7d", { precision: 24, scale: 12 }),
+    lowPrice7D: numeric("low_price_7d", { precision: 24, scale: 12 }),
+    lowPriceTime7D: timestamp("low_price_time_7d", { withTimezone: true}),
+    highPriceTime7D: timestamp("high_price_time_7d", { withTimezone: true}),
+    
+    // 30天数据
+    highRate30D: numeric("high_rate_30d", { precision: 10, scale: 2 }).default(sql`'0'`),
+    lowRate30D: numeric("low_rate_30d", { precision: 10, scale: 2 }).default(sql`'0'`),
+    highPrice30D: numeric("high_price_30d", { precision: 24, scale: 12 }),
+    lowPrice30D: numeric("low_price_30d", { precision: 24, scale: 12 }),
+    lowPriceTime30D: timestamp("low_price_time_30d", { withTimezone: true}),
+    highPriceTime30D: timestamp("high_price_time_30d", { withTimezone: true}),
+}, (table) => [
+    index("announcement_title_idx").on(table.title),
+]).enableRLS();
+
+export const announcementRelations = relations(announcement, ({one}) => ({
+    project: one(projects, {
+        fields: [announcement.projectsId],
+        references: [projects.id]
+    }),
+}));
+
+export const watchlist = pgTable("watchlist", {
+  id: uuid("id").primaryKey().notNull(),
+  profilesId: uuid("profiles_id").references(() => profiles.id),
+  tweetUser: uuid("tweet_user").references(() => tweetUsers.id),
+  notifyOnNewTweet: boolean("notify_on_new_tweet").default(false),
+  notifyOnNewFollowing: boolean("notify_on_new_following").default(false),
+  dateCreated: timestamp("date_created", { withTimezone: true }).defaultNow(),
+  dateUpdated: timestamp("date_updated", { withTimezone: true })
+    .defaultNow()
+    .$onUpdate(() => new Date()),
+}, (table) => [
+  index("profiles_id_idx").on(table.profilesId),
+  index("tweet_user_idx").on(table.tweetUser),
+]).enableRLS();
+
+export const watchlistRelations = relations(watchlist, ({ one }) => ({
+  profile: one(profiles, {
+    fields: [watchlist.profilesId],
+    references: [profiles.id],
+  }),
+  tweetUser: one(tweetUsers, {
+    fields: [watchlist.tweetUser],
+    references: [tweetUsers.id],
+  }),
 }));
