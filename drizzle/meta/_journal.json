@@ -22,6 +22,13 @@
       "when": 1741767189590,
       "tag": "0002_first_trish_tilby",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1741768272160,
+      "tag": "0003_spooky_morlun",
+      "breakpoints": true
     }
   ]
 }
