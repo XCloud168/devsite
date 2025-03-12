@@ -142,9 +142,7 @@ export const profilesRelations = relations(profiles, ({ one }) => ({
 
 export const tweetUsers = pgTable("tweet_users", {
 	id: uuid("id").primaryKey().notNull(),
-	userCreated: uuid("user_created").references((): any => users.id),
 	dateCreated: timestamp("date_created", { withTimezone: true}).defaultNow(),
-	userUpdated: uuid("user_updated").references((): any => users.id),
 	dateUpdated: timestamp("date_updated", { withTimezone: true}).defaultNow().$onUpdate(() => new Date()),
 	screenName: varchar("screen_name", { length: 255 }).unique(),
 	joinDate: timestamp("join_date", { withTimezone: true}),
