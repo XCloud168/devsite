@@ -25,7 +25,8 @@
         "save": "Save",
         "cancel": "Cancel",
         "edit": "Edit",
-        "delete": "Delete"
+        "delete": "Delete",
+        "update": "Update"
     },
     "Error": {
         "pageNotFound": "Page Not Found",
@@ -68,5 +69,85 @@
         "invalidInviteCode": "Invalid invite code",
         "continue": "Continue",
         "skipInviteCode": "Skip"
+    },
+    "profile": {
+        "title": "Settings",
+        "description": "Manage your account settings and preferences",
+        "sections": {
+            "profile": {
+                "title": "Profile",
+                "description": "Update your profile information and bio",
+                "username": "Username",
+                "usernameDescription": "This is your public display name.",
+                "email": "Email",
+                "emailDescription": "Your email address will not be displayed publicly.",
+                "bio": "Bio",
+                "bioDescription": "You can use @mentions or #hashtags",
+                "bioPlaceholder": "Tell us about yourself...",
+                "usernamePlaceholder": "Enter username",
+                "emailPlaceholder": "Enter email address",
+                "defaultBio": "Hi, I'm a new user",
+                "loadError": "Failed to load user profile",
+                "validation": {
+                    "usernameMin": "Username must be at least 2 characters",
+                    "usernameMax": "Username cannot be longer than 30 characters",
+                    "emailRequired": "Please enter an email address",
+                    "emailInvalid": "Please enter a valid email address",
+                    "bioMax": "Bio cannot be longer than 160 characters"
+                }
+            },
+            "account": {
+                "title": "Account Settings",
+                "description": "Update your account settings and preferences",
+                "language": "Language",
+                "languageDescription": "Choose your preferred interface language.",
+                "notifications": "Receive Notifications",
+                "notificationsDescription": "Receive important updates and activity notifications.",
+                "languages": {
+                    "zh": {
+                        "name": "中文",
+                        "description": "Chinese Interface"
+                    },
+                    "en": {
+                        "name": "English",
+                        "description": "English Interface"
+                    }
+                },
+                "validation": {
+                    "languageRequired": "Please select a language"
+                }
+            },
+            "notifications": {
+                "title": "Notification Settings",
+                "description": "Configure how you receive notifications",
+                "communicationEmails": "Communication Emails",
+                "communicationEmailsDescription": "Receive emails about your account activity.",
+                "marketingEmails": "Marketing Emails",
+                "marketingEmailsDescription": "Receive marketing and promotional information.",
+                "socialEmails": "Social Emails",
+                "socialEmailsDescription": "Receive emails about social activity.",
+                "securityEmails": "Security Emails",
+                "securityEmailsDescription": "Receive emails about account security."
+            },
+            "security": {
+                "title": "Security Settings",
+                "description": "Manage your account security settings",
+                "currentPassword": "Current Password",
+                "currentPasswordPlaceholder": "Enter current password",
+                "newPassword": "New Password",
+                "newPasswordPlaceholder": "Enter new password",
+                "twoFactor": "Two-Factor Authentication",
+                "twoFactorDescription": "Enable two-factor authentication for enhanced security",
+                "validation": {
+                    "passwordMin": "Password must be at least 8 characters"
+                }
+            }
+        },
+        "updateSuccess": "Settings updated successfully"
+    },
+    "my": {
+        "title": "My Center",
+        "description": "Manage your account settings and preferences",
+        "sections": {}
     }
 }

@@ -1,6 +1,6 @@
 "use client";
 
-import { checkUserHasInviter, updateInviter } from "@/app/actions/auth";
+import { checkUserHasInviter, updateInviter } from "@/server/api/routes/auth";
 import { createClient } from "@/utils/supabase/client";
 import { Loader2 } from "lucide-react";
 import { useTranslations } from "next-intl";

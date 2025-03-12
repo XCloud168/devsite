@@ -10,7 +10,7 @@
     "navigation": {
         "home": "首页",
         "blog": "博客",
-        "projects": "项目",
+        "pricing": "订阅",
         "about": "关于"
     },
     "theme": {
@@ -25,7 +25,8 @@
         "save": "保存",
         "cancel": "取消",
         "edit": "编辑",
-        "delete": "删除"
+        "delete": "删除",
+        "update": "更新"
     },
     "Error": {
         "pageNotFound": "页面未找到",
@@ -68,5 +69,85 @@
         "invalidInviteCode": "邀请码无效",
         "continue": "继续",
         "skipInviteCode": "跳过"
+    },
+    "profile": {
+        "title": "设置",
+        "description": "管理您的账户设置和偏好",
+        "sections": {
+            "profile": {
+                "title": "个人信息",
+                "description": "更新您的个人信息和个人简介",
+                "username": "用户名",
+                "usernameDescription": "这是您的公开显示名称。",
+                "email": "邮箱",
+                "emailDescription": "您的邮箱地址不会公开显示。",
+                "bio": "个人简介",
+                "bioDescription": "您可以使用 @mentions 或 #hashtags",
+                "bioPlaceholder": "介绍一下你自己...",
+                "usernamePlaceholder": "输入用户名",
+                "emailPlaceholder": "输入邮箱地址",
+                "defaultBio": "嗨，我是一个新用户",
+                "loadError": "加载用户信息失败",
+                "validation": {
+                    "usernameMin": "用户名至少需要2个字符",
+                    "usernameMax": "用户名不能超过30个字符",
+                    "emailRequired": "请输入邮箱地址",
+                    "emailInvalid": "请输入有效的邮箱地址",
+                    "bioMax": "个人简介不能超过160个字符"
+                }
+            },
+            "account": {
+                "title": "账户设置",
+                "description": "更新您的账户设置和偏好",
+                "language": "语言",
+                "languageDescription": "选择您偏好的界面语言。",
+                "notifications": "接收通知",
+                "notificationsDescription": "接收重要更新和活动通知。",
+                "languages": {
+                    "zh": {
+                        "name": "中文",
+                        "description": "简体中文界面"
+                    },
+                    "en": {
+                        "name": "English",
+                        "description": "English Interface"
+                    }
+                },
+                "validation": {
+                    "languageRequired": "请选择语言"
+                }
+            },
+            "notifications": {
+                "title": "通知设置",
+                "description": "配置如何接收通知",
+                "communicationEmails": "通信邮件",
+                "communicationEmailsDescription": "接收与您的账户相关的通信邮件。",
+                "marketingEmails": "营销邮件",
+                "marketingEmailsDescription": "接收营销和促销信息。",
+                "socialEmails": "社交邮件",
+                "socialEmailsDescription": "接收社交活动相关的邮件。",
+                "securityEmails": "安全邮件",
+                "securityEmailsDescription": "接收账户安全相关的邮件。"
+            },
+            "security": {
+                "title": "安全设置",
+                "description": "管理您的账户安全设置",
+                "currentPassword": "当前密码",
+                "currentPasswordPlaceholder": "输入当前密码",
+                "newPassword": "新密码",
+                "newPasswordPlaceholder": "输入新密码",
+                "twoFactor": "两步验证",
+                "twoFactorDescription": "启用两步验证以提高账户安全性",
+                "validation": {
+                    "passwordMin": "密码至少需要8个字符"
+                }
+            }
+        },
+        "updateSuccess": "设置已更新"
+    },
+    "my": {
+        "title": "个人中心",
+        "description": "管理您的账户设置和偏好",
+        "sections": {}
     }
 }
