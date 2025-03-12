@@ -9,7 +9,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useAuth } from "@/hooks/use-auth";
-import { LogIn, LogOut, Settings, UserIcon } from "lucide-react";
+import { LogIn, LogOut, Settings, User, UserIcon } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 
@@ -38,6 +38,10 @@ export function AuthButton() {
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
           <DropdownMenuItem onClick={() => router.push("/my")}>
+            <User className="mr-2 h-4 w-4" />
+            {t("my.title")}
+          </DropdownMenuItem>
+          <DropdownMenuItem onClick={() => router.push("/settings")}>
             <Settings className="mr-2 h-4 w-4" />
             {t("profile.title")}
           </DropdownMenuItem>

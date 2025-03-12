@@ -2,6 +2,15 @@ import { createClient } from "@/utils/supabase/client";
 import type { User } from "@supabase/supabase-js";
 import { useCallback, useEffect, useState } from "react";
 
+export interface UserProfile {
+  id: string;
+  email: string;
+  username: string | null;
+  bio: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
 export function useAuth() {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);

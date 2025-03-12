@@ -16,12 +16,15 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { getUserProfile } from "@/server/api/routes/auth";
 import { useTranslations } from "next-intl";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
 export function ProfileForm() {
   const t = useTranslations("profile.sections.profile");
   const commonT = useTranslations("common");
+  const [isLoading, setIsLoading] = useState(true);
 
   const profileFormSchema = z.object({
     username: z
@@ -52,20 +55,45 @@ export function ProfileForm() {
 
   type ProfileFormValues = z.infer<typeof profileFormSchema>;
 
-  // This can come from your database or API.
-  const defaultValues: Partial<ProfileFormValues> = {
-    bio: t("defaultBio"),
-    urls: [{ value: "https://github.com" }],
-  };
-
   const form = useForm<ProfileFormValues>({
     resolver: zodResolver(profileFormSchema),
-    defaultValues,
-    mode: "onChange",
+    defaultValues: {
+      username: "",
+      email: "",
+      bio: "",
+      urls: [{ value: "https://github.com" }],
+    },
   });
+
+  useEffect(() => {
+    const loadUserProfile = async () => {
+      try {
+        const profile = await getUserProfile();
+        if (profile) {
+          form.reset({
+            username: profile.username || "",
+            email: profile.email,
+            bio: profile.bio || t("defaultBio"),
+            urls: profile.urls || [{ value: "https://github.com" }],
+          });
+        }
+      } catch (error) {
+        console.error("Error loading user profile:", error);
+        toast.error(t("loadError"));
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadUserProfile();
+  }, [form, t]);
 
   function onSubmit(data: ProfileFormValues) {
     toast.success(t("updateSuccess"));
+  }
+
+  if (isLoading) {
+    return <div>{commonT("loading")}</div>;
   }
 
   return (
@@ -78,7 +106,12 @@ export function ProfileForm() {
             <FormItem>
               <FormLabel>{t("username")}</FormLabel>
               <FormControl>
-                <Input placeholder={t("usernamePlaceholder")} {...field} />
+                <Input
+                  placeholder={t("usernamePlaceholder")}
+                  {...field}
+                  readOnly
+                  className="bg-muted"
+                />
               </FormControl>
               <FormDescription>{t("usernameDescription")}</FormDescription>
               <FormMessage />
@@ -92,7 +125,12 @@ export function ProfileForm() {
             <FormItem>
               <FormLabel>{t("email")}</FormLabel>
               <FormControl>
-                <Input placeholder={t("emailPlaceholder")} {...field} />
+                <Input
+                  placeholder={t("emailPlaceholder")}
+                  {...field}
+                  readOnly
+                  className="bg-muted"
+                />
               </FormControl>
               <FormDescription>{t("emailDescription")}</FormDescription>
               <FormMessage />

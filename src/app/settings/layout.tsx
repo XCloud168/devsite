@@ -4,26 +4,26 @@ import { useTranslations } from "next-intl";
 import { SidebarNav } from "./_components/sidebar-nav";
 
 export const metadata: Metadata = {
-  title: "个人中心",
+  title: "个人设置",
   description: "管理您的个人信息和设置",
 };
 
 const sidebarNavItems = [
   {
     title: "profile.sections.profile.title",
-    href: "/my",
+    href: "/settings",
   },
   {
     title: "profile.sections.account.title",
-    href: "/my/settings",
+    href: "/settings/account",
   },
   {
     title: "profile.sections.notifications.title",
-    href: "/my/notifications",
+    href: "/settings/notifications",
   },
   {
     title: "profile.sections.security.title",
-    href: "/my/security",
+    href: "/settings/security",
   },
 ];
 

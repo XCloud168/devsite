@@ -71,7 +71,7 @@
         "skipInviteCode": "Skip"
     },
     "profile": {
-        "title": "Profile",
+        "title": "Settings",
         "description": "Manage your account settings and preferences",
         "sections": {
             "profile": {
@@ -87,6 +87,7 @@
                 "usernamePlaceholder": "Enter username",
                 "emailPlaceholder": "Enter email address",
                 "defaultBio": "Hi, I'm a new user",
+                "loadError": "Failed to load user profile",
                 "validation": {
                     "usernameMin": "Username must be at least 2 characters",
                     "usernameMax": "Username cannot be longer than 30 characters",
@@ -143,5 +144,10 @@
             }
         },
         "updateSuccess": "Settings updated successfully"
+    },
+    "my": {
+        "title": "My Center",
+        "description": "Manage your account settings and preferences",
+        "sections": {}
     }
 }

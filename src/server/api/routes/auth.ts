@@ -100,3 +100,26 @@ export async function signOut() {
   await supabase.auth.signOut();
   revalidatePath("/", "layout");
 }
+
+export async function getUserProfile() {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    return null;
+  }
+
+  const profile = await db.query.profiles.findFirst({
+    where: (profiles, { eq }) => eq(profiles.id, user.id),
+  });
+
+  return {
+    id: profile?.id,
+    username: profile?.username,
+    email: user.email,
+    bio: profile?.bio,
+    urls: profile?.urls,
+  };
+}

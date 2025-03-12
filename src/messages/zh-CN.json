@@ -71,7 +71,7 @@
         "skipInviteCode": "跳过"
     },
     "profile": {
-        "title": "个人中心",
+        "title": "设置",
         "description": "管理您的账户设置和偏好",
         "sections": {
             "profile": {
@@ -87,6 +87,7 @@
                 "usernamePlaceholder": "输入用户名",
                 "emailPlaceholder": "输入邮箱地址",
                 "defaultBio": "嗨，我是一个新用户",
+                "loadError": "加载用户信息失败",
                 "validation": {
                     "usernameMin": "用户名至少需要2个字符",
                     "usernameMax": "用户名不能超过30个字符",
@@ -143,5 +144,10 @@
             }
         },
         "updateSuccess": "设置已更新"
+    },
+    "my": {
+        "title": "个人中心",
+        "description": "管理您的账户设置和偏好",
+        "sections": {}
     }
 }
