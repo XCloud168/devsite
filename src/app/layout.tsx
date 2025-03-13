@@ -48,7 +48,6 @@ export default async function RootLayout({
           >
             <QueryProvider>
               <div className="relative flex min-h-screen flex-col bg-gradient-to-b from-[#000202] to-[#8FFFDA0a]">
-                <div className="fixed bottom-0 z-[-1] h-3/5 w-full rotate-180 bg-[url(/images/bg.svg)] bg-cover bg-no-repeat"></div>
                 <main className="flex-1">{children}</main>
                 <Toaster richColors position="bottom-right" />
               </div>
