@@ -50,6 +50,20 @@
       "when": 1741775419377,
       "tag": "0006_add_watchlist",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1741843526824,
+      "tag": "0007_auto_uuid",
+      "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1741844325774,
+      "tag": "0008_auto_uuid_tweet_info",
+      "breakpoints": true
     }
   ]
 }

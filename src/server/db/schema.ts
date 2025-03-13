@@ -141,7 +141,7 @@ export const profilesRelations = relations(profiles, ({ one }) => ({
 }));
 
 export const tweetUsers = pgTable("tweet_users", {
-	id: uuid("id").primaryKey().notNull(),
+	id: uuid("id").primaryKey().defaultRandom().notNull(),
 	dateCreated: timestamp("date_created", { withTimezone: true}).defaultNow(),
 	dateUpdated: timestamp("date_updated", { withTimezone: true}).defaultNow().$onUpdate(() => new Date()),
 	screenName: varchar("screen_name", { length: 255 }).unique(),
@@ -153,7 +153,7 @@ export const tweetUsers = pgTable("tweet_users", {
 	avatar: text("avatar"),
 	name: varchar("name", { length: 255 }),
 	restId: varchar("rest_id", { length: 255 }),
-	flag: varchar("flag", { length: 255 }),
+	flag: varchar("flag", { length: 255 }), // twitter用户标签 'default' 默认/'hot'热门/'curated'精选
 	subscribeCount: integer("subscribe_count").default(0),
 	highestScore: real("highest_score").default(sql`'0'`),
 	signalCount: integer("signal_count").default(0),
@@ -166,11 +166,12 @@ export const tweetUsers = pgTable("tweet_users", {
 	pinnedTweetIdsStr: json("pinned_tweet_ids_str"),
 }, (table) => [
   index("screen_name_idx").on(table.screenName),
+  index("flag_idx").on(table.flag),
   index("rest_id_idx").on(table.restId),
 ]).enableRLS();
 
 export const contractAddress = pgTable("contract_address", {
-	id: uuid("id").primaryKey().notNull(),
+	id: uuid("id").primaryKey().defaultRandom().notNull(),
 	dateCreated: timestamp("date_created", { withTimezone: true, mode: 'string' }).default(sql`CURRENT_TIMESTAMP`),
 	address: varchar("address", { length: 255 }),
 	platform: varchar("platform", { length: 255 }),
@@ -188,7 +189,7 @@ export const contractAddress = pgTable("contract_address", {
 ]).enableRLS();
 
 export const projects = pgTable("projects", {
-	id: uuid("id").primaryKey().notNull(),
+	id: uuid("id").primaryKey().defaultRandom().notNull(),
 	dateCreated: timestamp("date_created", { withTimezone: true}).defaultNow(),
 	name: varchar("name", { length: 255 }),
 	description: text("description"),
@@ -203,7 +204,7 @@ export const projects = pgTable("projects", {
 ]).enableRLS();
 
 export const projectUrls = pgTable("project_urls", {
-	id: uuid("id").primaryKey().notNull(),
+	id: uuid("id").primaryKey().defaultRandom().notNull(),
 	dateCreated: timestamp("date_created", { withTimezone: true}).defaultNow(),
 	projects: uuid().references((): any => projects.id),
 	name: varchar("name", { length: 255 }),
@@ -211,7 +212,7 @@ export const projectUrls = pgTable("project_urls", {
 }).enableRLS();
 
 export const signals = pgTable("signals", {
-	id: uuid("id").primaryKey().notNull(),
+	id: uuid("id").primaryKey().defaultRandom().notNull(),
 	status: varchar("status", { length: 255 }).default('draft').notNull(),
 	dateCreated: timestamp("date_created", { precision: 6, withTimezone: true}).defaultNow(),
 	content: text("content"),
@@ -227,7 +228,7 @@ export const signals = pgTable("signals", {
 ]).enableRLS();
 
 export const signalsTag = pgTable("signals_tag", {
-	id: uuid("id").primaryKey().notNull(),
+	id: uuid("id").primaryKey().defaultRandom().notNull(),
 	dateUpdated: timestamp("date_updated", { precision: 6, withTimezone: true, mode: 'string' }),
 	name: varchar("name", { length: 255 }),
 	code: varchar("code", { length: 255 }),
@@ -237,7 +238,7 @@ export const signalsTag = pgTable("signals_tag", {
 ]).enableRLS();
 
 export const tweetInfo = pgTable("tweet_info", {
-	id: uuid("id").primaryKey(),
+	id: uuid("id").primaryKey().defaultRandom().notNull(),
 	tweetId: varchar("tweet_id", { length: 255 }).unique(),
 	dateCreated: timestamp("date_created", { withTimezone: true}).defaultNow(),
 	tweetUser: uuid("tweet_user").references((): any => tweetUsers.id),
