@@ -1,0 +1,16 @@
+{
+    "Home": {
+        "title": "Welcome to DevSite",
+        "openSwap": "Open Swap"
+    },
+    "Swap": {
+        "title": "Swap",
+        "errors": {
+            "default": "An error occurred",
+            "4001": "User rejected the request",
+            "32002": "Already processing eth_requestAccounts",
+            "32603": "Internal JSON-RPC error",
+            "-32002": "Already processing eth_requestAccounts"
+        }
+    }
+}
