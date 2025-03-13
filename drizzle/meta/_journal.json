@@ -71,6 +71,13 @@
       "when": 1741851263581,
       "tag": "0009_add_tweet_created_at",
       "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "7",
+      "when": 1741859848141,
+      "tag": "0010_add_exchange_table",
+      "breakpoints": true
     }
   ]
 }

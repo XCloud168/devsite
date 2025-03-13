@@ -357,6 +357,17 @@ export const tweetUsersRelations = relations(tweetUsers, ({many}) => ({
 	tweetInfos: many(tweetInfo),
 }));
 
+export const exchange = pgTable("exchange", {
+  id: uuid("id").primaryKey().defaultRandom().notNull(),
+  name: varchar("name", { length: 255 }).notNull().unique(),
+  logo: text("logo"),
+  description: text("description"),
+  website: varchar("website", { length: 255 }),
+  dateCreated: timestamp("date_created", { withTimezone: true }).defaultNow(),
+}, (table) => [
+  index("exchange_name_idx").on(table.name),
+]).enableRLS();
+
 export const announcement = pgTable("announcement", {
     id: uuid("id").primaryKey(),
     title: varchar("title", { length: 255 }),
@@ -392,8 +403,10 @@ export const announcement = pgTable("announcement", {
     lowPrice30D: numeric("low_price_30d", { precision: 24, scale: 12 }),
     lowPriceTime30D: timestamp("low_price_time_30d", { withTimezone: true}),
     highPriceTime30D: timestamp("high_price_time_30d", { withTimezone: true}),
+    exchangeId: uuid("exchange_id").references(() => exchange.id),
 }, (table) => [
     index("announcement_title_idx").on(table.title),
+    index("exchange_id_idx").on(table.exchangeId),
 ]).enableRLS();
 
 export const announcementRelations = relations(announcement, ({one}) => ({
@@ -401,6 +414,14 @@ export const announcementRelations = relations(announcement, ({one}) => ({
         fields: [announcement.projectsId],
         references: [projects.id]
     }),
+    exchange: one(exchange, {
+        fields: [announcement.exchangeId],
+        references: [exchange.id]
+    }),
+}));
+
+export const exchangeRelations = relations(exchange, ({many}) => ({
+    announcements: many(announcement),
 }));
 
 export const watchlist = pgTable("watchlist", {
