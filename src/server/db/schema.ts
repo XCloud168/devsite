@@ -23,6 +23,11 @@ import {
   watchlist,
   watchlistRelations,
 } from "./schemas/tweet";
+import {
+  paymentAddresses,
+  payments,
+  paymentsRelations,
+} from "./schemas/payment";
 
 export const authenticated = pgRole("authenticated").existing();
 
@@ -46,4 +51,7 @@ export {
   tweetUsersRelations,
   watchlist,
   watchlistRelations,
+  paymentAddresses,
+  payments,
+  paymentsRelations,
 };

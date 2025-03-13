@@ -31,6 +31,11 @@ export const profiles = pgTable(
       .defaultNow()
       .notNull()
       .$onUpdate(() => new Date()),
+
+    // 会员有效期
+    membershipExpiredAt: timestamp("membership_expired_at", {
+      withTimezone: true,
+    }),
   },
   (table) => [
     index("invite_code_idx").on(table.inviteCode),
