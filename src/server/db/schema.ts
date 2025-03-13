@@ -170,24 +170,6 @@ export const tweetUsers = pgTable("tweet_users", {
   index("rest_id_idx").on(table.restId),
 ]).enableRLS();
 
-export const contractAddress = pgTable("contract_address", {
-	id: uuid("id").primaryKey().defaultRandom().notNull(),
-	dateCreated: timestamp("date_created", { withTimezone: true, mode: 'string' }).default(sql`CURRENT_TIMESTAMP`),
-	address: varchar("address", { length: 255 }),
-	platform: varchar("platform", { length: 255 }),
-	platformCoin: varchar("platform_coin", { length: 255 }),
-	project: uuid("project").references((): any => projects.id),
-	source: varchar("source", { length: 255 }).default('DEX'),
-}, (table) => [
-  index("address_idx").on(table.address),
-  index("project_idx").on(table.project),
-	foreignKey({
-			columns: [table.project],
-			foreignColumns: [projects.id],
-			name: "contract_address_project_foreign55"
-		}).onDelete("set null"),
-]).enableRLS();
-
 export const projects = pgTable("projects", {
 	id: uuid("id").primaryKey().defaultRandom().notNull(),
 	dateCreated: timestamp("date_created", { withTimezone: true}).defaultNow(),
@@ -196,20 +178,24 @@ export const projects = pgTable("projects", {
 	symbol: varchar("symbol", { length: 255 }),
 	logo: text("logo"),
 	dateAdded: timestamp("date_added", { withTimezone: true}),
-	thirdId: varchar("third_id", { length: 255 }),
+	solContract: varchar("sol_contract", { length: 255 }),
+	ethContract: varchar("eth_contract", { length: 255 }),
+	bscContract: varchar("bsc_contract", { length: 255 }),
+	tronContract: varchar("tron_contract", { length: 255 }),
+	baseContract: varchar("base_contract", { length: 255 }),
+	blastContract: varchar("blast_contract", { length: 255 }),
 	flag: varchar("flag", { length: 255 }),
+  urls: json("urls"), // website, telegram, twitter, discord, medium, blog, github, youtube, instagram, tiktok, twitch, pinterest, linkedin, reddit, telegram, telegram_channel, telegram_group, telegram_channel_id, telegram_group_id
 	priceSource: varchar("price_source", { length: 255 }),
 }, (table) => [
   index("symbol_idx").on(table.symbol),
+  index("sol_contract_idx").on(table.solContract),
+  index("eth_contract_idx").on(table.ethContract),
+  index("bsc_contract_idx").on(table.bscContract),
+  index("tron_contract_idx").on(table.tronContract),
+  index("base_contract_idx").on(table.baseContract),
+  index("blast_contract_idx").on(table.blastContract),
 ]).enableRLS();
-
-export const projectUrls = pgTable("project_urls", {
-	id: uuid("id").primaryKey().defaultRandom().notNull(),
-	dateCreated: timestamp("date_created", { withTimezone: true}).defaultNow(),
-	projects: uuid().references((): any => projects.id),
-	name: varchar("name", { length: 255 }),
-	url: varchar("url", { length: 255 }),
-}).enableRLS();
 
 export const signals = pgTable("signals", {
 	id: uuid("id").primaryKey().defaultRandom().notNull(),
@@ -219,7 +205,7 @@ export const signals = pgTable("signals", {
   notifyContent: text("notify_content"),
   aiResult: text("ai_result"),
 	signalTime: timestamp("signal_time", { precision: 6, withTimezone: true}),
-	projects: uuid("projects"),
+	projectsId: uuid("projects_id").references((): any => projects.id),
 	signalsTag: uuid("signals_tag").references((): any => signalsTag.id),
 	mediaUrls: json("media_urls"),
 	provider: uuid("provider"),
@@ -244,7 +230,8 @@ export const tweetInfo = pgTable("tweet_info", {
   tweetCreatedAt: timestamp("tweet_created_at", { withTimezone: true}),
 	tweetUser: uuid("tweet_user").references((): any => tweetUsers.id),
 	content: text("content"),
-	isDeal: boolean("is_deal").default(false),
+	dealStatus: boolean("deal_status").default(false),
+	analysisResult: text("analysis_result"),
 	tweetUrl: varchar("tweet_url", { length: 255 }),
 	imagesUrls: json("images_urls").default([]),
 	videoUrls: json("video_urls").default([]),
@@ -257,7 +244,6 @@ export const tweetInfo = pgTable("tweet_info", {
 	quotes: integer("quotes").default(0),
 	replies: integer("replies").default(0),
 	projectsId: uuid("projects_id").references((): any => projects.id),
-	status: varchar("status", { length: 255 }).default('draft'),
 	sentiment: varchar("sentiment", { length: 255 }),
 	signalTime: timestamp("signal_time", { withTimezone: true}),
 	signalPrice: numeric("signal_price", { precision: 24, scale:  12 }),
@@ -285,31 +271,15 @@ export const tweetInfo = pgTable("tweet_info", {
   index("tweet_id_idx").on(table.tweetId),
 ]).enableRLS();
 
-export const contractAddressRelations = relations(contractAddress, ({one}) => ({
-	project: one(projects, {
-		fields: [contractAddress.project],
-		references: [projects.id]
-	}),
-}));
-
 export const projectsRelations = relations(projects, ({many}) => ({
-	contractAddresses: many(contractAddress),
-	projectUrls: many(projectUrls),
 	signals: many(signals),
 	tweetInfos: many(tweetInfo),
 	announcements: many(announcement),
 }));
 
-export const projectUrlsRelations = relations(projectUrls, ({one}) => ({
-	project: one(projects, {
-		fields: [projectUrls.projects],
-		references: [projects.id]
-	}),
-}));
-
 export const signalsRelations = relations(signals, ({one}) => ({
 	project: one(projects, {
-		fields: [signals.projects],
+		fields: [signals.projectsId],
 		references: [projects.id]
 	}),
 	signalsTag: one(signalsTag, {
@@ -369,10 +339,12 @@ export const exchange = pgTable("exchange", {
 ]).enableRLS();
 
 export const announcement = pgTable("announcement", {
-    id: uuid("id").primaryKey(),
+    id: uuid("id").primaryKey().defaultRandom().notNull(),
     title: varchar("title", { length: 255 }),
     content: text("content"),
-    isDeal: boolean("is_deal").default(false),
+    source: text("source"),
+    dealStatus: boolean("deal_status").default(false),
+    analysisResult: text("analysis_result"),
     dateCreated: timestamp("date_created", { withTimezone: true}).defaultNow(),
     projectsId: uuid("projects_id").references((): any => projects.id),
     status: varchar("status", { length: 255 }).default('draft'),
@@ -425,7 +397,7 @@ export const exchangeRelations = relations(exchange, ({many}) => ({
 }));
 
 export const watchlist = pgTable("watchlist", {
-  id: uuid("id").primaryKey().notNull(),
+  id: uuid("id").primaryKey().defaultRandom().notNull(),
   profilesId: uuid("profiles_id").references(() => profiles.id),
   tweetUser: uuid("tweet_user").references(() => tweetUsers.id),
   notifyOnNewTweet: boolean("notify_on_new_tweet").default(false),
