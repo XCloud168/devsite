@@ -241,6 +241,7 @@ export const tweetInfo = pgTable("tweet_info", {
 	id: uuid("id").primaryKey().defaultRandom().notNull(),
 	tweetId: varchar("tweet_id", { length: 255 }).unique(),
 	dateCreated: timestamp("date_created", { withTimezone: true}).defaultNow(),
+  tweetCreatedAt: timestamp("tweet_created_at", { withTimezone: true}),
 	tweetUser: uuid("tweet_user").references((): any => tweetUsers.id),
 	content: text("content"),
 	isDeal: boolean("is_deal").default(false),

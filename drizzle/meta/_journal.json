@@ -64,6 +64,13 @@
       "when": 1741844325774,
       "tag": "0008_auto_uuid_tweet_info",
       "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "7",
+      "when": 1741851263581,
+      "tag": "0009_add_tweet_created_at",
+      "breakpoints": true
     }
   ]
 }
