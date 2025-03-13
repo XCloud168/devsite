@@ -9,8 +9,11 @@
     },
     "navigation": {
         "signal-catcher": "Signal Catcher",
+        "home": "Home",
+        "blog": "Blog",
         "pricing": "Pricing",
-        "settings": "Settings"
+        "swap": "Swap",
+        "about": "About"
     },
     "theme": {
         "toggle": "Toggle theme",
@@ -148,5 +151,18 @@
         "title": "My Center",
         "description": "Manage your account settings and preferences",
         "sections": {}
+    },
+    "Swap": {
+        "title": "Quick Swap",
+        "walletError": "Error connecting wallet",
+        "walletNotInstalled": "{type} wallet is not installed",
+        "errors": {
+            "4001": "User rejected the connection request",
+            "4100": "Unauthorized request",
+            "4200": "Wallet not connected",
+            "4900": "Disconnected",
+            "4901": "Chain not configured",
+            "default": "Error connecting wallet"
+        }
     }
 }

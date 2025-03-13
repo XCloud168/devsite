@@ -8,12 +8,12 @@
         "description": "个人博客网站"
     },
     "navigation": {
+        "signal-catcher": "信号捕手",
         "home": "首页",
         "blog": "博客",
         "pricing": "订阅",
-        "about": "关于",
-        "signal-catcher": "信号捕手",
-        "settings": "设置"
+        "swap": "快捷交易",
+        "about": "关于"
     },
     "theme": {
         "toggle": "切换主题",
@@ -151,5 +151,18 @@
         "title": "个人中心",
         "description": "管理您的账户设置和偏好",
         "sections": {}
+    },
+    "Swap": {
+        "title": "快捷交易",
+        "walletError": "连接钱包时发生错误",
+        "walletNotInstalled": "{type} 钱包未安装",
+        "errors": {
+            "4001": "用户拒绝了钱包连接请求",
+            "4100": "未授权的请求",
+            "4200": "钱包未连接",
+            "4900": "断开连接",
+            "4901": "链未配置",
+            "default": "连接钱包时发生错误"
+        }
     }
 }

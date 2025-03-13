@@ -13,9 +13,10 @@ export function Header() {
   const siteName = useTranslations("metadata").raw("siteName");
   const pathname = usePathname();
   const navigation = [
+    { name: t("home"), href: "/" },
     { name: t("signal-catcher"), href: "/signal-catcher" },
+    { name: t("swap"), href: "/swap" },
     { name: t("pricing"), href: "/pricing" },
-    { name: t("settings"), href: "/settings" },
   ];
 
   return (
