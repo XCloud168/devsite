@@ -15,6 +15,90 @@
       "when": 1740191295665,
       "tag": "0001_auth_trigger",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1741767189590,
+      "tag": "0002_first_trish_tilby",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1741768272160,
+      "tag": "0003_spooky_morlun",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1741769458604,
+      "tag": "0004_empty_changeling",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1741773884458,
+      "tag": "0005_add_announcement_table",
+      "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1741775419377,
+      "tag": "0006_add_watchlist",
+      "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1741843526824,
+      "tag": "0007_auto_uuid",
+      "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1741844325774,
+      "tag": "0008_auto_uuid_tweet_info",
+      "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "7",
+      "when": 1741851263581,
+      "tag": "0009_add_tweet_created_at",
+      "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "7",
+      "when": 1741859848141,
+      "tag": "0010_add_exchange_table",
+      "breakpoints": true
+    },
+    {
+      "idx": 11,
+      "version": "7",
+      "when": 1741862772644,
+      "tag": "0011_add_source_for_ann",
+      "breakpoints": true
+    },
+    {
+      "idx": 12,
+      "version": "7",
+      "when": 1741865154808,
+      "tag": "0012_add_auto_id",
+      "breakpoints": true
+    },
+    {
+      "idx": 13,
+      "version": "7",
+      "when": 1741870856904,
+      "tag": "0013_update_projects_table",
+      "breakpoints": true
     }
   ]
 }
