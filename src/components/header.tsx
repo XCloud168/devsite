@@ -6,21 +6,22 @@ import { useTranslations } from "next-intl";
 import Image from "next/image";
 import Link from "next/link";
 import { AuthButton } from "./auth-button";
+import { usePathname } from "next/navigation";
 
 export function Header() {
   const t = useTranslations("navigation");
   const siteName = useTranslations("metadata").raw("siteName");
-
+  const pathname = usePathname();
   const navigation = [
-    { name: t("home"), href: "/" },
-    { name: t("blog"), href: "/blogs" },
+    { name: t("signal-catcher"), href: "/signal-catcher" },
     { name: t("pricing"), href: "/pricing" },
+    { name: t("settings"), href: "/settings" },
   ];
 
   return (
-    <header className="sticky top-0 z-50 w-full bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <div className="container flex h-14 items-center">
-        <div className="flex flex-1 items-center justify-between">
+    <header className="sticky top-0 z-50 w-full backdrop-blur supports-[backdrop-filter]:bg-background/60">
+      <div className="flex h-14 items-center px-5">
+        <div className="flex flex-1 items-center">
           {/* Logo */}
           <Link href="/" className="flex items-center space-x-2">
             <Image
@@ -34,19 +35,19 @@ export function Header() {
           </Link>
 
           {/* Navigation */}
-          <nav className="mx-6 flex items-center space-x-6">
+          <nav className="ml-10 flex items-center space-x-6">
             {navigation.map((item) => (
               <Link
                 key={item.href}
                 href={item.href}
-                className="text-sm font-medium text-foreground/60 transition-colors hover:text-foreground/80"
+                className={`${pathname === item.href ? "text-white" : "text-foreground/60"} text-sm font-medium transition-colors hover:text-foreground/80`}
               >
                 {item.name}
               </Link>
             ))}
           </nav>
 
-          <div className="flex items-center gap-2">
+          <div className="ml-auto flex items-center gap-2">
             <AuthButton />
             <LanguageSwitcher />
             <ThemeToggle />

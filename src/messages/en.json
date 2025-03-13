@@ -8,10 +8,9 @@
         "description": "Personal Blog Website"
     },
     "navigation": {
-        "home": "Home",
-        "blog": "Blog",
-        "projects": "Projects",
-        "about": "About"
+        "signal-catcher": "Signal Catcher",
+        "pricing": "Pricing",
+        "settings": "Settings"
     },
     "theme": {
         "toggle": "Toggle theme",

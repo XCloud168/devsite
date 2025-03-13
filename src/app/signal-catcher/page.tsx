@@ -1,7 +1,14 @@
 import { Button } from "@/components/ui/button";
 import { blogs } from "@/server/api";
 import Link from "next/link";
-import { SignalBanner } from "./_components/signal-banner";
+import { FeaturedBanner } from "./_components/featured-banner";
+import { FeaturedList } from "@/app/signal-catcher/_components/featured-list";
+import {
+  ResizableHandle,
+  ResizablePanel,
+  ResizablePanelGroup,
+} from "@/components/ui/Resizeable";
+import { SignalBanner } from "@/app/signal-catcher/_components/signal-banner";
 import { SignalList } from "@/app/signal-catcher/_components/signal-list";
 
 interface PostsPageProps {
@@ -16,16 +23,22 @@ export default async function SignalPage({ searchParams }: PostsPageProps) {
   const data = await blogs.getPaginatedBlogs(currentPage);
 
   return (
-    <div className="container py-8">
-      {/*<div className="mb-8 flex items-center justify-between">*/}
-      {/*  <h1 className="text-3xl font-bold">Posts</h1>*/}
-      {/*  <Link href="/posts/new">*/}
-      {/*    <Button>Create Post</Button>*/}
-      {/*  </Link>*/}
-      {/*</div>*/}
-
-      <SignalBanner data={data} />
-      <SignalList />
+    <div className="w-full">
+      <ResizablePanelGroup direction="horizontal" className="h-full w-full">
+        <ResizablePanel defaultSize={50}>
+          <div className="block h-full items-center justify-center">
+            <SignalBanner />
+            <SignalList />
+          </div>
+        </ResizablePanel>
+        <ResizableHandle withHandle />
+        <ResizablePanel defaultSize={50} maxSize={50} minSize={30}>
+          <div className="block h-full items-center justify-center">
+            <FeaturedBanner data={data} />
+            <FeaturedList />
+          </div>
+        </ResizablePanel>
+      </ResizablePanelGroup>
     </div>
   );
 }

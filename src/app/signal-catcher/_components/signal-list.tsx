@@ -1,66 +1,47 @@
 "use client";
 
-import Link from "next/link";
-
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Button } from "@/components/ui/button";
 export function SignalList() {
   return (
     <>
-      {[1, 2, 3, 4].map((item: any) => (
-        <div
-          className="grid grid-cols-[48px_1fr] gap-1 overflow-hidden pb-7"
-          key={item}
-        >
-          <div className="h-full">
-            <div className="h-10 w-10 rounded-full border border-white"></div>
-            <div className="h-full w-[20px] border-r border-dashed"></div>
-          </div>
-          <div className="min-h-20">
-            <p className="font-bold leading-5">Binance</p>
-            <p className="mb-2 leading-5 text-[#00FFAB]">2025-03-28 23:34:26</p>
-            <div className="relative h-fit w-full border border-transparent bg-transparent border-gradient-green-purple">
-              <p className="px-5 py-3">
-                Binance Will Add RedStone (RED) on Earn, Buy Crypto, Convert,
-                Margin & Futures/Launch Time: March 6, 2025 16:00 (UTC)/Trading
-                Pairs: RED/USDT, RED/USDC, RED/FDUSD
-              </p>
-              <div className="absolute right-6 top-0 h-1 w-[80px] bg-[#4E2465] clip-inverted-trapezoid" />
-            </div>
-            {item < 3 ? (
-              <div className="bg-gradient-to-r-50-transparent mb-2 flex h-14 items-center">
-                <div className="border-spin-image ml-3 flex h-9 w-9 items-center justify-center">
-                  <div className="z-10 h-8 w-8 overflow-hidden rounded-full ring-1 ring-[#6CFFE9]">
-                    <div className="flex h-full w-full items-center justify-center bg-black">
-                      1
-                    </div>
-                  </div>
+      <div className="p-5">
+        <p className="text-xs">2024-09-17 23:34:45</p>
+        <div className="mt-2">
+          <div className="flex items-center justify-between gap-1.5">
+            <div className="flex items-center gap-1.5">
+              <div className="h-8 w-8 rounded-full bg-gray-700"></div>
+              <div>
+                <p>Elon Musk</p>
+                <div className="flex gap-3">
+                  <p className="text-xs">@elonmusk</p>
+                  <p className="text-xs">2.1亿 粉丝</p>
                 </div>
-                <p className="ml-4 font-bold">KAITO</p>
-                <p className="ml-10 text-xs">24h max pnl%</p>
-                <p className="ml-2 font-extrabold text-[#00FFAB]">+21.78%</p>
-                <div className="ml-10 h-[31px] w-[94px] bg-[url(/images/signal/positive.png)] bg-cover"></div>
               </div>
-            ) : (
-              <div className="bg-gradient-to-r-50-transparent mb-2 flex h-14 h-2.5 items-center" />
-            )}
-            <div className="flex gap-6">
-              <Link
-                className="flex items-center gap-0.5 text-xs text-[#617178]"
-                href="/"
-              >
-                <div className="h-3 w-3 bg-[url(/images/signal/link.svg)] bg-contain"></div>
-                <p>View Original Link</p>
-              </Link>
-              <Link
-                className="flex items-center gap-0.5 text-xs text-[#617178]"
-                href="/"
-              >
-                <div className="h-2.5 w-2.5 bg-[url(/images/signal/share.svg)] bg-contain"></div>
-                <p>Share</p>
-              </Link>
             </div>
+            <Button variant="outline">添加监控</Button>
+          </div>
+          <div></div>
+        </div>
+        <div className="mt-4 rounded-sm border border-[#494949]">
+          <p className="mb-1.5 px-3 pt-3">
+            In support of the policies of President @realDonaldTrump and to
+            demonstrate our confidence in the future of the United States,
+            @Tesla commits to doubling vehicle production in the US within 2
+            years!
+          </p>
+          <p className="text-sx mb-1.5 px-3 text-xs text-[#01A4D9]">隐藏翻译</p>
+          <div className="bg-[#494949] p-3">
+            <p>
+              为了支持唐纳德・特朗普总统（@realDonaldTrump）的政策，并展现我们对美国未来的信心，特斯拉公司（@Tesla）承诺在两年内将其在美国的汽车产量提高一倍！
+            </p>
+          </div>
+          <div className="flex gap-10 p-4">
+            <p className="text-xs text-white/60">显示原文</p>
+            <p className="text-xs text-white/60">分享</p>
           </div>
         </div>
-      ))}
+      </div>
     </>
   );
 }
