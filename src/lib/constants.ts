@@ -63,14 +63,14 @@ export const PRICING_PLANS = {
     id: "quarterly",
     name: "季度计划",
     price: 20,
-    originalPrice: 20,
+    originalPrice: 30,
     features: ["1000 次交易", "1000 次交易", "1000 次交易"],
   },
   yearly: {
     id: "yearly",
     name: "年度计划",
     price: 30,
-    originalPrice: 30,
+    originalPrice: 90,
     features: ["1000 次交易", "1000 次交易", "1000 次交易"],
   },
 };
