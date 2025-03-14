@@ -54,8 +54,8 @@ CREATE TABLE "site_payment_addresses" (
 );
 --> statement-breakpoint
 CREATE TABLE "site_payments" (
-	"id" serial PRIMARY KEY NOT NULL,
-	"user_id" varchar(255) NOT NULL,
+	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+	"user_id" uuid NOT NULL,
 	"receiver_address" varchar(255),
 	"chain" varchar(255) NOT NULL,
 	"plan_type" varchar(255) NOT NULL,

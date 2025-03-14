@@ -1,5 +1,5 @@
 {
-  "id": "8625c0b4-40ba-4edf-b69d-bff04cea9256",
+  "id": "e6f8416c-c653-479c-b513-b54462703b3d",
   "prevId": "f7a5c540-fbcd-43f7-bc99-05d72c7d196d",
   "version": "7",
   "dialect": "postgresql",
@@ -506,13 +506,14 @@
       "columns": {
         "id": {
           "name": "id",
-          "type": "serial",
+          "type": "uuid",
           "primaryKey": true,
-          "notNull": true
+          "notNull": true,
+          "default": "gen_random_uuid()"
         },
         "user_id": {
           "name": "user_id",
-          "type": "varchar(255)",
+          "type": "uuid",
           "primaryKey": false,
           "notNull": true
         },

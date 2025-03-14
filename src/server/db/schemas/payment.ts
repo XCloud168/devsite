@@ -3,8 +3,8 @@ import { relations } from "drizzle-orm";
 import {
   boolean,
   numeric,
-  serial,
   timestamp,
+  uuid,
   varchar,
 } from "drizzle-orm/pg-core";
 import { pgTable } from "./base";
@@ -33,8 +33,8 @@ export const paymentAddressesRelations = relations(
 );
 
 export const payments = pgTable("payments", {
-  id: serial("id").primaryKey(),
-  userId: varchar("user_id", { length: 255 })
+  id: uuid("id").primaryKey().defaultRandom().notNull(),
+  userId: uuid("user_id")
     .notNull()
     .references(() => profiles.id),
   receiverAddress: varchar("receiver_address", { length: 255 }).references(
