@@ -24,10 +24,10 @@
       "breakpoints": true
     },
     {
-      "idx": 14,
+      "idx": 3,
       "version": "7",
-      "when": 1741871465752,
-      "tag": "0014_update_projects_table",
+      "when": 1741918231331,
+      "tag": "0003_update_projects_table",
       "breakpoints": true
     }
   ]

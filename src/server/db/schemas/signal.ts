@@ -28,7 +28,6 @@ export const projects = pgTable(
     tronContract: varchar("tron_contract", { length: 255 }),
     baseContract: varchar("base_contract", { length: 255 }),
     blastContract: varchar("blast_contract", { length: 255 }),
-    flag: varchar("flag", { length: 255 }),
     urls: json("urls"), // website, telegram, twitter, discord, medium, blog, github, youtube, instagram, tiktok, twitch, pinterest, linkedin, reddit, telegram, telegram_channel, telegram_group, telegram_channel_id, telegram_group_id
     priceSource: varchar("price_source", { length: 255 }),
   },

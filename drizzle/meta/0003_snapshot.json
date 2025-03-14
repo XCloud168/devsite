@@ -1,6 +1,6 @@
 {
-  "id": "078f0cb1-59c3-425b-8af0-df5aa85f713f",
-  "prevId": "cab7c4bb-8441-43da-b1d3-d65e255622f1",
+  "id": "9a323980-1ace-4028-b2f5-4540a957d30d",
+  "prevId": "e6f8416c-c653-479c-b513-b54462703b3d",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
@@ -445,6 +445,164 @@
       "checkConstraints": {},
       "isRLSEnabled": true
     },
+    "public.site_payment_addresses": {
+      "name": "site_payment_addresses",
+      "schema": "",
+      "columns": {
+        "address": {
+          "name": "address",
+          "type": "varchar(255)",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "chain": {
+          "name": "chain",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "'ETH'"
+        },
+        "enabled": {
+          "name": "enabled",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "site_payment_addresses_address_unique": {
+          "name": "site_payment_addresses_address_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "address"
+          ]
+        }
+      },
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.site_payments": {
+      "name": "site_payments",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "user_id": {
+          "name": "user_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "receiver_address": {
+          "name": "receiver_address",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "chain": {
+          "name": "chain",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "plan_type": {
+          "name": "plan_type",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "amount": {
+          "name": "amount",
+          "type": "numeric(10, 2)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "tx_hash": {
+          "name": "tx_hash",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "status": {
+          "name": "status",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "site_payments_user_id_site_profiles_id_fk": {
+          "name": "site_payments_user_id_site_profiles_id_fk",
+          "tableFrom": "site_payments",
+          "tableTo": "site_profiles",
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "site_payments_receiver_address_site_payment_addresses_address_fk": {
+          "name": "site_payments_receiver_address_site_payment_addresses_address_fk",
+          "tableFrom": "site_payments",
+          "tableTo": "site_payment_addresses",
+          "columnsFrom": [
+            "receiver_address"
+          ],
+          "columnsTo": [
+            "address"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
     "public.site_profiles": {
       "name": "site_profiles",
       "schema": "",
@@ -499,6 +657,12 @@
           "primaryKey": false,
           "notNull": true,
           "default": "now()"
+        },
+        "membership_expired_at": {
+          "name": "membership_expired_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": false
         }
       },
       "indexes": {
@@ -1682,173 +1846,6 @@
       },
       "compositePrimaryKeys": {},
       "uniqueConstraints": {},
-      "policies": {},
-      "checkConstraints": {},
-      "isRLSEnabled": true
-    },
-    "public.site_x_users": {
-      "name": "site_x_users",
-      "schema": "",
-      "columns": {
-        "id": {
-          "name": "id",
-          "type": "uuid",
-          "primaryKey": true,
-          "notNull": true
-        },
-        "username": {
-          "name": "username",
-          "type": "varchar(256)",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "lowercase_username": {
-          "name": "lowercase_username",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "created_at": {
-          "name": "created_at",
-          "type": "timestamp with time zone",
-          "primaryKey": false,
-          "notNull": true,
-          "default": "now()"
-        },
-        "updated_at": {
-          "name": "updated_at",
-          "type": "timestamp with time zone",
-          "primaryKey": false,
-          "notNull": true,
-          "default": "now()"
-        },
-        "name": {
-          "name": "name",
-          "type": "varchar(256)",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "profile_picture": {
-          "name": "profile_picture",
-          "type": "varchar(256)",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "description": {
-          "name": "description",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "location": {
-          "name": "location",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "full_profile": {
-          "name": "full_profile",
-          "type": "jsonb",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "tweets": {
-          "name": "tweets",
-          "type": "jsonb",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "analysis": {
-          "name": "analysis",
-          "type": "jsonb",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "followers": {
-          "name": "followers",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": false,
-          "default": 0
-        },
-        "profile_scraped_at": {
-          "name": "profile_scraped_at",
-          "type": "timestamp with time zone",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "tweet_scrape_started": {
-          "name": "tweet_scrape_started",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": false,
-          "default": false
-        },
-        "tweet_scrape_completed": {
-          "name": "tweet_scrape_completed",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": false,
-          "default": false
-        },
-        "tweet_scrape_started_at": {
-          "name": "tweet_scrape_started_at",
-          "type": "timestamp with time zone",
-          "primaryKey": false,
-          "notNull": false,
-          "default": "now()"
-        }
-      },
-      "indexes": {
-        "username_idx": {
-          "name": "username_idx",
-          "columns": [
-            {
-              "expression": "username",
-              "isExpression": false,
-              "asc": true,
-              "nulls": "last"
-            }
-          ],
-          "isUnique": false,
-          "concurrently": false,
-          "method": "btree",
-          "with": {}
-        },
-        "lowercase_username_idx": {
-          "name": "lowercase_username_idx",
-          "columns": [
-            {
-              "expression": "lowercase_username",
-              "isExpression": false,
-              "asc": true,
-              "nulls": "last"
-            }
-          ],
-          "isUnique": false,
-          "concurrently": false,
-          "method": "btree",
-          "with": {}
-        }
-      },
-      "foreignKeys": {},
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {
-        "site_x_users_username_unique": {
-          "name": "site_x_users_username_unique",
-          "nullsNotDistinct": false,
-          "columns": [
-            "username"
-          ]
-        },
-        "site_x_users_lowercase_username_unique": {
-          "name": "site_x_users_lowercase_username_unique",
-          "nullsNotDistinct": false,
-          "columns": [
-            "lowercase_username"
-          ]
-        }
-      },
       "policies": {},
       "checkConstraints": {},
       "isRLSEnabled": true
