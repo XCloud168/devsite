@@ -148,9 +148,61 @@
         "updateSuccess": "Settings updated successfully"
     },
     "my": {
-        "title": "My Center",
+        "title": "Personal Center",
         "description": "Manage your account settings and preferences",
-        "sections": {}
+        "sections": {},
+        "inviteCode": {
+            "title": "My Invitation Code",
+            "description": "Share this code with friends to invite them",
+            "code": {
+                "label": "Invitation Code",
+                "copy": "Copy"
+            },
+            "link": {
+                "label": "Invitation Link",
+                "copy": "Copy"
+            },
+            "share": {
+                "button": "Share Invitation Poster",
+                "title": "Invitation Poster",
+                "description": "Share this poster with your friends to invite them",
+                "poster": {
+                    "title": "Join Our Platform",
+                    "subtitle": "You've been invited!",
+                    "codeLabel": "Invitation Code",
+                    "instructions": "Visit {host} and enter this code to join"
+                },
+                "download": {
+                    "button": "Download Poster",
+                    "generating": "Generating...",
+                    "success": "Poster downloaded successfully!",
+                    "error": "Failed to generate poster. Please try again"
+                }
+            }
+        },
+        "inviteStats": {
+            "title": "Invitation Statistics",
+            "description": "Overview of your invitation activity",
+            "totalInvites": "Total Invitations"
+        },
+        "inviteRecords": {
+            "title": "Invitation Records",
+            "description": "History of people you've invited",
+            "caption": "A list of your invitations",
+            "table": {
+                "username": "Username",
+                "joinTime": "Join Time",
+                "status": "Status"
+            },
+            "status": {
+                "active": "Active",
+                "expired": "Expired",
+                "free": "Free"
+            },
+            "error": {
+                "fetch": "Failed to fetch records. Please try again"
+            }
+        }
     },
     "Swap": {
         "title": "Quick Swap",

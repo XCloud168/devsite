@@ -76,6 +76,11 @@ export const SUPPORTED_CHAIN_CURRENCY = {
   BSC: "USDT",
 };
 
+/**
+ * 每页显示的条数
+ */
+export const ITEMS_PER_PAGE = 10;
+
 // System error codes
 export enum ErrorCode {
   // 通用错误

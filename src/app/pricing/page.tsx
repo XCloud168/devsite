@@ -1,5 +1,4 @@
 import { Check } from "lucide-react";
-import { useTranslations } from "next-intl";
 
 import { Badge } from "@/components/ui/badge";
 import {
@@ -13,9 +12,10 @@ import {
 import { PRICING_PLANS } from "@/lib/constants";
 import { PLAN_TYPE } from "@/types/constants";
 import { PaymentDialog } from "./_components/payment-dialog";
+import { getTranslations } from "next-intl/server";
 
-export default function PricingPage() {
-  const t = useTranslations("pricing");
+export default async function PricingPage() {
+  const t = await getTranslations("pricing");
 
   return (
     <div className="container mx-auto px-4 py-12">
