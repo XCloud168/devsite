@@ -7,6 +7,7 @@ import { db } from "@/server/db";
 import { payments } from "@/server/db/schema";
 import { PLAN_TYPE, SUPPORTED_CHAIN } from "@/types/constants";
 import { createClient } from "@/utils/supabase/server";
+import { getUserProfile } from "./auth";
 
 /**
  * Checkout a plan
@@ -16,13 +17,10 @@ import { createClient } from "@/utils/supabase/server";
  */
 export async function checkout(planType: PLAN_TYPE, chain: SUPPORTED_CHAIN) {
   try {
-    const supabase = await createClient();
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
+    const user = await getUserProfile();
 
     if (!user) {
-      throw new Error("User not found");
+      throw new Error("Please login first");
     }
 
     const plan = PRICING_PLANS[planType as keyof typeof PRICING_PLANS];
@@ -47,8 +45,14 @@ export async function checkout(planType: PLAN_TYPE, chain: SUPPORTED_CHAIN) {
  */
 export async function confirmPayment(paymentId: string) {
   try {
+    const user = await getUserProfile();
+    if (!user) {
+      throw new Error("Please login first");
+    }
+
     const payment = await db.query.payments.findFirst({
-      where: (payments, { eq }) => eq(payments.id, paymentId),
+      where: (payments, { eq, and }) =>
+        and(eq(payments.id, paymentId), eq(payments.userId, user.id)),
     });
     if (!payment) {
       throw new Error("Payment not found");

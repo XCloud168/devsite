@@ -116,10 +116,11 @@ export async function getUserProfile() {
   });
 
   return {
-    id: profile?.id,
+    id: user.id,
     username: profile?.username,
     email: user.email,
-    bio: profile?.bio,
-    urls: profile?.urls,
+    avatarUrl: profile?.avatarUrl,
+    membershipExpiredAt: profile?.membershipExpiredAt,
+    inviteCode: profile?.inviteCode,
   };
 }
