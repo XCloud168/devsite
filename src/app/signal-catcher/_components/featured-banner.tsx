@@ -162,11 +162,13 @@ export function FeaturedBanner() {
       </div>
       <div className="relative mb-5 border-b border-[#49494980] p-3">
         <div
-          className="absolute bottom-[-8px] left-1/2 h-2 w-10 -translate-x-1/2 cursor-pointer bg-[url('/images/signal/triangle.svg')] bg-contain bg-center bg-no-repeat transition-transform duration-500 hover:scale-125"
+          className={`absolute left-1/2 h-2 w-10 -translate-x-1/2 cursor-pointer bg-[url('/images/signal/triangle.svg')] bg-contain bg-center bg-no-repeat ${
+            showDetails ? "bottom-0 rotate-180" : "bottom-[-8px]"
+          }`}
           onClick={() => setShowDetails((prev) => !prev)}
         ></div>
         <div
-          className={`grid w-full grid-cols-4 gap-3 overflow-hidden transition-all duration-1000 ease-in-out ${
+          className={`grid w-full grid-cols-4 gap-3 overflow-hidden transition-all duration-500 ease-in-out ${
             showDetails ? "max-h-[200px] opacity-100" : "max-h-0 opacity-0"
           }`}
         >
