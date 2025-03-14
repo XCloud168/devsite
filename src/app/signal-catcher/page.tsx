@@ -1,5 +1,3 @@
-import { blogs } from "@/server/api";
-
 import { FeaturedBanner } from "./_components/featured-banner";
 import { FeaturedList } from "@/app/signal-catcher/_components/featured-list";
 import {
@@ -7,19 +5,9 @@ import {
   ResizablePanel,
   ResizablePanelGroup,
 } from "@/components/ui/Resizeable";
-import { KolComponent } from "@/app/signal-catcher/_components/KolComponent";
+import { KolComponent } from "@/app/signal-catcher/_components/kol-component";
 
-interface PostsPageProps {
-  searchParams: Promise<{
-    page?: string;
-  }>;
-}
-
-export default async function SignalPage({ searchParams }: PostsPageProps) {
-  const { page } = await searchParams;
-  const currentPage = Number(page) || 1;
-  const data = await blogs.getPaginatedBlogs(currentPage);
-
+export default async function SignalPage() {
   return (
     <div className="w-full">
       <ResizablePanelGroup direction="horizontal" className="h-full w-full">
@@ -31,7 +19,7 @@ export default async function SignalPage({ searchParams }: PostsPageProps) {
         <ResizableHandle withHandle />
         <ResizablePanel defaultSize={50} maxSize={50} minSize={30}>
           <div className="block h-full items-center justify-center">
-            <FeaturedBanner data={data} />
+            <FeaturedBanner />
             <FeaturedList />
           </div>
         </ResizablePanel>
