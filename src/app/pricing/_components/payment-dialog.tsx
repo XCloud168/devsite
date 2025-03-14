@@ -3,6 +3,7 @@
 import { CheckIcon, Loader2, TimerIcon, XIcon } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
+import { toast } from "sonner";
 
 import { QRCode } from "@/components/qrcode";
 import { Button } from "@/components/ui/button";
@@ -18,7 +19,6 @@ import { Separator } from "@/components/ui/separator";
 import { SUPPORTED_CHAIN_CURRENCY } from "@/lib/constants";
 import { checkout, confirmPayment } from "@/server/api/routes/payment";
 import { PLAN_TYPE, SUPPORTED_CHAIN } from "@/types/constants";
-import { toast } from "sonner";
 
 interface PaymentDialogProps {
   planType: PLAN_TYPE;
@@ -26,11 +26,6 @@ interface PaymentDialogProps {
     name: string;
     price: number;
   };
-}
-
-interface NetworkDetails {
-  conversionRate: number;
-  currency: string;
 }
 
 interface PaymentData {
@@ -90,24 +85,20 @@ export function PaymentDialog({ planType, plan }: PaymentDialogProps) {
 
   const handleOpen = async () => {
     setLoading(true);
-    try {
-      const result = await checkout(planType, selectedNetwork);
-      if (result.error) throw new Error(String(result.error));
-      if (!result.data) throw new Error(t("toast.create_order.error"));
-
-      setOrderData(result.data as unknown as PaymentData);
-      setOpen(true);
-      resetCountdown();
-    } catch (error) {
+    const result = await checkout(planType, selectedNetwork);
+    if (result.error) {
+      setOrderData(null);
+      clearCountdownTimer();
       toast.error(t("toast.create_order.error"), {
-        description:
-          error instanceof Error
-            ? error.message
-            : t("toast.create_order.retry"),
+        description: result.error.message ?? t("toast.create_order.retry"),
       });
-    } finally {
       setLoading(false);
+      return;
     }
+    setOrderData(result.data as unknown as PaymentData);
+    setOpen(true);
+    resetCountdown();
+    setLoading(false);
   };
 
   const handleNetworkChange = async (network: SUPPORTED_CHAIN) => {
@@ -116,49 +107,40 @@ export function PaymentDialog({ planType, plan }: PaymentDialogProps) {
     setSelectedNetwork(network);
     setLoading(true);
 
-    try {
-      const result = await checkout(planType, network);
-      if (result.error) throw new Error(String(result.error));
-      if (!result.data) throw new Error(t("toast.update_order.error"));
-
-      setOrderData(result.data as unknown as PaymentData);
-      resetCountdown();
-    } catch (error) {
+    const result = await checkout(planType, network);
+    if (result.error) {
       setOrderData(null);
       clearCountdownTimer();
       toast.error(t("toast.update_order.error"), {
-        description:
-          error instanceof Error
-            ? error.message
-            : t("toast.update_order.retry"),
+        description: result.error.message ?? t("toast.update_order.retry"),
       });
-    } finally {
       setLoading(false);
+      return;
     }
+
+    setOrderData(result.data as unknown as PaymentData);
+    resetCountdown();
+    setLoading(false);
   };
 
   const handlePaymentSubmit = async () => {
     if (!orderData) return;
 
     setLoading(true);
-    try {
-      const result = await confirmPayment(String(orderData.id));
-      if (result.error) throw new Error(String(result.error));
-
-      toast.success(t("toast.confirm_payment.success"), {
-        description: t("toast.confirm_payment.success_description"),
-      });
-      setOpen(false);
-    } catch (error) {
+    const result = await confirmPayment(String(orderData.id));
+    if (result.error) {
       toast.error(t("toast.confirm_payment.error"), {
-        description:
-          error instanceof Error
-            ? error.message
-            : t("toast.confirm_payment.retry"),
+        description: result.error.message ?? t("toast.confirm_payment.retry"),
       });
-    } finally {
       setLoading(false);
+      return;
     }
+
+    toast.success(t("toast.confirm_payment.success"), {
+      description: t("toast.confirm_payment.success_description"),
+    });
+    setOpen(false);
+    setLoading(false);
   };
 
   const formatTime = (seconds: number) => {
