@@ -1,28 +1,10 @@
 "use client";
 
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Button } from "@/components/ui/button";
-export function SignalList() {
+export function KolPanel1() {
   return (
     <>
       <div className="p-5">
         <p className="text-xs">2024-09-17 23:34:45</p>
-        <div className="mt-2">
-          <div className="flex items-center justify-between gap-1.5">
-            <div className="flex items-center gap-1.5">
-              <div className="h-8 w-8 rounded-full bg-gray-700"></div>
-              <div>
-                <p>Elon Musk</p>
-                <div className="flex gap-3">
-                  <p className="text-xs">@elonmusk</p>
-                  <p className="text-xs">2.1亿 粉丝</p>
-                </div>
-              </div>
-            </div>
-            <Button variant="outline">添加监控</Button>
-          </div>
-          <div></div>
-        </div>
         <div className="mt-4 rounded-sm border border-[#494949]">
           <p className="mb-1.5 px-3 pt-3">
             In support of the policies of President @realDonaldTrump and to

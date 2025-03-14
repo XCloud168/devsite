@@ -1,6 +1,5 @@
-import { Button } from "@/components/ui/button";
 import { blogs } from "@/server/api";
-import Link from "next/link";
+
 import { FeaturedBanner } from "./_components/featured-banner";
 import { FeaturedList } from "@/app/signal-catcher/_components/featured-list";
 import {
@@ -8,8 +7,7 @@ import {
   ResizablePanel,
   ResizablePanelGroup,
 } from "@/components/ui/Resizeable";
-import { SignalBanner } from "@/app/signal-catcher/_components/signal-banner";
-import { SignalList } from "@/app/signal-catcher/_components/signal-list";
+import { KolComponent } from "@/app/signal-catcher/_components/KolComponent";
 
 interface PostsPageProps {
   searchParams: Promise<{
@@ -27,8 +25,7 @@ export default async function SignalPage({ searchParams }: PostsPageProps) {
       <ResizablePanelGroup direction="horizontal" className="h-full w-full">
         <ResizablePanel defaultSize={50}>
           <div className="block h-full items-center justify-center">
-            <SignalBanner />
-            <SignalList />
+            <KolComponent />
           </div>
         </ResizablePanel>
         <ResizableHandle withHandle />
