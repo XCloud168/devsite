@@ -29,6 +29,13 @@
       "when": 1741918231331,
       "tag": "0003_update_projects_table",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1741944038703,
+      "tag": "0004_easy_clea",
+      "breakpoints": true
     }
   ]
 }

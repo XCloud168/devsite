@@ -1,16 +1,17 @@
+import { PUBLISH_STATUS, SIGNAL_PROVIDER_TYPE } from "@/types/constants";
+import { relations } from "drizzle-orm";
 import {
+  index,
+  integer,
+  json,
+  text,
   timestamp,
   uuid,
   varchar,
-  text,
-  json,
-  index,
-  integer,
 } from "drizzle-orm/pg-core";
 import { pgTable } from "./base";
-import { relations } from "drizzle-orm";
-import { tweetInfo } from "./tweet";
 import { announcement } from "./exchange";
+import { tweetInfo } from "./tweet";
 
 export const projects = pgTable(
   "projects",
@@ -46,21 +47,28 @@ export const signals = pgTable(
   "signals",
   {
     id: uuid("id").primaryKey().defaultRandom().notNull(),
-    status: varchar("status", { length: 255 }).default("draft").notNull(),
+    status: varchar("status", { length: 255 })
+      .default("draft")
+      .notNull()
+      .$type<PUBLISH_STATUS>(),
     dateCreated: timestamp("date_created", {
-      precision: 6,
       withTimezone: true,
-    }).defaultNow(),
+    })
+      .defaultNow()
+      .notNull(),
     content: text("content"),
     notifyContent: text("notify_content"),
-    aiResult: text("ai_result"),
-    signalTime: timestamp("signal_time", { precision: 6, withTimezone: true }),
-    projectsId: uuid("projects_id").references((): any => projects.id),
-    signalsTag: uuid("signals_tag").references((): any => signalsTag.id),
+    aiSummary: text("ai_summary"),
+    signalTime: timestamp("signal_time", { withTimezone: true }).notNull(),
+    projectId: uuid("project_id").references((): any => projects.id),
+    signalsTagId: uuid("signals_tag_id").references((): any => signalsTag.id),
     mediaUrls: json("media_urls"),
-    provider: uuid("provider"),
+    providerId: uuid("provider_id"),
+    providerType: varchar("provider_type", { length: 255 })
+      .default("twitter")
+      .$type<SIGNAL_PROVIDER_TYPE>(),
   },
-  (table) => [index("provider_idx").on(table.provider)],
+  (table) => [index("provider_id_idx").on(table.providerId)],
 ).enableRLS();
 
 export const signalsTag = pgTable(
@@ -87,11 +95,11 @@ export const projectsRelations = relations(projects, ({ many }) => ({
 
 export const signalsRelations = relations(signals, ({ one }) => ({
   project: one(projects, {
-    fields: [signals.projectsId],
+    fields: [signals.projectId],
     references: [projects.id],
   }),
   signalsTag: one(signalsTag, {
-    fields: [signals.signalsTag],
+    fields: [signals.signalsTagId],
     references: [signalsTag.id],
   }),
 }));
