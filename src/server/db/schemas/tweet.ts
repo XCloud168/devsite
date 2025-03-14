@@ -24,7 +24,7 @@ export const tweetUsers = pgTable(
     dateUpdated: timestamp("date_updated", { withTimezone: true })
       .defaultNow()
       .$onUpdate(() => new Date()),
-    screenName: varchar("screen_name", { length: 255 }).unique(),
+    screenName: varchar("screen_name", { length: 255 }),
     joinDate: timestamp("join_date", { withTimezone: true }),
     followersCount: integer("followers_count").default(0),
     followingCount: integer("following_count").default(0),
@@ -32,7 +32,7 @@ export const tweetUsers = pgTable(
     listedCount: integer("listed_count").default(0),
     avatar: text("avatar"),
     name: varchar("name", { length: 255 }),
-    restId: varchar("rest_id", { length: 255 }),
+    restId: varchar("rest_id", { length: 255 }).unique(),
     flag: varchar("flag", { length: 255 }), // twitter用户标签 'default' 默认/'hot'热门/'curated'精选
     subscribeCount: integer("subscribe_count").default(0),
     highestScore: real("highest_score").default(sql`'0'`),
@@ -80,6 +80,7 @@ export const tweetInfo = pgTable(
     quotes: integer("quotes").default(0),
     replies: integer("replies").default(0),
     projectsId: uuid("projects_id").references((): any => projects.id),
+    shilling: boolean("shilling").default(false),
     sentiment: varchar("sentiment", { length: 255 }),
 
     signalTime: timestamp("signal_time", { withTimezone: true }),
