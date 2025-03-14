@@ -1,0 +1,1 @@
+ALTER TABLE "site_projects" DROP COLUMN "flag";
