@@ -1,1 +1,0 @@
-ALTER TABLE "site_announcement" ADD COLUMN "source" text;

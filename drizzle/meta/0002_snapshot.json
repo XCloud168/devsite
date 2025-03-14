@@ -1,9 +1,276 @@
 {
-  "id": "4602ca59-933e-4734-bb55-0742998e56ed",
+  "id": "8625c0b4-40ba-4edf-b69d-bff04cea9256",
   "prevId": "f7a5c540-fbcd-43f7-bc99-05d72c7d196d",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
+    "public.site_announcement": {
+      "name": "site_announcement",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "title": {
+          "name": "title",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "content": {
+          "name": "content",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "source": {
+          "name": "source",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "deal_status": {
+          "name": "deal_status",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false,
+          "default": false
+        },
+        "analysis_result": {
+          "name": "analysis_result",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "date_created": {
+          "name": "date_created",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "now()"
+        },
+        "projects_id": {
+          "name": "projects_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "status": {
+          "name": "status",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "'draft'"
+        },
+        "sentiment": {
+          "name": "sentiment",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "signal_time": {
+          "name": "signal_time",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "signal_price": {
+          "name": "signal_price",
+          "type": "numeric(24, 12)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "high_rate_24h": {
+          "name": "high_rate_24h",
+          "type": "numeric(10, 2)",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "'0'"
+        },
+        "low_rate_24h": {
+          "name": "low_rate_24h",
+          "type": "numeric(10, 2)",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "'0'"
+        },
+        "high_price_24h": {
+          "name": "high_price_24h",
+          "type": "numeric(24, 12)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "low_price_24h": {
+          "name": "low_price_24h",
+          "type": "numeric(24, 12)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "low_price_time_24h": {
+          "name": "low_price_time_24h",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "high_price_time_24h": {
+          "name": "high_price_time_24h",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "high_rate_7d": {
+          "name": "high_rate_7d",
+          "type": "numeric(10, 2)",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "'0'"
+        },
+        "low_rate_7d": {
+          "name": "low_rate_7d",
+          "type": "numeric(10, 2)",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "'0'"
+        },
+        "high_price_7d": {
+          "name": "high_price_7d",
+          "type": "numeric(24, 12)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "low_price_7d": {
+          "name": "low_price_7d",
+          "type": "numeric(24, 12)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "low_price_time_7d": {
+          "name": "low_price_time_7d",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "high_price_time_7d": {
+          "name": "high_price_time_7d",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "high_rate_30d": {
+          "name": "high_rate_30d",
+          "type": "numeric(10, 2)",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "'0'"
+        },
+        "low_rate_30d": {
+          "name": "low_rate_30d",
+          "type": "numeric(10, 2)",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "'0'"
+        },
+        "high_price_30d": {
+          "name": "high_price_30d",
+          "type": "numeric(24, 12)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "low_price_30d": {
+          "name": "low_price_30d",
+          "type": "numeric(24, 12)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "low_price_time_30d": {
+          "name": "low_price_time_30d",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "high_price_time_30d": {
+          "name": "high_price_time_30d",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "exchange_id": {
+          "name": "exchange_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {
+        "announcement_title_idx": {
+          "name": "announcement_title_idx",
+          "columns": [
+            {
+              "expression": "title",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "exchange_id_idx": {
+          "name": "exchange_id_idx",
+          "columns": [
+            {
+              "expression": "exchange_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "site_announcement_projects_id_site_projects_id_fk": {
+          "name": "site_announcement_projects_id_site_projects_id_fk",
+          "tableFrom": "site_announcement",
+          "tableTo": "site_projects",
+          "columnsFrom": [
+            "projects_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "site_announcement_exchange_id_site_exchange_id_fk": {
+          "name": "site_announcement_exchange_id_site_exchange_id_fk",
+          "tableFrom": "site_announcement",
+          "tableTo": "site_exchange",
+          "columnsFrom": [
+            "exchange_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": true
+    },
     "public.site_blogs": {
       "name": "site_blogs",
       "schema": "",
@@ -103,76 +370,55 @@
       "checkConstraints": {},
       "isRLSEnabled": true
     },
-    "public.site_contract_address": {
-      "name": "site_contract_address",
+    "public.site_exchange": {
+      "name": "site_exchange",
       "schema": "",
       "columns": {
         "id": {
           "name": "id",
           "type": "uuid",
           "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "name": {
+          "name": "name",
+          "type": "varchar(255)",
+          "primaryKey": false,
           "notNull": true
+        },
+        "logo": {
+          "name": "logo",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "description": {
+          "name": "description",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "website": {
+          "name": "website",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false
         },
         "date_created": {
           "name": "date_created",
           "type": "timestamp with time zone",
           "primaryKey": false,
           "notNull": false,
-          "default": "CURRENT_TIMESTAMP"
-        },
-        "address": {
-          "name": "address",
-          "type": "varchar(255)",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "platform": {
-          "name": "platform",
-          "type": "varchar(255)",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "platform_coin": {
-          "name": "platform_coin",
-          "type": "varchar(255)",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "project": {
-          "name": "project",
-          "type": "uuid",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "source": {
-          "name": "source",
-          "type": "varchar(255)",
-          "primaryKey": false,
-          "notNull": false,
-          "default": "'DEX'"
+          "default": "now()"
         }
       },
       "indexes": {
-        "address_idx": {
-          "name": "address_idx",
+        "exchange_name_idx": {
+          "name": "exchange_name_idx",
           "columns": [
             {
-              "expression": "address",
-              "isExpression": false,
-              "asc": true,
-              "nulls": "last"
-            }
-          ],
-          "isUnique": false,
-          "concurrently": false,
-          "method": "btree",
-          "with": {}
-        },
-        "project_idx": {
-          "name": "project_idx",
-          "columns": [
-            {
-              "expression": "project",
+              "expression": "name",
               "isExpression": false,
               "asc": true,
               "nulls": "last"
@@ -184,13 +430,151 @@
           "with": {}
         }
       },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "site_exchange_name_unique": {
+          "name": "site_exchange_name_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "name"
+          ]
+        }
+      },
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": true
+    },
+    "public.site_payment_addresses": {
+      "name": "site_payment_addresses",
+      "schema": "",
+      "columns": {
+        "address": {
+          "name": "address",
+          "type": "varchar(255)",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "chain": {
+          "name": "chain",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "'ETH'"
+        },
+        "enabled": {
+          "name": "enabled",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "site_payment_addresses_address_unique": {
+          "name": "site_payment_addresses_address_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "address"
+          ]
+        }
+      },
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.site_payments": {
+      "name": "site_payments",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "user_id": {
+          "name": "user_id",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "receiver_address": {
+          "name": "receiver_address",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "chain": {
+          "name": "chain",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "plan_type": {
+          "name": "plan_type",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "amount": {
+          "name": "amount",
+          "type": "numeric(10, 2)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "tx_hash": {
+          "name": "tx_hash",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "status": {
+          "name": "status",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
       "foreignKeys": {
-        "site_contract_address_project_site_projects_id_fk": {
-          "name": "site_contract_address_project_site_projects_id_fk",
-          "tableFrom": "site_contract_address",
-          "tableTo": "site_projects",
+        "site_payments_user_id_site_profiles_id_fk": {
+          "name": "site_payments_user_id_site_profiles_id_fk",
+          "tableFrom": "site_payments",
+          "tableTo": "site_profiles",
           "columnsFrom": [
-            "project"
+            "user_id"
           ],
           "columnsTo": [
             "id"
@@ -198,17 +582,17 @@
           "onDelete": "no action",
           "onUpdate": "no action"
         },
-        "contract_address_project_foreign55": {
-          "name": "contract_address_project_foreign55",
-          "tableFrom": "site_contract_address",
-          "tableTo": "site_projects",
+        "site_payments_receiver_address_site_payment_addresses_address_fk": {
+          "name": "site_payments_receiver_address_site_payment_addresses_address_fk",
+          "tableFrom": "site_payments",
+          "tableTo": "site_payment_addresses",
           "columnsFrom": [
-            "project"
+            "receiver_address"
           ],
           "columnsTo": [
-            "id"
+            "address"
           ],
-          "onDelete": "set null",
+          "onDelete": "no action",
           "onUpdate": "no action"
         }
       },
@@ -216,7 +600,7 @@
       "uniqueConstraints": {},
       "policies": {},
       "checkConstraints": {},
-      "isRLSEnabled": true
+      "isRLSEnabled": false
     },
     "public.site_profiles": {
       "name": "site_profiles",
@@ -272,6 +656,12 @@
           "primaryKey": false,
           "notNull": true,
           "default": "now()"
+        },
+        "membership_expired_at": {
+          "name": "membership_expired_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": false
         }
       },
       "indexes": {
@@ -349,64 +739,6 @@
       "checkConstraints": {},
       "isRLSEnabled": true
     },
-    "public.site_project_urls": {
-      "name": "site_project_urls",
-      "schema": "",
-      "columns": {
-        "id": {
-          "name": "id",
-          "type": "uuid",
-          "primaryKey": true,
-          "notNull": true
-        },
-        "date_created": {
-          "name": "date_created",
-          "type": "timestamp with time zone",
-          "primaryKey": false,
-          "notNull": false,
-          "default": "now()"
-        },
-        "projects": {
-          "name": "projects",
-          "type": "uuid",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "name": {
-          "name": "name",
-          "type": "varchar(255)",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "url": {
-          "name": "url",
-          "type": "varchar(255)",
-          "primaryKey": false,
-          "notNull": false
-        }
-      },
-      "indexes": {},
-      "foreignKeys": {
-        "site_project_urls_projects_site_projects_id_fk": {
-          "name": "site_project_urls_projects_site_projects_id_fk",
-          "tableFrom": "site_project_urls",
-          "tableTo": "site_projects",
-          "columnsFrom": [
-            "projects"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        }
-      },
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {},
-      "policies": {},
-      "checkConstraints": {},
-      "isRLSEnabled": true
-    },
     "public.site_projects": {
       "name": "site_projects",
       "schema": "",
@@ -415,7 +747,8 @@
           "name": "id",
           "type": "uuid",
           "primaryKey": true,
-          "notNull": true
+          "notNull": true,
+          "default": "gen_random_uuid()"
         },
         "date_created": {
           "name": "date_created",
@@ -454,8 +787,38 @@
           "primaryKey": false,
           "notNull": false
         },
-        "third_id": {
-          "name": "third_id",
+        "sol_contract": {
+          "name": "sol_contract",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "eth_contract": {
+          "name": "eth_contract",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "bsc_contract": {
+          "name": "bsc_contract",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "tron_contract": {
+          "name": "tron_contract",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "base_contract": {
+          "name": "base_contract",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "blast_contract": {
+          "name": "blast_contract",
           "type": "varchar(255)",
           "primaryKey": false,
           "notNull": false
@@ -463,6 +826,12 @@
         "flag": {
           "name": "flag",
           "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "urls": {
+          "name": "urls",
+          "type": "json",
           "primaryKey": false,
           "notNull": false
         },
@@ -479,6 +848,96 @@
           "columns": [
             {
               "expression": "symbol",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "sol_contract_idx": {
+          "name": "sol_contract_idx",
+          "columns": [
+            {
+              "expression": "sol_contract",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "eth_contract_idx": {
+          "name": "eth_contract_idx",
+          "columns": [
+            {
+              "expression": "eth_contract",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "bsc_contract_idx": {
+          "name": "bsc_contract_idx",
+          "columns": [
+            {
+              "expression": "bsc_contract",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "tron_contract_idx": {
+          "name": "tron_contract_idx",
+          "columns": [
+            {
+              "expression": "tron_contract",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "base_contract_idx": {
+          "name": "base_contract_idx",
+          "columns": [
+            {
+              "expression": "base_contract",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "blast_contract_idx": {
+          "name": "blast_contract_idx",
+          "columns": [
+            {
+              "expression": "blast_contract",
               "isExpression": false,
               "asc": true,
               "nulls": "last"
@@ -505,7 +964,8 @@
           "name": "id",
           "type": "uuid",
           "primaryKey": true,
-          "notNull": true
+          "notNull": true,
+          "default": "gen_random_uuid()"
         },
         "status": {
           "name": "status",
@@ -539,26 +999,14 @@
           "primaryKey": false,
           "notNull": false
         },
-        "sentiment": {
-          "name": "sentiment",
-          "type": "varchar(255)",
-          "primaryKey": false,
-          "notNull": false
-        },
         "signal_time": {
           "name": "signal_time",
           "type": "timestamp (6) with time zone",
           "primaryKey": false,
           "notNull": false
         },
-        "signal_price": {
-          "name": "signal_price",
-          "type": "numeric(24, 12)",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "projects": {
-          "name": "projects",
+        "projects_id": {
+          "name": "projects_id",
           "type": "uuid",
           "primaryKey": false,
           "notNull": false
@@ -600,6 +1048,19 @@
         }
       },
       "foreignKeys": {
+        "site_signals_projects_id_site_projects_id_fk": {
+          "name": "site_signals_projects_id_site_projects_id_fk",
+          "tableFrom": "site_signals",
+          "tableTo": "site_projects",
+          "columnsFrom": [
+            "projects_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
         "site_signals_signals_tag_site_signals_tag_id_fk": {
           "name": "site_signals_signals_tag_site_signals_tag_id_fk",
           "tableFrom": "site_signals",
@@ -628,7 +1089,8 @@
           "name": "id",
           "type": "uuid",
           "primaryKey": true,
-          "notNull": true
+          "notNull": true,
+          "default": "gen_random_uuid()"
         },
         "date_updated": {
           "name": "date_updated",
@@ -688,7 +1150,8 @@
           "name": "id",
           "type": "uuid",
           "primaryKey": true,
-          "notNull": true
+          "notNull": true,
+          "default": "gen_random_uuid()"
         },
         "tweet_id": {
           "name": "tweet_id",
@@ -703,6 +1166,12 @@
           "notNull": false,
           "default": "now()"
         },
+        "tweet_created_at": {
+          "name": "tweet_created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": false
+        },
         "tweet_user": {
           "name": "tweet_user",
           "type": "uuid",
@@ -715,12 +1184,18 @@
           "primaryKey": false,
           "notNull": false
         },
-        "is_deal": {
-          "name": "is_deal",
+        "deal_status": {
+          "name": "deal_status",
           "type": "boolean",
           "primaryKey": false,
           "notNull": false,
           "default": false
+        },
+        "analysis_result": {
+          "name": "analysis_result",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
         },
         "tweet_url": {
           "name": "tweet_url",
@@ -801,13 +1276,6 @@
           "primaryKey": false,
           "notNull": false
         },
-        "status": {
-          "name": "status",
-          "type": "varchar(255)",
-          "primaryKey": false,
-          "notNull": false,
-          "default": "'draft'"
-        },
         "sentiment": {
           "name": "sentiment",
           "type": "varchar(255)",
@@ -817,6 +1285,12 @@
         "signal_time": {
           "name": "signal_time",
           "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "signal_price": {
+          "name": "signal_price",
+          "type": "numeric(24, 12)",
           "primaryKey": false,
           "notNull": false
         },
@@ -1041,13 +1515,8 @@
           "name": "id",
           "type": "uuid",
           "primaryKey": true,
-          "notNull": true
-        },
-        "user_created": {
-          "name": "user_created",
-          "type": "uuid",
-          "primaryKey": false,
-          "notNull": false
+          "notNull": true,
+          "default": "gen_random_uuid()"
         },
         "date_created": {
           "name": "date_created",
@@ -1055,12 +1524,6 @@
           "primaryKey": false,
           "notNull": false,
           "default": "now()"
-        },
-        "user_updated": {
-          "name": "user_updated",
-          "type": "uuid",
-          "primaryKey": false,
-          "notNull": false
         },
         "date_updated": {
           "name": "date_updated",
@@ -1214,6 +1677,21 @@
           "method": "btree",
           "with": {}
         },
+        "flag_idx": {
+          "name": "flag_idx",
+          "columns": [
+            {
+              "expression": "flag",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
         "rest_id_idx": {
           "name": "rest_id_idx",
           "columns": [
@@ -1231,34 +1709,6 @@
         }
       },
       "foreignKeys": {
-        "site_tweet_users_user_created_users_id_fk": {
-          "name": "site_tweet_users_user_created_users_id_fk",
-          "tableFrom": "site_tweet_users",
-          "tableTo": "users",
-          "schemaTo": "auth",
-          "columnsFrom": [
-            "user_created"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        },
-        "site_tweet_users_user_updated_users_id_fk": {
-          "name": "site_tweet_users_user_updated_users_id_fk",
-          "tableFrom": "site_tweet_users",
-          "tableTo": "users",
-          "schemaTo": "auth",
-          "columnsFrom": [
-            "user_updated"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        },
         "site_tweet_users_highest_bells_site_tweet_info_id_fk": {
           "name": "site_tweet_users_highest_bells_site_tweet_info_id_fk",
           "tableFrom": "site_tweet_users",
@@ -1287,113 +1737,52 @@
       "checkConstraints": {},
       "isRLSEnabled": true
     },
-    "public.site_x_users": {
-      "name": "site_x_users",
+    "public.site_watchlist": {
+      "name": "site_watchlist",
       "schema": "",
       "columns": {
         "id": {
           "name": "id",
           "type": "uuid",
           "primaryKey": true,
-          "notNull": true
-        },
-        "username": {
-          "name": "username",
-          "type": "varchar(256)",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "lowercase_username": {
-          "name": "lowercase_username",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "created_at": {
-          "name": "created_at",
-          "type": "timestamp with time zone",
-          "primaryKey": false,
           "notNull": true,
-          "default": "now()"
+          "default": "gen_random_uuid()"
         },
-        "updated_at": {
-          "name": "updated_at",
-          "type": "timestamp with time zone",
-          "primaryKey": false,
-          "notNull": true,
-          "default": "now()"
-        },
-        "name": {
-          "name": "name",
-          "type": "varchar(256)",
+        "profiles_id": {
+          "name": "profiles_id",
+          "type": "uuid",
           "primaryKey": false,
           "notNull": false
         },
-        "profile_picture": {
-          "name": "profile_picture",
-          "type": "varchar(256)",
+        "tweet_user": {
+          "name": "tweet_user",
+          "type": "uuid",
           "primaryKey": false,
           "notNull": false
         },
-        "description": {
-          "name": "description",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "location": {
-          "name": "location",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "full_profile": {
-          "name": "full_profile",
-          "type": "jsonb",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "tweets": {
-          "name": "tweets",
-          "type": "jsonb",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "analysis": {
-          "name": "analysis",
-          "type": "jsonb",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "followers": {
-          "name": "followers",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": false,
-          "default": 0
-        },
-        "profile_scraped_at": {
-          "name": "profile_scraped_at",
-          "type": "timestamp with time zone",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "tweet_scrape_started": {
-          "name": "tweet_scrape_started",
+        "notify_on_new_tweet": {
+          "name": "notify_on_new_tweet",
           "type": "boolean",
           "primaryKey": false,
           "notNull": false,
           "default": false
         },
-        "tweet_scrape_completed": {
-          "name": "tweet_scrape_completed",
+        "notify_on_new_following": {
+          "name": "notify_on_new_following",
           "type": "boolean",
           "primaryKey": false,
           "notNull": false,
           "default": false
         },
-        "tweet_scrape_started_at": {
-          "name": "tweet_scrape_started_at",
+        "date_created": {
+          "name": "date_created",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "now()"
+        },
+        "date_updated": {
+          "name": "date_updated",
           "type": "timestamp with time zone",
           "primaryKey": false,
           "notNull": false,
@@ -1401,11 +1790,11 @@
         }
       },
       "indexes": {
-        "username_idx": {
-          "name": "username_idx",
+        "profiles_id_idx": {
+          "name": "profiles_id_idx",
           "columns": [
             {
-              "expression": "username",
+              "expression": "profiles_id",
               "isExpression": false,
               "asc": true,
               "nulls": "last"
@@ -1416,11 +1805,11 @@
           "method": "btree",
           "with": {}
         },
-        "lowercase_username_idx": {
-          "name": "lowercase_username_idx",
+        "tweet_user_idx": {
+          "name": "tweet_user_idx",
           "columns": [
             {
-              "expression": "lowercase_username",
+              "expression": "tweet_user",
               "isExpression": false,
               "asc": true,
               "nulls": "last"
@@ -1432,24 +1821,36 @@
           "with": {}
         }
       },
-      "foreignKeys": {},
+      "foreignKeys": {
+        "site_watchlist_profiles_id_site_profiles_id_fk": {
+          "name": "site_watchlist_profiles_id_site_profiles_id_fk",
+          "tableFrom": "site_watchlist",
+          "tableTo": "site_profiles",
+          "columnsFrom": [
+            "profiles_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "site_watchlist_tweet_user_site_tweet_users_id_fk": {
+          "name": "site_watchlist_tweet_user_site_tweet_users_id_fk",
+          "tableFrom": "site_watchlist",
+          "tableTo": "site_tweet_users",
+          "columnsFrom": [
+            "tweet_user"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
       "compositePrimaryKeys": {},
-      "uniqueConstraints": {
-        "site_x_users_username_unique": {
-          "name": "site_x_users_username_unique",
-          "nullsNotDistinct": false,
-          "columns": [
-            "username"
-          ]
-        },
-        "site_x_users_lowercase_username_unique": {
-          "name": "site_x_users_lowercase_username_unique",
-          "nullsNotDistinct": false,
-          "columns": [
-            "lowercase_username"
-          ]
-        }
-      },
+      "uniqueConstraints": {},
       "policies": {},
       "checkConstraints": {},
       "isRLSEnabled": true

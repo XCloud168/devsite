@@ -1,1 +1,0 @@
-DROP TABLE "site_x_users" CASCADE;

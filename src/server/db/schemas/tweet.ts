@@ -81,6 +81,7 @@ export const tweetInfo = pgTable(
     replies: integer("replies").default(0),
     projectsId: uuid("projects_id").references((): any => projects.id),
     sentiment: varchar("sentiment", { length: 255 }),
+
     signalTime: timestamp("signal_time", { withTimezone: true }),
     signalPrice: numeric("signal_price", { precision: 24, scale: 12 }),
     highRate24H: numeric("high_rate_24h", { precision: 10, scale: 2 }).default(

@@ -1,1 +1,0 @@
-ALTER TABLE "site_tweet_info" ADD COLUMN "tweet_created_at" timestamp with time zone;
