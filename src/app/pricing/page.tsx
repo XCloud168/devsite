@@ -1,7 +1,7 @@
 import { Check } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -15,12 +15,14 @@ import { PLAN_TYPE } from "@/types/constants";
 import { PaymentDialog } from "./_components/payment-dialog";
 
 export default function PricingPage() {
+  const t = useTranslations("pricing");
+
   return (
     <div className="container mx-auto px-4 py-12">
       <div className="mb-12 text-center">
-        <h1 className="text-3xl font-bold tracking-tight">选择您的订阅计划</h1>
+        <h1 className="text-3xl font-bold tracking-tight">{t("title")}</h1>
         <p className="mx-auto mt-4 max-w-2xl text-muted-foreground">
-          选择最适合您需求的计划。所有计划都提供完整功能访问，区别在于订阅时长和优惠力度。
+          {t("description")}
         </p>
       </div>
 
@@ -28,7 +30,9 @@ export default function PricingPage() {
         {Object.entries(PRICING_PLANS).map(([key, plan]) => (
           <Card key={key} className="flex flex-col">
             <CardHeader>
-              <CardTitle className="text-xl">{plan.name}</CardTitle>
+              <CardTitle className="text-xl">
+                {t(`plans.${key}.name`)}
+              </CardTitle>
               <CardDescription>
                 {plan.originalPrice !== plan.price ? (
                   <div className="flex items-baseline gap-2">
@@ -39,7 +43,7 @@ export default function PricingPage() {
                       {plan.originalPrice} USDT
                     </span>
                     <Badge variant="secondary" className="ml-2">
-                      省{" "}
+                      {t("save")}{" "}
                       {Math.round((1 - plan.price / plan.originalPrice) * 100)}%
                     </Badge>
                   </div>
@@ -50,18 +54,24 @@ export default function PricingPage() {
             </CardHeader>
             <CardContent className="flex-grow">
               <ul className="space-y-2">
-                {plan.features.map((feature, i) => (
-                  <li key={i} className="flex items-start">
-                    <Check className="mr-2 h-5 w-5 shrink-0 text-green-500" />
-                    <span>{feature}</span>
-                  </li>
-                ))}
+                {(t.raw(`plans.${key}.features`) as unknown as string[]).map(
+                  (feature, i) => (
+                    <li key={i} className="flex items-start">
+                      <Check className="mr-2 h-5 w-5 shrink-0 text-green-500" />
+                      <span>{feature}</span>
+                    </li>
+                  ),
+                )}
               </ul>
             </CardContent>
             <CardFooter className="flex justify-center">
-              <PaymentDialog planType={plan.id as PLAN_TYPE} plan={plan}>
-                <Button className="w-full">选择{plan.name}</Button>
-              </PaymentDialog>
+              <PaymentDialog
+                planType={plan.id as PLAN_TYPE}
+                plan={{
+                  name: t(`plans.${key}.name`),
+                  price: plan.price,
+                }}
+              />
             </CardFooter>
           </Card>
         ))}

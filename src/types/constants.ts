@@ -1,7 +1,7 @@
 /**
  * 支持的链
  */
-export type SUPPORTED_CHAIN = "BTC" | "ETH" | "TRX" | "SOL";
+export type SUPPORTED_CHAIN = "BSC" | "ETH" | "TRX" | "SOL";
 
 /**
  * 支付状态

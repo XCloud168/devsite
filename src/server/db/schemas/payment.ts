@@ -23,7 +23,7 @@ export const paymentAddresses = pgTable("payment_addresses", {
     .defaultNow()
     .notNull()
     .$onUpdate(() => new Date()),
-});
+}).enableRLS();
 
 export const paymentAddressesRelations = relations(
   paymentAddresses,
@@ -52,7 +52,7 @@ export const payments = pgTable("payments", {
     .defaultNow()
     .notNull()
     .$onUpdate(() => new Date()),
-});
+}).enableRLS();
 
 export const paymentsRelations = relations(payments, ({ one }) => ({
   receiverAddress: one(paymentAddresses, {

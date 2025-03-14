@@ -164,5 +164,79 @@
             "4901": "Chain not configured",
             "default": "Error connecting wallet"
         }
+    },
+    "pricing": {
+        "title": "Choose Your Subscription Plan",
+        "description": "Choose the plan that best fits your needs. All plans provide full feature access, with differences in subscription duration and discount levels.",
+        "save": "Save",
+        "select": "Select",
+        "loading": "Processing...",
+        "plans": {
+            "monthly": {
+                "name": "Monthly Plan",
+                "features": [
+                    "1000 Transactions",
+                    "1000 Transactions",
+                    "1000 Transactions"
+                ]
+            },
+            "quarterly": {
+                "name": "Quarterly Plan",
+                "features": [
+                    "1000 Transactions",
+                    "1000 Transactions",
+                    "1000 Transactions"
+                ]
+            },
+            "yearly": {
+                "name": "Yearly Plan",
+                "features": [
+                    "1000 Transactions",
+                    "1000 Transactions",
+                    "1000 Transactions"
+                ]
+            }
+        }
+    },
+    "payment": {
+        "dialog": {
+            "title": "Payment Order",
+            "description": "Please pay with cryptocurrency and click 'Payment Confirmed' after completion.",
+            "network": {
+                "title": "Network",
+                "switching": "Switching",
+                "unavailable": "Current network is unavailable, please try another network",
+                "switching_message": "Switching network, please wait..."
+            },
+            "countdown": {
+                "title": "Please complete the payment within"
+            },
+            "order": {
+                "id": "Order ID",
+                "address": "Payment Address",
+                "network": "Payment Network"
+            },
+            "button": {
+                "cancel": "Cancel",
+                "confirm": "Payment Confirmed",
+                "confirming": "Confirming..."
+            }
+        },
+        "toast": {
+            "create_order": {
+                "error": "Failed to create order",
+                "retry": "Please try again later"
+            },
+            "update_order": {
+                "error": "Failed to update order",
+                "retry": "Please try again later"
+            },
+            "confirm_payment": {
+                "success": "Order submitted",
+                "success_description": "Service will be activated after payment confirmation",
+                "error": "Failed to confirm payment",
+                "retry": "Please try again later"
+            }
+        }
     }
 }

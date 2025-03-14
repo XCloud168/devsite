@@ -54,23 +54,24 @@ export const FEE_CONFIG: IFeeConfig = {
 export const PRICING_PLANS = {
   monthly: {
     id: "monthly",
-    name: "月度计划",
     price: 10,
     originalPrice: 10,
-    features: ["1000 次交易", "1000 次交易", "1000 次交易"],
   },
   quarterly: {
     id: "quarterly",
-    name: "季度计划",
     price: 20,
     originalPrice: 30,
-    features: ["1000 次交易", "1000 次交易", "1000 次交易"],
   },
   yearly: {
     id: "yearly",
-    name: "年度计划",
     price: 30,
     originalPrice: 90,
-    features: ["1000 次交易", "1000 次交易", "1000 次交易"],
   },
+};
+
+export const SUPPORTED_CHAIN_CURRENCY = {
+  ETH: "USDT",
+  SOL: "USDT",
+  TRX: "USDT",
+  BSC: "USDT",
 };

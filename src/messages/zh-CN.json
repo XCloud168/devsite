@@ -164,5 +164,79 @@
             "4901": "链未配置",
             "default": "连接钱包时发生错误"
         }
+    },
+    "payment": {
+        "dialog": {
+            "title": "支付订单",
+            "description": "请使用加密货币支付以下金额，支付完成后点击\"我已支付\"按钮。",
+            "network": {
+                "title": "网络",
+                "switching": "切换中",
+                "unavailable": "当前网络不可用，请尝试切换其他支付网络",
+                "switching_message": "正在切换网络，请稍候..."
+            },
+            "countdown": {
+                "title": "请在以下时间内完成支付"
+            },
+            "order": {
+                "id": "订单编号",
+                "address": "收款地址",
+                "network": "支付网络"
+            },
+            "button": {
+                "cancel": "取消",
+                "confirm": "我已支付",
+                "confirming": "确认中..."
+            }
+        },
+        "toast": {
+            "create_order": {
+                "error": "创建订单失败",
+                "retry": "请稍后重试"
+            },
+            "update_order": {
+                "error": "更新订单失败",
+                "retry": "请稍后重试"
+            },
+            "confirm_payment": {
+                "success": "订单已提交",
+                "success_description": "我们将在确认付款后为您开通服务",
+                "error": "确认订单失败",
+                "retry": "请稍后重试"
+            }
+        }
+    },
+    "pricing": {
+        "title": "选择您的订阅计划",
+        "description": "选择最适合您需求的计划。所有计划都提供完整功能访问，区别在于订阅时长和优惠力度。",
+        "save": "省",
+        "select": "选择",
+        "loading": "处理中...",
+        "plans": {
+            "monthly": {
+                "name": "月度计划",
+                "features": [
+                    "1000 次交易",
+                    "1000 次交易",
+                    "1000 次交易"
+                ]
+            },
+            "quarterly": {
+                "name": "季度计划",
+                "features": [
+                    "1000 次交易",
+                    "1000 次交易",
+                    "1000 次交易"
+                ]
+            },
+            "yearly": {
+                "name": "年度计划",
+                "features": [
+                    "1000 次交易",
+                    "1000 次交易",
+                    "1000 次交易"
+                ]
+            }
+        }
     }
 }
