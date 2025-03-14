@@ -56,6 +56,10 @@ export default function SwapWidget({
 }: SwapWidgetProps) {
   const widgetRef = useRef<HTMLDivElement>(null);
   const [instance, setInstance] = useState<any>(null);
+  const [providerType, setProviderType] = useState<ProviderType>(
+    ProviderType.EVM,
+  );
+  const [provider, setProvider] = useState<any>(null);
   const t = useTranslations("Swap");
   const { theme } = useTheme();
 
@@ -73,6 +77,15 @@ export default function SwapWidget({
 
     updateWidgetParams();
   }, [instance, theme]);
+
+  useEffect(() => {
+    if (!instance) return;
+
+    const _provider =
+      providerType === ProviderType.SOLANA ? window.solana : window.ethereum;
+    setProvider(_provider);
+    instance.updateProvider(_provider, providerType);
+  }, [providerType, instance]);
 
   const handleWalletError = (error: any) => {
     // Handle EVM wallet errors
@@ -100,20 +113,6 @@ export default function SwapWidget({
       const providerType = fromChain
         ? CHAIN_PROVIDER_MAP[fromChain]
         : ProviderType.EVM;
-
-      // Get appropriate provider based on chain type
-      const provider =
-        providerType === ProviderType.SOLANA ? window.solana : window.ethereum;
-
-      // Check if provider exists
-      if (!provider) {
-        console.warn(
-          t("walletNotInstalled", {
-            type: providerType === ProviderType.SOLANA ? "Solana" : "EVM",
-          }),
-        );
-        return;
-      }
 
       // Configure token pair if parameters exist
       const tokenPair: ITokenPair | undefined = fromChain
@@ -154,6 +153,21 @@ export default function SwapWidget({
                 }
               } catch (error) {
                 handleWalletError(error);
+              }
+            },
+          },
+          {
+            event: OkxEvents.ON_FROM_CHAIN_CHANGE,
+            handler: (payload) => {
+              const params = JSON.parse(payload[0].params[0]);
+              if (
+                params.preToken &&
+                params.token.chainId !== params.preToken.chainId
+              ) {
+                const newProviderType =
+                  CHAIN_PROVIDER_MAP[params.token.chainId];
+                // Update the provider type state
+                setProviderType(newProviderType || ProviderType.EVM);
               }
             },
           },
