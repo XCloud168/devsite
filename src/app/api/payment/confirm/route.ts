@@ -1,31 +1,23 @@
 import { NextRequest, NextResponse } from "next/server";
 
 import { confirmPayment } from "@/server/api/routes/payment";
+import { withServerResult } from "@/lib/server-result";
+import { createError } from "@/lib/errors";
 
 export async function POST(req: NextRequest) {
-  try {
-    const { paymentId } = await req.json();
+  const result = await withServerResult(async () => {
+    const body = await req.json();
+    const { paymentId } = body;
 
-    const result = await confirmPayment(paymentId);
-    if (result.error) {
-      return NextResponse.json(
-        {
-          error:
-            result.error instanceof Error
-              ? result.error.message
-              : String(result.error),
-        },
-        { status: 400 },
-      );
+    // 参数验证
+    if (!paymentId) {
+      throw createError.invalidParams("Missing payment ID");
     }
 
-    return NextResponse.json(result);
-  } catch (error) {
-    return NextResponse.json(
-      {
-        error: error instanceof Error ? error.message : "Internal server error",
-      },
-      { status: 500 },
-    );
-  }
+    // 调用服务端函数
+    const payment = await confirmPayment(paymentId);
+    return payment;
+  });
+
+  return NextResponse.json(result);
 }

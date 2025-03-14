@@ -1,31 +1,27 @@
 import { NextRequest, NextResponse } from "next/server";
 
 import { checkout } from "@/server/api/routes/payment";
+import { createError } from "@/lib/errors";
+import { withServerResult } from "@/lib/server-result";
+import { PLAN_TYPE, SUPPORTED_CHAIN } from "@/types/constants";
 
 export async function POST(req: NextRequest) {
-  try {
-    const { planType, chain } = await req.json();
+  const result = await withServerResult(async () => {
+    const body = await req.json();
+    const { planType, chain } = body;
 
-    const result = await checkout(planType, chain);
-    if (result.error) {
-      return NextResponse.json(
-        {
-          error:
-            result.error instanceof Error
-              ? result.error.message
-              : String(result.error),
-        },
-        { status: 400 },
-      );
+    // 参数验证
+    if (!planType || !chain) {
+      throw createError.invalidParams("Missing required parameters");
     }
 
-    return NextResponse.json(result);
-  } catch (error) {
-    return NextResponse.json(
-      {
-        error: error instanceof Error ? error.message : "Internal server error",
-      },
-      { status: 500 },
+    // 调用服务端函数
+    const payment = await checkout(
+      planType as PLAN_TYPE,
+      chain as SUPPORTED_CHAIN,
     );
-  }
+    return payment;
+  });
+
+  return NextResponse.json(result);
 }

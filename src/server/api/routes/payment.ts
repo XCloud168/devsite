@@ -3,10 +3,12 @@
 import { eq } from "drizzle-orm";
 
 import { PRICING_PLANS } from "@/lib/constants";
+import { createError } from "@/lib/errors";
+import { withServerResult } from "@/lib/server-result";
 import { db } from "@/server/db";
 import { payments } from "@/server/db/schema";
 import { PLAN_TYPE, SUPPORTED_CHAIN } from "@/types/constants";
-import { createClient } from "@/utils/supabase/server";
+import { getUserProfile } from "./auth";
 
 /**
  * Checkout a plan
@@ -15,29 +17,23 @@ import { createClient } from "@/utils/supabase/server";
  * @returns The checkout url
  */
 export async function checkout(planType: PLAN_TYPE, chain: SUPPORTED_CHAIN) {
-  try {
-    const supabase = await createClient();
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
+  return withServerResult(async () => {
+    const user = await getUserProfile();
 
     if (!user) {
-      throw new Error("User not found");
+      throw createError.unauthorized("Please login first");
     }
 
     const plan = PRICING_PLANS[planType as keyof typeof PRICING_PLANS];
 
     if (!plan) {
-      throw new Error("Plan not found");
+      throw createError.invalidParams("Plan not found");
     }
 
     // 创建一个支付订单
     const payment = await _createPayment(user.id, planType, chain, plan.price);
-
-    return { data: payment, error: null };
-  } catch (error) {
-    return { data: null, error: error };
-  }
+    return payment;
+  });
 }
 
 /**
@@ -46,28 +42,33 @@ export async function checkout(planType: PLAN_TYPE, chain: SUPPORTED_CHAIN) {
  * @param paymentId - 订单id
  */
 export async function confirmPayment(paymentId: string) {
-  try {
+  return withServerResult(async () => {
+    const user = await getUserProfile();
+    if (!user) {
+      throw createError.unauthorized("Please login first");
+    }
+
     const payment = await db.query.payments.findFirst({
-      where: (payments, { eq }) => eq(payments.id, paymentId),
+      where: (payments, { eq, and }) =>
+        and(eq(payments.id, paymentId), eq(payments.userId, user.id)),
     });
     if (!payment) {
-      throw new Error("Payment not found");
+      throw createError.notFound("Payment not found");
     }
 
     if (payment.status !== "pending") {
-      throw new Error("Payment is not pending");
+      throw createError.invalidParams("Payment is not pending");
     }
 
     // 更新订单状态为已付款
-    const updatedPayment = await db
+    const [updatedPayment] = await db
       .update(payments)
       .set({ status: "paid" })
-      .where(eq(payments.id, paymentId));
+      .where(eq(payments.id, paymentId))
+      .returning();
 
-    return { data: updatedPayment, error: null };
-  } catch (error) {
-    return { data: null, error: error };
-  }
+    return updatedPayment;
+  });
 }
 
 /**
@@ -130,12 +131,12 @@ async function _createPayment(
   // 从收款地址池中获取一个可用的地址
   const availableAddress = await _getAvailableAddress(chain);
   if (!availableAddress) {
-    throw new Error("No available address found");
+    throw createError.notFound("No available address found");
   }
   const receiverAddress = availableAddress.address;
 
   if (!receiverAddress) {
-    throw new Error("No available address found");
+    throw createError.notFound("No available address found");
   }
 
   type NewPayment = typeof payments.$inferInsert;

@@ -150,7 +150,58 @@
     "my": {
         "title": "个人中心",
         "description": "管理您的账户设置和偏好",
-        "sections": {}
+        "inviteCode": {
+            "title": "我的邀请码",
+            "description": "分享邀请码给好友",
+            "code": {
+                "label": "邀请码",
+                "copy": "复制"
+            },
+            "link": {
+                "label": "邀请链接",
+                "copy": "复制"
+            },
+            "share": {
+                "button": "分享邀请海报",
+                "title": "邀请海报",
+                "description": "分享此海报给你的好友",
+                "poster": {
+                    "title": "加入我们的平台",
+                    "subtitle": "你收到了邀请！",
+                    "codeLabel": "邀请码",
+                    "instructions": "访问 {host} 并输入此邀请码加入"
+                },
+                "download": {
+                    "button": "下载海报",
+                    "generating": "生成中...",
+                    "success": "海报下载成功！",
+                    "error": "生成海报失败，请重试"
+                }
+            }
+        },
+        "inviteStats": {
+            "title": "邀请统计",
+            "description": "查看您的邀请活动概览",
+            "totalInvites": "总邀请数"
+        },
+        "inviteRecords": {
+            "title": "邀请记录",
+            "description": "您邀请的用户列表",
+            "caption": "邀请记录列表",
+            "table": {
+                "username": "用户名",
+                "joinTime": "加入时间",
+                "status": "状态"
+            },
+            "status": {
+                "active": "已激活",
+                "expired": "已过期",
+                "free": "免费版"
+            },
+            "error": {
+                "fetch": "获取记录失败，请重试"
+            }
+        }
     },
     "Swap": {
         "title": "快捷交易",
