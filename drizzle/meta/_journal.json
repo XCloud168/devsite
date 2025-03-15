@@ -43,6 +43,13 @@
       "when": 1741945460215,
       "tag": "0005_add_shilling_for_tweet_info",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1742023169355,
+      "tag": "0006_update_title_to_text",
+      "breakpoints": true
     }
   ]
 }

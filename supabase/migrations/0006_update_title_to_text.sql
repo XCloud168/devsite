@@ -1,0 +1,1 @@
+ALTER TABLE "site_announcement" ALTER COLUMN "title" SET DATA TYPE text;
