@@ -56,7 +56,6 @@ export const signals = pgTable(
     })
       .defaultNow()
       .notNull(),
-    content: text("content"),
     notifyContent: text("notify_content"),
     aiSummary: text("ai_summary"),
     signalTime: timestamp("signal_time", { withTimezone: true }).notNull(),

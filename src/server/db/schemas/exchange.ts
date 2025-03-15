@@ -6,6 +6,7 @@ import {
   numeric,
   index,
   boolean,
+  json,
 } from "drizzle-orm/pg-core";
 import { pgTable } from "./base";
 import { projects } from "./signal";
@@ -32,11 +33,13 @@ export const announcement = pgTable(
     content: text("content"),
     source: text("source"),
     dealStatus: boolean("deal_status").default(false),
-    analysisResult: text("analysis_result"),
+    contentSummary: text("content_summary"),
     dateCreated: timestamp("date_created", { withTimezone: true }).defaultNow(),
     projectsId: uuid("projects_id").references((): any => projects.id),
     status: varchar("status", { length: 255 }).default("draft"),
     sentiment: varchar("sentiment", { length: 255 }),
+    symbols: json("symbols").default([]),
+    contractAddress: json("contract_address").default([]),
     signalTime: timestamp("signal_time", { withTimezone: true }),
     signalPrice: numeric("signal_price", { precision: 24, scale: 12 }),
 
