@@ -65,7 +65,7 @@ export const tweetInfo = pgTable(
     tweetUser: uuid("tweet_user").references((): any => tweetUsers.id),
     content: text("content"),
     dealStatus: boolean("deal_status").default(false),
-    analysisResult: text("analysis_result"),
+    contentSummary: text("content_summary"),
     tweetUrl: varchar("tweet_url", { length: 255 }),
     imagesUrls: json("images_urls").default([]),
     videoUrls: json("video_urls").default([]),
@@ -82,6 +82,8 @@ export const tweetInfo = pgTable(
     projectsId: uuid("projects_id").references((): any => projects.id),
     shilling: boolean("shilling").default(false),
     sentiment: varchar("sentiment", { length: 255 }),
+    symbols: json("symbols").default([]),
+    contractAddress: json("contract_address").default([]),
 
     signalTime: timestamp("signal_time", { withTimezone: true }),
     signalPrice: numeric("signal_price", { precision: 24, scale: 12 }),
