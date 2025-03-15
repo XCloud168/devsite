@@ -28,7 +28,7 @@ export const announcement = pgTable(
   "announcement",
   {
     id: uuid("id").primaryKey().defaultRandom().notNull(),
-    title: varchar("title", { length: 255 }),
+    title: text("title"),
     content: text("content"),
     source: text("source"),
     dealStatus: boolean("deal_status").default(false),
