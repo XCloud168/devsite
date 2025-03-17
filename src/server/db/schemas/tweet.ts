@@ -35,18 +35,19 @@ export const tweetUsers = pgTable(
     restId: varchar("rest_id", { length: 255 }).unique(),
     flag: varchar("flag", { length: 255 }), // twitter用户标签 'default' 默认/'hot'热门/'curated'精选
     subscribeCount: integer("subscribe_count").default(0),
-    highestScore: real("highest_score").default(sql`'0'`),
-    signalCount: integer("signal_count").default(0),
+    banner: text("banner"),
+    description: text("description"),
+    latestFollowing: text("latest_following"),
+    pinnedTweetIdsStr: json("pinned_tweet_ids_str"),
+    // 信号分析相关
     highestBells: uuid("highest_bells").references((): any => tweetInfo.id),
     compositeScore: numeric("composite_score", {
       precision: 10,
       scale: 2,
     }).default(sql`'0'`),
     signalSuccessRate: real("signal_success_rate"),
-    banner: text("banner"),
-    description: text("description"),
-    latestFollowing: text("latest_following"),
-    pinnedTweetIdsStr: json("pinned_tweet_ids_str"),
+    highestScore: real("highest_score").default(sql`'0'`),
+    signalCount: integer("signal_count").default(0),
   },
   (table) => [
     index("screen_name_idx").on(table.screenName),
@@ -79,6 +80,7 @@ export const tweetInfo = pgTable(
     bookmarks: integer("bookmarks").default(0),
     quotes: integer("quotes").default(0),
     replies: integer("replies").default(0),
+    // 信号分析相关
     projectsId: uuid("projects_id").references((): any => projects.id),
     shilling: boolean("shilling").default(false),
     sentiment: varchar("sentiment", { length: 255 }),
@@ -127,8 +129,12 @@ export const watchlist = pgTable(
   "watchlist",
   {
     id: uuid("id").primaryKey().defaultRandom().notNull(),
-    profilesId: uuid("profiles_id").references(() => profiles.id),
-    tweetUser: uuid("tweet_user").references(() => tweetUsers.id),
+    profilesId: uuid("profiles_id")
+      .references(() => profiles.id)
+      .notNull(),
+    tweetUser: uuid("tweet_user")
+      .references(() => tweetUsers.id)
+      .notNull(),
     notifyOnNewTweet: boolean("notify_on_new_tweet").default(false),
     notifyOnNewFollowing: boolean("notify_on_new_following").default(false),
     dateCreated: timestamp("date_created", { withTimezone: true }).defaultNow(),

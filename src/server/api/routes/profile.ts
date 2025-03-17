@@ -38,7 +38,7 @@ export async function getMyInviteRecordsByPaginated(page: number = 1) {
     const totalPages = Math.ceil(totalCount / ITEMS_PER_PAGE);
 
     return {
-      data: items,
+      items: items,
       pagination: {
         currentPage: page,
         totalPages,
