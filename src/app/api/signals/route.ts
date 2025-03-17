@@ -1,9 +1,9 @@
 import { type NextRequest, NextResponse } from "next/server";
 
-import { getSignalsByPaginated } from "@/server/api/routes/signal";
 import { SIGNAL_PROVIDER_TYPE } from "@/lib/constants";
-import { z, ZodError } from "zod";
 import { fromZodError } from "@/lib/errors";
+import { getSignalsByPaginated } from "@/server/api/routes/signal";
+import { z, ZodError } from "zod";
 
 const getSignalsByPaginatedSchema = z.object({
   page: z.number().min(1).optional().describe("页码"),

@@ -8,13 +8,14 @@ import {
   real,
   text,
   timestamp,
+  uniqueIndex,
   uuid,
   varchar,
 } from "drizzle-orm/pg-core";
 
-import { projects } from "./signal";
-import { profiles } from "./profile";
 import { pgTable } from "./base";
+import { profiles } from "./profile";
+import { projects } from "./signal";
 
 export const tweetUsers = pgTable(
   "tweet_users",
@@ -143,8 +144,7 @@ export const watchlist = pgTable(
       .$onUpdate(() => new Date()),
   },
   (table) => [
-    index("profiles_id_idx").on(table.profilesId),
-    index("tweet_user_idx").on(table.tweetUser),
+    uniqueIndex("uniq_profile_tweet").on(table.profilesId, table.tweetUser),
   ],
 ).enableRLS();
 

@@ -62,6 +62,9 @@ export async function getTweetsByPaginated(
       // 获取分页数据
       db.query.tweetInfo.findMany({
         where: whereClause,
+        with: {
+          tweetUser: true,
+        },
         orderBy: (tweetInfo, { desc }) => [desc(tweetInfo.tweetCreatedAt)],
         limit: ITEMS_PER_PAGE,
         offset,
@@ -98,6 +101,7 @@ export async function addTweetFollowed(tweetUid: string) {
     if (!user) {
       throw createError.unauthorized("Please login first");
     }
+    console.log("addTweetFollowed", user.id, tweetUid);
     const [result] = await db
       .insert(watchlist)
       .values({

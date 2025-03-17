@@ -57,6 +57,13 @@
       "when": 1742026672889,
       "tag": "0007_update_analysis_field",
       "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1742202299265,
+      "tag": "0008_rare_gravity",
+      "breakpoints": true
     }
   ]
 }

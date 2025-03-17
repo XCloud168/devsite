@@ -1,3 +1,5 @@
+
+### 获取信号列表
 POST http://localhost:3000/api/signals
 Content-Type: application/json
 
@@ -5,5 +7,18 @@ Content-Type: application/json
   "page": 1,
   "filter": {
     "providerType": "announcement"
+  }
+}
+
+
+
+### 获取推特关注列表
+POST http://localhost:3000/api/tweets
+Content-Type: application/json
+
+{
+  "page": 1,
+  "filter": {
+    "followed": true
   }
 }
