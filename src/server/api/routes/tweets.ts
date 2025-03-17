@@ -3,7 +3,7 @@ import { createError } from "@/lib/errors";
 import { withServerResult } from "@/lib/server-result";
 import { db } from "@/server/db";
 import { tweetInfo, watchlist } from "@/server/db/schema";
-import { and, eq, inArray, isNotNull } from "drizzle-orm";
+import { and, count, eq, inArray, isNotNull } from "drizzle-orm";
 import { getUserProfile } from "./auth";
 
 /**
@@ -17,7 +17,7 @@ import { getUserProfile } from "./auth";
  * @returns 推特信息
  */
 export async function getTweetsByPaginated(
-  page: number = 1,
+  page = 1,
   filter: {
     tweetUid?: string;
     followed?: boolean;
@@ -56,13 +56,33 @@ export async function getTweetsByPaginated(
 
     const whereClause = conditions.length > 0 ? and(...conditions) : undefined;
 
-    const tweets = await db.query.tweetInfo.findMany({
-      where: whereClause,
-      orderBy: (tweetInfo, { desc }) => [desc(tweetInfo.tweetCreatedAt)],
-      limit: ITEMS_PER_PAGE,
-      offset: (page - 1) * ITEMS_PER_PAGE,
-    });
-    return tweets;
+    // 并行执行分页查询和计数查询
+    const offset = (page - 1) * ITEMS_PER_PAGE;
+    const [items, countResult] = await Promise.all([
+      // 获取分页数据
+      db.query.tweetInfo.findMany({
+        where: whereClause,
+        orderBy: (tweetInfo, { desc }) => [desc(tweetInfo.tweetCreatedAt)],
+        limit: ITEMS_PER_PAGE,
+        offset,
+      }),
+      // 使用 count() 直接获取总数
+      db.select({ value: count() }).from(tweetInfo).where(whereClause),
+    ]);
+
+    const totalCount = countResult[0]?.value ?? 0;
+    const totalPages = Math.ceil(totalCount / ITEMS_PER_PAGE);
+
+    return {
+      items: items,
+      pagination: {
+        currentPage: page,
+        totalPages,
+        totalCount,
+        hasNextPage: page < totalPages,
+        hasPrevPage: page > 1,
+      },
+    };
   });
 }
 
