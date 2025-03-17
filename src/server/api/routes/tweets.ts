@@ -104,6 +104,14 @@ export async function addTweetFollowed(tweetUid: string) {
         profilesId: user.id,
         tweetUser: tweetUid,
       })
+      .onConflictDoUpdate({
+        target: [watchlist.profilesId, watchlist.tweetUser],
+        set: {
+          dateUpdated: new Date(),
+          notifyOnNewTweet: true,
+          notifyOnNewFollowing: true,
+        },
+      })
       .returning();
     return result;
   });

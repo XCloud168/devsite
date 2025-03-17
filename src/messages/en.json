@@ -202,6 +202,15 @@
             "error": {
                 "fetch": "Failed to fetch records. Please try again"
             }
+        },
+        "membershipStatus": {
+            "title": "Membership Status",
+            "description": "Your current membership status and details.",
+            "active": "Active",
+            "expiresOn": "Expires on {date}",
+            "inactive": "Inactive",
+            "promptToSubscribe": "Subscribe to become a member.",
+            "subscribeButton": "Subscribe Now"
         }
     },
     "Swap": {
