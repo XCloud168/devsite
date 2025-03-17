@@ -73,8 +73,8 @@ export function ProfileForm() {
           form.reset({
             username: profile.username || "",
             email: profile.email,
-            bio: profile.bio || t("defaultBio"),
-            urls: profile.urls || [{ value: "https://github.com" }],
+            bio: t("defaultBio"),
+            urls: [{ value: "https://github.com" }],
           });
         }
       } catch (error) {
@@ -88,7 +88,7 @@ export function ProfileForm() {
     loadUserProfile();
   }, [form, t]);
 
-  function onSubmit(data: ProfileFormValues) {
+  function onSubmit(_: ProfileFormValues) {
     toast.success(t("updateSuccess"));
   }
 

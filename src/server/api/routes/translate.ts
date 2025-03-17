@@ -8,7 +8,7 @@ import { withServerResult } from "@/lib/server-result";
  */
 export async function translateTweet(content: string, language: string) {
   return withServerResult(async () => {
-    const result = await translate(content, language);
-    return result;
+    // const result = await translate(content, language);
+    // return result;
   });
 }

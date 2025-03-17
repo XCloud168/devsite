@@ -186,7 +186,7 @@ export default function SwapWidget({
     };
 
     initWidget();
-  }, [fromChain, toChain, fromToken, toToken, t, theme]);
+  }, [fromChain, toChain, fromToken, toToken, t, theme, providerType]);
 
   return (
     <div className={className}>

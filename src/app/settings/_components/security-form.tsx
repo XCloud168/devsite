@@ -44,7 +44,7 @@ export function SecurityForm() {
     defaultValues,
   });
 
-  function onSubmit(data: SecurityFormValues) {
+  function onSubmit(_: SecurityFormValues) {
     toast.success(t("updateSuccess"));
   }
 

@@ -146,9 +146,7 @@ export function FeaturedBanner() {
 
       <div className="px-5 pt-5">
         <Tabs
-          defaultValue={
-            selectedMenu.children.filter((item) => item.selected)[0]?.id
-          }
+          defaultValue={selectedMenu.children.find((item) => item.selected)?.id}
           className="w-[400px]"
         >
           <TabsList className="grid w-full grid-cols-4">

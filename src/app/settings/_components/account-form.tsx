@@ -42,7 +42,7 @@ export function AccountForm() {
     defaultValues,
   });
 
-  function onSubmit(data: AccountFormValues) {
+  function onSubmit(_: AccountFormValues) {
     toast.success(t("updateSuccess"));
   }
 

@@ -42,7 +42,7 @@ export function NotificationsForm() {
     defaultValues,
   });
 
-  function onSubmit(data: NotificationsFormValues) {
+  function onSubmit(_: NotificationsFormValues) {
     toast.success(t("updateSuccess"));
   }
 

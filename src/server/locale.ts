@@ -1,6 +1,6 @@
 "use server";
 
-import { Locale, defaultLocale } from "@/i18n/config";
+import { type Locale, defaultLocale } from "@/i18n/config";
 import { cookies } from "next/headers";
 
 // In this example the locale is read from a cookie. You could alternatively
