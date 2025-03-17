@@ -64,6 +64,7 @@ export async function getTweetsByPaginated(
         where: whereClause,
         with: {
           tweetUser: true,
+          project: true,
         },
         orderBy: (tweetInfo, { desc }) => [desc(tweetInfo.tweetCreatedAt)],
         limit: ITEMS_PER_PAGE,

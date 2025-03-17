@@ -28,7 +28,10 @@
         "cancel": "Cancel",
         "edit": "Edit",
         "delete": "Delete",
-        "update": "Update"
+        "update": "Update",
+        "translate": "Translate to {locale}",
+        "expand": "Expand",
+        "collapse": "Collapse"
     },
     "Error": {
         "pageNotFound": "Page Not Found",
