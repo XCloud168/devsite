@@ -1,5 +1,8 @@
-import { type PUBLISH_STATUS, type SIGNAL_PROVIDER_TYPE } from "@/types/constants";
-import { relations } from "drizzle-orm";
+import {
+  type PUBLISH_STATUS,
+  type SIGNAL_PROVIDER_TYPE,
+} from "@/types/constants";
+import { InferSelectModel, relations } from "drizzle-orm";
 import {
   index,
   integer,
@@ -102,3 +105,5 @@ export const signalsRelations = relations(signals, ({ one }) => ({
     references: [signalsTag.id],
   }),
 }));
+
+export type signals = InferSelectModel<typeof signals>;

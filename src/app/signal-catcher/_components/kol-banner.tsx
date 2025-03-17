@@ -3,13 +3,13 @@
 import { useState } from "react";
 export type KolMenu = {
   label: string;
-  value: "1" | "2" | "3";
+  value: "2" | "3";
 };
 export const kolMenu: KolMenu[] = [
-  {
-    label: "CRYPTO速递",
-    value: "1",
-  },
+  // {
+  //   label: "CRYPTO速递",
+  //   value: "1",
+  // },
   {
     label: "KOL观点",
     value: "2",
@@ -24,8 +24,8 @@ interface KolMenuProps {
 }
 export function KolBanner({ onKolMenuChange }: KolMenuProps) {
   const [selectedMenu, setSelectedMenu] = useState<KolMenu>({
-    label: "CRYPTO速递",
-    value: "1",
+    label: "KOL观点",
+    value: "2",
   });
   return (
     <>

@@ -1,4 +1,4 @@
-import { relations, sql } from "drizzle-orm";
+import { InferSelectModel, relations, sql } from "drizzle-orm";
 import {
   boolean,
   index,
@@ -197,3 +197,7 @@ export const tweetInfoRelations = relations(tweetInfo, ({ one, many }) => ({
 export const tweetUsersRelations = relations(tweetUsers, ({ many }) => ({
   tweetInfos: many(tweetInfo),
 }));
+
+export type TweetInfo = InferSelectModel<typeof tweetInfo>;
+export type Watchlist = InferSelectModel<typeof watchlist>;
+export type TweetUsers = InferSelectModel<typeof tweetUsers>;

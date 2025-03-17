@@ -2,9 +2,11 @@
 
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useState } from "react";
+import { SIGNAL_PROVIDER_TYPE } from "@/types/constants";
+import { KolMenu } from "@/app/signal-catcher/_components/kol-banner";
 
-type FeaturedMenu = {
-  label: string;
+export type FeaturedMenu = {
+  label: SIGNAL_PROVIDER_TYPE;
   id: string;
   children: {
     label: string;
@@ -12,9 +14,12 @@ type FeaturedMenu = {
     selected: boolean;
   }[];
 };
-const menu: FeaturedMenu[] = [
+interface Props {
+  onFeaturedMenuChangeAction: (menu: FeaturedMenu) => void;
+}
+export const featuredMenu: FeaturedMenu[] = [
   {
-    label: "交易所",
+    label: "twitter",
     id: "1",
     children: [
       {
@@ -40,65 +45,21 @@ const menu: FeaturedMenu[] = [
     ],
   },
   {
-    label: "KOL观点",
+    label: "announcement",
     id: "2",
     children: [
       {
-        label: "KOL观点",
+        label: "Announcement",
         id: "2-1",
-        selected: false,
-      },
-    ],
-  },
-  {
-    label: "意见领袖",
-    id: "3",
-    children: [
-      {
-        label: "意见领袖",
-        id: "3-1",
-        selected: false,
-      },
-    ],
-  },
-  {
-    label: "项目方",
-    id: "4",
-    children: [
-      {
-        label: "项目方",
-        id: "4-1",
-        selected: false,
-      },
-    ],
-  },
-  {
-    label: "宏观风向",
-    id: "5",
-    children: [
-      {
-        label: "宏观风向",
-        id: "5-1",
-        selected: false,
-      },
-    ],
-  },
-  {
-    label: "链上动向",
-    id: "6",
-    children: [
-      {
-        label: "链上动向",
-        id: "6-1",
         selected: false,
       },
     ],
   },
 ];
 
-export function FeaturedBanner() {
+export function FeaturedBanner({ onFeaturedMenuChangeAction }: Props) {
   const [selectedMenu, setSelectedMenu] = useState<FeaturedMenu>({
-    label: "交易所",
+    label: "twitter",
     id: "1",
     children: [
       {
@@ -132,11 +93,14 @@ export function FeaturedBanner() {
       </div>
       <div className="flex border-b border-[#49494980] px-5">
         <div className="grid grid-cols-6 gap-8">
-          {menu.map((menu) => (
+          {featuredMenu.map((menu) => (
             <div
               key={menu.id}
-              className={`${selectedMenu.id === menu.id ? "border-primary text-primary" : "border-transparent text-white"} cursor-pointer border-b-2 pb-2 pt-5 text-center hover:text-primary`}
-              onClick={() => setSelectedMenu(menu)}
+              className={`${selectedMenu?.id === menu.id ? "border-primary text-primary" : "border-transparent text-white"} cursor-pointer border-b-2 pb-2 pt-5 text-center hover:text-primary`}
+              onClick={() => {
+                onFeaturedMenuChangeAction(menu);
+                setSelectedMenu(menu);
+              }}
             >
               {menu.label}
             </div>
@@ -145,18 +109,22 @@ export function FeaturedBanner() {
       </div>
 
       <div className="px-5 pt-5">
-        <Tabs
-          defaultValue={selectedMenu.children.find((item) => item.selected)?.id}
-          className="w-[400px]"
-        >
-          <TabsList className="grid w-full grid-cols-4">
-            {selectedMenu.children.map((item) => (
-              <TabsTrigger key={item.id} value={item.id}>
-                {item.label}
-              </TabsTrigger>
-            ))}
-          </TabsList>
-        </Tabs>
+        {selectedMenu && (
+          <Tabs
+            defaultValue={
+              selectedMenu.children.find((item) => item.selected)?.id
+            }
+            className="w-[400px]"
+          >
+            <TabsList className="grid w-full grid-cols-4">
+              {selectedMenu.children.map((item) => (
+                <TabsTrigger key={item.id} value={item.id}>
+                  {item.label}
+                </TabsTrigger>
+              ))}
+            </TabsList>
+          </Tabs>
+        )}
       </div>
       <div className="relative mb-5 border-b border-[#49494980] p-3">
         <div

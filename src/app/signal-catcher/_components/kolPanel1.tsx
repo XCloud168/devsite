@@ -1,6 +1,26 @@
 "use client";
+import { ServerResult } from "@/lib/server-result";
+import { useEffect } from "react";
 
-export function KolPanel1() {
+type Props = {
+  getTweetListAction: (
+    page: number,
+    filter: {
+      tweetUid?: string;
+      followed?: boolean;
+      hasContractAddress?: boolean;
+    },
+  ) => Promise<ServerResult>;
+};
+
+export function KolPanel1({ getTweetListAction }: Props) {
+  useEffect(() => {
+    const fetchData = async () => {
+      const response = await getTweetListAction(1, {});
+      console.log(response);
+    };
+    fetchData();
+  }, [getTweetListAction]);
   return (
     <>
       <div className="p-5">

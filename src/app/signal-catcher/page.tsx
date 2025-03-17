@@ -1,26 +1,76 @@
-import { FeaturedBanner } from "./_components/featured-banner";
-import { FeaturedList } from "@/app/signal-catcher/_components/featured-list";
 import {
   ResizableHandle,
   ResizablePanel,
   ResizablePanelGroup,
 } from "@/components/ui/Resizeable";
 import { KolComponent } from "@/app/signal-catcher/_components/kol-component";
+import {
+  addTweetFollowed,
+  deleteTweetFollowed,
+  getTweetFollowedList,
+  getTweetsByPaginated,
+} from "@/server/api/routes/tweets";
+import { getSignalsByPaginated } from "@/server/api/routes/signal";
+import { SIGNAL_PROVIDER_TYPE } from "@/types/constants";
+import { FeaturedComponent } from "@/app/signal-catcher/_components/featured-component";
 
 export default async function SignalPage() {
+  //获取推特列表
+  const getTweetList = async (
+    page: number,
+    filter: {
+      tweetUid?: string;
+      followed?: boolean;
+      hasContractAddress?: boolean;
+    },
+  ) => {
+    "use server";
+    return await getTweetsByPaginated(page, filter);
+  };
+  //获取信号列表
+  const getSignalList = async (
+    page: number,
+    filter: {
+      providerType: SIGNAL_PROVIDER_TYPE;
+      providerId?: string;
+    },
+  ) => {
+    "use server";
+    return await getSignalsByPaginated(page, filter);
+  };
+  //获取关注列表
+  const getFollowedList = async () => {
+    "use server";
+    return await getTweetFollowedList();
+  };
+  //添加监控
+  const addFollow = async (tweetUid: string) => {
+    "use server";
+    return await addTweetFollowed(tweetUid);
+  };
+  //取消监控
+  const removeFollow = async (tweetUid: string) => {
+    "use server";
+    return await deleteTweetFollowed(tweetUid);
+  };
+
   return (
     <div className="w-full">
       <ResizablePanelGroup direction="horizontal" className="h-full w-full">
         <ResizablePanel defaultSize={50}>
           <div className="block h-full items-center justify-center">
-            <KolComponent />
+            <KolComponent
+              getTweetListAction={getTweetList}
+              getFollowedListAction={getFollowedList}
+              addFollowAction={addFollow}
+              removeFollowAction={removeFollow}
+            />
           </div>
         </ResizablePanel>
         <ResizableHandle withHandle />
         <ResizablePanel defaultSize={50} maxSize={50} minSize={30}>
           <div className="block h-full items-center justify-center">
-            <FeaturedBanner />
-            <FeaturedList />
+            <FeaturedComponent getSignalListAction={getSignalList} />
           </div>
         </ResizablePanel>
       </ResizablePanelGroup>

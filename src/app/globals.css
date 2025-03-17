@@ -85,3 +85,20 @@ body {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
 }
+@keyframes dots {
+  0%, 100% { opacity: 1; }
+  33% { opacity: 0; }
+  66% { opacity: 1; }
+}
+
+.animate-dots {
+  animation: dots 1.5s infinite;
+}
+
+.animation-delay-200 {
+  animation-delay: 0.2s;
+}
+
+.animation-delay-400 {
+  animation-delay: 0.4s;
+}
