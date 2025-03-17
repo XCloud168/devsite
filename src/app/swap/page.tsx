@@ -1,5 +1,6 @@
 "use client";
 
+import { DodoSwapWidget } from "@/components/swap/dodo-widget";
 import SwapWidget from "@/components/swap/widget";
 import { useTranslations } from "next-intl";
 import { useSearchParams } from "next/navigation";
@@ -19,13 +20,7 @@ export default function SwapPage() {
         <h1 className="mb-6 text-center text-2xl font-bold dark:text-white">
           {t("title")}
         </h1>
-        <SwapWidget
-          fromChain={fromChain}
-          toChain={toChain}
-          fromToken={fromToken}
-          toToken={toToken}
-          className="w-full"
-        />
+        <DodoSwapWidget />
       </div>
     </div>
   );

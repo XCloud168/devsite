@@ -7,6 +7,7 @@ import {
 import { X } from "lucide-react";
 import { useTranslations } from "next-intl";
 import SwapWidget from "./widget";
+import { DodoSwapWidget } from "./dodo-widget";
 
 interface SwapModalProps {
   isOpen: boolean;
@@ -45,13 +46,7 @@ export default function SwapModal({
             {t("title")}
           </DialogTitle>
         </DialogHeader>
-        <SwapWidget
-          fromChain={fromChain}
-          toChain={toChain}
-          fromToken={fromToken}
-          toToken={toToken}
-          className="w-full"
-        />
+        <DodoSwapWidget />
       </DialogContent>
     </Dialog>
   );
