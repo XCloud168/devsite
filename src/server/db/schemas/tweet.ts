@@ -66,6 +66,7 @@ export const tweetInfo = pgTable(
     tweetCreatedAt: timestamp("tweet_created_at", { withTimezone: true }),
     tweetUser: uuid("tweet_user").references((): any => tweetUsers.id),
     content: text("content"),
+    lang: varchar("lang", { length: 255 }),
     dealStatus: boolean("deal_status").default(false),
     contentSummary: text("content_summary"),
     tweetUrl: varchar("tweet_url", { length: 255 }),
