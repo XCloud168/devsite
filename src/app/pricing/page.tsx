@@ -10,7 +10,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { PRICING_PLANS } from "@/lib/constants";
-import { PLAN_TYPE } from "@/types/constants";
+import { type PLAN_TYPE } from "@/types/constants";
 import { PaymentDialog } from "./_components/payment-dialog";
 import { getTranslations } from "next-intl/server";
 

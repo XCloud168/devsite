@@ -1,4 +1,4 @@
-import { IFeeConfig } from "@okxweb3/dex-widget";
+import { type IFeeConfig } from "@okxweb3/dex-widget";
 
 // Fee configuration for different chains
 export const FEE_CONFIG: IFeeConfig = {

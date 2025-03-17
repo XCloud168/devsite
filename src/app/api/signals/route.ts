@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from "next/server";
+import { type NextRequest, NextResponse } from "next/server";
 
 import { getSignalsByPaginated } from "@/server/api/routes/signal";
 import { SIGNAL_PROVIDER_TYPE } from "@/lib/constants";

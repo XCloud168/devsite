@@ -7,7 +7,7 @@ import { createError } from "@/lib/errors";
 import { withServerResult } from "@/lib/server-result";
 import { db } from "@/server/db";
 import { payments } from "@/server/db/schema";
-import { PLAN_TYPE, SUPPORTED_CHAIN } from "@/types/constants";
+import { type PLAN_TYPE, type SUPPORTED_CHAIN } from "@/types/constants";
 import { getUserProfile } from "./auth";
 
 /**

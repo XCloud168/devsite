@@ -18,7 +18,7 @@ import {
 import { Separator } from "@/components/ui/separator";
 import { SUPPORTED_CHAIN_CURRENCY } from "@/lib/constants";
 import { checkout, confirmPayment } from "@/server/api/routes/payment";
-import { PLAN_TYPE, SUPPORTED_CHAIN } from "@/types/constants";
+import { type PLAN_TYPE, type SUPPORTED_CHAIN } from "@/types/constants";
 
 interface PaymentDialogProps {
   planType: PLAN_TYPE;

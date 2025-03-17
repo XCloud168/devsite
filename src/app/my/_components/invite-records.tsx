@@ -2,7 +2,7 @@
 
 import {
   PaginationButtons,
-  PaginationInfo,
+  type PaginationInfo,
 } from "@/components/pagination-buttons";
 import { Badge } from "@/components/ui/badge";
 import {

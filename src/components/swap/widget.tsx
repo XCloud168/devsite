@@ -2,8 +2,8 @@ import { FEE_CONFIG } from "@/lib/constants";
 import { getUserLocale } from "@/server/locale";
 import {
   createOkxSwapWidget,
-  ITokenPair,
-  IWidgetParams,
+  type ITokenPair,
+  type IWidgetParams,
   OkxEvents,
   ProviderType,
   THEME,
@@ -22,7 +22,7 @@ declare global {
 }
 
 // Language mapping from Next.js locale to OKX Widget lang
-const LOCALE_LANG_MAP: { [key: string]: string } = {
+const LOCALE_LANG_MAP: Record<string, string> = {
   en: "en_us",
   "zh-CN": "zh_cn",
   "zh-TW": "zh_tw",
@@ -30,7 +30,7 @@ const LOCALE_LANG_MAP: { [key: string]: string } = {
 };
 
 // Chain ID to provider type mapping
-const CHAIN_PROVIDER_MAP: { [key: string]: ProviderType } = {
+const CHAIN_PROVIDER_MAP: Record<string, ProviderType> = {
   "1": ProviderType.EVM, // Ethereum
   "56": ProviderType.EVM, // BSC
   "42161": ProviderType.EVM, // Arbitrum
@@ -142,18 +142,20 @@ export default function SwapWidget({
         listeners: [
           {
             event: OkxEvents.ON_CONNECT_WALLET,
-            handler: async () => {
-              try {
-                if (providerType === ProviderType.SOLANA) {
-                  await window.solana?.connect();
-                } else {
-                  await window.ethereum?.request({
-                    method: "eth_requestAccounts",
-                  });
+            handler: () => {
+              (async () => {
+                try {
+                  if (providerType === ProviderType.SOLANA) {
+                    await window.solana?.connect();
+                  } else {
+                    await window.ethereum?.request({
+                      method: "eth_requestAccounts",
+                    });
+                  }
+                } catch (error) {
+                  handleWalletError(error);
                 }
-              } catch (error) {
-                handleWalletError(error);
-              }
+              })();
             },
           },
           {

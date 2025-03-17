@@ -11,7 +11,7 @@ import { getUserProfile } from "./auth";
  * @param page - 页码
  * @returns 邀请记录
  */
-export async function getMyInviteRecordsByPaginated(page: number = 1) {
+export async function getMyInviteRecordsByPaginated(page = 1) {
   return withServerResult(async () => {
     const user = await getUserProfile();
     if (!user) {

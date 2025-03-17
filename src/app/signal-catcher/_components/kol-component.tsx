@@ -1,6 +1,6 @@
 "use client";
 
-import { KolBanner, KolMenu } from "./kol-banner";
+import { KolBanner, type KolMenu } from "./kol-banner";
 import { KolList } from "./kol-list";
 import { useState } from "react";
 

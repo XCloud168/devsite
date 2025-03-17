@@ -1,4 +1,4 @@
-import { ZodError } from "zod";
+import { type ZodError } from "zod";
 import { generateErrorMessage } from "zod-error";
 
 import { ErrorCode } from "./constants";

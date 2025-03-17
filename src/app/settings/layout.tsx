@@ -1,5 +1,5 @@
 import { Separator } from "@/components/ui/separator";
-import { Metadata } from "next";
+import { type Metadata } from "next";
 import { useTranslations } from "next-intl";
 import { SidebarNav } from "./_components/sidebar-nav";
 

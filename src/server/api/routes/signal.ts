@@ -2,7 +2,7 @@ import { ITEMS_PER_PAGE } from "@/lib/constants";
 import { withServerResult } from "@/lib/server-result";
 import { db } from "@/server/db";
 import { announcement, signals, tweetInfo } from "@/server/db/schema";
-import { SIGNAL_PROVIDER_TYPE } from "@/types/constants";
+import { type SIGNAL_PROVIDER_TYPE } from "@/types/constants";
 import { and, count, eq, inArray, lte } from "drizzle-orm";
 import { getUserProfile } from "./auth";
 
@@ -13,7 +13,7 @@ import { getUserProfile } from "./auth";
  * @returns 信号列表
  */
 export async function getSignalsByPaginated(
-  page: number = 1,
+  page = 1,
   filter: {
     providerType: SIGNAL_PROVIDER_TYPE;
     providerId?: string;
@@ -80,9 +80,9 @@ export async function getSignalsByPaginated(
     const itemsWithContent = [];
 
     // 组装信号内容
-    if (groupedByProviderType["twitter"]) {
+    if (groupedByProviderType.twitter) {
       const tweetDetails = await db.query.tweetInfo.findMany({
-        where: inArray(tweetInfo.id, groupedByProviderType["twitter"]),
+        where: inArray(tweetInfo.id, groupedByProviderType.twitter),
       });
       const tweetDetailsMap = tweetDetails.reduce(
         (acc, detail) => {
@@ -104,9 +104,9 @@ export async function getSignalsByPaginated(
     }
 
     // 如果有其他 providerType，比如 announcement
-    if (groupedByProviderType["announcement"]) {
+    if (groupedByProviderType.announcement) {
       const announcementDetails = await db.query.announcement.findMany({
-        where: inArray(announcement.id, groupedByProviderType["announcement"]),
+        where: inArray(announcement.id, groupedByProviderType.announcement),
       });
       const announcementDetailsMap = announcementDetails.reduce(
         (acc, detail) => {

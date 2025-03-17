@@ -1,0 +1,9 @@
+POST http://localhost:3000/api/signals
+Content-Type: application/json
+
+{
+  "page": 1,
+  "filter": {
+    "providerType": "announcement"
+  }
+}

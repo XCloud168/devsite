@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from "next/server";
+import { type NextRequest, NextResponse } from "next/server";
 
 import { confirmPayment } from "@/server/api/routes/payment";
 import { withServerResult } from "@/lib/server-result";

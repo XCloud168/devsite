@@ -1,4 +1,4 @@
-import { PAYMENT_STATUS, PLAN_TYPE, SUPPORTED_CHAIN } from "@/types/constants";
+import { type PAYMENT_STATUS, type PLAN_TYPE, type SUPPORTED_CHAIN } from "@/types/constants";
 import { relations } from "drizzle-orm";
 import {
   boolean,

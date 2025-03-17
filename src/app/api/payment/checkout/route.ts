@@ -1,9 +1,9 @@
-import { NextRequest, NextResponse } from "next/server";
+import { type NextRequest, NextResponse } from "next/server";
 
 import { checkout } from "@/server/api/routes/payment";
 import { createError } from "@/lib/errors";
 import { withServerResult } from "@/lib/server-result";
-import { PLAN_TYPE, SUPPORTED_CHAIN } from "@/types/constants";
+import { type PLAN_TYPE, type SUPPORTED_CHAIN } from "@/types/constants";
 
 export async function POST(req: NextRequest) {
   const result = await withServerResult(async () => {

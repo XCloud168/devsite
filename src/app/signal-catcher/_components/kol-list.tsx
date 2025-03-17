@@ -1,6 +1,6 @@
 "use client";
 
-import { KolMenu } from "@/app/signal-catcher/_components/kol-banner";
+import { type KolMenu } from "@/app/signal-catcher/_components/kol-banner";
 import { KolPanel3 } from "@/app/signal-catcher/_components/kolPanel3";
 import { KolPanel2 } from "@/app/signal-catcher/_components/kolPanel2";
 import { KolPanel1 } from "@/app/signal-catcher/_components/kolPanel1";
