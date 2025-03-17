@@ -1,9 +1,10 @@
+import { ITEMS_PER_PAGE } from "@/lib/constants";
+import { createError } from "@/lib/errors";
 import { withServerResult } from "@/lib/server-result";
 import { db } from "@/server/db";
 import { tweetInfo, watchlist } from "@/server/db/schema";
 import { and, eq, inArray, isNotNull } from "drizzle-orm";
 import { getUserProfile } from "./auth";
-import { ITEMS_PER_PAGE } from "@/lib/constants";
 
 /**
  * 分页获取推特信息
@@ -62,5 +63,74 @@ export async function getTweetsByPaginated(
       offset: (page - 1) * ITEMS_PER_PAGE,
     });
     return tweets;
+  });
+}
+
+/**
+ * 添加推特关注
+ *
+ * @param tweetUid 推特uid
+ * @returns 推特关注
+ */
+export async function addTweetFollowed(tweetUid: string) {
+  return withServerResult(async () => {
+    const user = await getUserProfile();
+    if (!user) {
+      throw createError.unauthorized("Please login first");
+    }
+    const [result] = await db
+      .insert(watchlist)
+      .values({
+        profilesId: user.id,
+        tweetUser: tweetUid,
+      })
+      .returning();
+    return result;
+  });
+}
+
+/**
+ * 删除推特关注
+ *
+ * @param tweetUid 推特uid
+ * @returns 推特关注
+ */
+export async function deleteTweetFollowed(tweetUid: string) {
+  return withServerResult(async () => {
+    const user = await getUserProfile();
+    if (!user) {
+      throw createError.unauthorized("Please login first");
+    }
+    const [result] = await db
+      .delete(watchlist)
+      .where(
+        and(
+          eq(watchlist.profilesId, user.id),
+          eq(watchlist.tweetUser, tweetUid),
+        ),
+      )
+      .returning();
+    return result;
+  });
+}
+
+/**
+ * 获取推特关注列表
+ *
+ * @returns 推特关注列表
+ */
+export async function getTweetFollowedList() {
+  return withServerResult(async () => {
+    const user = await getUserProfile();
+    if (!user) {
+      throw createError.unauthorized("Please login first");
+    }
+    const result = await db.query.watchlist.findMany({
+      where: eq(watchlist.profilesId, user.id),
+      with: {
+        tweetUser: true,
+      },
+    });
+    return result;
   });
 }

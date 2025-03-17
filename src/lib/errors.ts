@@ -1,3 +1,6 @@
+import { ZodError } from "zod";
+import { generateErrorMessage } from "zod-error";
+
 import { ErrorCode } from "./constants";
 
 export class AppError extends Error {
@@ -72,4 +75,38 @@ function getDefaultMessage(code: ErrorCode): string {
     default:
       return "An error occurred";
   }
+}
+
+interface ErrorResponse {
+  error: {
+    code: string;
+    message: string;
+  };
+}
+
+export function fromZodError(error: ZodError): ErrorResponse {
+  return {
+    error: {
+      code: "unprocessable_entity",
+      message: generateErrorMessage(error.issues, {
+        maxErrors: 1,
+        delimiter: {
+          component: ": ",
+        },
+        path: {
+          enabled: true,
+          type: "objectNotation",
+          label: "",
+        },
+        code: {
+          enabled: true,
+          label: "",
+        },
+        message: {
+          enabled: true,
+          label: "",
+        },
+      }),
+    },
+  };
 }

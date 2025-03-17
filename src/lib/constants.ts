@@ -166,3 +166,8 @@ export const ErrorCategory = {
     ErrorCode.SUBSCRIPTION_EXPIRED,
   ],
 } as const;
+
+export const SIGNAL_PROVIDER_TYPE = {
+  ANNOUNCEMENT: "announcement",
+  TWITTER: "twitter",
+} as const;

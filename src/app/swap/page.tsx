@@ -8,10 +8,10 @@ export default function SwapPage() {
   const searchParams = useSearchParams();
   const t = useTranslations("Swap");
 
-  const fromChain = searchParams.get("fromChain") || undefined;
-  const toChain = searchParams.get("toChain") || undefined;
-  const fromToken = searchParams.get("fromToken") || undefined;
-  const toToken = searchParams.get("toToken") || undefined;
+  const fromChain = searchParams.get("fromChain") ?? undefined;
+  const toChain = searchParams.get("toChain") ?? undefined;
+  const fromToken = searchParams.get("fromToken") ?? undefined;
+  const toToken = searchParams.get("toToken") ?? undefined;
 
   return (
     <div className="flex min-h-screen flex-col items-center justify-center p-8">
