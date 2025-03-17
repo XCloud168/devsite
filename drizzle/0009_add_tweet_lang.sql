@@ -1,0 +1,1 @@
+ALTER TABLE "site_tweet_info" ADD COLUMN "lang" varchar(255);
