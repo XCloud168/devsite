@@ -2,7 +2,7 @@
 
 import { KolBanner, type KolMenu } from "./kol-banner";
 import { KolList } from "./kol-list";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { type ServerResult } from "@/lib/server-result";
 type Props = {
   getFollowedListAction: () => Promise<ServerResult>;
@@ -27,9 +27,10 @@ export function KolComponent({
     label: "KOL观点",
     value: "2",
   });
+
   return (
-    <div>
-      <KolBanner onKolMenuChange={(menu: KolMenu) => setKolMenu(menu)} />
+    <div className="scroll-container scrollbar-track-transparent scrollbar-thin scrollbar-thumb-gray-500 h-[calc(100vh-60px)] overflow-y-scroll">
+      <KolBanner onKolMenuChangeAction={(menu: KolMenu) => setKolMenu(menu)} />
       <KolList
         menu={kolMenu}
         getTweetListAction={getTweetListAction}

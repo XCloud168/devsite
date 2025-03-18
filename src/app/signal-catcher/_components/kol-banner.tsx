@@ -20,9 +20,9 @@ export const kolMenu: KolMenu[] = [
   },
 ];
 interface KolMenuProps {
-  onKolMenuChange: (menu: KolMenu) => void;
+  onKolMenuChangeAction: (menu: KolMenu) => void;
 }
-export function KolBanner({ onKolMenuChange }: KolMenuProps) {
+export function KolBanner({ onKolMenuChangeAction }: KolMenuProps) {
   const [selectedMenu, setSelectedMenu] = useState<KolMenu>({
     label: "KOL观点",
     value: "2",
@@ -36,7 +36,7 @@ export function KolBanner({ onKolMenuChange }: KolMenuProps) {
               className={`${menu.value === selectedMenu.value ? "border-primary text-primary" : "border-transparent text-white"} cursor-pointer break-keep border-b-2 pb-[18px] text-center hover:text-primary`}
               key={menu.value}
               onClick={() => {
-                onKolMenuChange(menu);
+                onKolMenuChangeAction(menu);
                 setSelectedMenu(menu);
               }}
             >

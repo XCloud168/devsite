@@ -2,19 +2,18 @@
 
 import {
   FeaturedBanner,
-  FeaturedMenu,
+  type FeaturedMenu,
 } from "@/app/signal-catcher/_components/featured-banner";
 import { FeaturedList } from "@/app/signal-catcher/_components/featured-list";
-
 import { type ServerResult } from "@/lib/server-result";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { SIGNAL_PROVIDER_TYPE } from "@/lib/constants";
 type Props = {
   getSignalListAction: (
     page: number,
     filter: {
       providerType: SIGNAL_PROVIDER_TYPE;
-      providerId?: string;
+      entityId?: string;
     },
   ) => Promise<ServerResult>;
   getTagListAction: (type: SIGNAL_PROVIDER_TYPE) => Promise<ServerResult>;
@@ -29,7 +28,7 @@ export function FeaturedComponent({
   });
   const [selectedTagId, setSelectedTagId] = useState<string>("");
   return (
-    <div>
+    <div className="scroll-container scrollbar-track-transparent scrollbar-thin scrollbar-thumb-gray-500 h-[calc(100vh-60px)] overflow-y-scroll">
       <FeaturedBanner
         onFeaturedMenuChangeAction={(menu: FeaturedMenu) =>
           setFeaturedMenu(menu)

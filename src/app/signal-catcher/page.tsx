@@ -37,7 +37,7 @@ export default async function SignalPage() {
     page: number,
     filter: {
       providerType: SIGNAL_PROVIDER_TYPE;
-      providerId?: string;
+      entityId?: string;
     },
   ) => {
     "use server";
@@ -67,7 +67,7 @@ export default async function SignalPage() {
     <div className="w-full">
       <ResizablePanelGroup direction="horizontal" className="h-full w-full">
         <ResizablePanel defaultSize={50}>
-          <div className="scrollbar-track-transparent scrollbar-thin scrollbar-thumb-gray-500 block h-[calc(100vh-60px)] items-center justify-center overflow-y-scroll">
+          <div className="block items-center justify-center">
             <KolComponent
               getTweetListAction={getTweetList}
               getFollowedListAction={getFollowedList}
@@ -78,7 +78,7 @@ export default async function SignalPage() {
         </ResizablePanel>
         <ResizableHandle withHandle />
         <ResizablePanel defaultSize={50} maxSize={50} minSize={30}>
-          <div className="scrollbar-track-transparent scrollbar-thin scrollbar-thumb-gray-500 block h-[calc(100vh-60px)] items-center justify-center overflow-y-scroll">
+          <div className="block items-center justify-center">
             <FeaturedComponent
               getSignalListAction={getSignalList}
               getTagListAction={getTagList}

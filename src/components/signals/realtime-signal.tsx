@@ -5,7 +5,7 @@ import { Howl } from "howler";
 import { useTranslations } from "next-intl";
 
 import { useLocalStorage } from "@/hooks/use-localstorage";
-import { type Signals } from "@/server/db/schemas/signal";
+import { type Projects, type Signals } from "@/server/db/schemas/signal";
 import { createClient } from "@/utils/supabase/client";
 import { Button } from "@/components/ui/button";
 import {
@@ -16,9 +16,25 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { getSignalsByPaginated } from "@/server/api/routes/signal";
+import { FeaturedCard } from "@/app/signal-catcher/_components/featured-card";
+import type { TweetInfo } from "@/server/db/schemas/tweet";
+
+interface SignalItems extends Signals {
+  source: TweetInfo & {
+    imagesUrls: string[];
+    videoUrls: string[];
+    exchange: {
+      name: string;
+      logo: string;
+    };
+    tweetUser: { name: string; avatar: string };
+  };
+  project: Projects;
+  times: string;
+}
 
 export default function RealtimeSignal() {
-  const [signals, setSignals] = useState<Signals[]>([]);
+  const [signals, setSignals] = useState<SignalItems[]>([]);
   const [showDialog, setShowDialog] = useState(false);
   const [audioEnabled, setAudioEnabled] = useLocalStorage<boolean>(
     "audioNotificationEnabled",
@@ -76,7 +92,8 @@ export default function RealtimeSignal() {
           });
           console.log("newSignal", newSignal);
           setSignals((prev) => [
-            newSignal.data?.items?.[0] as Signals,
+            // @ts-ignore
+            newSignal.data?.items?.[0] as SignalItems,
             ...prev,
           ]);
           setShowDialog(true); // 显示弹窗
@@ -134,8 +151,7 @@ export default function RealtimeSignal() {
           <div className="py-4">
             {currentSignal && (
               <div>
-                <p>信号ID: {currentSignal.id}</p>
-                <p>信号内容: {currentSignal.notifyContent}</p>
+                <FeaturedCard signal={currentSignal} />
               </div>
             )}
           </div>

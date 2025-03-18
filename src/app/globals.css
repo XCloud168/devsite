@@ -102,3 +102,8 @@ body {
 .animation-delay-400 {
   animation-delay: 0.4s;
 }
+
+.scroll-container {
+  overflow-y: auto;
+  scrollbar-gutter: stable; /* ✅ 保留滚动条宽度，防止宽度跳变 */
+}
