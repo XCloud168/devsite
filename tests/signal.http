@@ -6,7 +6,7 @@ Content-Type: application/json
 {
   "page": 1,
   "filter": {
-    "providerType": "announcement"
+    "providerType": "twitter"
   }
 }
 
@@ -28,7 +28,7 @@ POST http://localhost:3000/api/signal-statistics
 Content-Type: application/json
 
 {
-  "type": "twitter",
+  "type": "announcement",
   "filter": {
   }
 }

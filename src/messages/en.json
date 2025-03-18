@@ -302,5 +302,11 @@
                 "retry": "Please try again later"
             }
         }
+    },
+    "signals": {
+        "newSignalNotification": "New Signal Notification",
+        "close": "Close",
+        "previous": "Previous",
+        "viewDetails": "View Details"
     }
 }

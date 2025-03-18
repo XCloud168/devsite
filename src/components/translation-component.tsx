@@ -1,3 +1,5 @@
+"use client";
+
 import { TranslateContent } from "@/server/api/routes/translate";
 import LanguageDetect from "languagedetect";
 import { ChevronDown, ChevronUp, Languages, Loader2 } from "lucide-react";
@@ -41,7 +43,6 @@ const TranslationComponent: React.FC<TranslationComponentProps> = ({
   };
 
   const sourceLanguage = lang ?? detectLanguage(content);
-  console.log(lang, sourceLanguage, currentLocale);
   const handleTranslate = async () => {
     if (translatedContent) {
       setTranslatedContent(null);

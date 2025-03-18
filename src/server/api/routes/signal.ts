@@ -1,3 +1,5 @@
+"use server";
+
 import { ITEMS_PER_PAGE, SIGNAL_PROVIDER_TYPE } from "@/lib/constants";
 import { withServerResult } from "@/lib/server-result";
 import { db } from "@/server/db";
@@ -15,14 +17,18 @@ import { getUserProfile } from "./auth";
  * @param page 页码
  * @param filter 过滤条件
  * @param filter.providerType 提供者类型
+ * @param filter.entityId 实体ID
  * @param filter.providerId 提供者ID
+ * @param filter.signalId 信号ID
  * @returns 信号列表
  */
 export async function getSignalsByPaginated(
   page = 1,
   filter: {
     providerType: SIGNAL_PROVIDER_TYPE;
+    entityId?: string;
     providerId?: string;
+    signalId?: string;
   },
 ) {
   return withServerResult(async () => {
@@ -47,6 +53,16 @@ export async function getSignalsByPaginated(
     // 提供者ID条件
     if (filter.providerId) {
       conditions.push(eq(signals.providerId, filter.providerId));
+    }
+
+    // 信号ID条件
+    if (filter.signalId) {
+      conditions.push(eq(signals.id, filter.signalId));
+    }
+
+    // 实体ID条件
+    if (filter.entityId) {
+      conditions.push(eq(signals.entityId, filter.entityId));
     }
 
     const whereClause = conditions.length > 0 ? and(...conditions) : undefined;

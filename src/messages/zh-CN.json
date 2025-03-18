@@ -301,5 +301,11 @@
                 ]
             }
         }
+    },
+    "signals": {
+        "newSignalNotification": "新信号通知",
+        "close": "关闭",
+        "previous": "上一条",
+        "viewDetails": "查看详情"
     }
 }

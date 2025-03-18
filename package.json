@@ -41,6 +41,7 @@
     "dayjs": "^1.11.13",
     "drizzle-orm": "^0.39.3",
     "googletrans": "^1.0.21",
+    "howler": "^2.2.4",
     "html-to-image": "^1.11.13",
     "html2canvas": "^1.4.1",
     "languagedetect": "^2.0.0",
@@ -63,6 +64,7 @@
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
+    "@types/howler": "^2.2.12",
     "@types/langdetect": "^0.2.2",
     "@types/node": "^20",
     "@types/pg": "^8.11.11",

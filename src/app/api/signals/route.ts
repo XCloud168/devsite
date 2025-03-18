@@ -12,6 +12,8 @@ const getSignalsByPaginatedSchema = z.object({
       .enum([SIGNAL_PROVIDER_TYPE.ANNOUNCEMENT, SIGNAL_PROVIDER_TYPE.TWITTER])
       .describe("信号提供者类型"),
     providerId: z.string().optional().describe("信号提供者ID"),
+    entityId: z.string().optional().describe("实体ID"),
+    signalId: z.string().optional().describe("信号ID"),
   }),
 });
 
@@ -20,13 +22,15 @@ export async function POST(req: NextRequest) {
     const body = await req.json();
     const {
       page,
-      filter: { providerType, providerId },
+      filter: { providerType, providerId, entityId, signalId },
     } = getSignalsByPaginatedSchema.parse(body);
 
     // 调用服务端函数
     const result = await getSignalsByPaginated(page, {
       providerType,
       providerId,
+      entityId,
+      signalId,
     });
 
     return NextResponse.json(result);
