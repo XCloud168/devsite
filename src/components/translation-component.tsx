@@ -61,7 +61,7 @@ const TranslationComponent: React.FC<TranslationComponentProps> = ({
       const contentHeight = contentRef.current.scrollHeight;
       const lines = contentHeight / lineHeight;
 
-      setShouldShowExpand(lines > 3);
+      setShouldShowExpand(lines > 4);
     }
   }, [content]);
 
@@ -74,46 +74,57 @@ const TranslationComponent: React.FC<TranslationComponentProps> = ({
       <div className="relative">
         <p
           ref={contentRef}
-          className={`whitespace-pre-wrap transition-all duration-200 ${
+          className={`my-3 whitespace-pre-wrap px-3 transition-all duration-200 ${
             isExpanded ? "" : "line-clamp-3"
           }`}
         >
           {content}
         </p>
+        <div className="px-3">
+          {shouldShowExpand && (
+            <Button
+              variant="link"
+              onClick={toggleExpand}
+              className="gap-1 pl-0"
+            >
+              {isExpanded ? (
+                <>
+                  <ChevronUp className="h-2 w-2" />
+                  {t("common.collapse")}
+                </>
+              ) : (
+                <>
+                  <ChevronDown className="h-2 w-2" />
+                  {t("common.expand")}
+                </>
+              )}
+            </Button>
+          )}
 
-        {shouldShowExpand && (
-          <Button variant="link" onClick={toggleExpand} className="gap-1 pl-0">
-            {isExpanded ? (
-              <>
-                <ChevronUp className="h-2 w-2" />
-                {t("common.collapse")}
-              </>
-            ) : (
-              <>
-                <ChevronDown className="h-2 w-2" />
-                {t("common.expand")}
-              </>
-            )}
-          </Button>
+          {currentLocale != sourceLanguage && (
+            <Button
+              variant="link"
+              onClick={handleTranslate}
+              className="gap-1 pl-0"
+            >
+              <Languages className="h-2 w-2" />
+              {t.rich("common.translate", {
+                locale:
+                  LOCALE_DISPLAY_NAME[
+                    currentLocale as keyof typeof LOCALE_DISPLAY_NAME
+                  ],
+              })}
+            </Button>
+          )}
+        </div>
+        {isLoading && (
+          <div className="p-3">
+            <Loader2 className="animate-spin" />
+          </div>
         )}
-
-        {currentLocale != sourceLanguage && (
-          <Button
-            variant="link"
-            onClick={handleTranslate}
-            className="gap-1 pl-0"
-          >
-            <Languages className="h-2 w-2" />
-            {t.rich("common.translate", {
-              locale:
-                LOCALE_DISPLAY_NAME[
-                  currentLocale as keyof typeof LOCALE_DISPLAY_NAME
-                ],
-            })}
-          </Button>
+        {translatedContent && (
+          <p className="bg-[#494949] p-3">{translatedContent}</p>
         )}
-        {isLoading && <Loader2 className="animate-spin" />}
-        {translatedContent && <p>{translatedContent}</p>}
       </div>
     </div>
   );

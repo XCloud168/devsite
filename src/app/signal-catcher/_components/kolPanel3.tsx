@@ -18,8 +18,10 @@ import {
 } from "@/server/db/schemas/tweet";
 import { type ServerResult } from "@/lib/server-result";
 import dayjs from "dayjs";
-import Link from "next/link";
 import { toast } from "sonner";
+import { SignalCard } from "@/app/signal-catcher/_components/signal-card";
+import { LoadingMoreBtn } from "@/app/signal-catcher/_components/loading-more-btn";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 type Props = {
   getFollowedListAction: () => Promise<ServerResult>;
@@ -42,23 +44,26 @@ export type SetState<T> = React.Dispatch<React.SetStateAction<T>>;
 interface WatchItem extends Omit<Watchlist, "tweetUser"> {
   tweetUser: TweetUsers;
 }
+interface TweetItem extends Omit<TweetInfo, "tweetUser"> {
+  tweetUser: TweetUsers;
+}
 export function KolPanel3({
   getTweetListAction,
   getFollowedListAction,
   removeFollowAction,
 }: Props) {
   const [showTable, setShowTable] = useState(false);
-  const [tweetList, setTweetList] = useState<TweetInfo[]>([]);
+  const [tweetList, setTweetList] = useState<TweetItem[]>([]);
   const [hasNext, setHasNext] = useState<boolean>(true);
   const [pageLoading, setPageLoading] = useState<boolean>(false);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [hasContractAddress, setHasContractAddress] = useState<boolean>(false);
-  const [followList, setFollowList] = useState<WatchItem[]>([]);
-
+  const [tableData, setTableData] = useState<WatchItem[]>([]);
+  const [tableDataLoading, setTableDataLoading] = useState<boolean>(false);
   const fetchTweetList = async (
     page: number,
     hasContractAddress: boolean,
-    setTweetList: SetState<TweetInfo[]>,
+    setTweetList: SetState<TweetItem[]>,
     setHasNext: SetState<boolean>,
     setCurrentPage: SetState<number>,
     setPageLoading: SetState<boolean>,
@@ -115,8 +120,8 @@ export function KolPanel3({
   useEffect(() => {
     const fetchData = async () => {
       const response = await getFollowedListAction();
-      console.log(response.data);
-      setFollowList(response.data);
+      setTableData(response.data);
+      setTableDataLoading(false);
     };
     if (showTable) {
       fetchData();
@@ -135,14 +140,15 @@ export function KolPanel3({
   const handleRemoveFollow = (id: string) => {
     const getTableData = async () => {
       const response = await getFollowedListAction();
-      setFollowList(response.data);
+      setTableData(response.data);
     };
     const fetchData = async () => {
+      setTableDataLoading(true);
       const response = await removeFollowAction(id);
       if (response.error) {
         toast.error("出错啦");
       } else {
-        toast.success("删除成功");
+        toast.success("取消成功");
         if (showTable) getTableData();
         else {
           fetchTweetList(
@@ -179,93 +185,28 @@ export function KolPanel3({
               <p>监控列表</p>
               <div
                 className="cursor-pointer"
-                onClick={() => setShowTable(true)}
+                onClick={() => {
+                  setTableDataLoading(true);
+                  setShowTable(true);
+                }}
               >
                 <AngleIcon className="h-4 w-2 fill-black stroke-[#494949]" />
               </div>
             </div>
           </div>
-
           {tweetList.map((tweet) => (
-            <div key={tweet.id} className="mt-3">
-              <p className="">
-                {dayjs(tweet.signalTime).format("YYYY/MM/DD HH:mm:ss")}
-              </p>
-              <div className="mt-2">
-                <div className="flex items-center justify-between gap-1.5">
-                  <div className="flex items-center gap-1.5">
-                    <div className="h-8 w-8 rounded-full bg-gray-700"></div>
-                    <div>
-                      <p>Elon Musk</p>
-                      <div className="flex gap-3">
-                        <p className="text-xs">@elonmusk</p>
-                        <p className="text-xs">2.1亿 粉丝</p>
-                      </div>
-                    </div>
-                  </div>
-                  <Button
-                    variant="outline"
-                    onClick={() => handleRemoveFollow(tweet.id)}
-                  >
-                    取消监控
-                  </Button>
-                </div>
-                <div></div>
-              </div>
-              <div className="mt-4 rounded-sm border border-[#494949]">
-                <p className="mb-1.5 px-3 pt-3">
-                  In support of the policies of President @realDonaldTrump and
-                  to demonstrate our confidence in the future of the United
-                  States, @Tesla commits to doubling vehicle production in the
-                  US within 2 years!
-                </p>
-                <p className="text-sx mb-1.5 px-3 text-xs text-[#01A4D9]">
-                  隐藏翻译
-                </p>
-                <div className="bg-[#494949] p-3">
-                  <p>
-                    为了支持唐纳德・特朗普总统（@realDonaldTrump）的政策，并展现我们对美国未来的信心，特斯拉公司（@Tesla）承诺在两年内将其在美国的汽车产量提高一倍！
-                  </p>
-                </div>
-                <div className="flex gap-10 p-4">
-                  <Link
-                    className="flex items-center gap-1 text-xs text-[#617178]"
-                    href="/"
-                  >
-                    <div className="h-3 w-3 bg-[url(/images/signal/link.svg)] bg-contain"></div>
-                    <p className="text-xs text-[#B0DDEF]">View Original Link</p>
-                  </Link>
-                  <Link
-                    className="flex items-center gap-1 text-xs text-[#617178]"
-                    href="/"
-                  >
-                    <div className="h-2.5 w-2.5 bg-[url(/images/signal/share.svg)] bg-contain"></div>
-                    <p className="text-xs text-[#B0DDEF]">Share</p>
-                  </Link>
-                </div>
-              </div>
-            </div>
+            <SignalCard tweet={tweet} key={tweet.id} />
           ))}
-          {hasNext ? (
+          {!pageLoading && tweetList.length === 0 && (
             <div className="mt-4 flex justify-center">
-              {pageLoading ? (
-                <div className="flex items-center justify-center text-primary">
-                  加载中
-                  <span className="animate-dots inline-block w-2 text-center text-primary">
-                    .
-                  </span>
-                  <span className="animate-dots animation-delay-200 inline-block w-2 text-center text-primary">
-                    .
-                  </span>
-                  <span className="animate-dots animation-delay-400 inline-block w-2 text-center text-primary">
-                    .
-                  </span>
-                </div>
-              ) : (
-                <Button onClick={() => handleNextPage()}>加载更多</Button>
-              )}
+              <p>暂无数据</p>
             </div>
-          ) : null}
+          )}
+          <LoadingMoreBtn
+            pageLoading={pageLoading}
+            hasNext={hasNext}
+            onNextAction={handleNextPage}
+          />
         </div>
       ) : (
         <div className="p-5">
@@ -275,47 +216,67 @@ export function KolPanel3({
             </div>
             <p>我的监控</p>
           </div>
-          <Table>
-            {/*<TableCaption>A list of your recent invoices.</TableCaption>*/}
-            <TableHeader>
-              <TableRow>
-                <TableHead>Name</TableHead>
-                <TableHead>Id</TableHead>
-                <TableHead>followers</TableHead>
-                <TableHead>time</TableHead>
-                <TableHead>project</TableHead>
-                <TableHead>action</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {followList.map((data) => (
-                <TableRow key={data.id}>
-                  <TableCell>{data.tweetUser.name}</TableCell>
-                  <TableCell>@{data.tweetUser.screenName}</TableCell>
-                  <TableCell>123</TableCell>
-                  <TableCell>
-                    {dayjs(data.dateUpdated).format("YYYY/MM/DD HH:mm:ss")}
-                  </TableCell>
-                  <TableCell>{data.tweetUser.tweetCount}</TableCell>
-                  <TableCell>
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      onClick={() => handleRemoveFollow(data.tweetUser.id)}
-                    >
-                      取消关注
-                    </Button>
-                  </TableCell>
+          {tableDataLoading ? (
+            <div className="mt-4 flex items-center justify-center text-primary">
+              加载中
+              <span className="animate-dots inline-block w-2 text-center text-primary">
+                .
+              </span>
+              <span className="animate-dots animation-delay-200 inline-block w-2 text-center text-primary">
+                .
+              </span>
+              <span className="animate-dots animation-delay-400 inline-block w-2 text-center text-primary">
+                .
+              </span>
+            </div>
+          ) : (
+            <Table>
+              {/*<TableCaption>A list of your recent invoices.</TableCaption>*/}
+              <TableHeader>
+                <TableRow>
+                  <TableHead>名称</TableHead>
+                  <TableHead>Id</TableHead>
+                  <TableHead>粉丝数</TableHead>
+                  <TableHead>监控时间</TableHead>
+                  <TableHead>操作</TableHead>
                 </TableRow>
-              ))}
-            </TableBody>
-            {/*<TableFooter>*/}
-            {/*  <TableRow>*/}
-            {/*    <TableCell colSpan={3}>Total</TableCell>*/}
-            {/*    <TableCell className="text-right">$2,500.00</TableCell>*/}
-            {/*  </TableRow>*/}
-            {/*</TableFooter>*/}
-          </Table>
+              </TableHeader>
+              <TableBody>
+                {tableData.map((data) => (
+                  <TableRow key={data.id}>
+                    <TableCell className="flex h-full items-center gap-0.5">
+                      <Avatar className="h-8 w-8">
+                        <AvatarImage src={data.tweetUser.avatar ?? ""} />
+                        <AvatarFallback>CN</AvatarFallback>
+                      </Avatar>
+                      {data.tweetUser.name}
+                    </TableCell>
+                    <TableCell>@{data.tweetUser.screenName}</TableCell>
+                    <TableCell>{data.tweetUser.followersCount}</TableCell>
+                    <TableCell>
+                      {dayjs(data.dateUpdated).format("YYYY/MM/DD HH:mm:ss")}
+                    </TableCell>
+                    <TableCell>
+                      <Button
+                        size="sm"
+                        variant="secondary"
+                        onClick={() => handleRemoveFollow(data.tweetUser.id)}
+                        disabled={tableDataLoading}
+                      >
+                        取消关注
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+              {/*<TableFooter>*/}
+              {/*  <TableRow>*/}
+              {/*    <TableCell colSpan={3}>Total</TableCell>*/}
+              {/*    <TableCell className="text-right">$2,500.00</TableCell>*/}
+              {/*  </TableRow>*/}
+              {/*</TableFooter>*/}
+            </Table>
+          )}
         </div>
       )}
     </>

@@ -1,92 +1,97 @@
 "use client";
-
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { useState } from "react";
-import { SIGNAL_PROVIDER_TYPE } from "@/types/constants";
-import { KolMenu } from "@/app/signal-catcher/_components/kol-banner";
-
+import { useEffect, useMemo, useState } from "react";
+import { SIGNAL_PROVIDER_TYPE } from "@/lib/constants";
+import type { ServerResult } from "@/lib/server-result";
+interface Tag {
+  id: string;
+  name: string;
+  logo: string;
+  signalsCount: number;
+  riseCount: number;
+  fallCount: number;
+  avgRiseRate: string;
+  avgFallRate: string;
+  selected?: false;
+}
 export type FeaturedMenu = {
   label: SIGNAL_PROVIDER_TYPE;
   id: string;
-  children: {
-    label: string;
-    id: string;
-    selected: boolean;
-  }[];
+  tags?: Tag[];
 };
 interface Props {
   onFeaturedMenuChangeAction: (menu: FeaturedMenu) => void;
+  getTagListAction: (type: SIGNAL_PROVIDER_TYPE) => Promise<ServerResult>;
+  onTagChangeAction: (id: string) => void;
 }
 export const featuredMenu: FeaturedMenu[] = [
   {
-    label: "twitter",
+    label: SIGNAL_PROVIDER_TYPE.TWITTER,
     id: "1",
-    children: [
-      {
-        label: "Binance",
-        id: "1-1",
-        selected: true,
-      },
-      {
-        label: "OKX",
-        id: "1-2",
-        selected: false,
-      },
-      {
-        label: "Coinbase",
-        id: "1-3",
-        selected: false,
-      },
-      {
-        label: "Upbit",
-        id: "1-4",
-        selected: false,
-      },
-    ],
   },
   {
-    label: "announcement",
+    label: SIGNAL_PROVIDER_TYPE.ANNOUNCEMENT,
     id: "2",
-    children: [
-      {
-        label: "Announcement",
-        id: "2-1",
-        selected: false,
-      },
-    ],
   },
 ];
-
-export function FeaturedBanner({ onFeaturedMenuChangeAction }: Props) {
+export function FeaturedBanner({
+  onFeaturedMenuChangeAction,
+  getTagListAction,
+  onTagChangeAction,
+}: Props) {
   const [selectedMenu, setSelectedMenu] = useState<FeaturedMenu>({
-    label: "twitter",
+    label: SIGNAL_PROVIDER_TYPE.TWITTER,
     id: "1",
-    children: [
-      {
-        label: "Binance",
-        id: "1-1",
-        selected: true,
-      },
-      {
-        label: "OKX",
-        id: "1-2",
-        selected: false,
-      },
-      {
-        label: "Coinbase",
-        id: "1-3",
-        selected: false,
-      },
-      {
-        label: "Upbit",
-        id: "1-4",
-        selected: false,
-      },
-    ],
   });
   const [showDetails, setShowDetails] = useState(false);
+  const [selectedTagId, setSelectedTagId] = useState<string>("");
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const response = await getTagListAction(SIGNAL_PROVIDER_TYPE.TWITTER);
+      setSelectedMenu({
+        ...selectedMenu,
+        tags: response.data.map((item: Tag) => ({
+          ...item,
+          selected: false,
+        })),
+      });
+    };
+    fetchData();
+  }, [getTagListAction]);
+  const handleChangeTag = async (menu: FeaturedMenu) => {
+    const response = await getTagListAction(menu.label);
+    setSelectedMenu({
+      ...menu,
+      tags: response.data.map((item: Tag) => ({
+        ...item,
+        selected: false,
+      })),
+    });
+  };
+  const selectedTag = useMemo(() => {
+    const list: Tag[] | undefined = selectedMenu.tags?.filter(
+      (item: Tag) => item.id === selectedTagId,
+    );
+    if (list && list.length > 0) {
+      return list[0];
+    }
+    return {
+      id: "string",
+      name: "string",
+      logo: "string",
+      signalsCount: 0,
+      riseCount: 0,
+      fallCount: 0,
+      avgRiseRate: 0,
+      avgFallRate: 0,
+      selected: false,
+    };
+  }, [selectedMenu.tags, selectedTagId]);
+
   return (
-    <>
+    <div className="sticky top-0 z-10 bg-background">
       <div className="flex border-b border-[#49494980] p-5">
         <p className="text-white">精选信号</p>
         <p className="text-white/50">（非会员只能查看前一天数据）</p>
@@ -100,9 +105,10 @@ export function FeaturedBanner({ onFeaturedMenuChangeAction }: Props) {
               onClick={() => {
                 onFeaturedMenuChangeAction(menu);
                 setSelectedMenu(menu);
+                handleChangeTag(menu);
               }}
             >
-              {menu.label}
+              {menu.label.replace(/^\w/, (c) => c.toUpperCase())}
             </div>
           ))}
         </div>
@@ -111,15 +117,25 @@ export function FeaturedBanner({ onFeaturedMenuChangeAction }: Props) {
       <div className="px-5 pt-5">
         {selectedMenu && (
           <Tabs
-            defaultValue={
-              selectedMenu.children.find((item) => item.selected)?.id
-            }
-            className="w-[400px]"
+            defaultValue={selectedMenu.tags?.find((item) => item.selected)?.id}
+            className="w-fit"
+            onValueChange={(event) => {
+              setSelectedTagId(event);
+              onTagChangeAction(event);
+            }}
           >
-            <TabsList className="grid w-full grid-cols-4">
-              {selectedMenu.children.map((item) => (
-                <TabsTrigger key={item.id} value={item.id}>
-                  {item.label}
+            <TabsList className="grid w-full grid-cols-5">
+              {selectedMenu.tags?.map((item) => (
+                <TabsTrigger
+                  key={item.id}
+                  value={item.id}
+                  className="flex gap-1"
+                >
+                  <Avatar className="h-4 w-4">
+                    <AvatarImage src={item.logo ?? ""} />
+                    <AvatarFallback>CN</AvatarFallback>
+                  </Avatar>
+                  <p>{item.name}</p>
                 </TabsTrigger>
               ))}
             </TabsList>
@@ -140,22 +156,22 @@ export function FeaturedBanner({ onFeaturedMenuChangeAction }: Props) {
         >
           <div className="relative w-full px-3">
             <p className="text-xs">Total New Token Listings</p>
-            <p className="text-[#FFF28B]">12</p>
+            <p className="text-[#FFF28B]">{selectedTag?.signalsCount}</p>
           </div>
           <div className="relative w-full px-3">
             <p className="text-xs">Total New Token Listings</p>
-            <p className="text-[#FFF28B]">12</p>
+            <p className="text-[#FFF28B]">{selectedTag?.signalsCount}</p>
           </div>
           <div className="relative w-full px-3">
             <p className="text-xs">Total New Token Listings</p>
-            <p className="text-[#FFF28B]">12</p>
+            <p className="text-[#FFF28B]">{selectedTag?.fallCount}</p>
           </div>
           <div className="relative w-full px-3">
             <p className="text-xs">Total New Token Listings</p>
-            <p className="text-[#FFF28B]">12</p>
+            <p className="text-[#FFF28B]">{selectedTag?.avgRiseRate}</p>
           </div>
         </div>
       </div>
-    </>
+    </div>
   );
 }

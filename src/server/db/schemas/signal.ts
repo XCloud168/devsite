@@ -108,4 +108,5 @@ export const signalsRelations = relations(signals, ({ one }) => ({
   }),
 }));
 
-export type Signal = InferSelectModel<typeof signals>;
+export type Signals = InferSelectModel<typeof signals>;
+export type Projects = InferSelectModel<typeof projects>;

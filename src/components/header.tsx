@@ -20,7 +20,7 @@ export function Header() {
   ];
 
   return (
-    <header className="sticky top-0 z-50 w-full backdrop-blur supports-[backdrop-filter]:bg-background/60">
+    <header className="sticky top-0 z-50 w-full border-b backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="flex h-14 items-center px-5">
         <div className="flex flex-1 items-center">
           {/* Logo */}

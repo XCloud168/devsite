@@ -29,7 +29,7 @@ export function KolBanner({ onKolMenuChange }: KolMenuProps) {
   });
   return (
     <>
-      <div className="flex border-b border-[#49494980] px-5 pt-5">
+      <div className="sticky top-0 z-10 flex border-b border-[#49494980] bg-background px-5 pt-5">
         <div className="grid grid-cols-6 gap-10">
           {kolMenu.map((menu) => (
             <div

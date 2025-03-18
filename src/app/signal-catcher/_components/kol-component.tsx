@@ -28,7 +28,7 @@ export function KolComponent({
     value: "2",
   });
   return (
-    <>
+    <div>
       <KolBanner onKolMenuChange={(menu: KolMenu) => setKolMenu(menu)} />
       <KolList
         menu={kolMenu}
@@ -37,6 +37,6 @@ export function KolComponent({
         addFollowAction={addFollowAction}
         removeFollowAction={removeFollowAction}
       />
-    </>
+    </div>
   );
 }

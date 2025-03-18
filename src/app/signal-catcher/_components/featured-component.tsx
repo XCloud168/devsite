@@ -5,9 +5,10 @@ import {
   FeaturedMenu,
 } from "@/app/signal-catcher/_components/featured-banner";
 import { FeaturedList } from "@/app/signal-catcher/_components/featured-list";
-import { SIGNAL_PROVIDER_TYPE } from "@/types/constants";
-import { ServerResult } from "@/lib/server-result";
-import { useState } from "react";
+
+import { type ServerResult } from "@/lib/server-result";
+import { useEffect, useState } from "react";
+import { SIGNAL_PROVIDER_TYPE } from "@/lib/constants";
 type Props = {
   getSignalListAction: (
     page: number,
@@ -16,45 +17,33 @@ type Props = {
       providerId?: string;
     },
   ) => Promise<ServerResult>;
+  getTagListAction: (type: SIGNAL_PROVIDER_TYPE) => Promise<ServerResult>;
 };
-export function FeaturedComponent({ getSignalListAction }: Props) {
+export function FeaturedComponent({
+  getSignalListAction,
+  getTagListAction,
+}: Props) {
   const [featuredMenu, setFeaturedMenu] = useState<FeaturedMenu>({
-    label: "twitter",
+    label: SIGNAL_PROVIDER_TYPE.TWITTER,
     id: "1",
-    children: [
-      {
-        label: "Binance",
-        id: "1-1",
-        selected: true,
-      },
-      {
-        label: "OKX",
-        id: "1-2",
-        selected: false,
-      },
-      {
-        label: "Coinbase",
-        id: "1-3",
-        selected: false,
-      },
-      {
-        label: "Upbit",
-        id: "1-4",
-        selected: false,
-      },
-    ],
   });
+  const [selectedTagId, setSelectedTagId] = useState<string>("");
   return (
-    <>
+    <div>
       <FeaturedBanner
         onFeaturedMenuChangeAction={(menu: FeaturedMenu) =>
           setFeaturedMenu(menu)
         }
+        getTagListAction={getTagListAction}
+        onTagChangeAction={(id: string) => {
+          setSelectedTagId(id);
+        }}
       />
       <FeaturedList
         menu={featuredMenu}
         getSignalListAction={getSignalListAction}
+        tagId={selectedTagId}
       />
-    </>
+    </div>
   );
 }

@@ -92,7 +92,6 @@ const config = {
       };
       addUtilities(newUtilities);
     },
-
     ({ addUtilities }: PluginAPI) => {
       const borderUtilities = {
         ".border-gradient-green-purple": {
@@ -111,6 +110,7 @@ const config = {
       addUtilities(gradientUtilities);
     },
     require("tailwindcss-animate"),
+    require("tailwind-scrollbar"),
   ],
 } satisfies Config;
 

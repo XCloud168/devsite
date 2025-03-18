@@ -47,7 +47,7 @@ export default async function RootLayout({
             disableTransitionOnChange
           >
             <QueryProvider>
-              <div className="relative flex min-h-screen flex-col bg-gradient-to-b from-[#000202] to-[#8FFFDA0a]">
+              <div className="relative flex min-h-screen flex-col">
                 <main className="flex-1">{children}</main>
                 <Toaster richColors position="bottom-right" />
               </div>

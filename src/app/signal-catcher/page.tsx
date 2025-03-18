@@ -10,9 +10,14 @@ import {
   getTweetFollowedList,
   getTweetsByPaginated,
 } from "@/server/api/routes/tweets";
-import { getSignalsByPaginated } from "@/server/api/routes/signal";
-import { SIGNAL_PROVIDER_TYPE } from "@/types/constants";
+import {
+  getSignalsByPaginated,
+  getSignalTagsByType,
+  getTagStatistics,
+} from "@/server/api/routes/signal";
+
 import { FeaturedComponent } from "@/app/signal-catcher/_components/featured-component";
+import { SIGNAL_PROVIDER_TYPE } from "@/lib/constants";
 
 export default async function SignalPage() {
   //获取推特列表
@@ -53,12 +58,16 @@ export default async function SignalPage() {
     "use server";
     return await deleteTweetFollowed(tweetUid);
   };
-
+  //获取标签列表
+  const getTagList = async (type: SIGNAL_PROVIDER_TYPE) => {
+    "use server";
+    return await getTagStatistics(type, {});
+  };
   return (
     <div className="w-full">
       <ResizablePanelGroup direction="horizontal" className="h-full w-full">
         <ResizablePanel defaultSize={50}>
-          <div className="block h-full items-center justify-center">
+          <div className="scrollbar-track-transparent scrollbar-thin scrollbar-thumb-gray-500 block h-[calc(100vh-60px)] items-center justify-center overflow-y-scroll">
             <KolComponent
               getTweetListAction={getTweetList}
               getFollowedListAction={getFollowedList}
@@ -69,8 +78,11 @@ export default async function SignalPage() {
         </ResizablePanel>
         <ResizableHandle withHandle />
         <ResizablePanel defaultSize={50} maxSize={50} minSize={30}>
-          <div className="block h-full items-center justify-center">
-            <FeaturedComponent getSignalListAction={getSignalList} />
+          <div className="scrollbar-track-transparent scrollbar-thin scrollbar-thumb-gray-500 block h-[calc(100vh-60px)] items-center justify-center overflow-y-scroll">
+            <FeaturedComponent
+              getSignalListAction={getSignalList}
+              getTagListAction={getTagList}
+            />
           </div>
         </ResizablePanel>
       </ResizablePanelGroup>
