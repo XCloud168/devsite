@@ -22,7 +22,6 @@ export async function POST(req: NextRequest) {
       page,
       filter: { providerType, providerId },
     } = getSignalsByPaginatedSchema.parse(body);
-    console.log(page, providerType, providerId);
 
     // 调用服务端函数
     const result = await getSignalsByPaginated(page, {

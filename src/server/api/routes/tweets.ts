@@ -102,7 +102,6 @@ export async function addTweetFollowed(tweetUid: string) {
     if (!user) {
       throw createError.unauthorized("Please login first");
     }
-    console.log("addTweetFollowed", user.id, tweetUid);
     const [result] = await db
       .insert(watchlist)
       .values({

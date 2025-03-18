@@ -10,6 +10,8 @@ import { getUserProfile } from "./auth";
  * 分页获取信号列表
  * @param page 页码
  * @param filter 过滤条件
+ * @param filter.providerType 提供者类型
+ * @param filter.providerId 提供者ID
  * @returns 信号列表
  */
 export async function getSignalsByPaginated(
@@ -83,6 +85,10 @@ export async function getSignalsByPaginated(
     if (groupedByProviderType.twitter) {
       const tweetDetails = await db.query.tweetInfo.findMany({
         where: inArray(tweetInfo.id, groupedByProviderType.twitter),
+        with: {
+          project: true,
+          tweetUser: true,
+        },
       });
       const tweetDetailsMap = tweetDetails.reduce(
         (acc, detail) => {
@@ -107,6 +113,10 @@ export async function getSignalsByPaginated(
     if (groupedByProviderType.announcement) {
       const announcementDetails = await db.query.announcement.findMany({
         where: inArray(announcement.id, groupedByProviderType.announcement),
+        with: {
+          project: true,
+          exchange: true,
+        },
       });
       const announcementDetailsMap = announcementDetails.reduce(
         (acc, detail) => {
