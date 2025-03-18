@@ -32,6 +32,7 @@ export const projects = pgTable(
     tronContract: varchar("tron_contract", { length: 255 }),
     baseContract: varchar("base_contract", { length: 255 }),
     blastContract: varchar("blast_contract", { length: 255 }),
+    otherContract: varchar("other_contract", { length: 255 }),
     urls: json("urls"), // website, telegram, twitter, discord, medium, blog, github, youtube, instagram, tiktok, twitch, pinterest, linkedin, reddit, telegram, telegram_channel, telegram_group, telegram_channel_id, telegram_group_id
     priceSource: varchar("price_source", { length: 255 }),
   },
@@ -65,7 +66,8 @@ export const signals = pgTable(
     projectId: uuid("project_id").references((): any => projects.id),
     signalsTagId: uuid("signals_tag_id").references((): any => signalsTag.id),
     mediaUrls: json("media_urls"),
-    providerId: uuid("provider_id"),
+    providerId: uuid("provider_id"), // tweet_info.id announcement.id
+    entityId: uuid("entity_id"), // 实体id 如twitter用户id exchange id
     providerType: varchar("provider_type", { length: 255 })
       .default("twitter")
       .$type<SIGNAL_PROVIDER_TYPE>(),

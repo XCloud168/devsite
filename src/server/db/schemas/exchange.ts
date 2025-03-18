@@ -35,7 +35,7 @@ export const announcement = pgTable(
     dealStatus: boolean("deal_status").default(false),
     contentSummary: text("content_summary"),
     dateCreated: timestamp("date_created", { withTimezone: true }).defaultNow(),
-    projectsId: uuid("projects_id").references((): any => projects.id),
+    projectId: uuid("project_id").references(() => projects.id),
     status: varchar("status", { length: 255 }).default("draft"),
     sentiment: varchar("sentiment", { length: 255 }),
     symbols: json("symbols").default([]),
@@ -102,7 +102,7 @@ export const announcement = pgTable(
 
 export const announcementRelations = relations(announcement, ({ one }) => ({
   project: one(projects, {
-    fields: [announcement.projectsId],
+    fields: [announcement.projectId],
     references: [projects.id],
   }),
   exchange: one(exchange, {
