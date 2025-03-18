@@ -1,12 +1,12 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import React, { useRef, useState } from "react";
 import { type TweetInfo, type TweetUsers } from "@/server/db/schemas/tweet";
 import dayjs from "dayjs";
 import Link from "next/link";
+import { useRef, useState } from "react";
 
-import { toast } from "sonner";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   Dialog,
   DialogContent,
@@ -15,11 +15,11 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { toast } from "sonner";
 
 import TranslationComponent from "@/components/translation-component";
-import html2canvas from "html2canvas";
 import type { ServerResult } from "@/lib/server-result";
+import { toPng } from "html-to-image";
 
 type Props = {
   tweet: TweetItem;
@@ -49,11 +49,14 @@ export function SignalCard({ tweet, addFollowAction }: Props) {
 
   const handleSaveImage = async () => {
     if (!captureRef.current) return;
-    const canvas = await html2canvas(captureRef.current);
-    const imgData = canvas.toDataURL("image/png");
+    const imgData = await toPng(captureRef.current, {
+      quality: 1,
+      pixelRatio: 2,
+      cacheBust: true,
+    });
     const link = document.createElement("a");
     link.href = imgData;
-    link.download = "screenshot.png";
+    link.download = `screenshot-${tweet.id}.png`;
     link.click();
   };
   return (
@@ -110,26 +113,21 @@ export function SignalCard({ tweet, addFollowAction }: Props) {
               <DialogTrigger className="text-xs text-[#B0DDEF]">
                 Share
               </DialogTrigger>
-              <DialogContent ref={captureRef}>
+              <DialogContent>
                 <DialogHeader>
                   <DialogTitle className="border-b pb-3">Big Title</DialogTitle>
-                  <DialogDescription>
-                    <div>
-                      <p className="py-2 text-xs">
-                        {dayjs(tweet.tweetCreatedAt).format(
-                          "YYYY/MM/DD HH:mm:ss",
-                        )}
-                      </p>
-                      <p>{tweet.content}</p>
-                    </div>
-                    <div className="absolute -bottom-12 -left-1 flex w-full justify-center gap-4">
-                      <Button>分享到 X</Button>
-                      <Button onClick={() => handleSaveImage()}>
-                        保存图片
-                      </Button>
-                    </div>
-                  </DialogDescription>
+                  <DialogDescription></DialogDescription>
                 </DialogHeader>
+                <div className="flex flex-col gap-2" ref={captureRef}>
+                  <div className="py-2 text-xs">
+                    {dayjs(tweet.tweetCreatedAt).format("YYYY/MM/DD HH:mm:ss")}
+                  </div>
+                  <p>{tweet.content}</p>
+                </div>
+                <div className="absolute -bottom-12 -left-1 flex w-full justify-center gap-4">
+                  <Button>分享到 X</Button>
+                  <Button onClick={() => handleSaveImage()}>保存图片</Button>
+                </div>
               </DialogContent>
             </Dialog>
           </div>
