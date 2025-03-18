@@ -101,7 +101,6 @@ export function FeaturedList({ getSignalListAction, menu, tagId }: Props) {
     }
   };
   useEffect(() => {
-    console.log(tagId);
     if (tagId !== "") {
       fetchSignalList(
         1,

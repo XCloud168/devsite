@@ -7,6 +7,7 @@ import { type Projects, type Signals } from "@/server/db/schemas/signal";
 import dayjs from "dayjs";
 import { type TweetInfo } from "@/server/db/schemas/tweet";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import TranslationComponent from "@/components/translation-component";
 
 type Props = {
   signal: SignalItems;
@@ -58,7 +59,8 @@ export function FeaturedCard({ signal, showLine }: Props) {
           {dayjs(signal.signalTime).format("YYYY/MM/DD HH:mm:ss")}
         </p>
         <div className="relative h-fit w-full bg-transparent">
-          <p className="py-2 text-white/90">{signal.source.content}</p>
+          {/*<p className="py-2 text-white/90">{signal.source.content}</p>*/}
+          <TranslationComponent content={signal.source.contentSummary ?? ""} />
           <div className="mb-2 flex flex-wrap">
             {signal.source.imagesUrls && signal.source.imagesUrls.length > 0
               ? signal.source.imagesUrls.map(

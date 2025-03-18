@@ -20,6 +20,7 @@ import { toast } from "sonner";
 import TranslationComponent from "@/components/translation-component";
 import type { ServerResult } from "@/lib/server-result";
 import { toPng } from "html-to-image";
+import Image from "next/image";
 
 type Props = {
   tweet: TweetItem;
@@ -98,7 +99,7 @@ export function SignalCard({ tweet, addFollowAction }: Props) {
       </div>
       <div className="mt-4 rounded-sm border border-[#494949]">
         {/*<p className="mb-1.5 px-3 pt-3">{tweet.content}</p>*/}
-        <TranslationComponent content={tweet.content ?? ""} />
+        <TranslationComponent content={tweet.contentSummary ?? ""} />
         <div className="flex gap-10 p-4">
           <Link
             className="flex items-center gap-1 text-xs text-[#617178]"
@@ -113,16 +114,53 @@ export function SignalCard({ tweet, addFollowAction }: Props) {
               <DialogTrigger className="text-xs text-[#B0DDEF]">
                 Share
               </DialogTrigger>
-              <DialogContent>
+              <DialogContent className="border !bg-black p-0">
                 <DialogHeader>
-                  <DialogTitle className="border-b pb-3">Big Title</DialogTitle>
+                  <DialogTitle className="flex items-center gap-3 border-b p-4">
+                    <div>
+                      <Image
+                        src="/images/logo.svg"
+                        alt="Logo"
+                        width={32}
+                        height={32}
+                        className="h-8 w-8"
+                      />
+                    </div>
+                    <p>Dev Site</p>
+                  </DialogTitle>
                   <DialogDescription></DialogDescription>
                 </DialogHeader>
-                <div className="flex flex-col gap-2" ref={captureRef}>
-                  <div className="py-2 text-xs">
+                <div className="flex flex-col gap-2 p-4" ref={captureRef}>
+                  <p className="relative pl-2 before:absolute before:left-0 before:top-1/2 before:h-[4px] before:w-[4px] before:-translate-y-1/2 before:rounded-full before:bg-white before:content-['']">
                     {dayjs(tweet.tweetCreatedAt).format("YYYY/MM/DD HH:mm:ss")}
+                  </p>
+                  <div className="flex items-center gap-1.5">
+                    <div className="h-8 w-8">
+                      <Avatar className="h-8 w-8">
+                        <AvatarImage src={tweet.tweetUser.avatar ?? ""} />
+                        <AvatarFallback>CN</AvatarFallback>
+                      </Avatar>
+                    </div>
+                    <div>
+                      <p>{tweet.tweetUser.name}</p>
+                      <div className="flex gap-3">
+                        <p className="text-xs">@{tweet.tweetUser.screenName}</p>
+                        <p className="text-xs">
+                          {tweet.tweetUser.followersCount} 粉丝
+                        </p>
+                      </div>
+                    </div>
                   </div>
-                  <p>{tweet.content}</p>
+                  <div>{tweet.contentSummary}</div>
+                </div>
+                <div className="flex justify-between p-4">
+                  <p className="text-xs text-white/60">
+                    Web3 Major Investment Signal Catcher!
+                  </p>
+                  <div className="flex gap-2">
+                    <p className="text-xs text-white/60">www.masbate.xyz</p>
+                    <p className="text-xs text-white/60">@masbateofficial</p>
+                  </div>
                 </div>
                 <div className="absolute -bottom-12 -left-1 flex w-full justify-center gap-4">
                   <Button>分享到 X</Button>
