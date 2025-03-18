@@ -29,7 +29,7 @@ export async function getTweetsByPaginated(
     const conditions = [];
 
     if (filter.tweetUid) {
-      conditions.push(eq(tweetInfo.tweetUser, filter.tweetUid));
+      conditions.push(eq(tweetInfo.tweetUserId, filter.tweetUid));
     }
 
     if (filter.followed) {
@@ -43,7 +43,7 @@ export async function getTweetsByPaginated(
         });
         conditions.push(
           inArray(
-            tweetInfo.tweetUser,
+            tweetInfo.tweetUserId,
             myFollowing.map((item) => item.tweetUser),
           ),
         );
