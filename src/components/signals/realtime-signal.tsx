@@ -1,12 +1,10 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import { Howl } from "howler";
 import { useTranslations } from "next-intl";
+import { useEffect, useState } from "react";
 
-import { useLocalStorage } from "@/hooks/use-localstorage";
-import { type Projects, type Signals } from "@/server/db/schemas/signal";
-import { createClient } from "@/utils/supabase/client";
+import { FeaturedCard } from "@/app/signal-catcher/_components/featured-card";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -15,9 +13,11 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { useLocalStorage } from "@/hooks/use-localstorage";
 import { getSignalsByPaginated } from "@/server/api/routes/signal";
-import { FeaturedCard } from "@/app/signal-catcher/_components/featured-card";
+import { type Projects, type Signals } from "@/server/db/schemas/signal";
 import type { TweetInfo } from "@/server/db/schemas/tweet";
+import { createClient } from "@/utils/supabase/client";
 
 interface SignalItems extends Signals {
   source: TweetInfo & {
@@ -73,7 +73,7 @@ export default function RealtimeSignal() {
       });
       setAudio(newAudio);
     }
-  }, [audioEnabled, audio]);
+  }, [audioEnabled, audio, handleEnableAudio]);
 
   useEffect(() => {
     const supabase = createClient();
@@ -82,37 +82,41 @@ export default function RealtimeSignal() {
       .on(
         "postgres_changes",
         { event: "*", schema: "public", table: "site_signals" },
-        async (payload) => {
+        (payload) => {
           console.log("payload", payload);
-          const newSignal = await getSignalsByPaginated(1, {
-            // @ts-ignore
-            providerType: payload.new.provider_type,
-            // @ts-ignore
-            signalId: payload.new.id,
-          });
-          console.log("newSignal", newSignal);
-          setSignals((prev) => [
-            // @ts-ignore
-            newSignal.data?.items?.[0] as SignalItems,
-            ...prev,
-          ]);
-          setShowDialog(true); // 显示弹窗
-
-          if (audioEnabled && audio) {
-            audio.play();
-          }
-
-          if (Notification.permission === "granted") {
-            new Notification("新消息通知", {
-              body: "收到新的信号",
-              icon: "/images/logo.svg",
-              requireInteraction: true,
-              silent: false,
-            });
-          }
+          handleNewSignal(payload);
         },
       )
       .subscribe();
+
+    const handleNewSignal = async (payload: any) => {
+      const newSignal = await getSignalsByPaginated(1, {
+        // @ts-ignore @ts-expect-error
+        providerType: payload.new.provider_type,
+        // @ts-ignore @ts-expect-error
+        signalId: payload.new.id,
+      });
+      console.log("newSignal", newSignal);
+      setSignals((prev) => [
+        // @ts-ignore @ts-expect-error
+        newSignal.data?.items?.[0] as SignalItems,
+        ...prev,
+      ]);
+      setShowDialog(true); // 显示弹窗
+
+      if (audioEnabled && audio) {
+        audio.play();
+      }
+
+      if (Notification.permission === "granted") {
+        new Notification("新消息通知", {
+          body: "收到新的信号",
+          icon: "/images/logo.svg",
+          requireInteraction: true,
+          silent: false,
+        });
+      }
+    };
 
     return () => {
       supabase.removeChannel(channel);

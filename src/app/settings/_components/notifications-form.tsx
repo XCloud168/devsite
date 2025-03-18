@@ -16,25 +16,32 @@ import {
 import { Switch } from "@/components/ui/switch";
 import { useTranslations } from "next-intl";
 import { toast } from "sonner";
+import { Select, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 export function NotificationsForm() {
   const t = useTranslations("profile.sections.notifications");
   const commonT = useTranslations("common");
 
   const notificationsFormSchema = z.object({
-    communication_emails: z.boolean().default(false).optional(),
-    marketing_emails: z.boolean().default(false).optional(),
-    social_emails: z.boolean().default(false).optional(),
-    security_emails: z.boolean(),
+    enable_signal_notifications: z.boolean().default(false).optional(),
+    notify_sounds: z
+      .enum([
+        "coin.wav",
+        "cow.wav",
+        "ding.wav",
+        "frog.wav",
+        "girl.wav",
+        "spring.wav",
+      ])
+      .default("coin.wav")
+      .optional(),
   });
 
   type NotificationsFormValues = z.infer<typeof notificationsFormSchema>;
 
   const defaultValues: Partial<NotificationsFormValues> = {
-    communication_emails: false,
-    marketing_emails: false,
-    social_emails: false,
-    security_emails: true,
+    enable_signal_notifications: false,
+    notify_sounds: "coin.wav",
   };
 
   const form = useForm<NotificationsFormValues>({
@@ -52,15 +59,15 @@ export function NotificationsForm() {
         <div className="space-y-8">
           <FormField
             control={form.control}
-            name="communication_emails"
+            name="enable_signal_notifications"
             render={({ field }) => (
               <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
                 <div className="space-y-0.5">
                   <FormLabel className="text-base">
-                    {t("communicationEmails")}
+                    {t("enableSignalNotifications")}
                   </FormLabel>
                   <FormDescription>
-                    {t("communicationEmailsDescription")}
+                    {t("enableSignalNotificationsDescription")}
                   </FormDescription>
                 </div>
                 <FormControl>
@@ -74,67 +81,23 @@ export function NotificationsForm() {
           />
           <FormField
             control={form.control}
-            name="marketing_emails"
+            name="notify_sounds"
             render={({ field }) => (
               <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
                 <div className="space-y-0.5">
                   <FormLabel className="text-base">
-                    {t("marketingEmails")}
+                    {t("notifySounds")}
                   </FormLabel>
                   <FormDescription>
-                    {t("marketingEmailsDescription")}
+                    {t("notifySoundsDescription")}
                   </FormDescription>
                 </div>
                 <FormControl>
-                  <Switch
-                    checked={field.value}
-                    onCheckedChange={field.onChange}
-                  />
-                </FormControl>
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="social_emails"
-            render={({ field }) => (
-              <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
-                <div className="space-y-0.5">
-                  <FormLabel className="text-base">
-                    {t("socialEmails")}
-                  </FormLabel>
-                  <FormDescription>
-                    {t("socialEmailsDescription")}
-                  </FormDescription>
-                </div>
-                <FormControl>
-                  <Switch
-                    checked={field.value}
-                    onCheckedChange={field.onChange}
-                  />
-                </FormControl>
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="security_emails"
-            render={({ field }) => (
-              <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
-                <div className="space-y-0.5">
-                  <FormLabel className="text-base">
-                    {t("securityEmails")}
-                  </FormLabel>
-                  <FormDescription>
-                    {t("securityEmailsDescription")}
-                  </FormDescription>
-                </div>
-                <FormControl>
-                  <Switch
-                    checked={field.value}
-                    onCheckedChange={field.onChange}
-                    disabled
-                  />
+                  <Select value={field.value} onValueChange={field.onChange}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select a fruit" />
+                    </SelectTrigger>
+                  </Select>
                 </FormControl>
               </FormItem>
             )}
