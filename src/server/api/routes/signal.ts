@@ -61,6 +61,22 @@ export async function getSignalsByPaginated(
           project: true,
           signalsTag: true,
         },
+        extras: {
+          times: sql<number>`(SELECT COUNT(*)
+            FROM ${signals} si
+            WHERE si.project_id = ${signals.projectId}
+            AND si.entity_id = ${signals.entityId}
+            AND si.signal_time >= NOW() - INTERVAL '7 days')`.as("times"),
+          hitKOLs: sql<any[]>`(SELECT jsonb_agg(DISTINCT jsonb_build_object(
+              'id', tu.id,
+              'name', tu.name,
+              'avatar', tu.avatar
+            ))
+            FROM ${tweetInfo} ti
+            JOIN ${tweetUsers} tu ON ti.tweet_user_id = tu.id
+            WHERE ti.project_id = ${signals.projectId}
+            AND ti.signal_time >= NOW() - INTERVAL '7 days')`.as("hitKOLs"),
+        },
         orderBy: (signals, { desc }) => [desc(signals.signalTime)],
         limit: ITEMS_PER_PAGE,
         offset,
@@ -209,7 +225,7 @@ export async function getTagStatistics(
           conditions.push(eq(announcement.exchangeId, filter.entityId));
         }
         conditions.push(isNotNull(announcement.exchangeId));
-        conditions.push(isNotNull(announcement.projectsId));
+        conditions.push(isNotNull(announcement.projectId));
 
         const whereClause =
           conditions.length > 0 ? and(...conditions) : undefined;
@@ -224,7 +240,7 @@ export async function getTagStatistics(
             fallCount: count(sql`${announcement.lowRate24H}::numeric < 0`),
             avgRiseRate: sql`ROUND(AVG(${announcement.highRate24H}), 2)`,
             avgFallRate: sql`ROUND(AVG(${announcement.lowRate24H}), 2)`,
-            projectIds: sql`COALESCE(jsonb_agg(DISTINCT ${announcement.projectsId}) FILTER (WHERE ${announcement.highRate24H}::numeric > 0), jsonb '[]')`,
+            projectIds: sql`COALESCE(jsonb_agg(DISTINCT ${announcement.projectId}) FILTER (WHERE ${announcement.highRate24H}::numeric > 0), jsonb '[]')`,
           })
           .from(announcement)
           .leftJoin(exchange, eq(announcement.exchangeId, exchange.id))
