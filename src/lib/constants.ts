@@ -167,7 +167,7 @@ export const ErrorCategory = {
   ],
 } as const;
 
-export const SIGNAL_PROVIDER_TYPE = {
-  ANNOUNCEMENT: "announcement",
-  TWITTER: "twitter",
-} as const;
+export enum SIGNAL_PROVIDER_TYPE {
+  ANNOUNCEMENT = "announcement",
+  TWITTER = "twitter",
+}

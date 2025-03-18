@@ -22,3 +22,13 @@ Content-Type: application/json
     "followed": true
   }
 }
+
+### 获取信号标签统计
+POST http://localhost:3000/api/signal-statistics
+Content-Type: application/json
+
+{
+  "type": "twitter",
+  "filter": {
+  }
+}

@@ -35,8 +35,7 @@ export const tweetUsers = pgTable(
     avatar: text("avatar"),
     name: varchar("name", { length: 255 }),
     restId: varchar("rest_id", { length: 255 }).unique(),
-    userType: varchar("user_type", { length: 255 })
-      .$type<USER_TYPE>(),
+    userType: varchar("user_type", { length: 255 }).$type<USER_TYPE>(),
     subscribeCount: integer("subscribe_count").default(0),
     banner: text("banner"),
     description: text("description"),
@@ -66,7 +65,7 @@ export const tweetInfo = pgTable(
     tweetId: varchar("tweet_id", { length: 255 }).unique(),
     dateCreated: timestamp("date_created", { withTimezone: true }).defaultNow(),
     tweetCreatedAt: timestamp("tweet_created_at", { withTimezone: true }),
-    tweetUser: uuid("tweet_user").references((): any => tweetUsers.id),
+    tweetUserId: uuid("tweet_user_id").references((): any => tweetUsers.id),
     content: text("content"),
     lang: varchar("lang", { length: 255 }),
     dealStatus: boolean("deal_status").default(false),
@@ -85,7 +84,7 @@ export const tweetInfo = pgTable(
     quotes: integer("quotes").default(0),
     replies: integer("replies").default(0),
     // 信号分析相关
-    projectsId: uuid("projects_id").references((): any => projects.id),
+    projectId: uuid("project_id").references((): any => projects.id),
     shilling: boolean("shilling").default(false),
     sentiment: varchar("sentiment", { length: 255 }),
     symbols: json("symbols").default([]),
@@ -101,9 +100,10 @@ export const tweetInfo = pgTable(
     lowRate24H: numeric("low_rate_24h", { precision: 10, scale: 2 }).default(
       sql`'0'`,
     ),
-    highPrice24H: numeric("high_price_24h", { precision: 24, scale: 12 }).default(
-      sql`'0'`,
-    ),
+    highPrice24H: numeric("high_price_24h", {
+      precision: 24,
+      scale: 12,
+    }).default(sql`'0'`),
     lowPrice24H: numeric("low_price_24h", { precision: 24, scale: 12 }).default(
       sql`'0'`,
     ),
@@ -131,9 +131,10 @@ export const tweetInfo = pgTable(
     lowRate30D: numeric("low_rate_30d", { precision: 10, scale: 2 }).default(
       sql`'0'`,
     ),
-    highPrice30D: numeric("high_price_30d", { precision: 24, scale: 12 }).default(
-      sql`'0'`,
-    ),
+    highPrice30D: numeric("high_price_30d", {
+      precision: 24,
+      scale: 12,
+    }).default(sql`'0'`),
     lowPrice30D: numeric("low_price_30d", { precision: 24, scale: 12 }).default(
       sql`'0'`,
     ),
@@ -178,7 +179,7 @@ export const watchlistRelations = relations(watchlist, ({ one }) => ({
 
 export const tweetInfoRelations = relations(tweetInfo, ({ one, many }) => ({
   project: one(projects, {
-    fields: [tweetInfo.projectsId],
+    fields: [tweetInfo.projectId],
     references: [projects.id],
   }),
   tweetInfo_quotedTweet: one(tweetInfo, {
@@ -206,7 +207,7 @@ export const tweetInfoRelations = relations(tweetInfo, ({ one, many }) => ({
     relationName: "tweetInfo_retweetTweetId_tweetInfo_id",
   }),
   tweetUser: one(tweetUsers, {
-    fields: [tweetInfo.tweetUser],
+    fields: [tweetInfo.tweetUserId],
     references: [tweetUsers.id],
   }),
 }));

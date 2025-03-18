@@ -1,11 +1,15 @@
-import { ITEMS_PER_PAGE } from "@/lib/constants";
+import { ITEMS_PER_PAGE, SIGNAL_PROVIDER_TYPE } from "@/lib/constants";
 import { withServerResult } from "@/lib/server-result";
 import { db } from "@/server/db";
-import { announcement, signals, tweetInfo } from "@/server/db/schema";
-import { type SIGNAL_PROVIDER_TYPE } from "@/types/constants";
-import { and, count, eq, inArray, lte } from "drizzle-orm";
+import {
+  announcement,
+  exchange,
+  signals,
+  tweetInfo,
+  tweetUsers,
+} from "@/server/db/schema";
+import { and, count, eq, inArray, isNotNull, lte, sql } from "drizzle-orm";
 import { getUserProfile } from "./auth";
-
 /**
  * 分页获取信号列表
  * @param page 页码
@@ -102,7 +106,8 @@ export async function getSignalsByPaginated(
         ...items.map((item) => ({
           ...item,
           source:
-            item.providerType === "twitter" && item.providerId
+            item.providerType === SIGNAL_PROVIDER_TYPE.TWITTER &&
+            item.providerId
               ? tweetDetailsMap[item.providerId]
               : null,
         })),
@@ -130,7 +135,8 @@ export async function getSignalsByPaginated(
         ...items.map((item) => ({
           ...item,
           source:
-            item.providerType === "announcement" && item.providerId
+            item.providerType === SIGNAL_PROVIDER_TYPE.ANNOUNCEMENT &&
+            item.providerId
               ? announcementDetailsMap[item.providerId]
               : null,
         })),
@@ -150,5 +156,109 @@ export async function getSignalsByPaginated(
         hasPrevPage: page > 1,
       },
     };
+  });
+}
+
+/**
+ * 根据信号类别获取信号标签
+ * @param type 信号类型
+ * @returns 信号标签
+ */
+export async function getSignalTagsByType(type: SIGNAL_PROVIDER_TYPE) {
+  return withServerResult(async () => {
+    if (type === SIGNAL_PROVIDER_TYPE.ANNOUNCEMENT) {
+      const tags = await db.query.exchange.findMany({});
+      return tags;
+    }
+  });
+}
+
+/**
+ * 获取信号标签统计
+ *
+ * 返回示例：
+ * [{
+      id: '820ba08c-351f-43b3-b7e2-a75acd4666bc',
+      name: 'Okx',
+      logo: 'https://www.okx.com/static/images/logo/logo_okx.png',
+      signalsCount: 6,
+      riseCount: 6,
+      fallCount: 6,
+      avgRiseRate: '0.00',
+      avgFallRate: '0.00'
+    }]
+ *
+ * @param type 信号类型
+ * @param filter 过滤条件
+ * @param filter.entityId 实体ID
+ * @returns 信号标签统计
+ */
+export async function getTagStatistics(
+  type: SIGNAL_PROVIDER_TYPE,
+  filter: {
+    entityId?: string;
+  },
+) {
+  return withServerResult(async () => {
+    const conditions = [];
+    let tags = [];
+
+    switch (type) {
+      case SIGNAL_PROVIDER_TYPE.ANNOUNCEMENT:
+        if (filter.entityId) {
+          conditions.push(eq(announcement.exchangeId, filter.entityId));
+        }
+        conditions.push(isNotNull(announcement.exchangeId));
+        conditions.push(isNotNull(announcement.projectsId));
+
+        const whereClause =
+          conditions.length > 0 ? and(...conditions) : undefined;
+
+        tags = await db
+          .select({
+            id: announcement.exchangeId,
+            name: exchange.name,
+            logo: exchange.logo,
+            signalsCount: count(),
+            riseCount: count(sql`${announcement.highRate24H}::numeric > 0`),
+            fallCount: count(sql`${announcement.lowRate24H}::numeric < 0`),
+            avgRiseRate: sql`ROUND(AVG(${announcement.highRate24H}), 2)`,
+            avgFallRate: sql`ROUND(AVG(${announcement.lowRate24H}), 2)`,
+            projectIds: sql`COALESCE(jsonb_agg(DISTINCT ${announcement.projectsId}) FILTER (WHERE ${announcement.highRate24H}::numeric > 0), jsonb '[]')`,
+          })
+          .from(announcement)
+          .leftJoin(exchange, eq(announcement.exchangeId, exchange.id))
+          .where(whereClause)
+          .groupBy(announcement.exchangeId, exchange.name, exchange.logo);
+        break;
+      case SIGNAL_PROVIDER_TYPE.TWITTER:
+      default:
+        if (filter.entityId) {
+          conditions.push(eq(tweetInfo.projectId, filter.entityId));
+        }
+        conditions.push(isNotNull(tweetInfo.projectId));
+
+        const tweetWhereClause =
+          conditions.length > 0 ? and(...conditions) : undefined;
+
+        tags = await db
+          .select({
+            id: tweetUsers.id,
+            name: tweetUsers.name,
+            logo: tweetUsers.avatar,
+            signalsCount: count(),
+            riseCount: count(sql`${tweetInfo.highRate24H}::numeric > 0`),
+            fallCount: count(sql`${tweetInfo.lowRate24H}::numeric < 0`),
+            avgRiseRate: sql`ROUND(AVG(${tweetInfo.highRate24H}), 2)`,
+            avgFallRate: sql`ROUND(AVG(${tweetInfo.lowRate24H}), 2)`,
+          })
+          .from(tweetInfo)
+          .leftJoin(tweetUsers, eq(tweetInfo.tweetUserId, tweetUsers.id))
+          .where(tweetWhereClause)
+          .groupBy(tweetUsers.id, tweetUsers.name, tweetUsers.avatar);
+        break;
+    }
+
+    return tags;
   });
 }
