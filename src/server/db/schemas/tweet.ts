@@ -90,15 +90,21 @@ export const tweetInfo = pgTable(
     contractAddress: json("contract_address").default([]),
 
     signalTime: timestamp("signal_time", { withTimezone: true }),
-    signalPrice: numeric("signal_price", { precision: 24, scale: 12 }),
+    signalPrice: numeric("signal_price", { precision: 24, scale: 12 }).default(
+      sql`'0'`,
+    ),
     highRate24H: numeric("high_rate_24h", { precision: 10, scale: 2 }).default(
       sql`'0'`,
     ),
     lowRate24H: numeric("low_rate_24h", { precision: 10, scale: 2 }).default(
       sql`'0'`,
     ),
-    highPrice24H: numeric("high_price_24h", { precision: 24, scale: 12 }),
-    lowPrice24H: numeric("low_price_24h", { precision: 24, scale: 12 }),
+    highPrice24H: numeric("high_price_24h", { precision: 24, scale: 12 }).default(
+      sql`'0'`,
+    ),
+    lowPrice24H: numeric("low_price_24h", { precision: 24, scale: 12 }).default(
+      sql`'0'`,
+    ),
     lowPriceTime24H: timestamp("low_price_time_24h", { withTimezone: true }),
     highPriceTime24H: timestamp("high_price_time_24h", { withTimezone: true }),
     // 添加7天数据
@@ -108,8 +114,12 @@ export const tweetInfo = pgTable(
     lowRate7D: numeric("low_rate_7d", { precision: 10, scale: 2 }).default(
       sql`'0'`,
     ),
-    highPrice7D: numeric("high_price_7d", { precision: 24, scale: 12 }),
-    lowPrice7D: numeric("low_price_7d", { precision: 24, scale: 12 }),
+    highPrice7D: numeric("high_price_7d", { precision: 24, scale: 12 }).default(
+      sql`'0'`,
+    ),
+    lowPrice7D: numeric("low_price_7d", { precision: 24, scale: 12 }).default(
+      sql`'0'`,
+    ),
     lowPriceTime7D: timestamp("low_price_time_7d", { withTimezone: true }),
     highPriceTime7D: timestamp("high_price_time_7d", { withTimezone: true }),
     // 添加30天数据
@@ -119,8 +129,12 @@ export const tweetInfo = pgTable(
     lowRate30D: numeric("low_rate_30d", { precision: 10, scale: 2 }).default(
       sql`'0'`,
     ),
-    highPrice30D: numeric("high_price_30d", { precision: 24, scale: 12 }),
-    lowPrice30D: numeric("low_price_30d", { precision: 24, scale: 12 }),
+    highPrice30D: numeric("high_price_30d", { precision: 24, scale: 12 }).default(
+      sql`'0'`,
+    ),
+    lowPrice30D: numeric("low_price_30d", { precision: 24, scale: 12 }).default(
+      sql`'0'`,
+    ),
     lowPriceTime30D: timestamp("low_price_time_30d", { withTimezone: true }),
     highPriceTime30D: timestamp("high_price_time_30d", { withTimezone: true }),
   },
