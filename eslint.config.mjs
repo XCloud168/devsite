@@ -28,6 +28,7 @@ const eslintConfig = [
       "@typescript-eslint/no-explicit-any": "off",
       "@typescript-eslint/no-empty-object-type": "off",
       "@typescript-eslint/prefer-nullish-coalescing": "off",
+      "@typescript-eslint/ban-ts-comment": "off",
       "@typescript-eslint/consistent-type-imports": [
         "warn",
         {
