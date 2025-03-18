@@ -1,3 +1,4 @@
+import { type USER_TYPE } from "@/types/constants";
 import { InferSelectModel, relations, sql } from "drizzle-orm";
 import {
   boolean,
@@ -34,7 +35,8 @@ export const tweetUsers = pgTable(
     avatar: text("avatar"),
     name: varchar("name", { length: 255 }),
     restId: varchar("rest_id", { length: 255 }).unique(),
-    flag: varchar("flag", { length: 255 }), // twitter用户标签 'default' 默认/'hot'热门/'curated'精选
+    userType: varchar("user_type", { length: 255 })
+      .$type<USER_TYPE>(),
     subscribeCount: integer("subscribe_count").default(0),
     banner: text("banner"),
     description: text("description"),
@@ -52,7 +54,7 @@ export const tweetUsers = pgTable(
   },
   (table) => [
     index("screen_name_idx").on(table.screenName),
-    index("flag_idx").on(table.flag),
+    index("user_type_idx").on(table.userType),
     index("rest_id_idx").on(table.restId),
   ],
 ).enableRLS();

@@ -22,3 +22,8 @@ export type PUBLISH_STATUS = "draft" | "published" | "rejected";
  * 信号提供者类型
  */
 export type SIGNAL_PROVIDER_TYPE = "twitter" | "announcement";
+
+/**
+ * 用户类型
+ */
+export type USER_TYPE = "super_influencer" | "institution_projects" | "kol_opinions";
