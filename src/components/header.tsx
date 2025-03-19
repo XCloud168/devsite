@@ -48,6 +48,20 @@ export function Header() {
           </nav>
 
           <div className="ml-auto flex items-center gap-2">
+            <Link
+              className="ml-auto flex gap-1.5 hover:scale-105"
+              href={"/pricing"}
+            >
+              <Image
+                src="/images/diamond.svg"
+                alt="Logo"
+                width={22}
+                height={22}
+              />
+              <p className="bg-gradient-to-r from-[#05A2BB] to-[#05A2BB] bg-clip-text text-transparent dark:from-[#F2DA18] dark:to-[#4DFFC4]">
+                {t("buySlogan")}
+              </p>
+            </Link>
             <AuthButton />
             <LanguageSwitcher />
             <ThemeToggle />

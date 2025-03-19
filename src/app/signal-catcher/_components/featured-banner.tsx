@@ -151,7 +151,9 @@ export function FeaturedBanner({
           </Tabs>
         )}
       </div>
-      <div className="relative mb-5 border-b p-3">
+      <div
+        className={`relative mb-5 border-b ${showDetails ? "p-3" : "p-1.5"}`}
+      >
         <div
           className={`absolute left-1/2 h-2 w-10 -translate-x-1/2 cursor-pointer bg-[url('/images/signal/triangle.svg')] bg-contain bg-center bg-no-repeat ${
             showDetails ? "bottom-0 rotate-180" : "bottom-[-8px]"

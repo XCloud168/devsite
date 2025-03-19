@@ -1,6 +1,6 @@
 {
     "home": {
-        "title": "My Blog"
+
     },
     "metadata": {
         "siteName": "DevSite",
@@ -13,7 +13,8 @@
         "blog": "Blog",
         "pricing": "Pricing",
         "swap": "Swap",
-        "about": "About"
+        "about": "About",
+        "buySlogan": "Subscribe to VIP for exclusive signals"
     },
     "theme": {
         "toggle": "Toggle theme",

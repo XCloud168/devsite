@@ -1,6 +1,6 @@
 {
     "home": {
-        "title": "我的博客"
+
     },
     "metadata": {
         "siteName": "DevSite",
@@ -13,7 +13,8 @@
         "blog": "博客",
         "pricing": "订阅",
         "swap": "快捷交易",
-        "about": "关于"
+        "about": "关于",
+        "buySlogan": "订阅 VIP 解锁精选信号"
     },
     "theme": {
         "toggle": "切换主题",
