@@ -21,7 +21,7 @@
         "dark": "深色"
     },
     "common": {
-        "loading": "加载中...",
+        "loading": "加载中",
         "error": "出错了",
         "success": "成功",
         "save": "保存",
@@ -31,7 +31,13 @@
         "update": "更新",
         "translate": "翻译为{locale}",
         "expand": "展开",
-        "collapse": "收起"
+        "collapse": "收起",
+        "name": "名称",
+        "operation": "操作",
+        "empty": "暂无数据",
+        "loadMore": "加载更多",
+        "share": "分享",
+        "saveImage": "保存图片"
     },
     "Error": {
         "pageNotFound": "页面未找到",
@@ -306,6 +312,23 @@
         "newSignalNotification": "新信号通知",
         "close": "关闭",
         "previous": "上一条",
-        "viewDetails": "查看详情"
+        "viewDetails": "查看详情",
+        "showOriginal": "查看原文",
+        "shareToX": "分享到X",
+        "kol": {
+            "followers": "粉丝",
+            "kol": "Kol观点",
+            "myKol": "我的监控",
+            "addKol": "添加监控",
+            "withToken": "代币相关",
+            "kolList": "监控列表",
+            "addTime": "监控时间",
+            "removerKol": "取消监控"
+        },
+        "signal": {
+            "curatedSignals": "精选信号",
+            "notVip": "非VIP无法查看24H内实时数据",
+            "quickSwap": "快捷交易"
+        }
     }
 }

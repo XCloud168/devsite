@@ -2,7 +2,7 @@
 
 import { TranslateContent } from "@/server/api/routes/translate";
 import LanguageDetect from "languagedetect";
-import { ChevronDown, ChevronUp, Languages, Loader2 } from "lucide-react";
+import { ChevronDown, ChevronUp, Loader2 } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import React, { useEffect, useRef, useState } from "react";
 import { Button } from "./ui/button";
@@ -75,28 +75,30 @@ const TranslationComponent: React.FC<TranslationComponentProps> = ({
       <div className="relative">
         <p
           ref={contentRef}
-          className={`my-3 whitespace-pre-wrap px-3 transition-all duration-200 ${
+          className={`my-3 whitespace-pre-wrap transition-all duration-200 ${
             isExpanded ? "" : "line-clamp-3"
           }`}
         >
           {content}
         </p>
-        <div className="px-3">
+        <div className="flex items-center">
           {shouldShowExpand && (
             <Button
               variant="link"
               onClick={toggleExpand}
-              className="gap-1 pl-0"
+              className="gap-0 pl-0 decoration-[#949C9E]"
             >
               {isExpanded ? (
                 <>
-                  <ChevronUp className="h-2 w-2" />
-                  {t("common.collapse")}
+                  <ChevronUp className="h-2 w-2" color="#949C9E" />
+                  <p className="text-xs text-[#949C9E]">
+                    {t("common.collapse")}
+                  </p>
                 </>
               ) : (
                 <>
-                  <ChevronDown className="h-2 w-2" />
-                  {t("common.expand")}
+                  <ChevronDown className="h-2 w-2" color="#949C9E" />
+                  <p className="text-xs text-[#949C9E]">{t("common.expand")}</p>
                 </>
               )}
             </Button>
@@ -106,15 +108,17 @@ const TranslationComponent: React.FC<TranslationComponentProps> = ({
             <Button
               variant="link"
               onClick={handleTranslate}
-              className="gap-1 pl-0"
+              className="gap-1 pl-0 decoration-[#949C9E]"
             >
-              <Languages className="h-2 w-2" />
-              {t.rich("common.translate", {
-                locale:
-                  LOCALE_DISPLAY_NAME[
-                    currentLocale as keyof typeof LOCALE_DISPLAY_NAME
-                  ],
-              })}
+              {/*<Languages size={8} color="#949C9E" />*/}
+              <p className="text-xs text-[#949C9E]">
+                {t.rich("common.translate", {
+                  locale:
+                    LOCALE_DISPLAY_NAME[
+                      currentLocale as keyof typeof LOCALE_DISPLAY_NAME
+                    ],
+                })}
+              </p>
             </Button>
           )}
         </div>
@@ -124,7 +128,9 @@ const TranslationComponent: React.FC<TranslationComponentProps> = ({
           </div>
         )}
         {translatedContent && (
-          <p className="bg-[#494949] p-3">{translatedContent}</p>
+          <p className="bg-[#F0F0F0] p-3 dark:bg-[#1B2427]">
+            {translatedContent}
+          </p>
         )}
       </div>
     </div>

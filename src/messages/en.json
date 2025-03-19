@@ -31,7 +31,13 @@
         "update": "Update",
         "translate": "Translate to {locale}",
         "expand": "Expand",
-        "collapse": "Collapse"
+        "collapse": "Collapse",
+        "name": "Name",
+        "operation": "Operation",
+        "empty": "Empty",
+        "loadMore": "More Data",
+        "share": "Share",
+        "saveImage": "Save Image"
     },
     "Error": {
         "pageNotFound": "Page Not Found",
@@ -307,6 +313,23 @@
         "newSignalNotification": "New Signal Notification",
         "close": "Close",
         "previous": "Previous",
-        "viewDetails": "View Details"
+        "viewDetails": "View Details",
+        "showOriginal": "Show Original",
+        "shareToX": "Share to X",
+        "kol": {
+            "followers": "followers",
+            "kol": "Kol Point",
+            "myKol": "My monitor",
+            "addKol": "Add",
+            "withToken": "Token",
+            "kolList": "Monitor List",
+            "addTime": "Add time",
+            "removerKol": "Cancel"
+        },
+        "signal": {
+            "curatedSignals": "Curated Signals",
+            "notVip": "Non-VIP users can't access 24h real-time data",
+            "quickSwap": "Quick Swap"
+        }
     }
 }

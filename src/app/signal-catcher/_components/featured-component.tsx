@@ -28,7 +28,7 @@ export function FeaturedComponent({
   });
   const [selectedTagId, setSelectedTagId] = useState<string>("");
   return (
-    <div className="scroll-container scrollbar-track-transparent scrollbar-thin scrollbar-thumb-gray-500 h-[calc(100vh-60px)] overflow-y-scroll">
+    <div className="scroll-container h-[calc(100vh-60px)] overflow-y-scroll scrollbar-thin scrollbar-track-transparent scrollbar-thumb-secondary">
       <FeaturedBanner
         onFeaturedMenuChangeAction={(menu: FeaturedMenu) =>
           setFeaturedMenu(menu)

@@ -22,6 +22,7 @@ import { toast } from "sonner";
 import { SignalCard } from "@/app/signal-catcher/_components/signal-card";
 import { LoadingMoreBtn } from "@/app/signal-catcher/_components/loading-more-btn";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { useTranslations } from "next-intl";
 
 type Props = {
   getFollowedListAction: () => Promise<ServerResult>;
@@ -52,6 +53,7 @@ export function KolPanel3({
   getFollowedListAction,
   removeFollowAction,
 }: Props) {
+  const t = useTranslations();
   const [showTable, setShowTable] = useState(false);
   const [tweetList, setTweetList] = useState<TweetItem[]>([]);
   const [hasNext, setHasNext] = useState<boolean>(true);
@@ -146,9 +148,9 @@ export function KolPanel3({
       setTableDataLoading(true);
       const response = await removeFollowAction(id);
       if (response.error) {
-        toast.error("出错啦");
+        toast.error("Error");
       } else {
-        toast.success("取消成功");
+        toast.success(t("common.success"));
         if (showTable) getTableData();
         else {
           fetchTweetList(
@@ -172,7 +174,7 @@ export function KolPanel3({
         <div className="p-5">
           <div className="flex gap-3 p-3">
             <div className="flex w-[240px] items-center justify-between border px-6">
-              <p>代币相关</p>
+              <p>{t("signals.kol.withToken")}</p>
               <div>
                 <Switch
                   id="airplane-mode"
@@ -182,7 +184,7 @@ export function KolPanel3({
               </div>
             </div>
             <div className="flex w-[240px] items-center justify-between border px-6 py-4">
-              <p>监控列表</p>
+              <p>{t("signals.kol.myKol")}</p>
               <div
                 className="cursor-pointer"
                 onClick={() => {
@@ -199,7 +201,7 @@ export function KolPanel3({
           ))}
           {!pageLoading && tweetList.length === 0 && (
             <div className="mt-4 flex justify-center">
-              <p>暂无数据</p>
+              <p>{t("common.empty")}</p>
             </div>
           )}
           <LoadingMoreBtn
@@ -214,11 +216,11 @@ export function KolPanel3({
             <div className="cursor-pointer" onClick={() => setShowTable(false)}>
               <AngleIcon className="h-4 w-2 rotate-180 fill-black stroke-[#fff]" />
             </div>
-            <p>我的监控</p>
+            <p>{t("signals.kol.myKol")}</p>
           </div>
           {tableDataLoading ? (
             <div className="mt-4 flex items-center justify-center text-primary">
-              加载中
+              {t("common.loading")}
               <span className="animate-dots inline-block w-2 text-center text-primary">
                 .
               </span>
@@ -234,11 +236,11 @@ export function KolPanel3({
               {/*<TableCaption>A list of your recent invoices.</TableCaption>*/}
               <TableHeader>
                 <TableRow>
-                  <TableHead>名称</TableHead>
+                  <TableHead>{t("common.name")}</TableHead>
                   <TableHead>Id</TableHead>
-                  <TableHead>粉丝数</TableHead>
-                  <TableHead>监控时间</TableHead>
-                  <TableHead>操作</TableHead>
+                  <TableHead>{t("signals.kol.followers")}</TableHead>
+                  <TableHead>{t("signals.kol.addTime")}</TableHead>
+                  <TableHead>{t("common.operation")}</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -263,7 +265,7 @@ export function KolPanel3({
                         onClick={() => handleRemoveFollow(data.tweetUser.id)}
                         disabled={tableDataLoading}
                       >
-                        取消关注
+                        {t("signals.kol.removeKol")}
                       </Button>
                     </TableCell>
                   </TableRow>

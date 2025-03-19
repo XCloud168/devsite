@@ -3,6 +3,7 @@
 import { Button } from "@/components/ui/button";
 
 import React from "react";
+import { useTranslations } from "next-intl";
 
 type Props = {
   hasNext: boolean;
@@ -11,12 +12,13 @@ type Props = {
 };
 
 export function LoadingMoreBtn({ hasNext, pageLoading, onNextAction }: Props) {
+  const t = useTranslations();
   if (!hasNext) return null;
   return (
     <div className="my-4 flex justify-center">
       {pageLoading ? (
         <div className="flex items-center justify-center text-primary">
-          加载中
+          {t("common.loading")}
           <span className="animate-dots inline-block w-2 text-center text-primary">
             .
           </span>
@@ -28,7 +30,7 @@ export function LoadingMoreBtn({ hasNext, pageLoading, onNextAction }: Props) {
           </span>
         </div>
       ) : (
-        <Button onClick={() => onNextAction()}>加载更多</Button>
+        <Button onClick={() => onNextAction()}> {t("common.loadMore")}</Button>
       )}
     </div>
   );

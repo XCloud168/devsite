@@ -12,12 +12,11 @@ import {
 } from "@/server/api/routes/tweets";
 import {
   getSignalsByPaginated,
-  getSignalTagsByType,
   getTagStatistics,
 } from "@/server/api/routes/signal";
 
 import { FeaturedComponent } from "@/app/signal-catcher/_components/featured-component";
-import { SIGNAL_PROVIDER_TYPE } from "@/lib/constants";
+import { type SIGNAL_PROVIDER_TYPE } from "@/lib/constants";
 
 export default async function SignalPage() {
   //获取推特列表
@@ -66,7 +65,7 @@ export default async function SignalPage() {
   return (
     <div className="w-full">
       <ResizablePanelGroup direction="horizontal" className="h-full w-full">
-        <ResizablePanel defaultSize={50}>
+        <ResizablePanel defaultSize={65}>
           <div className="block items-center justify-center">
             <KolComponent
               getTweetListAction={getTweetList}
@@ -77,7 +76,7 @@ export default async function SignalPage() {
           </div>
         </ResizablePanel>
         <ResizableHandle withHandle />
-        <ResizablePanel defaultSize={50} maxSize={50} minSize={30}>
+        <ResizablePanel defaultSize={35} maxSize={50} minSize={30}>
           <div className="block items-center justify-center">
             <FeaturedComponent
               getSignalListAction={getSignalList}

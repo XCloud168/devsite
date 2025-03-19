@@ -4,6 +4,7 @@ import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useEffect, useMemo, useState } from "react";
 import { SIGNAL_PROVIDER_TYPE } from "@/lib/constants";
 import type { ServerResult } from "@/lib/server-result";
+import { useTranslations } from "next-intl";
 interface Tag {
   id: string;
   name: string;
@@ -40,13 +41,14 @@ export function FeaturedBanner({
   getTagListAction,
   onTagChangeAction,
 }: Props) {
+  const t = useTranslations();
   const [selectedMenu, setSelectedMenu] = useState<FeaturedMenu>({
     label: SIGNAL_PROVIDER_TYPE.TWITTER,
     id: "1",
   });
   const [showDetails, setShowDetails] = useState(false);
   const [selectedTagId, setSelectedTagId] = useState<string>("");
-
+  const [tagLoading, setTagLoading] = useState<boolean>(true);
   useEffect(() => {
     const fetchData = async () => {
       const response = await getTagListAction(SIGNAL_PROVIDER_TYPE.TWITTER);
@@ -57,6 +59,7 @@ export function FeaturedBanner({
           selected: false,
         })),
       });
+      setTagLoading(false);
     };
     fetchData();
   }, [getTagListAction]);
@@ -69,6 +72,8 @@ export function FeaturedBanner({
         selected: false,
       })),
     });
+
+    setTagLoading(false);
   };
   const selectedTag = useMemo(() => {
     const list: Tag[] | undefined = selectedMenu.tags?.filter(
@@ -92,17 +97,20 @@ export function FeaturedBanner({
 
   return (
     <div className="sticky top-0 z-10 bg-background">
-      <div className="flex border-b border-[#49494980] p-5">
-        <p className="text-white">精选信号</p>
-        <p className="text-white/50">（非会员只能查看前一天数据）</p>
+      <div className="flex border-b p-5">
+        <p className="">{t("signals.signal.curatedSignals")}</p>
+        <p className="text-black/50 dark:text-white/50">
+          （{t("signals.signal.notVip")}）
+        </p>
       </div>
-      <div className="flex border-b border-[#49494980] px-5">
+      <div className="flex border-b px-5">
         <div className="grid grid-cols-6 gap-8">
           {featuredMenu.map((menu) => (
             <div
               key={menu.id}
-              className={`${selectedMenu?.id === menu.id ? "border-primary text-primary" : "border-transparent text-white"} cursor-pointer border-b-2 pb-2 pt-5 text-center hover:text-primary`}
+              className={`${selectedMenu?.id === menu.id ? "border-primary font-bold text-primary" : "border-transparent text-black dark:text-white"} cursor-pointer border-b-2 pb-2 pt-5 text-center hover:text-primary`}
               onClick={() => {
+                setTagLoading(true);
                 onFeaturedMenuChangeAction(menu);
                 setSelectedMenu(menu);
                 handleChangeTag(menu);
@@ -114,26 +122,27 @@ export function FeaturedBanner({
         </div>
       </div>
 
-      <div className="px-5 pt-5">
-        {selectedMenu && (
+      <div className="px-5 pt-3">
+        {!tagLoading && selectedMenu && (
           <Tabs
             defaultValue={selectedMenu.tags?.find((item) => item.selected)?.id}
-            className="w-fit"
+            className="w-full"
             onValueChange={(event) => {
               setSelectedTagId(event);
               onTagChangeAction(event);
+              setShowDetails(true);
             }}
           >
-            <TabsList className="grid w-full grid-cols-5">
+            <TabsList className="flex h-auto flex-wrap justify-start gap-2 rounded-lg bg-transparent">
               {selectedMenu.tags?.map((item) => (
                 <TabsTrigger
                   key={item.id}
                   value={item.id}
-                  className="flex gap-1"
+                  className="flex w-fit justify-start gap-1 bg-secondary"
                 >
-                  <Avatar className="h-4 w-4">
+                  <Avatar className="h-5 w-5 rounded-md">
                     <AvatarImage src={item.logo ?? ""} />
-                    <AvatarFallback>CN</AvatarFallback>
+                    <AvatarFallback></AvatarFallback>
                   </Avatar>
                   <p>{item.name}</p>
                 </TabsTrigger>
@@ -142,7 +151,7 @@ export function FeaturedBanner({
           </Tabs>
         )}
       </div>
-      <div className="relative mb-5 border-b border-[#49494980] p-3">
+      <div className="relative mb-5 border-b p-3">
         <div
           className={`absolute left-1/2 h-2 w-10 -translate-x-1/2 cursor-pointer bg-[url('/images/signal/triangle.svg')] bg-contain bg-center bg-no-repeat ${
             showDetails ? "bottom-0 rotate-180" : "bottom-[-8px]"
@@ -151,24 +160,28 @@ export function FeaturedBanner({
         ></div>
         <div
           className={`grid w-full grid-cols-4 gap-3 overflow-hidden transition-all duration-500 ease-in-out ${
-            showDetails ? "max-h-[200px] opacity-100" : "max-h-0 opacity-0"
+            showDetails ? "grid" : "hidden"
           }`}
         >
           <div className="relative w-full px-3">
             <p className="text-xs">Total New Token Listings</p>
-            <p className="text-[#FFF28B]">{selectedTag?.signalsCount}</p>
+            <p className="font-bold text-primary">
+              {selectedTag?.signalsCount}
+            </p>
           </div>
           <div className="relative w-full px-3">
             <p className="text-xs">Total New Token Listings</p>
-            <p className="text-[#FFF28B]">{selectedTag?.signalsCount}</p>
+            <p className="font-bold text-primary">
+              {selectedTag?.signalsCount}
+            </p>
           </div>
           <div className="relative w-full px-3">
             <p className="text-xs">Total New Token Listings</p>
-            <p className="text-[#FFF28B]">{selectedTag?.fallCount}</p>
+            <p className="font-bold text-primary">{selectedTag?.fallCount}</p>
           </div>
           <div className="relative w-full px-3">
             <p className="text-xs">Total New Token Listings</p>
-            <p className="text-[#FFF28B]">{selectedTag?.avgRiseRate}</p>
+            <p className="font-bold text-primary">{selectedTag?.avgRiseRate}</p>
           </div>
         </div>
       </div>

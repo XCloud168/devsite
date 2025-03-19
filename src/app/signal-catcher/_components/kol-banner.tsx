@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 export type KolMenu = {
   label: string;
   value: "2" | "3";
@@ -11,11 +12,11 @@ export const kolMenu: KolMenu[] = [
   //   value: "1",
   // },
   {
-    label: "KOL观点",
+    label: "kol",
     value: "2",
   },
   {
-    label: "我的监控",
+    label: "myKol",
     value: "3",
   },
 ];
@@ -23,24 +24,25 @@ interface KolMenuProps {
   onKolMenuChangeAction: (menu: KolMenu) => void;
 }
 export function KolBanner({ onKolMenuChangeAction }: KolMenuProps) {
+  const t = useTranslations();
   const [selectedMenu, setSelectedMenu] = useState<KolMenu>({
-    label: "KOL观点",
+    label: "kol",
     value: "2",
   });
   return (
     <>
-      <div className="sticky top-0 z-10 flex border-b border-[#49494980] bg-background px-5 pt-5">
+      <div className="sticky top-0 z-10 flex border-b bg-background px-5 pt-5">
         <div className="grid grid-cols-6 gap-10">
           {kolMenu.map((menu) => (
             <div
-              className={`${menu.value === selectedMenu.value ? "border-primary text-primary" : "border-transparent text-white"} cursor-pointer break-keep border-b-2 pb-[18px] text-center hover:text-primary`}
+              className={`${menu.value === selectedMenu.value ? "border-primary font-bold text-primary" : "border-transparent font-normal text-black dark:text-white"} cursor-pointer break-keep border-b-2 pb-[18px] text-center hover:text-primary`}
               key={menu.value}
               onClick={() => {
                 onKolMenuChangeAction(menu);
                 setSelectedMenu(menu);
               }}
             >
-              {menu.label}
+              {t("signals.kol." + menu.label)}
             </div>
           ))}
         </div>
