@@ -8,6 +8,7 @@ import dayjs from "dayjs";
 import { type TweetInfo } from "@/server/db/schemas/tweet";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useTranslations } from "next-intl";
+import TranslationComponent from "@/components/translation-component";
 
 type Props = {
   signal: SignalItems;
@@ -37,64 +38,64 @@ export function FeaturedCard({ signal, showLine }: Props) {
       {showLine ? (
         <div className="h-full">
           <div className="h-10 w-10">
-            {/*<Avatar className="h-10 w-10 border-2 border-secondary">*/}
-            {/*  {signal.source.tweetUser ? (*/}
-            {/*    <AvatarImage src={signal.source.tweetUser.avatar} />*/}
-            {/*  ) : (*/}
-            {/*    <AvatarImage src={signal.source.exchange.logo} />*/}
-            {/*  )}*/}
-            {/*  <AvatarFallback></AvatarFallback>*/}
-            {/*</Avatar>*/}
+            <Avatar className="h-10 w-10 border-2 border-secondary">
+              {signal.source.tweetUser ? (
+                <AvatarImage src={signal.source.tweetUser.avatar} />
+              ) : (
+                <AvatarImage src={signal.source.exchange.logo} />
+              )}
+              <AvatarFallback></AvatarFallback>
+            </Avatar>
           </div>
           <div className="h-full w-[20px] border-r border-dashed"></div>
         </div>
       ) : null}
 
       <div className="min-h-20">
-        {/*{signal.source.tweetUser ? (*/}
-        {/*  <p className="font-bold leading-5">{signal.source.tweetUser.name}</p>*/}
-        {/*) : (*/}
-        {/*  <p className="font-bold leading-5">{signal.source.exchange.name}</p>*/}
-        {/*)}*/}
+        {signal.source.tweetUser ? (
+          <p className="font-bold leading-5">{signal.source.tweetUser.name}</p>
+        ) : (
+          <p className="font-bold leading-5">{signal.source.exchange.name}</p>
+        )}
         <p className="leading-5">
           {dayjs(signal.signalTime).format("YYYY/MM/DD HH:mm:ss")}
         </p>
         <div className="relative h-fit w-full bg-transparent">
           {/*<p className="py-2 text-white/90">{signal.source.content}</p>*/}
-          {/*<TranslationComponent content={signal.source.contentSummary ?? ""} />*/}
+          <TranslationComponent content={signal.source.contentSummary ?? ""} />
           <div className="mb-2 flex flex-wrap">
-            {/*{signal.source.imagesUrls && signal.source.imagesUrls.length > 0*/}
-            {/*  ? signal.source.imagesUrls.map(*/}
-            {/*      (imageUrl: string, index: number) => {*/}
-            {/*        return (*/}
-            {/*          <img*/}
-            {/*            src={imageUrl}*/}
-            {/*            key={imageUrl + index}*/}
-            {/*            className="!max-w-[50%] rounded-lg"*/}
-            {/*          ></img>*/}
-            {/*        );*/}
-            {/*      },*/}
-            {/*    )*/}
-            {/*  : null}*/}
-            {/*{signal.source.videoUrls && signal.source.videoUrls.length > 0*/}
-            {/*  ? signal.source.videoUrls.map(*/}
-            {/*      (videoUrl: string, index: number) => {*/}
-            {/*        return (*/}
-            {/*          <video*/}
-            {/*            src={videoUrl}*/}
-            {/*            key={videoUrl + index}*/}
-            {/*            width="480"*/}
-            {/*            height="360"*/}
-            {/*            preload="none"*/}
-            {/*            controls*/}
-            {/*            controlsList="nodownload noremoteplayback noplaybackrate"*/}
-            {/*            autoPlay={false}*/}
-            {/*            className="rounded-lg"*/}
-            {/*          ></video>*/}
-            {/*        );*/}
-            {/*      },*/}
-            {/*    )*/}
-            {/*  : null}*/}
+            {signal.source.imagesUrls && signal.source.imagesUrls.length > 0
+              ? signal.source.imagesUrls.map(
+                  (imageUrl: string, index: number) => {
+                    return (
+                      <img
+                        src={imageUrl}
+                        key={imageUrl + index}
+                        className="!max-w-[50%] rounded-lg"
+                      ></img>
+                    );
+                  },
+                )
+              : null}
+            {signal.source.videoUrls && signal.source.videoUrls.length > 0
+              ? signal.source.videoUrls.map(
+                  (videoUrl: string, index: number) => {
+                    return (
+                      <video
+                        src={videoUrl}
+                        key={videoUrl + index}
+                        width="480"
+                        height="360"
+                        preload="none"
+                        controls
+                        controlsList="nodownload noremoteplayback noplaybackrate"
+                        autoPlay={false}
+                        className="rounded-lg"
+                      ></video>
+                    );
+                  },
+                )
+              : null}
           </div>
         </div>
 

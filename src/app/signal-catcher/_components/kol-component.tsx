@@ -24,7 +24,7 @@ export function KolComponent({
   removeFollowAction,
 }: Props) {
   const [kolMenu, setKolMenu] = useState<KolMenu>({
-    label: "KOL观点",
+    label: "kolPoint",
     value: "2",
   });
 
