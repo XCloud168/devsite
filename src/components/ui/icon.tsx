@@ -1,5 +1,27 @@
 import React from "react";
 
+export function TriangleIcon() {
+  return (
+    <svg
+      width="42"
+      height="9"
+      viewBox="0 0 42 9"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        opacity="0.6"
+        d="M40.2988 0.00597197L41.7089 0.00597191L39.4546 7.40461C39.2543 8.36802 38.7818 8.90744 37.9517 8.90744L3.75703 8.90744C2.92713 8.90744 2.45956 8.34297 2.25425 7.40461L-3.89356e-07 3.7305e-06L1.50314 3.6648e-06L40.2988 0.00597197ZM18.4454 2.36746L20.8545 6.53998L23.2635 2.36746L18.4454 2.36746Z"
+        fill="#494949"
+      />
+      <path
+        d="M18.4456 2.36724L23.2635 2.36724L20.8545 6.53976L18.4456 2.36724Z"
+        fill="#A3A3A3"
+      />
+    </svg>
+  );
+}
+
 export function AngleIcon(props: React.SVGProps<SVGSVGElement>) {
   return (
     <svg
@@ -27,6 +49,7 @@ export function TrapezoidIcon(props: React.SVGProps<SVGSVGElement>) {
     </svg>
   );
 }
+
 export function SwapIcon(props: React.SVGProps<SVGSVGElement>) {
   return (
     <svg
@@ -41,6 +64,7 @@ export function SwapIcon(props: React.SVGProps<SVGSVGElement>) {
     </svg>
   );
 }
+
 export function PositiveIcon(props: React.SVGProps<SVGSVGElement>) {
   return (
     <svg

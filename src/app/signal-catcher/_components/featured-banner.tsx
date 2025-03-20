@@ -5,6 +5,7 @@ import { useEffect, useMemo, useState } from "react";
 import { SIGNAL_PROVIDER_TYPE } from "@/lib/constants";
 import type { ServerResult } from "@/lib/server-result";
 import { useTranslations } from "next-intl";
+import { TriangleIcon } from "@/components/ui/icon";
 interface Tag {
   id: string;
   name: string;
@@ -155,11 +156,13 @@ export function FeaturedBanner({
         className={`relative mb-5 border-b bg-[#CEE4FF] dark:bg-black ${showDetails ? "p-3" : "p-1.5"}`}
       >
         <div
-          className={`absolute left-1/2 h-2 w-10 -translate-x-1/2 cursor-pointer bg-[url('/images/signal/triangle.svg')] bg-contain bg-center bg-no-repeat ${
+          className={`absolute left-1/2 h-2 w-10 -translate-x-1/2 cursor-pointer ${
             showDetails ? "bottom-0 rotate-180" : "bottom-[-8px]"
           }`}
           onClick={() => setShowDetails((prev) => !prev)}
-        ></div>
+        >
+          <TriangleIcon />
+        </div>
         <div
           className={`grid w-full grid-cols-4 gap-3 overflow-hidden transition-all duration-500 ease-in-out ${
             showDetails ? "grid" : "hidden"
