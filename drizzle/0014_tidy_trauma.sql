@@ -1,0 +1,1 @@
+ALTER TABLE "site_payments" ALTER COLUMN "receiver_address" SET NOT NULL;

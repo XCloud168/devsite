@@ -46,6 +46,7 @@
     "html-to-image": "^1.11.13",
     "languagedetect": "^2.0.0",
     "lucide-react": "^0.475.0",
+    "moralis": "^2.27.2",
     "next": "15.1.7",
     "next-intl": "^3.26.3",
     "next-qrcode": "^2.5.1",

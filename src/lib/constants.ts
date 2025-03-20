@@ -171,3 +171,39 @@ export enum SIGNAL_PROVIDER_TYPE {
   ANNOUNCEMENT = "announcement",
   TWITTER = "twitter",
 }
+
+export enum NOTIFY_SOUNDS {
+  COIN = "coin.wav",
+  COW = "cow.wav",
+  DING = "ding.wav",
+  FROG = "frog.wav",
+  GIRL = "girl.wav",
+  SPRING = "spring.wav",
+}
+
+export const SUPPORTED_CHAIN_USDT_CONTRACT_ADDRESS = {
+  ETH: {
+    address: "0xdAC17F958D2ee523a2206206994597C13D831ec7",
+    chain: "ETH",
+    chainId: "0x1",
+    decimals: 6,
+  },
+  BSC: {
+    address: "0x55d398326f99059ff775485246999027b3197955",
+    chain: "BSC",
+    chainId: "0x38",
+    decimals: 18,
+  },
+  SOL: {
+    address: "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+    chain: "SOL",
+    chainId: "0x1f4",
+    decimals: 6,
+  },
+  TRX: {
+    address: "TQ9iZ7y5ZQd52y8y36v68z12K2kL55Jw222222222",
+    chain: "TRX",
+    chainId: "0x1",
+    decimals: 6,
+  },
+};

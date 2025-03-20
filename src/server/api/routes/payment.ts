@@ -1,14 +1,21 @@
 "use server";
 
-import { eq } from "drizzle-orm";
+import { and, desc, eq, gte } from "drizzle-orm";
+import { Erc20Transaction } from "moralis/common-evm-utils";
 
-import { PRICING_PLANS } from "@/lib/constants";
+import {
+  PRICING_PLANS,
+  SUPPORTED_CHAIN_USDT_CONTRACT_ADDRESS,
+} from "@/lib/constants";
 import { createError } from "@/lib/errors";
+import { getERC20Transfers } from "@/lib/moralis";
 import { withServerResult } from "@/lib/server-result";
 import { db } from "@/server/db";
-import { payments } from "@/server/db/schema";
+import { payments, profiles } from "@/server/db/schema";
 import { type PLAN_TYPE, type SUPPORTED_CHAIN } from "@/types/constants";
+import assert from "assert";
 import { getUserProfile } from "./auth";
+import dayjs from "dayjs";
 
 /**
  * Checkout a plan
@@ -69,6 +76,189 @@ export async function confirmPayment(paymentId: string) {
 
     return updatedPayment;
   });
+}
+
+/**
+ * 检查支付状态, 如果paymentId为空，则检查最近周期内所有未确认的订单
+ * 默认周期：30分钟
+ *
+ * @param paymentId - 订单id
+ * @returns 订单
+ */
+export async function checkPayment(paymentId?: string) {
+  return withServerResult(async () => {
+    const conditions = [];
+    conditions.push(eq(payments.status, "pending"));
+
+    if (paymentId) {
+      conditions.push(eq(payments.id, paymentId));
+    } else {
+      conditions.push(
+        gte(payments.createdAt, new Date(Date.now() - 30 * 60 * 1000)),
+      );
+    }
+
+    const whereConditions =
+      conditions.length > 0 ? and(...conditions) : undefined;
+
+    const paymentsRecords = await db.query.payments.findMany({
+      where: whereConditions,
+    });
+
+    const checkAddresses: { address: string; chain: SUPPORTED_CHAIN }[] = [];
+    paymentsRecords.forEach((record) => {
+      // 去重
+      if (
+        !checkAddresses.find(
+          (item) =>
+            item.address === record.receiverAddress &&
+            item.chain === record.chain,
+        )
+      ) {
+        checkAddresses.push({
+          address: record.receiverAddress,
+          chain: record.chain,
+        });
+      }
+    });
+
+    checkAddresses.forEach(async ({ address, chain }) => {
+      if (!SUPPORTED_CHAIN_USDT_CONTRACT_ADDRESS[chain]) {
+        throw createError.invalidParams("Unsupported chain");
+      }
+      const transfers = await getERC20Transfers(
+        address,
+        SUPPORTED_CHAIN_USDT_CONTRACT_ADDRESS[chain].address,
+        SUPPORTED_CHAIN_USDT_CONTRACT_ADDRESS[chain].chainId,
+      );
+
+      const newOrders = [];
+
+      transfers.result.forEach((transaction: Erc20Transaction) => {
+        try {
+          const order = _transferUsdtCallback(chain, address, transaction);
+          newOrders.push(order);
+        } catch (error) {
+          console.error(error);
+        }
+      });
+    });
+
+    return { status: "success" };
+  });
+}
+
+/**
+ * 检查usdt交易金额，匹配payment订单，如果匹配，则更新payment订单状态为已确认，并更新会员订阅状态，以及更新返佣
+ *
+ * @param chain - 链
+ * @param receiverAddress - 收款地址
+ * @param transaction - 交易
+ */
+async function _transferUsdtCallback(
+  chain: SUPPORTED_CHAIN,
+  receiverAddress: string,
+  transaction: Erc20Transaction,
+) {
+  // 如果是发送交易，不是接收，则不处理
+  if (transaction.fromAddress.lowercase === receiverAddress.toLowerCase()) {
+    return;
+  }
+  // 如果不是交易USDT ，则不处理
+  if (
+    transaction.address.lowercase !==
+    SUPPORTED_CHAIN_USDT_CONTRACT_ADDRESS[chain].address.toLowerCase()
+  ) {
+    return;
+  }
+  // 如果交易接收者不是当前地址，则不处理
+  if (transaction.toAddress.lowercase !== receiverAddress.toLowerCase()) {
+    return;
+  }
+
+  // 如果交易是spam，则不处理
+  if (transaction.possibleSpam) {
+    return;
+  }
+
+  const payment = await db.query.payments.findFirst({
+    where: (payments, { eq, and }) =>
+      and(
+        eq(payments.receiverAddress, receiverAddress),
+        eq(payments.chain, chain),
+      ),
+    orderBy: (payments) => [desc(payments.createdAt)],
+  });
+
+  assert(
+    payment,
+    `Payment not found: receiverAddress: ${receiverAddress} chain: ${chain}`,
+  );
+  if (payment.status === "confirmed") {
+    console.log("Payment is confirmed");
+    return;
+  }
+
+  assert(
+    Number(payment.amount) *
+      10 ** SUPPORTED_CHAIN_USDT_CONTRACT_ADDRESS[chain].decimals ===
+      Number(transaction.value),
+    `Payment amount is not equal to transaction amount: paymentId: ${payment.id} paymentAmount: ${payment.amount} transactionValue: ${transaction.value}`,
+  );
+
+  console.log(
+    `核查到交易，开始更新payment状态。 交易hash: ${transaction.transactionHash} paymentId: ${payment.id}`,
+  );
+  // 在同一个事务中更新payment状态为已确认，并更新会员订阅状态，以及更新返佣
+  await db.transaction(async (tx) => {
+    // 更新payment状态为已确认
+    await tx
+      .update(payments)
+      .set({ status: "confirmed", txHash: transaction.transactionHash })
+      .where(eq(payments.id, payment.id));
+
+    // 更新会员订阅状态
+    await _updateSubscriptionStatus(payment.userId, payment.planType);
+
+    // // 更新返佣
+    // await _updateReferral(tx, payment.userId, payment.planType);
+  });
+}
+
+/**
+ * 更新会员订阅状态
+ * @param userId - 用户id
+ * @param planType - 计划类型
+ */
+async function _updateSubscriptionStatus(userId: string, planType: PLAN_TYPE) {
+  const profile = await db.query.profiles.findFirst({
+    where: (profiles, { eq }) => eq(profiles.id, userId),
+    columns: {
+      membershipExpiredAt: true,
+    },
+  });
+  let startDate = dayjs();
+
+  if (profile?.membershipExpiredAt) {
+    startDate = dayjs(profile.membershipExpiredAt);
+  }
+
+  // 更新会员订阅状态
+  let newExpiredAt = startDate;
+  if (planType === "monthly") {
+    newExpiredAt = startDate.add(1, "month"); // 30天
+  } else if (planType === "quarterly") {
+    newExpiredAt = startDate.add(3, "month"); // 90天
+  } else if (planType === "yearly") {
+    newExpiredAt = startDate.add(1, "year"); // 1年
+  }
+
+  await db
+    .update(profiles)
+    .set({
+      membershipExpiredAt: newExpiredAt.toDate(),
+    })
+    .where(eq(profiles.id, userId));
 }
 
 /**

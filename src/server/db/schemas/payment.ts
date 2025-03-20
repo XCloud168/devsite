@@ -1,4 +1,8 @@
-import { type PAYMENT_STATUS, type PLAN_TYPE, type SUPPORTED_CHAIN } from "@/types/constants";
+import {
+  type PAYMENT_STATUS,
+  type PLAN_TYPE,
+  type SUPPORTED_CHAIN,
+} from "@/types/constants";
 import { relations } from "drizzle-orm";
 import {
   boolean,
@@ -37,9 +41,9 @@ export const payments = pgTable("payments", {
   userId: uuid("user_id")
     .notNull()
     .references(() => profiles.id),
-  receiverAddress: varchar("receiver_address", { length: 255 }).references(
-    () => paymentAddresses.address,
-  ),
+  receiverAddress: varchar("receiver_address", { length: 255 })
+    .references(() => paymentAddresses.address)
+    .notNull(),
   chain: varchar("chain", { length: 255 }).$type<SUPPORTED_CHAIN>().notNull(),
   planType: varchar("plan_type", { length: 255 }).$type<PLAN_TYPE>().notNull(),
   amount: numeric("amount", { precision: 10, scale: 2 }).notNull(),
