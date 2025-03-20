@@ -31,6 +31,11 @@ interface SignalItems extends Signals {
   };
   project: Projects;
   times: string;
+  hitKOLs: {
+    avatar: string;
+    id: string;
+    name: string;
+  }[];
 }
 
 export default function RealtimeSignal() {
