@@ -122,27 +122,29 @@ export async function checkPayment(paymentId?: string) {
       }
     });
 
-    checkAddresses.forEach(async ({ address, chain }) => {
-      if (!SUPPORTED_CHAIN_USDT_CONTRACT_ADDRESS[chain]) {
-        throw createError.invalidParams("Unsupported chain");
-      }
-      const transfers = await getERC20Transfers(
-        address,
-        SUPPORTED_CHAIN_USDT_CONTRACT_ADDRESS[chain].address,
-        SUPPORTED_CHAIN_USDT_CONTRACT_ADDRESS[chain].chainId,
-      );
-
-      const newOrders = [];
-
-      transfers.result.forEach((transaction: Erc20Transaction) => {
-        try {
-          const order = _transferUsdtCallback(chain, address, transaction);
-          newOrders.push(order);
-        } catch (error) {
-          console.error(error);
+    await Promise.all(
+      checkAddresses.map(async ({ address, chain }) => {
+        if (!SUPPORTED_CHAIN_USDT_CONTRACT_ADDRESS[chain]) {
+          throw createError.invalidParams("Unsupported chain");
         }
-      });
-    });
+        const transfers = await getERC20Transfers(
+          address,
+          SUPPORTED_CHAIN_USDT_CONTRACT_ADDRESS[chain].address,
+          SUPPORTED_CHAIN_USDT_CONTRACT_ADDRESS[chain].chainId,
+        );
+
+        const newOrders = [];
+
+        transfers.result.forEach((transaction: Erc20Transaction) => {
+          try {
+            const order = _transferUsdtCallback(chain, address, transaction);
+            newOrders.push(order);
+          } catch (error) {
+            console.error(error);
+          }
+        });
+      }),
+    );
 
     return { status: "success" };
   });
