@@ -2,8 +2,8 @@ import { ITEMS_PER_PAGE } from "@/lib/constants";
 import { createError } from "@/lib/errors";
 import { withServerResult } from "@/lib/server-result";
 import { db } from "@/server/db";
-import { tweetInfo, watchlist } from "@/server/db/schema";
-import { and, count, eq, inArray, isNotNull } from "drizzle-orm";
+import { tweetInfo, tweetUsers, watchlist } from "@/server/db/schema";
+import { and, count, eq, inArray, isNotNull, sql } from "drizzle-orm";
 import { getUserProfile } from "./auth";
 
 /**
@@ -27,13 +27,13 @@ export async function getTweetsByPaginated(
   return withServerResult(async () => {
     // 构建查询条件
     const conditions = [];
+    const user = await getUserProfile();
 
     if (filter.tweetUid) {
       conditions.push(eq(tweetInfo.tweetUserId, filter.tweetUid));
     }
 
     if (filter.followed) {
-      const user = await getUserProfile();
       if (user) {
         const myFollowing = await db.query.watchlist.findMany({
           where: eq(watchlist.profilesId, user.id),
@@ -63,7 +63,16 @@ export async function getTweetsByPaginated(
       db.query.tweetInfo.findMany({
         where: whereClause,
         with: {
-          tweetUser: true,
+          tweetUser: {
+            extras: {
+              isFollowed: sql<boolean>`EXISTS (
+                SELECT 1
+                FROM ${watchlist} w
+                WHERE w.profiles_id = ${user ? sql`${user.id}` : sql`NULL`}
+                AND w.tweet_user = ${tweetUsers.id}
+              )`.as("isFollowed"),
+            },
+          },
           project: true,
         },
         orderBy: (tweetInfo, { desc }) => [desc(tweetInfo.tweetCreatedAt)],
