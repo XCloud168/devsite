@@ -58,7 +58,7 @@ export function Header() {
                 width={22}
                 height={22}
               />
-              <p className="bg-gradient-to-r from-[#05A2BB] to-[#05A2BB] bg-clip-text text-transparent dark:from-[#F2DA18] dark:to-[#4DFFC4]">
+              <p className="bg-gradient-to-r from-[#1F72E5] to-[#45FA25] bg-clip-text font-bold text-transparent dark:from-[#F2DA18] dark:to-[#4DFFC4]">
                 {t("buySlogan")}
               </p>
             </Link>

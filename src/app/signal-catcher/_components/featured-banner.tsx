@@ -96,19 +96,19 @@ export function FeaturedBanner({
   }, [selectedMenu.tags, selectedTagId]);
 
   return (
-    <div className="sticky top-0 z-10 bg-background">
-      <div className="flex border-b p-5">
-        <p className="">{t("signals.signal.curatedSignals")}</p>
-        <p className="text-black/50 dark:text-white/50">
-          （{t("signals.signal.notVip")}）
+    <div className="sticky top-0 z-10 bg-gradient-to-r from-[#DEECFF] to-[#FFFFFF] dark:from-[#0A1325] dark:to-[#050911]">
+      <div className="flex items-end gap-1 px-5 pt-5">
+        <p className="font-bold">{t("signals.signal.curatedSignals")}</p>
+        <p className="text-xs text-black/50 dark:text-white/50">
+          *{t("signals.signal.notVip")}
         </p>
       </div>
       <div className="flex border-b px-5">
-        <div className="grid grid-cols-6 gap-8">
+        <div className="grid grid-cols-3 gap-8">
           {featuredMenu.map((menu) => (
             <div
               key={menu.id}
-              className={`${selectedMenu?.id === menu.id ? "border-primary font-bold text-primary" : "border-transparent text-black dark:text-white"} cursor-pointer border-b-2 pb-2 pt-5 text-center hover:text-primary`}
+              className={`${selectedMenu?.id === menu.id ? "border-[#1F72E5] bg-gradient-to-r from-[#1F72E5] to-[#45FA25] bg-clip-text font-bold text-transparent dark:border-[#F2DA18] dark:from-[#F2DA18] dark:to-[#4DFFC4]" : "border-transparent"} cursor-pointer border-b-2 pb-2 pt-3 text-center`}
               onClick={() => {
                 setTagLoading(true);
                 onFeaturedMenuChangeAction(menu);
@@ -122,7 +122,7 @@ export function FeaturedBanner({
         </div>
       </div>
 
-      <div className="px-5 pt-3">
+      <div className="bg-[#CEE4FF] px-5 pt-3 dark:bg-black">
         {!tagLoading && selectedMenu && (
           <Tabs
             defaultValue={selectedMenu.tags?.find((item) => item.selected)?.id}
@@ -133,14 +133,14 @@ export function FeaturedBanner({
               setShowDetails(true);
             }}
           >
-            <TabsList className="flex h-auto flex-wrap justify-start gap-2 rounded-lg bg-transparent">
+            <TabsList className="flex h-auto flex-wrap justify-start gap-2 bg-transparent">
               {selectedMenu.tags?.map((item) => (
                 <TabsTrigger
                   key={item.id}
                   value={item.id}
-                  className="flex w-fit justify-start gap-1 bg-secondary"
+                  className="flex w-fit justify-start gap-1 rounded-xl bg-[#E1EEFF] p-1.5 dark:bg-secondary"
                 >
-                  <Avatar className="h-5 w-5 rounded-md">
+                  <Avatar className="h-5 w-5 rounded-full">
                     <AvatarImage src={item.logo ?? ""} />
                     <AvatarFallback></AvatarFallback>
                   </Avatar>
@@ -152,7 +152,7 @@ export function FeaturedBanner({
         )}
       </div>
       <div
-        className={`relative mb-5 border-b ${showDetails ? "p-3" : "p-1.5"}`}
+        className={`relative mb-5 border-b bg-[#CEE4FF] dark:bg-black ${showDetails ? "p-3" : "p-1.5"}`}
       >
         <div
           className={`absolute left-1/2 h-2 w-10 -translate-x-1/2 cursor-pointer bg-[url('/images/signal/triangle.svg')] bg-contain bg-center bg-no-repeat ${
@@ -167,23 +167,27 @@ export function FeaturedBanner({
         >
           <div className="relative w-full px-3">
             <p className="text-xs">Total New Token Listings</p>
-            <p className="font-bold text-primary">
+            <p className="text-lg font-bold text-[#1976F7] dark:text-[#F2DA18]">
               {selectedTag?.signalsCount}
             </p>
           </div>
           <div className="relative w-full px-3">
             <p className="text-xs">Total New Token Listings</p>
-            <p className="font-bold text-primary">
+            <p className="text-lg font-bold text-[#1976F7] dark:text-[#F2DA18]">
               {selectedTag?.signalsCount}
             </p>
           </div>
           <div className="relative w-full px-3">
             <p className="text-xs">Total New Token Listings</p>
-            <p className="font-bold text-primary">{selectedTag?.fallCount}</p>
+            <p className="text-lg font-bold text-[#1976F7] dark:text-[#F2DA18]">
+              {selectedTag?.fallCount}
+            </p>
           </div>
           <div className="relative w-full px-3">
             <p className="text-xs">Total New Token Listings</p>
-            <p className="font-bold text-primary">{selectedTag?.avgRiseRate}</p>
+            <p className="text-lg font-bold text-[#1976F7] dark:text-[#F2DA18]">
+              {selectedTag?.avgRiseRate}
+            </p>
           </div>
         </div>
       </div>

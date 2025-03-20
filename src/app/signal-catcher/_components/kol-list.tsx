@@ -25,19 +25,20 @@ export function KolList({
   addFollowAction,
   removeFollowAction,
 }: Props) {
-  if (menu.value === "2") {
-    return (
-      <KolPanel2
-        getTweetListAction={getTweetListAction}
-        addFollowAction={addFollowAction}
-      ></KolPanel2>
-    );
-  }
   return (
-    <KolPanel3
-      getTweetListAction={getTweetListAction}
-      getFollowedListAction={getFollowedListAction}
-      removeFollowAction={removeFollowAction}
-    ></KolPanel3>
+    <div className="scroll-container h-[calc(100vh-124px)] overflow-y-scroll scrollbar-thin scrollbar-track-transparent scrollbar-thumb-secondary">
+      {menu.value === "2" ? (
+        <KolPanel2
+          getTweetListAction={getTweetListAction}
+          addFollowAction={addFollowAction}
+        ></KolPanel2>
+      ) : (
+        <KolPanel3
+          getTweetListAction={getTweetListAction}
+          getFollowedListAction={getFollowedListAction}
+          removeFollowAction={removeFollowAction}
+        ></KolPanel3>
+      )}
+    </div>
   );
 }

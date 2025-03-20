@@ -7,7 +7,7 @@ import {
   type FetchTweetListAction,
   type SetState,
 } from "@/app/signal-catcher/_components/kolPanel3";
-import { SignalCard } from "@/app/signal-catcher/_components/signal-card";
+import { KolCard } from "@/app/signal-catcher/_components/kol-card";
 import { LoadingMoreBtn } from "@/app/signal-catcher/_components/loading-more-btn";
 
 type Props = {
@@ -78,7 +78,7 @@ export function KolPanel2({ getTweetListAction, addFollowAction }: Props) {
   return (
     <>
       {tweetList.map((tweet) => (
-        <SignalCard
+        <KolCard
           tweet={tweet}
           addFollowAction={addFollowAction}
           key={tweet.id}

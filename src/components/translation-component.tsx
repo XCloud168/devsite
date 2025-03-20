@@ -75,7 +75,7 @@ const TranslationComponent: React.FC<TranslationComponentProps> = ({
       <div className="relative">
         <p
           ref={contentRef}
-          className={`my-3 whitespace-pre-wrap transition-all duration-200 ${
+          className={`transition-all duration-200 ${
             isExpanded ? "" : "line-clamp-3"
           }`}
         >
@@ -128,9 +128,7 @@ const TranslationComponent: React.FC<TranslationComponentProps> = ({
           </div>
         )}
         {translatedContent && (
-          <p className="bg-[#F0F0F0] p-3 dark:bg-[#1B2427]">
-            {translatedContent}
-          </p>
+          <p className="rounded-xl bg-[#2B2C2C] p-3">{translatedContent}</p>
         )}
       </div>
     </div>

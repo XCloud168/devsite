@@ -31,7 +31,7 @@ interface TweetItem extends Omit<TweetInfo, "tweetUser"> {
   tweetUser: TweetUsers;
 }
 
-export function SignalCard({ tweet, addFollowAction }: Props) {
+export function KolCard({ tweet, addFollowAction }: Props) {
   const t = useTranslations();
   const [addLoading, setAddLoading] = useState<boolean>(false);
   const captureRef = useRef<HTMLDivElement>(null);
@@ -62,11 +62,8 @@ export function SignalCard({ tweet, addFollowAction }: Props) {
     link.download = `screenshot-${tweet.id}.png`;
     link.click();
   };
-  useEffect(() => {
-    console.log(tweet);
-  }, [tweet]);
   return (
-    <div className="px-5 pt-5" key={tweet.id}>
+    <div className="border-b px-5 pt-5" key={tweet.id}>
       <p className="relative pl-2 before:absolute before:left-0 before:top-1/2 before:h-[4px] before:w-[4px] before:-translate-y-1/2 before:rounded-full before:bg-white before:content-['']">
         {dayjs(tweet.tweetCreatedAt).format("YYYY/MM/DD HH:mm:ss")}
       </p>
@@ -90,6 +87,7 @@ export function SignalCard({ tweet, addFollowAction }: Props) {
           {addFollowAction && (
             <Button
               variant="outline"
+              className="rounded-xl"
               onClick={() => {
                 setAddLoading(true);
                 if (tweet.tweetUser) handleAddFollow(tweet.tweetUser.id);
@@ -102,7 +100,7 @@ export function SignalCard({ tweet, addFollowAction }: Props) {
         </div>
         <div></div>
       </div>
-      <div className="mt-4 rounded-lg border">
+      <div className="mt-4 rounded-lg">
         {/*<p className="mb-1.5 px-3 pt-3">{tweet.content}</p>*/}
         <div className="px-4">
           <TranslationComponent content={tweet.contentSummary ?? ""} />

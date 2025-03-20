@@ -17,6 +17,7 @@ import {
 
 import { FeaturedComponent } from "@/app/signal-catcher/_components/featured-component";
 import { type SIGNAL_PROVIDER_TYPE } from "@/lib/constants";
+import React from "react";
 
 export default async function SignalPage() {
   //获取推特列表
@@ -63,9 +64,9 @@ export default async function SignalPage() {
     return await getTagStatistics(type, {});
   };
   return (
-    <div className="w-full">
+    <div className="w-full overflow-hidden">
       <ResizablePanelGroup direction="horizontal" className="h-full w-full">
-        <ResizablePanel defaultSize={65}>
+        <ResizablePanel defaultSize={55}>
           <div className="block items-center justify-center">
             <KolComponent
               getTweetListAction={getTweetList}
@@ -75,13 +76,14 @@ export default async function SignalPage() {
             />
           </div>
         </ResizablePanel>
-        <ResizableHandle withHandle />
-        <ResizablePanel defaultSize={35} maxSize={50} minSize={30}>
-          <div className="block items-center justify-center">
+        <ResizableHandle className="bg-primary/60" withHandle />
+        <ResizablePanel defaultSize={45} minSize={35} maxSize={50}>
+          <div className="relative block items-center justify-center overflow-hidden bg-gradient-to-r from-[#DEECFF] to-[#FFFFFF] dark:from-[#0A1325] dark:to-[#050911]">
             <FeaturedComponent
               getSignalListAction={getSignalList}
               getTagListAction={getTagList}
             />
+            <div className="fixed bottom-0 z-[1] h-[438px] w-full bg-[url(/images/signal/featured-bg.svg)] bg-contain bg-no-repeat"></div>
           </div>
         </ResizablePanel>
       </ResizablePanelGroup>

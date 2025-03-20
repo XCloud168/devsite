@@ -29,7 +29,7 @@ export function KolComponent({
   });
 
   return (
-    <div className="scroll-container h-[calc(100vh-60px)] overflow-y-scroll scrollbar-thin scrollbar-track-transparent scrollbar-thumb-secondary">
+    <div className="">
       <KolBanner onKolMenuChangeAction={(menu: KolMenu) => setKolMenu(menu)} />
       <KolList
         menu={kolMenu}

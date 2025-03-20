@@ -22,7 +22,7 @@
         "dark": "Dark"
     },
     "common": {
-        "loading": "Loading...",
+        "loading": "Loading",
         "error": "Error",
         "success": "Success",
         "save": "Save",
@@ -237,34 +237,37 @@
         }
     },
     "pricing": {
-        "title": "Choose Your Subscription Plan",
-        "description": "Choose the plan that best fits your needs. All plans provide full feature access, with differences in subscription duration and discount levels.",
+        "title": "Choose Your VIP Plan",
+        "description": "All plans include full access. Longer subscriptions, bigger savings.",
         "save": "Save",
-        "select": "Select",
+        "select": "Purchase",
         "loading": "Processing...",
         "plans": {
             "monthly": {
-                "name": "Monthly Plan",
+                "name": "Monthly VIP",
                 "features": [
-                    "1000 Transactions",
-                    "1000 Transactions",
-                    "1000 Transactions"
+                    "Custom monitoring for efficient token selection",
+                    "Real-time curated signals to seize key opportunities",
+                    "Priority buy/sell decisions to boost investment success",
+                    "Standalone app alerts to avoid message distractions"
                 ]
             },
             "quarterly": {
-                "name": "Quarterly Plan",
+                "name": "Quarterly VIP",
                 "features": [
-                    "1000 Transactions",
-                    "1000 Transactions",
-                    "1000 Transactions"
+                    "Custom monitoring for efficient token selection",
+                    "Real-time curated signals to seize key opportunities",
+                    "Priority buy/sell decisions to boost investment success",
+                    "Standalone app alerts to avoid message distractions"
                 ]
             },
             "yearly": {
-                "name": "Yearly Plan",
+                "name": "Annual VIP",
                 "features": [
-                    "1000 Transactions",
-                    "1000 Transactions",
-                    "1000 Transactions"
+                    "Custom monitoring for efficient token selection",
+                    "Real-time curated signals to seize key opportunities",
+                    "Priority buy/sell decisions to boost investment success",
+                    "Standalone app alerts to avoid message distractions"
                 ]
             }
         }
@@ -330,7 +333,9 @@
         "signal": {
             "curatedSignals": "Curated Signals",
             "notVip": "Non-VIP users can't access 24h real-time data",
-            "quickSwap": "Quick Swap"
+            "quickSwap": "Quick Swap",
+            "mentionAbove": "KOL mentioned above",
+            "over": "Over"
         }
     }
 }

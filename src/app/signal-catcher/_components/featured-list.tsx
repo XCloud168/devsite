@@ -38,6 +38,11 @@ interface SignalItems extends Signals {
   };
   project: Projects;
   times: string;
+  hitKOLs: {
+    avatar: string;
+    id: string;
+    name: string;
+  }[];
 }
 
 export type FetchSignalListAction = (
@@ -115,7 +120,7 @@ export function FeaturedList({ getSignalListAction, menu, tagId }: Props) {
     }
   }, [tagId]);
   return (
-    <>
+    <div className="scroll-container relative z-[5] h-[calc(100vh-276px)] overflow-y-scroll scrollbar-thin scrollbar-track-transparent scrollbar-thumb-secondary">
       {signalList.map((signal) => (
         <FeaturedCard signal={signal} key={signal.id} showLine />
       ))}
@@ -124,6 +129,6 @@ export function FeaturedList({ getSignalListAction, menu, tagId }: Props) {
         hasNext={hasNext}
         onNextAction={handleNextPage}
       />
-    </>
+    </div>
   );
 }

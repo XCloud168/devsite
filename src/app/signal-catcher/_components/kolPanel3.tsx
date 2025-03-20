@@ -19,7 +19,7 @@ import {
 import { type ServerResult } from "@/lib/server-result";
 import dayjs from "dayjs";
 import { toast } from "sonner";
-import { SignalCard } from "@/app/signal-catcher/_components/signal-card";
+import { KolCard } from "@/app/signal-catcher/_components/kol-card";
 import { LoadingMoreBtn } from "@/app/signal-catcher/_components/loading-more-btn";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useTranslations } from "next-intl";
@@ -197,7 +197,7 @@ export function KolPanel3({
             </div>
           </div>
           {tweetList.map((tweet) => (
-            <SignalCard tweet={tweet} key={tweet.id} />
+            <KolCard tweet={tweet} key={tweet.id} />
           ))}
           {!pageLoading && tweetList.length === 0 && (
             <div className="mt-4 flex justify-center">
