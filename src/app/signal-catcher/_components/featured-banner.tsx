@@ -97,7 +97,7 @@ export function FeaturedBanner({
 
   return (
     <div className="sticky top-0 z-10 bg-gradient-to-r from-[#DEECFF] to-[#FFFFFF] dark:from-[#0A1325] dark:to-[#050911]">
-      <div className="flex items-end gap-1 px-5 pt-5">
+      <div className="flex items-center gap-1 px-5 pt-5">
         <p className="font-bold">{t("signals.signal.curatedSignals")}</p>
         <p className="text-xs text-black/50 dark:text-white/50">
           *{t("signals.signal.notVip")}
