@@ -12,8 +12,8 @@ import {
   projects,
   projectsRelations,
   signals,
+  signalsCategory,
   signalsRelations,
-  signalsTag,
 } from "./schemas/signal";
 import {
   tweetInfo,
@@ -28,7 +28,12 @@ import {
   payments,
   paymentsRelations,
 } from "./schemas/payment";
-import { news, newsRelations } from "./schemas/news";
+import {
+  news,
+  newsRelations,
+  newsEntity,
+  newsEntityRelations,
+} from "./schemas/news";
 
 export const authenticated = pgRole("authenticated").existing();
 
@@ -45,7 +50,7 @@ export {
   projectsRelations,
   signals,
   signalsRelations,
-  signalsTag,
+  signalsCategory,
   tweetInfo,
   tweetInfoRelations,
   tweetUsers,
@@ -57,4 +62,6 @@ export {
   paymentsRelations,
   news,
   newsRelations,
+  newsEntity,
+  newsEntityRelations,
 };

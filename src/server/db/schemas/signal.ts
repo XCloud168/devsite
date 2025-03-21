@@ -64,9 +64,11 @@ export const signals = pgTable(
     aiSummary: text("ai_summary"),
     signalTime: timestamp("signal_time", { withTimezone: true }).notNull(),
     projectId: uuid("project_id").references((): any => projects.id),
-    signalsTagId: uuid("signals_tag_id").references((): any => signalsTag.id),
+    categoryId: uuid("category_id")
+      .references((): any => signalsCategory.id)
+      .notNull(),
     mediaUrls: json("media_urls"),
-    providerId: uuid("provider_id"), // tweet_info.id announcement.id
+    providerId: uuid("provider_id").notNull(), // tweet_info.id announcement.id
     entityId: uuid("entity_id"), // 实体id 如twitter用户id exchange id
     providerType: varchar("provider_type", { length: 255 })
       .default("twitter")
@@ -75,8 +77,8 @@ export const signals = pgTable(
   (table) => [index("provider_id_idx").on(table.providerId)],
 ).enableRLS();
 
-export const signalsTag = pgTable(
-  "signals_tag",
+export const signalsCategory = pgTable(
+  "signals_category",
   {
     id: uuid("id").primaryKey().defaultRandom().notNull(),
     dateUpdated: timestamp("date_updated", {
@@ -102,9 +104,9 @@ export const signalsRelations = relations(signals, ({ one }) => ({
     fields: [signals.projectId],
     references: [projects.id],
   }),
-  signalsTag: one(signalsTag, {
-    fields: [signals.signalsTagId],
-    references: [signalsTag.id],
+  category: one(signalsCategory, {
+    fields: [signals.categoryId],
+    references: [signalsCategory.id],
   }),
 }));
 

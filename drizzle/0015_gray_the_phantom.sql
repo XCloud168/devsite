@@ -35,7 +35,27 @@ CREATE TABLE "site_news" (
 );
 --> statement-breakpoint
 ALTER TABLE "site_news" ENABLE ROW LEVEL SECURITY;--> statement-breakpoint
+CREATE TABLE "site_news_entity" (
+	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+	"name" varchar(255) NOT NULL,
+	"logo" text,
+	"description" text,
+	"website" varchar(255),
+	"api_endpoint" varchar(255),
+	"is_active" boolean DEFAULT true,
+	"date_created" timestamp with time zone DEFAULT now(),
+	CONSTRAINT "site_news_entity_name_unique" UNIQUE("name")
+);
+--> statement-breakpoint
+ALTER TABLE "site_news_entity" ENABLE ROW LEVEL SECURITY;--> statement-breakpoint
+ALTER TABLE "site_signals_tag" RENAME TO "site_signals_category";--> statement-breakpoint
+ALTER TABLE "site_signals" RENAME COLUMN "signals_tag_id" TO "category_id";--> statement-breakpoint
+ALTER TABLE "site_signals" DROP CONSTRAINT "site_signals_signals_tag_id_site_signals_tag_id_fk";
+--> statement-breakpoint
+ALTER TABLE "site_signals" ALTER COLUMN "provider_id" SET NOT NULL;--> statement-breakpoint
 ALTER TABLE "site_news" ADD CONSTRAINT "site_news_project_id_site_projects_id_fk" FOREIGN KEY ("project_id") REFERENCES "public"."site_projects"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "site_news" ADD CONSTRAINT "site_news_news_entity_id_site_news_entity_id_fk" FOREIGN KEY ("news_entity_id") REFERENCES "public"."site_news_entity"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 CREATE INDEX "news_title_idx" ON "site_news" USING btree ("title");--> statement-breakpoint
-CREATE INDEX "news_entity_id_idx" ON "site_news" USING btree ("news_entity_id");
+CREATE INDEX "news_entity_id_idx" ON "site_news" USING btree ("news_entity_id");--> statement-breakpoint
+CREATE INDEX "news_entity_name_idx" ON "site_news_entity" USING btree ("name");--> statement-breakpoint
+ALTER TABLE "site_signals" ADD CONSTRAINT "site_signals_category_id_site_signals_category_id_fk" FOREIGN KEY ("category_id") REFERENCES "public"."site_signals_category"("id") ON DELETE no action ON UPDATE no action;
