@@ -69,7 +69,7 @@ export const signals = pgTable(
       .notNull(),
     mediaUrls: json("media_urls"),
     providerId: uuid("provider_id").notNull(), // tweet_info.id announcement.id
-    entityId: uuid("entity_id"), // 实体id 如twitter用户id exchange id
+    entityId: uuid("entity_id").notNull(), // 实体id 如twitter用户id exchange id
     providerType: varchar("provider_type", { length: 255 })
       .default("twitter")
       .$type<SIGNAL_PROVIDER_TYPE>(),

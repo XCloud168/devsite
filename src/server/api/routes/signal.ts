@@ -265,16 +265,75 @@ export async function getSignalsByPaginated(
 }
 
 /**
- * 根据信号类别获取信号标签
- * @param type 信号类型
- * @returns 信号标签
+ * 根据信号类别获取信号实体
+ * @param categoryCode 信号类别
+ * @returns 信号实体
  */
-export async function getSignalTagsByType(type: SIGNAL_PROVIDER_TYPE) {
+export async function getSignalEntitiesByCategory(categoryCode: string) {
   return withServerResult(async () => {
-    if (type === SIGNAL_PROVIDER_TYPE.ANNOUNCEMENT) {
-      const tags = await db.query.exchange.findMany({});
-      return tags;
+    const category = await db.query.signalsCategory.findFirst({
+      where: eq(signalsCategory.code, categoryCode),
+    });
+
+    if (!category) {
+      return [];
     }
+
+    // 从信号中获取所有的providerType
+    const providers = await db
+      .selectDistinct({
+        providerType: signals.providerType,
+        entityId: signals.entityId,
+      })
+      .from(signals)
+      .where(eq(signals.categoryId, category.id));
+
+    let tags: any[] = [];
+
+    for (const provider of providers) {
+      switch (provider.providerType) {
+        case SIGNAL_PROVIDER_TYPE.ANNOUNCEMENT:
+          tags.push(
+            await db
+              .select({
+                id: exchange.id,
+                name: exchange.name,
+                logo: exchange.logo,
+                providerType: sql`${provider.providerType}`,
+              })
+              .from(exchange)
+              .where(eq(exchange.id, provider.entityId)),
+          );
+          break;
+        case SIGNAL_PROVIDER_TYPE.NEWS:
+          tags.push(
+            await db
+              .select({
+                id: newsEntity.id,
+                name: newsEntity.name,
+                logo: newsEntity.logo,
+                providerType: sql`${provider.providerType}`,
+              })
+              .from(newsEntity)
+              .where(eq(newsEntity.id, provider.entityId)),
+          );
+          break;
+        case SIGNAL_PROVIDER_TYPE.TWITTER:
+          tags.push(
+            await db
+              .select({
+                id: tweetUsers.id,
+                name: tweetUsers.name,
+                logo: tweetUsers.avatar,
+                providerType: sql`${provider.providerType}`,
+              })
+              .from(tweetUsers)
+              .where(eq(tweetUsers.id, provider.entityId)),
+          );
+          break;
+      }
+    }
+    return tags;
   });
 }
 
@@ -301,7 +360,7 @@ export async function getSignalTagsByType(type: SIGNAL_PROVIDER_TYPE) {
 export async function getTagStatistics(
   type: SIGNAL_PROVIDER_TYPE,
   filter: {
-    entityId?: string;
+    entityId: string;
   },
 ) {
   return withServerResult(async () => {

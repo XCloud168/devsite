@@ -10,7 +10,7 @@ const getSignalStatisticsSchema = z.object({
     .enum(Object.values(SIGNAL_PROVIDER_TYPE) as [string, ...string[]])
     .describe("信号提供者类型"),
   filter: z.object({
-    entityId: z.string().optional().describe("实体ID"),
+    entityId: z.string().describe("实体ID"),
   }),
 });
 
@@ -24,7 +24,7 @@ export async function POST(req: NextRequest) {
 
     // 调用服务端函数
     const result = await getTagStatistics(type as SIGNAL_PROVIDER_TYPE, {
-      entityId: entityId ?? undefined,
+      entityId,
     });
 
     return NextResponse.json(result);
