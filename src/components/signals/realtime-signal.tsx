@@ -14,10 +14,12 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { useLocalStorage } from "@/hooks/use-localstorage";
+import { useMembership } from "@/hooks/use-membership";
 import { getSignalsByPaginated } from "@/server/api/routes/signal";
 import { type Projects, type Signals } from "@/server/db/schemas/signal";
 import type { TweetInfo } from "@/server/db/schemas/tweet";
 import { createClient } from "@/utils/supabase/client";
+import { getUserProfile } from "@/server/api/routes/auth";
 
 interface SignalItems extends Signals {
   source: TweetInfo & {
@@ -41,18 +43,22 @@ interface SignalItems extends Signals {
 export default function RealtimeSignal() {
   const [signals, setSignals] = useState<SignalItems[]>([]);
   const [showDialog, setShowDialog] = useState(false);
+  const [sound, setSound] = useState<string>("/audios/coin.wav");
+  const [notificationEnabled, setNotificationEnabled] =
+    useState<boolean>(false);
   const [audioEnabled, setAudioEnabled] = useLocalStorage<boolean>(
     "audioNotificationEnabled",
     false,
   );
   const [audio, setAudio] = useState<Howl | null>(null);
+  const { isMember, isLoading, isExpired } = useMembership();
   const t = useTranslations("signals");
 
   // 处理音频授权
   const handleEnableAudio = () => {
-    if (!audio) {
+    if (!audio && notificationEnabled) {
       const newAudio = new Howl({
-        src: ["/audios/coin.wav"],
+        src: [sound],
         volume: 1,
         preload: true,
       });
@@ -69,10 +75,18 @@ export default function RealtimeSignal() {
     }
     handleEnableAudio();
 
+    const getUserSettings = async () => {
+      const profile = await getUserProfile();
+      setNotificationEnabled(profile?.enableNotification ?? false);
+      setSound(profile?.notificationSound ?? "/audios/coin.wav");
+    };
+
+    getUserSettings();
+
     // 在客户端初始化音频
     if (typeof window !== "undefined" && audioEnabled && !audio) {
       const newAudio = new Howl({
-        src: ["/audios/coin.wav"],
+        src: [sound],
         volume: 1,
         preload: true,
       });
@@ -81,6 +95,11 @@ export default function RealtimeSignal() {
   }, [audioEnabled, audio, handleEnableAudio]);
 
   useEffect(() => {
+    // 如果正在加载会员状态或者不是会员，则不订阅实时信号
+    if (isLoading || !isMember || isExpired) {
+      return;
+    }
+
     const supabase = createClient();
     const channel = supabase
       .channel("realtime-signal")
@@ -100,6 +119,8 @@ export default function RealtimeSignal() {
         providerType: payload.new.provider_type,
         // @ts-ignore @ts-expect-error
         signalId: payload.new.id,
+        // @ts-ignore @ts-expect-error
+        categoryId: payload.new.category_id,
       });
       console.log("newSignal", newSignal);
       setSignals((prev) => [
@@ -126,7 +147,7 @@ export default function RealtimeSignal() {
     return () => {
       supabase.removeChannel(channel);
     };
-  }, [audioEnabled, audio]);
+  }, [isLoading, isMember, isExpired, audioEnabled, audio]);
 
   const handlePreviousSignal = () => {
     setSignals((prevSignals) => {
