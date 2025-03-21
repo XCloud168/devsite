@@ -6,12 +6,29 @@ import { db } from "@/server/db";
 import {
   announcement,
   exchange,
+  news,
+  newsEntity,
   signals,
+  signalsCategory,
   tweetInfo,
   tweetUsers,
 } from "@/server/db/schema";
 import { and, count, eq, inArray, isNotNull, lte, sql } from "drizzle-orm";
 import { getUserProfile } from "./auth";
+
+/**
+ * 获取信号类别
+ * @returns 信号类别
+ */
+export async function getSignalCategories() {
+  return withServerResult(async () => {
+    const categories = await db.query.signalsCategory.findMany({
+      orderBy: (signalsCategory, { asc }) => [asc(signalsCategory.sort)],
+    });
+    return categories;
+  });
+}
+
 /**
  * 分页获取信号列表
  * @param page 页码
@@ -25,7 +42,8 @@ import { getUserProfile } from "./auth";
 export async function getSignalsByPaginated(
   page = 1,
   filter: {
-    providerType: SIGNAL_PROVIDER_TYPE;
+    categoryCode: string;
+    providerType?: SIGNAL_PROVIDER_TYPE;
     entityId?: string;
     providerId?: string;
     signalId?: string;
@@ -42,13 +60,26 @@ export async function getSignalsByPaginated(
     // 构建查询条件
     const conditions = [];
 
+    // 类别ID条件
+    if (filter.categoryCode) {
+      const category = await db.query.signalsCategory.findFirst({
+        where: eq(signalsCategory.code, filter.categoryCode),
+      });
+
+      if (category?.id) {
+        conditions.push(eq(signals.categoryId, category.id));
+      }
+    }
+
     // 时间戳条件
     if (filterTimestamp) {
       conditions.push(lte(signals.signalTime, new Date(filterTimestamp)));
     }
 
     // 提供者类型条件
-    conditions.push(eq(signals.providerType, filter.providerType));
+    if (filter.providerType) {
+      conditions.push(eq(signals.providerType, filter.providerType));
+    }
 
     // 提供者ID条件
     if (filter.providerId) {
@@ -75,7 +106,7 @@ export async function getSignalsByPaginated(
         where: whereClause,
         with: {
           project: true,
-          signalsTag: true,
+          category: true,
         },
         extras: {
           times: sql<number>`(SELECT COUNT(*)
@@ -190,6 +221,33 @@ export async function getSignalsByPaginated(
       );
     }
 
+    if (groupedByProviderType.news) {
+      const newsDetails = await db.query.news.findMany({
+        where: inArray(news.id, groupedByProviderType.news),
+        with: {
+          project: true,
+          newsEntity: true,
+        },
+      });
+      const newsDetailsMap = newsDetails.reduce(
+        (acc, detail) => {
+          acc[detail.id] = detail;
+          return acc;
+        },
+        {} as Record<string, any>,
+      );
+
+      itemsWithContent.push(
+        ...items.map((item) => ({
+          ...item,
+          source:
+            item.providerType === SIGNAL_PROVIDER_TYPE.NEWS && item.providerId
+              ? newsDetailsMap[item.providerId]
+              : null,
+        })),
+      );
+    }
+
     const totalCount = countResult[0]?.value ?? 0;
     const totalPages = Math.ceil(totalCount / ITEMS_PER_PAGE);
 
@@ -277,6 +335,33 @@ export async function getTagStatistics(
           .leftJoin(exchange, eq(announcement.exchangeId, exchange.id))
           .where(whereClause)
           .groupBy(announcement.exchangeId, exchange.name, exchange.logo);
+        break;
+      case SIGNAL_PROVIDER_TYPE.NEWS:
+        if (filter.entityId) {
+          conditions.push(eq(news.newsEntityId, filter.entityId));
+        }
+        conditions.push(isNotNull(news.newsEntityId));
+        conditions.push(isNotNull(news.projectId));
+
+        const newsWhereClause =
+          conditions.length > 0 ? and(...conditions) : undefined;
+
+        tags = await db
+          .select({
+            id: news.newsEntityId,
+            name: newsEntity.name,
+            logo: newsEntity.logo,
+            signalsCount: count(),
+            riseCount: count(sql`${news.highRate24H}::numeric > 0`),
+            fallCount: count(sql`${news.lowRate24H}::numeric < 0`),
+            avgRiseRate: sql`ROUND(AVG(${news.highRate24H}), 2)`,
+            avgFallRate: sql`ROUND(AVG(${news.lowRate24H}), 2)`,
+            projectIds: sql`COALESCE(jsonb_agg(DISTINCT ${news.projectId}) FILTER (WHERE ${news.highRate24H}::numeric > 0), jsonb '[]')`,
+          })
+          .from(news)
+          .leftJoin(newsEntity, eq(news.newsEntityId, newsEntity.id))
+          .where(newsWhereClause)
+          .groupBy(news.newsEntityId, newsEntity.name, newsEntity.logo);
         break;
       case SIGNAL_PROVIDER_TYPE.TWITTER:
       default:

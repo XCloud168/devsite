@@ -6,7 +6,7 @@ Content-Type: application/json
 {
   "page": 1,
   "filter": {
-    "providerType": "twitter"
+    "categoryCode": "kol"
   }
 }
 

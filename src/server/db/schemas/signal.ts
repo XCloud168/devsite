@@ -81,13 +81,19 @@ export const signalsCategory = pgTable(
   "signals_category",
   {
     id: uuid("id").primaryKey().defaultRandom().notNull(),
-    dateUpdated: timestamp("date_updated", {
-      precision: 6,
+    dateCreated: timestamp("date_created", {
       withTimezone: true,
-      mode: "string",
-    }),
+    })
+      .defaultNow()
+      .notNull(),
+    dateUpdated: timestamp("date_updated", {
+      withTimezone: true,
+    })
+      .defaultNow()
+      .notNull()
+      .$onUpdate(() => new Date()),
     name: varchar("name", { length: 255 }),
-    code: varchar("code", { length: 255 }),
+    code: varchar("code", { length: 255 }).notNull().unique(),
     sort: integer("sort").default(0).notNull(),
   },
   (table) => [index("code_idx").on(table.code)],

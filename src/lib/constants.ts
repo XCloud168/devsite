@@ -163,6 +163,7 @@ export const ErrorCategory = {
 export enum SIGNAL_PROVIDER_TYPE {
   ANNOUNCEMENT = "announcement",
   TWITTER = "twitter",
+  NEWS = "news",
 }
 
 export enum NOTIFY_SOUNDS {
