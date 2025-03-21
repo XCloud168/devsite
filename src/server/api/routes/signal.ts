@@ -175,14 +175,12 @@ export async function getSignalsByPaginated(
       );
 
       itemsWithContent.push(
-        ...items.map((item) => ({
-          ...item,
-          source:
-            item.providerType === SIGNAL_PROVIDER_TYPE.TWITTER &&
-            item.providerId
-              ? tweetDetailsMap[item.providerId]
-              : null,
-        })),
+        ...items
+          .filter((item) => item.providerType === SIGNAL_PROVIDER_TYPE.TWITTER)
+          .map((item) => ({
+            ...item,
+            source: tweetDetailsMap[item.providerId],
+          })),
       );
     }
 
@@ -204,14 +202,14 @@ export async function getSignalsByPaginated(
       );
 
       itemsWithContent.push(
-        ...items.map((item) => ({
-          ...item,
-          source:
-            item.providerType === SIGNAL_PROVIDER_TYPE.ANNOUNCEMENT &&
-            item.providerId
-              ? announcementDetailsMap[item.providerId]
-              : null,
-        })),
+        ...items
+          .filter(
+            (item) => item.providerType === SIGNAL_PROVIDER_TYPE.ANNOUNCEMENT,
+          )
+          .map((item) => ({
+            ...item,
+            source: announcementDetailsMap[item.providerId],
+          })),
       );
     }
 
@@ -232,13 +230,12 @@ export async function getSignalsByPaginated(
       );
 
       itemsWithContent.push(
-        ...items.map((item) => ({
-          ...item,
-          source:
-            item.providerType === SIGNAL_PROVIDER_TYPE.NEWS && item.providerId
-              ? newsDetailsMap[item.providerId]
-              : null,
-        })),
+        ...items
+          .filter((item) => item.providerType === SIGNAL_PROVIDER_TYPE.NEWS)
+          .map((item) => ({
+            ...item,
+            source: newsDetailsMap[item.providerId],
+          })),
       );
     }
 

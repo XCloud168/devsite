@@ -6,7 +6,7 @@ Content-Type: application/json
 {
   "page": 1,
   "filter": {
-    "categoryCode": "kol"
+    "categoryId": "83d28d2b-25b4-42e7-9335-ba2affbb3c31"
   }
 }
 
