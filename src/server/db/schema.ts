@@ -28,6 +28,7 @@ import {
   payments,
   paymentsRelations,
 } from "./schemas/payment";
+import { news, newsRelations } from "./schemas/news";
 
 export const authenticated = pgRole("authenticated").existing();
 
@@ -54,4 +55,6 @@ export {
   paymentAddresses,
   payments,
   paymentsRelations,
+  news,
+  newsRelations,
 };
