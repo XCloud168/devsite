@@ -293,7 +293,7 @@ export async function getSignalEntitiesByCategory(categoryCode: string) {
     for (const provider of providers) {
       switch (provider.providerType) {
         case SIGNAL_PROVIDER_TYPE.ANNOUNCEMENT:
-          tags.concat(
+          tags = tags.concat(
             await db
               .select({
                 id: exchange.id,
@@ -306,7 +306,7 @@ export async function getSignalEntitiesByCategory(categoryCode: string) {
           );
           break;
         case SIGNAL_PROVIDER_TYPE.NEWS:
-          tags.concat(
+          tags = tags.concat(
             await db
               .select({
                 id: newsEntity.id,
@@ -319,7 +319,7 @@ export async function getSignalEntitiesByCategory(categoryCode: string) {
           );
           break;
         case SIGNAL_PROVIDER_TYPE.TWITTER:
-          tags.concat(
+          tags = tags.concat(
             await db
               .select({
                 id: tweetUsers.id,
