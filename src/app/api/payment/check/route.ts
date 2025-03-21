@@ -2,12 +2,16 @@ import { withServerResult } from "@/lib/server-result";
 import { checkPayment } from "@/server/api/routes/payment";
 import { NextResponse, type NextRequest } from "next/server";
 
-export async function POST(req: NextRequest) {
-  const result = await withServerResult(async () => {
-    const body = await req.json();
-    const { paymentId } = body;
+import { env } from "@/env";
 
-    const result = await checkPayment(paymentId);
+export async function GET(req: NextRequest) {
+  const authHeader = req.headers.get("Authorization");
+  if (authHeader !== `Bearer ${env.CRON_SECRET}`) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  const result = await withServerResult(async () => {
+    const result = await checkPayment();
 
     return result;
   });

@@ -69,13 +69,6 @@ export const PRICING_PLANS = {
   },
 };
 
-export const SUPPORTED_CHAIN_CURRENCY = {
-  ETH: "USDT",
-  SOL: "USDT",
-  TRX: "USDT",
-  BSC: "USDT",
-};
-
 /**
  * 每页显示的条数
  */
@@ -194,16 +187,22 @@ export const SUPPORTED_CHAIN_USDT_CONTRACT_ADDRESS = {
     chainId: "0x38",
     decimals: 18,
   },
-  SOL: {
-    address: "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
-    chain: "SOL",
-    chainId: "0x1f4",
+  ARB: {
+    address: "0xfd086bc7cd5c481dcc9c85ebe478a1c0b69fcbb9",
+    chain: "ARB",
+    chainId: "0xa4b1",
     decimals: 6,
   },
-  TRX: {
-    address: "TQ9iZ7y5ZQd52y8y36v68z12K2kL55Jw222222222",
-    chain: "TRX",
-    chainId: "0x1",
+  BASE: {
+    address: "0x4200000000000000000000000000000000000006",
+    chain: "BASE",
+    chainId: "0x2105",
+    decimals: 18,
+  },
+  POLYGON: {
+    address: "0xc2132D05D31c914a87C6611C10748AEb04B58e8F",
+    chain: "POLYGON",
+    chainId: "0x89",
     decimals: 6,
   },
 };

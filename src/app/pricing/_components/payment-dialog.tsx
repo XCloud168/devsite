@@ -2,7 +2,7 @@
 
 import { CheckIcon, Loader2, TimerIcon, XIcon } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 
 import { QRCode } from "@/components/qrcode";
@@ -16,7 +16,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Separator } from "@/components/ui/separator";
-import { SUPPORTED_CHAIN_CURRENCY } from "@/lib/constants";
+import { SUPPORTED_CHAIN_USDT_CONTRACT_ADDRESS } from "@/lib/constants";
 import { checkout, confirmPayment } from "@/server/api/routes/payment";
 import { type PLAN_TYPE, type SUPPORTED_CHAIN } from "@/types/constants";
 
@@ -46,6 +46,18 @@ export function PaymentDialog({ planType, plan }: PaymentDialogProps) {
   const [orderData, setOrderData] = useState<PaymentData | null>(null);
   const [countdown, setCountdown] = useState(900); // 15 minutes
   const [timer, setTimer] = useState<NodeJS.Timeout>();
+
+  const qrCode = useMemo(() => {
+    if (!orderData) return null;
+    return (
+      <QRCode
+        text={orderData.receiverAddress}
+        width={200}
+        logo={`/images/usdt.png`}
+        logoWidth={50}
+      />
+    );
+  }, [orderData]);
 
   // 清理定时器
   const clearCountdownTimer = () => {
@@ -183,7 +195,9 @@ export function PaymentDialog({ planType, plan }: PaymentDialogProps) {
             <div className="flex flex-col items-center justify-center gap-3">
               <div className="flex w-full flex-wrap items-center justify-center gap-2">
                 {(
-                  Object.keys(SUPPORTED_CHAIN_CURRENCY) as SUPPORTED_CHAIN[]
+                  Object.keys(
+                    SUPPORTED_CHAIN_USDT_CONTRACT_ADDRESS,
+                  ) as SUPPORTED_CHAIN[]
                 ).map((network) => (
                   <Button
                     key={network}
@@ -209,12 +223,7 @@ export function PaymentDialog({ planType, plan }: PaymentDialogProps) {
               </div>
 
               {!loading && orderData ? (
-                <QRCode
-                  text={orderData.receiverAddress}
-                  width={200}
-                  darkColor="#010599FF"
-                  lightColor="#FFBF60FF"
-                />
+                qrCode
               ) : (
                 <div className="flex flex-col items-center justify-center gap-2">
                   <div className="rounded-lg border bg-muted p-4">

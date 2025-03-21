@@ -1,7 +1,7 @@
 /**
  * 支持的链
  */
-export type SUPPORTED_CHAIN = "BSC" | "ETH" | "TRX" | "SOL";
+export type SUPPORTED_CHAIN = "BSC" | "ETH" | "ARB" | "BASE" | "POLYGON";
 
 /**
  * 支付状态
@@ -26,4 +26,7 @@ export type SIGNAL_PROVIDER_TYPE = "twitter" | "announcement";
 /**
  * 用户类型
  */
-export type USER_TYPE = "super_influencer" | "institution_projects" | "kol_opinions";
+export type USER_TYPE =
+  | "super_influencer"
+  | "institution_projects"
+  | "kol_opinions";

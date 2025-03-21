@@ -9,6 +9,8 @@ interface QRCodeProps {
   lightColor?: string;
   margin?: number;
   className?: string;
+  logo?: string;
+  logoWidth?: number;
 }
 
 export function QRCode({
@@ -18,6 +20,8 @@ export function QRCode({
   lightColor = "#FFFFFFFF",
   margin = 2,
   className,
+  logo,
+  logoWidth = 50,
 }: QRCodeProps) {
   const { Canvas } = useQRCode();
 
@@ -36,6 +40,18 @@ export function QRCode({
             light: lightColor,
           },
         }}
+        logo={
+          logo
+            ? {
+                src: logo,
+                options: {
+                  width: logoWidth,
+                  x: undefined,
+                  y: undefined,
+                },
+              }
+            : undefined
+        }
       />
     </div>
   );

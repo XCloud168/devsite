@@ -8,6 +8,7 @@ export const env = createEnv({
       .enum(["development", "test", "production"])
       .default("development"),
     MORALIS_API_KEY: z.string().min(1),
+    CRON_SECRET: z.string().min(1),
   },
 
   client: {
@@ -25,6 +26,7 @@ export const env = createEnv({
     NEXT_PUBLIC_SUPABASE_URL: process.env.NEXT_PUBLIC_SUPABASE_URL,
     NEXT_PUBLIC_SUPABASE_ANON_KEY: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
     MORALIS_API_KEY: process.env.MORALIS_API_KEY,
+    CRON_SECRET: process.env.CRON_SECRET,
   },
 
   /**

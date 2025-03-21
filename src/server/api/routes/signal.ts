@@ -124,6 +124,21 @@ export async function getSignalsByPaginated(
         with: {
           project: true,
           tweetUser: true,
+          replyTweet: {
+            with: {
+              tweetUser: true,
+            },
+          },
+          quotedTweet: {
+            with: {
+              tweetUser: true,
+            },
+          },
+          retweetTweet: {
+            with: {
+              tweetUser: true,
+            },
+          },
         },
       });
       const tweetDetailsMap = tweetDetails.reduce(

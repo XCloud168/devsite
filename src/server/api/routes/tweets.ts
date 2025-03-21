@@ -73,6 +73,21 @@ export async function getTweetsByPaginated(
               )`.as("isFollowed"),
             },
           },
+          replyTweet: {
+            with: {
+              tweetUser: true,
+            },
+          },
+          quotedTweet: {
+            with: {
+              tweetUser: true,
+            },
+          },
+          retweetTweet: {
+            with: {
+              tweetUser: true,
+            },
+          },
           project: true,
         },
         orderBy: (tweetInfo, { desc }) => [desc(tweetInfo.tweetCreatedAt)],

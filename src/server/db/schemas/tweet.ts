@@ -182,28 +182,28 @@ export const tweetInfoRelations = relations(tweetInfo, ({ one, many }) => ({
     fields: [tweetInfo.projectId],
     references: [projects.id],
   }),
-  tweetInfo_quotedTweet: one(tweetInfo, {
+  quotedTweet: one(tweetInfo, {
     fields: [tweetInfo.quotedTweet],
     references: [tweetInfo.id],
     relationName: "tweetInfo_quotedTweet_tweetInfo_id",
   }),
-  tweetInfos_quotedTweet: many(tweetInfo, {
+  quotedByTweets: many(tweetInfo, {
     relationName: "tweetInfo_quotedTweet_tweetInfo_id",
   }),
-  tweetInfo_replyTweetId: one(tweetInfo, {
+  replyTweet: one(tweetInfo, {
     fields: [tweetInfo.replyTweetId],
     references: [tweetInfo.id],
     relationName: "tweetInfo_replyTweetId_tweetInfo_id",
   }),
-  tweetInfos_replyTweetId: many(tweetInfo, {
+  repliedByTweets: many(tweetInfo, {
     relationName: "tweetInfo_replyTweetId_tweetInfo_id",
   }),
-  tweetInfo_retweetTweetId: one(tweetInfo, {
+  retweetTweet: one(tweetInfo, {
     fields: [tweetInfo.retweetTweetId],
     references: [tweetInfo.id],
     relationName: "tweetInfo_retweetTweetId_tweetInfo_id",
   }),
-  tweetInfos_retweetTweetId: many(tweetInfo, {
+  retweetedByTweets: many(tweetInfo, {
     relationName: "tweetInfo_retweetTweetId_tweetInfo_id",
   }),
   tweetUser: one(tweetUsers, {
