@@ -1,0 +1,1 @@
+ALTER TABLE "site_news" ADD COLUMN "media_urls" json;
