@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { type TweetInfo, type TweetUsers } from "@/server/db/schemas/tweet";
 import dayjs from "dayjs";
 import Link from "next/link";
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
@@ -26,12 +26,16 @@ import { useTranslations } from "next-intl";
 type Props = {
   tweet: TweetItem;
   addFollowAction?: (tweetUid: string) => Promise<ServerResult>;
+  showShare?: boolean;
 };
 interface TweetItem extends Omit<TweetInfo, "tweetUser"> {
-  tweetUser: TweetUsers;
+  tweetUser: TweetUsers & {
+    isFollowed: boolean;
+  };
+  replyTweet: TweetInfo;
 }
 
-export function KolCard({ tweet, addFollowAction }: Props) {
+export function KolCard({ tweet, addFollowAction, showShare }: Props) {
   const t = useTranslations();
   const [addLoading, setAddLoading] = useState<boolean>(false);
   const captureRef = useRef<HTMLDivElement>(null);
@@ -63,7 +67,7 @@ export function KolCard({ tweet, addFollowAction }: Props) {
     link.click();
   };
   return (
-    <div className="border-b px-5 pt-5" key={tweet.id}>
+    <div className="px-5 pt-5" key={tweet.id}>
       <p className="relative pl-2 before:absolute before:left-0 before:top-1/2 before:h-[4px] before:w-[4px] before:-translate-y-1/2 before:rounded-full before:bg-white before:content-['']">
         {dayjs(tweet.tweetCreatedAt).format("YYYY/MM/DD HH:mm:ss")}
       </p>
@@ -92,9 +96,11 @@ export function KolCard({ tweet, addFollowAction }: Props) {
                 setAddLoading(true);
                 if (tweet.tweetUser) handleAddFollow(tweet.tweetUser.id);
               }}
-              disabled={addLoading}
+              disabled={addLoading || tweet.tweetUser.isFollowed}
             >
-              {t("signals.kol.addKol")}
+              {tweet.tweetUser.isFollowed
+                ? t("signals.kol.followed")
+                : t("signals.kol.follow")}
             </Button>
           )}
         </div>
@@ -102,84 +108,92 @@ export function KolCard({ tweet, addFollowAction }: Props) {
       </div>
       <div className="mt-4 rounded-lg">
         {/*<p className="mb-1.5 px-3 pt-3">{tweet.content}</p>*/}
-        <div className="px-4">
-          <TranslationComponent content={tweet.contentSummary ?? ""} />
+        <div className="w-1/2 px-4">
+          <TranslationComponent content={tweet.content ?? ""} />
         </div>
-        <div className="flex gap-10 p-3">
-          <Link
-            className="flex items-center gap-1 text-xs text-[#949C9E]"
-            href="/"
-          >
-            <div className="h-3 w-3 bg-[url(/images/signal/link.svg)] bg-contain"></div>
-            <div className="text-xs text-[#949C9E]">
-              {t("signals.showOriginal")}
-            </div>
-          </Link>
-          <div className="flex items-center gap-1 text-xs text-[#949C9E]">
-            <div className="h-2.5 w-2.5 bg-[url(/images/signal/share.svg)] bg-contain"></div>
-            <Dialog>
-              <DialogTrigger className="text-xs text-[#949C9E]">
-                {t("common.share")}
-              </DialogTrigger>
-              <DialogContent className="border bg-white p-0 dark:bg-black">
-                <DialogHeader>
-                  <DialogTitle className="flex items-center gap-3 border-b p-4">
-                    <div>
-                      <Image
-                        src="/images/logo.svg"
-                        alt="Logo"
-                        width={32}
-                        height={32}
-                        className="h-8 w-8"
-                      />
-                    </div>
-                    <p>Dev Site</p>
-                  </DialogTitle>
-                  <DialogDescription></DialogDescription>
-                </DialogHeader>
-                <div className="flex flex-col gap-2 p-4" ref={captureRef}>
-                  <p className="relative pl-2 before:absolute before:left-0 before:top-1/2 before:h-[4px] before:w-[4px] before:-translate-y-1/2 before:rounded-full before:bg-white before:content-['']">
-                    {dayjs(tweet.tweetCreatedAt).format("YYYY/MM/DD HH:mm:ss")}
-                  </p>
-                  <div className="flex items-center gap-1.5">
-                    <div className="h-8 w-8">
-                      <Avatar className="h-8 w-8">
-                        <AvatarImage src={tweet.tweetUser.avatar ?? ""} />
-                        <AvatarFallback></AvatarFallback>
-                      </Avatar>
-                    </div>
-                    <div>
-                      <p>{tweet.tweetUser.name}</p>
-                      <div className="flex gap-3">
-                        <p className="text-xs">@{tweet.tweetUser.screenName}</p>
-                        <p className="text-xs">
-                          {tweet.tweetUser.followersCount}&nbsp;
-                          {t("signals.kol.followers")}
-                        </p>
+        {showShare ? (
+          <div className="flex gap-10 p-3">
+            <Link
+              className="flex items-center gap-1 text-xs text-[#949C9E]"
+              href="/"
+            >
+              <div className="h-3 w-3 bg-[url(/images/signal/link.svg)] bg-contain"></div>
+              <div className="text-xs text-[#949C9E]">
+                {t("signals.showOriginal")}
+              </div>
+            </Link>
+            <div className="flex items-center gap-1 text-xs text-[#949C9E]">
+              <div className="h-2.5 w-2.5 bg-[url(/images/signal/share.svg)] bg-contain"></div>
+              <Dialog>
+                <DialogTrigger className="text-xs text-[#949C9E]">
+                  {t("common.share")}
+                </DialogTrigger>
+                <DialogContent className="border bg-white p-0 dark:bg-black">
+                  <DialogHeader>
+                    <DialogTitle className="flex items-center gap-3 border-b p-4">
+                      <div>
+                        <Image
+                          src="/images/logo.svg"
+                          alt="Logo"
+                          width={32}
+                          height={32}
+                          className="h-8 w-8"
+                        />
+                      </div>
+                      <p>Dev Site</p>
+                    </DialogTitle>
+                    <DialogDescription></DialogDescription>
+                  </DialogHeader>
+                  <div className="flex flex-col gap-2 p-4" ref={captureRef}>
+                    <p className="relative pl-2 before:absolute before:left-0 before:top-1/2 before:h-[4px] before:w-[4px] before:-translate-y-1/2 before:rounded-full before:bg-white before:content-['']">
+                      {dayjs(tweet.tweetCreatedAt).format(
+                        "YYYY/MM/DD HH:mm:ss",
+                      )}
+                    </p>
+                    <div className="flex items-center gap-1.5">
+                      <div className="h-8 w-8">
+                        <Avatar className="h-8 w-8">
+                          <AvatarImage src={tweet.tweetUser.avatar ?? ""} />
+                          <AvatarFallback></AvatarFallback>
+                        </Avatar>
+                      </div>
+                      <div>
+                        <p>{tweet.tweetUser.name}</p>
+                        <div className="flex gap-3">
+                          <p className="text-xs">
+                            @{tweet.tweetUser.screenName}
+                          </p>
+                          <p className="text-xs">
+                            {tweet.tweetUser.followersCount}&nbsp;
+                            {t("signals.kol.followers")}
+                          </p>
+                        </div>
                       </div>
                     </div>
+                    <div>{tweet.contentSummary}</div>
                   </div>
-                  <div>{tweet.contentSummary}</div>
-                </div>
-                <div className="flex justify-between p-4">
-                  <p className="text-xs text-white/60">
-                    Web3 Major Investment Signal Catcher!
-                  </p>
-                  <div className="flex gap-2">
-                    <p className="text-xs text-white/60">www.masbate.xyz</p>
-                    <p className="text-xs text-white/60">@masbateofficial</p>
+                  <div className="flex justify-between p-4">
+                    <p className="text-xs text-white/60">
+                      Web3 Major Investment Signal Catcher!
+                    </p>
+                    <div className="flex gap-2">
+                      <p className="text-xs text-white/60">www.masbate.xyz</p>
+                      <p className="text-xs text-white/60">@masbateofficial</p>
+                    </div>
                   </div>
-                </div>
-                <div className="absolute -bottom-12 -left-1 flex w-full justify-center gap-4">
-                  <Button variant="outline">{t("signals.shareToX")}</Button>
-                  <Button variant="default" onClick={() => handleSaveImage()}>
-                    {t("common.saveImage")}
-                  </Button>
-                </div>
-              </DialogContent>
-            </Dialog>
+                  <div className="absolute -bottom-12 -left-1 flex w-full justify-center gap-4">
+                    <Button variant="outline">{t("signals.shareToX")}</Button>
+                    <Button variant="default" onClick={() => handleSaveImage()}>
+                      {t("common.saveImage")}
+                    </Button>
+                  </div>
+                </DialogContent>
+              </Dialog>
+            </div>
           </div>
-        </div>
+        ) : (
+          <div className="h-4"></div>
+        )}
       </div>
     </div>
   );

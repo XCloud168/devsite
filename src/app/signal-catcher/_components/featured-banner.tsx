@@ -47,7 +47,7 @@ export function FeaturedBanner({
     label: SIGNAL_PROVIDER_TYPE.TWITTER,
     id: "1",
   });
-  const [showDetails, setShowDetails] = useState(false);
+  // const [showDetails, setShowDetails] = useState(false);
   const [selectedTagId, setSelectedTagId] = useState<string>("");
   const [tagLoading, setTagLoading] = useState<boolean>(true);
   useEffect(() => {
@@ -97,7 +97,7 @@ export function FeaturedBanner({
   }, [selectedMenu.tags, selectedTagId]);
 
   return (
-    <div className="sticky top-0 z-10 bg-gradient-to-r from-[#DEECFF] to-[#FFFFFF] dark:from-[#0A1325] dark:to-[#050911]">
+    <div className="sticky top-0 z-10">
       <div className="flex items-center gap-1 px-5 pt-5">
         <p className="font-bold">{t("signals.signal.curatedSignals")}</p>
         <p className="text-xs text-black/50 dark:text-white/50">
@@ -115,6 +115,7 @@ export function FeaturedBanner({
                 onFeaturedMenuChangeAction(menu);
                 setSelectedMenu(menu);
                 handleChangeTag(menu);
+                setSelectedTagId("");
               }}
             >
               {menu.label.replace(/^\w/, (c) => c.toUpperCase())}
@@ -123,7 +124,7 @@ export function FeaturedBanner({
         </div>
       </div>
 
-      <div className="bg-[#CEE4FF] px-5 pt-3 dark:bg-black">
+      <div className="px-5 pt-3">
         {!tagLoading && selectedMenu && (
           <Tabs
             defaultValue={selectedMenu.tags?.find((item) => item.selected)?.id}
@@ -131,7 +132,7 @@ export function FeaturedBanner({
             onValueChange={(event) => {
               setSelectedTagId(event);
               onTagChangeAction(event);
-              setShowDetails(true);
+              // setShowDetails(true);
             }}
           >
             <TabsList className="flex h-auto flex-wrap justify-start gap-2 bg-transparent">
@@ -139,7 +140,7 @@ export function FeaturedBanner({
                 <TabsTrigger
                   key={item.id}
                   value={item.id}
-                  className="flex w-fit justify-start gap-1 rounded-xl bg-[#E1EEFF] p-1.5 dark:bg-secondary"
+                  className="flex w-fit justify-start gap-1 rounded-xl bg-white/50 p-1.5 dark:bg-secondary"
                 >
                   <Avatar className="h-5 w-5 rounded-full">
                     <AvatarImage src={item.logo ?? ""} />
@@ -152,48 +153,38 @@ export function FeaturedBanner({
           </Tabs>
         )}
       </div>
-      <div
-        className={`relative mb-5 border-b bg-[#CEE4FF] dark:bg-black ${showDetails ? "p-3" : "p-1.5"}`}
-      >
-        <div
-          className={`absolute left-1/2 h-2 w-10 -translate-x-1/2 cursor-pointer ${
-            showDetails ? "bottom-0 rotate-180" : "bottom-[-8px]"
-          }`}
-          onClick={() => setShowDetails((prev) => !prev)}
-        >
-          <TriangleIcon />
-        </div>
-        <div
-          className={`grid w-full grid-cols-4 gap-3 overflow-hidden transition-all duration-500 ease-in-out ${
-            showDetails ? "grid" : "hidden"
-          }`}
-        >
-          <div className="relative w-full px-3">
-            <p className="text-xs">Total New Token Listings</p>
-            <p className="text-lg font-bold text-[#1976F7] dark:text-[#F2DA18]">
-              {selectedTag?.signalsCount}
-            </p>
-          </div>
-          <div className="relative w-full px-3">
-            <p className="text-xs">Total New Token Listings</p>
-            <p className="text-lg font-bold text-[#1976F7] dark:text-[#F2DA18]">
-              {selectedTag?.signalsCount}
-            </p>
-          </div>
-          <div className="relative w-full px-3">
-            <p className="text-xs">Total New Token Listings</p>
-            <p className="text-lg font-bold text-[#1976F7] dark:text-[#F2DA18]">
-              {selectedTag?.fallCount}
-            </p>
-          </div>
-          <div className="relative w-full px-3">
-            <p className="text-xs">Total New Token Listings</p>
-            <p className="text-lg font-bold text-[#1976F7] dark:text-[#F2DA18]">
-              {selectedTag?.avgRiseRate}
-            </p>
+      {selectedTagId !== "" ? (
+        <div className="relative mx-5 my-3 rounded-xl bg-white/50 py-2 dark:bg-[#161C25]">
+          <div className="grid w-full grid-cols-4 gap-3 overflow-hidden">
+            <div className="relative w-full px-3">
+              <p className="text-xs">Total New Token Listings</p>
+              <p className="text-lg font-bold text-[#1976F7] dark:text-[#F2DA18]">
+                {selectedTag?.signalsCount}
+              </p>
+            </div>
+            <div className="relative w-full px-3">
+              <p className="text-xs">Total New Token Listings</p>
+              <p className="text-lg font-bold text-[#1976F7] dark:text-[#F2DA18]">
+                {selectedTag?.signalsCount}
+              </p>
+            </div>
+            <div className="relative w-full px-3">
+              <p className="text-xs">Total New Token Listings</p>
+              <p className="text-lg font-bold text-[#1976F7] dark:text-[#F2DA18]">
+                {selectedTag?.fallCount}
+              </p>
+            </div>
+            <div className="relative w-full px-3">
+              <p className="text-xs">Total New Token Listings</p>
+              <p className="text-lg font-bold text-[#1976F7] dark:text-[#F2DA18]">
+                {selectedTag?.avgRiseRate}
+              </p>
+            </div>
           </div>
         </div>
-      </div>
+      ) : (
+        <div className="my-3 opacity-0">123</div>
+      )}
     </div>
   );
 }

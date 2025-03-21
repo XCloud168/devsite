@@ -9,7 +9,7 @@ import { type FeaturedMenu } from "@/app/signal-catcher/_components/featured-ban
 import { type Projects, type Signals } from "@/server/db/schemas/signal";
 import dayjs from "dayjs";
 import { type TweetInfo } from "@/server/db/schemas/tweet";
-import { type SetState } from "@/app/signal-catcher/_components/kolPanel3";
+import { type SetState } from "@/app/signal-catcher/_components/my-followed";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { LoadingMoreBtn } from "@/app/signal-catcher/_components/loading-more-btn";
 import { type SIGNAL_PROVIDER_TYPE } from "@/lib/constants";
@@ -120,7 +120,7 @@ export function FeaturedList({ getSignalListAction, menu, tagId }: Props) {
     }
   }, [tagId]);
   return (
-    <div className="scroll-container relative z-[5] h-[calc(100vh-276px)] overflow-y-scroll scrollbar-thin scrollbar-track-transparent scrollbar-thumb-secondary">
+    <div className="scroll-container relative z-[5] h-[calc(100vh-324px)] overflow-y-scroll scrollbar-thin scrollbar-track-transparent scrollbar-thumb-secondary">
       {signalList.map((signal) => (
         <FeaturedCard signal={signal} key={signal.id} showLine />
       ))}

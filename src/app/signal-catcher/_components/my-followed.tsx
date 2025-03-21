@@ -46,9 +46,12 @@ interface WatchItem extends Omit<Watchlist, "tweetUser"> {
   tweetUser: TweetUsers;
 }
 interface TweetItem extends Omit<TweetInfo, "tweetUser"> {
-  tweetUser: TweetUsers;
+  tweetUser: TweetUsers & {
+    isFollowed: boolean;
+  };
+  replyTweet: TweetInfo;
 }
-export function KolPanel3({
+export function MyFollowed({
   getTweetListAction,
   getFollowedListAction,
   removeFollowAction,
@@ -249,7 +252,7 @@ export function KolPanel3({
                     <TableCell className="flex h-full items-center gap-0.5">
                       <Avatar className="h-8 w-8">
                         <AvatarImage src={data.tweetUser.avatar ?? ""} />
-                        <AvatarFallback>CN</AvatarFallback>
+                        <AvatarFallback></AvatarFallback>
                       </Avatar>
                       {data.tweetUser.name}
                     </TableCell>

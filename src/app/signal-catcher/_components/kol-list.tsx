@@ -1,8 +1,8 @@
 "use client";
 
 import { type KolMenu } from "@/app/signal-catcher/_components/kol-banner";
-import { KolPanel3 } from "@/app/signal-catcher/_components/kolPanel3";
-import { KolPanel2 } from "@/app/signal-catcher/_components/kolPanel2";
+import { MyFollowed } from "@/app/signal-catcher/_components/my-followed";
+import { KolPoint } from "@/app/signal-catcher/_components/kol-point";
 import { type ServerResult } from "@/lib/server-result";
 type Props = {
   getFollowedListAction: () => Promise<ServerResult>;
@@ -28,16 +28,16 @@ export function KolList({
   return (
     <div className="scroll-container h-[calc(100vh-124px)] overflow-y-scroll scrollbar-thin scrollbar-track-transparent scrollbar-thumb-secondary">
       {menu.value === "2" ? (
-        <KolPanel2
+        <KolPoint
           getTweetListAction={getTweetListAction}
           addFollowAction={addFollowAction}
-        ></KolPanel2>
+        ></KolPoint>
       ) : (
-        <KolPanel3
+        <MyFollowed
           getTweetListAction={getTweetListAction}
           getFollowedListAction={getFollowedListAction}
           removeFollowAction={removeFollowAction}
-        ></KolPanel3>
+        ></MyFollowed>
       )}
     </div>
   );

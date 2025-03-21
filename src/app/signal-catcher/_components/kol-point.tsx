@@ -6,7 +6,7 @@ import { type TweetInfo, type TweetUsers } from "@/server/db/schemas/tweet";
 import {
   type FetchTweetListAction,
   type SetState,
-} from "@/app/signal-catcher/_components/kolPanel3";
+} from "@/app/signal-catcher/_components/my-followed";
 import { KolCard } from "@/app/signal-catcher/_components/kol-card";
 import { LoadingMoreBtn } from "@/app/signal-catcher/_components/loading-more-btn";
 
@@ -22,10 +22,13 @@ type Props = {
   ) => Promise<ServerResult>;
 };
 interface TweetItem extends Omit<TweetInfo, "tweetUser"> {
-  tweetUser: TweetUsers;
+  tweetUser: TweetUsers & {
+    isFollowed: boolean;
+  };
+  replyTweet: TweetItem;
 }
 
-export function KolPanel2({ getTweetListAction, addFollowAction }: Props) {
+export function KolPoint({ getTweetListAction, addFollowAction }: Props) {
   const [tweetList, setTweetList] = useState<TweetItem[]>([]);
   const [hasNext, setHasNext] = useState<boolean>(true);
   const [pageLoading, setPageLoading] = useState<boolean>(false);
@@ -44,6 +47,7 @@ export function KolPanel2({ getTweetListAction, addFollowAction }: Props) {
       followed: false,
       hasContractAddress,
     });
+    console.log(response);
     setTweetList((prev) =>
       page === 1 ? response.data.items : prev.concat(response.data.items),
     );
@@ -78,11 +82,14 @@ export function KolPanel2({ getTweetListAction, addFollowAction }: Props) {
   return (
     <>
       {tweetList.map((tweet) => (
-        <KolCard
-          tweet={tweet}
-          addFollowAction={addFollowAction}
-          key={tweet.id}
-        />
+        <div key={tweet.id} className="border-b pb-4">
+          <KolCard tweet={tweet} addFollowAction={addFollowAction} />
+          {tweet.replyTweet ? (
+            <div className="m-4 rounded-lg border">
+              <KolCard tweet={tweet.replyTweet} />
+            </div>
+          ) : null}
+        </div>
       ))}
       <LoadingMoreBtn
         pageLoading={pageLoading}

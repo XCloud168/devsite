@@ -76,9 +76,15 @@ export default async function SignalPage() {
             />
           </div>
         </ResizablePanel>
-        <ResizableHandle className="bg-primary/60" withHandle />
-        <ResizablePanel defaultSize={45} minSize={35} maxSize={50}>
-          <div className="relative block items-center justify-center overflow-hidden bg-gradient-to-r from-[#DEECFF] to-[#FFFFFF] dark:from-[#0A1325] dark:to-[#050911]">
+        <ResizableHandle className="bg-primary/20" withHandle />
+        <ResizablePanel
+          defaultSize={45}
+          minSize={35}
+          maxSize={50}
+          className="relative"
+        >
+          <div className="absolute h-svh w-full bg-gradient-to-b from-[#DEECFF] to-[#FFFFFF] dark:from-[#0A132580] dark:to-[#050911]"></div>
+          <div className="relative block items-center justify-center overflow-hidden">
             <FeaturedComponent
               getSignalListAction={getSignalList}
               getTagListAction={getTagList}
