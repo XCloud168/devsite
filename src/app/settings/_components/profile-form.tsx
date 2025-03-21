@@ -17,12 +17,14 @@ import {
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { getUserProfile } from "@/server/api/routes/auth";
+import { updateUserProfile } from "@/server/api/routes/profile";
 import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
 export function ProfileForm() {
   const t = useTranslations("profile.sections.profile");
+  const profileT = useTranslations("profile");
   const commonT = useTranslations("common");
   const [isLoading, setIsLoading] = useState(true);
 
@@ -88,8 +90,16 @@ export function ProfileForm() {
     loadUserProfile();
   }, [form, t]);
 
-  function onSubmit(_: ProfileFormValues) {
-    toast.success(t("updateSuccess"));
+  async function onSubmit(_: ProfileFormValues) {
+    const { username, email, bio } = form.getValues();
+    const result = await updateUserProfile(username, email, bio);
+    if (!result.error) {
+      toast.success(profileT("updateSuccess"));
+    } else {
+      toast.error(profileT("updateError"), {
+        description: result.error.message,
+      });
+    }
   }
 
   if (isLoading) {

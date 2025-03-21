@@ -130,14 +130,10 @@
             "notifications": {
                 "title": "Notification Settings",
                 "description": "Configure how you receive notifications",
-                "communicationEmails": "Communication Emails",
-                "communicationEmailsDescription": "Receive emails about your account activity.",
-                "marketingEmails": "Marketing Emails",
-                "marketingEmailsDescription": "Receive marketing and promotional information.",
-                "socialEmails": "Social Emails",
-                "socialEmailsDescription": "Receive emails about social activity.",
-                "securityEmails": "Security Emails",
-                "securityEmailsDescription": "Receive emails about account security."
+                "enableSignalNotifications": "Enable Signal Notifications",
+                "enableSignalNotificationsDescription": "Enable to receive signal notifications.",
+                "notifySounds": "Notify Sounds",
+                "notifySoundsDescription": "Select your preferred notification sound."
             },
             "security": {
                 "title": "Security Settings",
@@ -153,7 +149,8 @@
                 }
             }
         },
-        "updateSuccess": "Settings updated successfully"
+        "updateSuccess": "Settings updated successfully",
+        "updateError": "Failed to update settings"
     },
     "my": {
         "title": "Personal Center",

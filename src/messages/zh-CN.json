@@ -130,14 +130,11 @@
             "notifications": {
                 "title": "通知设置",
                 "description": "配置如何接收通知",
-                "communicationEmails": "通信邮件",
-                "communicationEmailsDescription": "接收与您的账户相关的通信邮件。",
-                "marketingEmails": "营销邮件",
-                "marketingEmailsDescription": "接收营销和促销信息。",
-                "socialEmails": "社交邮件",
-                "socialEmailsDescription": "接收社交活动相关的邮件。",
-                "securityEmails": "安全邮件",
-                "securityEmailsDescription": "接收账户安全相关的邮件。"
+                "securityEmailsDescription": "接收账户安全相关的邮件。",
+                "enableSignalNotifications": "启用信号通知",
+                "enableSignalNotificationsDescription": "启用以接收信号通知。",
+                "notifySounds": "通知声音",
+                "notifySoundsDescription": "选择您偏好的通知声音。"
             },
             "security": {
                 "title": "安全设置",
@@ -153,7 +150,8 @@
                 }
             }
         },
-        "updateSuccess": "设置已更新"
+        "updateSuccess": "设置已更新",
+        "updateError": "设置更新失败"
     },
     "my": {
         "title": "个人中心",

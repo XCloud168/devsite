@@ -122,5 +122,7 @@ export async function getUserProfile() {
     avatarUrl: profile?.avatarUrl,
     membershipExpiredAt: profile?.membershipExpiredAt,
     inviteCode: profile?.inviteCode,
+    enableNotification: profile?.enableNotification,
+    notificationSound: profile?.notificationSound,
   };
 }

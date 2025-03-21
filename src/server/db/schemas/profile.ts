@@ -1,4 +1,11 @@
-import { boolean, index, timestamp, uuid, varchar } from "drizzle-orm/pg-core";
+import {
+  boolean,
+  index,
+  text,
+  timestamp,
+  uuid,
+  varchar,
+} from "drizzle-orm/pg-core";
 
 import { users } from "./auth";
 import { pgTable } from "./base";
@@ -11,6 +18,7 @@ export const profiles = pgTable(
       .primaryKey()
       .references(() => users.id),
     username: varchar("username", { length: 256 }).notNull(),
+    email: varchar("email", { length: 256 }),
     inviteCode: varchar("invite_code", { length: 10 })
       .unique()
       .$defaultFn(() => {
@@ -24,6 +32,7 @@ export const profiles = pgTable(
     inviterId: uuid("inviter_id").references((): any => profiles.id),
     inviterSkipped: boolean("inviter_skipped").default(false),
     avatarUrl: varchar("avatar_url", { length: 256 }),
+    bio: text("bio"),
     createdAt: timestamp("created_at", { withTimezone: true })
       .defaultNow()
       .notNull(),
@@ -36,6 +45,10 @@ export const profiles = pgTable(
     membershipExpiredAt: timestamp("membership_expired_at", {
       withTimezone: true,
     }),
+
+    // 杂项设置
+    enableNotification: boolean("enable_notification").default(true),
+    notificationSound: varchar("notification_sound", { length: 256 }),
   },
   (table) => [
     index("invite_code_idx").on(table.inviteCode),
