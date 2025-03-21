@@ -42,7 +42,7 @@ export async function getSignalCategories() {
 export async function getSignalsByPaginated(
   page = 1,
   filter: {
-    categoryCode: string;
+    categoryId: string;
     providerType?: SIGNAL_PROVIDER_TYPE;
     entityId?: string;
     providerId?: string;
@@ -61,14 +61,8 @@ export async function getSignalsByPaginated(
     const conditions = [];
 
     // 类别ID条件
-    if (filter.categoryCode) {
-      const category = await db.query.signalsCategory.findFirst({
-        where: eq(signalsCategory.code, filter.categoryCode),
-      });
-
-      if (category?.id) {
-        conditions.push(eq(signals.categoryId, category.id));
-      }
+    if (filter.categoryId) {
+      conditions.push(eq(signals.categoryId, filter.categoryId));
     }
 
     // 时间戳条件
@@ -266,13 +260,13 @@ export async function getSignalsByPaginated(
 
 /**
  * 根据信号类别获取信号实体
- * @param categoryCode 信号类别
+ * @param categoryId 信号类别ID
  * @returns 信号实体
  */
-export async function getSignalEntitiesByCategory(categoryCode: string) {
+export async function getSignalEntitiesByCategory(categoryId: string) {
   return withServerResult(async () => {
     const category = await db.query.signalsCategory.findFirst({
-      where: eq(signalsCategory.code, categoryCode),
+      where: eq(signalsCategory.id, categoryId),
     });
 
     if (!category) {
