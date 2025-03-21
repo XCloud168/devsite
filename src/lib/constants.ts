@@ -177,32 +177,42 @@ export enum NOTIFY_SOUNDS {
 export const SUPPORTED_CHAIN_USDT_CONTRACT_ADDRESS = {
   ETH: {
     address: "0xdAC17F958D2ee523a2206206994597C13D831ec7",
+    logo: "/images/ether.webp",
     chain: "ETH",
+    chainName: "Ethereum",
     chainId: "0x1",
     decimals: 6,
   },
   BSC: {
     address: "0x55d398326f99059ff775485246999027b3197955",
+    logo: "/images/bsc.webp",
     chain: "BSC",
+    chainName: "Binance Smart Chain",
     chainId: "0x38",
     decimals: 18,
   },
   ARB: {
     address: "0xfd086bc7cd5c481dcc9c85ebe478a1c0b69fcbb9",
+    logo: "/images/arb.webp",
     chain: "ARB",
     chainId: "0xa4b1",
+    chainName: "Arbitrum One",
     decimals: 6,
   },
   BASE: {
     address: "0x4200000000000000000000000000000000000006",
+    logo: "/images/base.webp",
     chain: "BASE",
     chainId: "0x2105",
+    chainName: "Base",
     decimals: 18,
   },
   POLYGON: {
     address: "0xc2132D05D31c914a87C6611C10748AEb04B58e8F",
+    logo: "/images/polygon.webp",
     chain: "POLYGON",
     chainId: "0x89",
+    chainName: "Polygon",
     decimals: 6,
   },
 };

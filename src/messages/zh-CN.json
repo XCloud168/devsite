@@ -1,7 +1,5 @@
 {
-    "home": {
-
-    },
+    "home": {},
     "metadata": {
         "siteName": "DevSite",
         "title": "我的博客",
@@ -243,7 +241,8 @@
                 "title": "网络",
                 "switching": "切换中",
                 "unavailable": "当前网络不可用，请尝试切换其他支付网络",
-                "switching_message": "正在切换网络，请稍候..."
+                "switching_message": "正在切换网络，请稍候...",
+                "selected": "已选择支付网络:"
             },
             "countdown": {
                 "title": "请在以下时间内完成支付"

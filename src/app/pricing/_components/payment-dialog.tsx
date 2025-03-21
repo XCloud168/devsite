@@ -16,6 +16,12 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Separator } from "@/components/ui/separator";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { SUPPORTED_CHAIN_USDT_CONTRACT_ADDRESS } from "@/lib/constants";
 import { checkout, confirmPayment } from "@/server/api/routes/payment";
 import { type PLAN_TYPE, type SUPPORTED_CHAIN } from "@/types/constants";
@@ -123,7 +129,7 @@ export function PaymentDialog({ planType, plan }: PaymentDialogProps) {
     if (result.error) {
       setOrderData(null);
       clearCountdownTimer();
-      toast.error(t("toast.update_order.error"), {
+      toast.error(t("dialog.network.unavailable"), {
         description: result.error.message ?? t("toast.update_order.retry"),
       });
       setLoading(false);
@@ -193,33 +199,41 @@ export function PaymentDialog({ planType, plan }: PaymentDialogProps) {
             </div>
 
             <div className="flex flex-col items-center justify-center gap-3">
-              <div className="flex w-full flex-wrap items-center justify-center gap-2">
-                {(
-                  Object.keys(
-                    SUPPORTED_CHAIN_USDT_CONTRACT_ADDRESS,
-                  ) as SUPPORTED_CHAIN[]
-                ).map((network) => (
-                  <Button
-                    key={network}
-                    variant={
-                      selectedNetwork === network ? "default" : "outline"
-                    }
-                    className="min-w-[120px] flex-1 text-sm"
-                    onClick={() => handleNetworkChange(network)}
-                    disabled={loading}
-                  >
-                    {loading && selectedNetwork === network ? (
-                      <div className="flex items-center gap-1">
-                        <div className="h-3 w-3 animate-spin rounded-full border-2 border-current border-t-transparent" />
-                        <span className="text-xs">
-                          {t("dialog.network.switching")}
-                        </span>
-                      </div>
-                    ) : (
-                      `${network} ${t("dialog.network.title")}`
-                    )}
-                  </Button>
-                ))}
+              <div className="text-center">
+                <span className="text-sm font-medium">
+                  {t("dialog.network.selected")}
+                  {
+                    SUPPORTED_CHAIN_USDT_CONTRACT_ADDRESS[selectedNetwork]
+                      .chainName
+                  }
+                </span>
+              </div>
+              <div className="flex space-x-2 overflow-x-auto py-2">
+                {Object.entries(SUPPORTED_CHAIN_USDT_CONTRACT_ADDRESS).map(
+                  ([network, { logo, chainName }]) => (
+                    <TooltipProvider key={network}>
+                      <Tooltip>
+                        <TooltipTrigger>
+                          <Button
+                            variant={
+                              selectedNetwork === network
+                                ? "default"
+                                : "outline"
+                            }
+                            className="flex items-center justify-center p-2"
+                            onClick={() =>
+                              handleNetworkChange(network as SUPPORTED_CHAIN)
+                            }
+                            disabled={loading}
+                          >
+                            <img src={logo} alt={network} className="h-6 w-6" />
+                          </Button>
+                        </TooltipTrigger>
+                        <TooltipContent>{chainName}</TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
+                  ),
+                )}
               </div>
 
               {!loading && orderData ? (
@@ -285,7 +299,10 @@ export function PaymentDialog({ planType, plan }: PaymentDialogProps) {
                   <div className="h-4 w-12 animate-pulse rounded bg-muted-foreground/20" />
                 ) : (
                   <span className="text-right font-semibold">
-                    {selectedNetwork}
+                    {
+                      SUPPORTED_CHAIN_USDT_CONTRACT_ADDRESS[selectedNetwork]
+                        .chainName
+                    }
                   </span>
                 )}
               </div>
