@@ -1,11 +1,11 @@
 "use client";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { useEffect, useMemo, useState } from "react";
-import { SIGNAL_PROVIDER_TYPE } from "@/lib/constants";
+import { useEffect, useState } from "react";
+import { type SIGNAL_PROVIDER_TYPE } from "@/lib/constants";
 import type { ServerResult } from "@/lib/server-result";
 import { useTranslations } from "next-intl";
-import { SignalsCategory } from "@/server/db/schemas/signal";
+import { type SignalsCategory } from "@/server/db/schemas/signal";
 interface Tag {
   id: string;
   name: string;
@@ -116,7 +116,7 @@ export function FeaturedBanner({
               onMenuChangeAction({
                 categoryId: selectedCategoryId,
                 providerType:
-                  currentTagList.filter((tag) => tag.id === event)[0]
+                  currentTagList.find((tag) => tag.id === event)
                     ?.providerType ?? undefined,
                 entityId: selectedTagId,
               });
