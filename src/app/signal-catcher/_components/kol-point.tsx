@@ -47,7 +47,6 @@ export function KolPoint({ getTweetListAction, addFollowAction }: Props) {
       followed: false,
       hasContractAddress,
     });
-    console.log(response);
     setTweetList((prev) =>
       page === 1 ? response.data.items : prev.concat(response.data.items),
     );
@@ -83,7 +82,7 @@ export function KolPoint({ getTweetListAction, addFollowAction }: Props) {
     <>
       {tweetList.map((tweet) => (
         <div key={tweet.id} className="border-b pb-4">
-          <KolCard tweet={tweet} addFollowAction={addFollowAction} />
+          <KolCard tweet={tweet} addFollowAction={addFollowAction} showShare />
           {tweet.replyTweet ? (
             <div className="m-4 rounded-lg border">
               <KolCard tweet={tweet.replyTweet} />

@@ -35,6 +35,7 @@ interface SignalItems extends Signals {
 
 export function FeaturedCard({ signal, showLine }: Props) {
   const t = useTranslations();
+  if (!signal.source) return null;
   return (
     <div
       className={`${showLine ? "grid grid-cols-[48px_1fr] gap-1" : "block"} overflow-hidden px-5`}
@@ -65,7 +66,6 @@ export function FeaturedCard({ signal, showLine }: Props) {
           {dayjs(signal.signalTime).format("YYYY/MM/DD HH:mm:ss")}
         </p>
         <div className="relative mt-2 h-fit w-full bg-transparent">
-          {/*<p className="py-2 text-white/90">{signal.source.content}</p>*/}
           <TranslationComponent content={signal.source.contentSummary ?? ""} />
           <div className="mb-2 flex flex-wrap">
             {signal.source.imagesUrls && signal.source.imagesUrls.length > 0
@@ -106,9 +106,6 @@ export function FeaturedCard({ signal, showLine }: Props) {
         {signal.project ? (
           <div className="relative block w-4/5 items-center gap-3 rounded-xl bg-white/80 p-4 dark:bg-[#161C25]">
             <div className="flex items-center gap-1.5">
-              {/*<div className="absolute right-2 top-0 h-[5px] w-[86px]">*/}
-              {/*  <TrapezoidIcon className="fill-[#4794FF] dark:fill-[#046082]" />*/}
-              {/*</div>*/}
               <div className="border-spin-image flex h-9 w-9 items-center justify-center">
                 <div className="z-[8] h-8 w-8 overflow-hidden rounded-full border-2 border-primary">
                   <div className="flex h-full w-full items-center justify-center">
@@ -142,7 +139,7 @@ export function FeaturedCard({ signal, showLine }: Props) {
                 </p>
               </div>
               <div>
-                <p className="mb-2 text-xs">情绪指标</p>
+                <p className="mb-2 text-xs">情绪指数</p>
                 <div className="flex items-center gap-1.5">
                   {signal.source.sentiment === "positive" ? (
                     <div className="h-4 w-4">
@@ -167,7 +164,7 @@ export function FeaturedCard({ signal, showLine }: Props) {
               <div>
                 <p className="mb-2 text-xs opacity-0">123</p>
                 <div className="flex cursor-pointer items-center gap-1 hover:scale-105">
-                  <div className="h-4 w-4 bg-[url(/images/signal/swap-btn.svg)] bg-contain bg-no-repeat">
+                  <div className="h-4 w-4">
                     <SwapIcon className="fill-[#1F72E5] dark:fill-[#FFFFA7]" />
                   </div>
                   <p className="text-[#1F72E5] dark:text-[#FFFFA7]">

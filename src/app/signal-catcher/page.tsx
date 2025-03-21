@@ -11,13 +11,17 @@ import {
   getTweetsByPaginated,
 } from "@/server/api/routes/tweets";
 import {
+  getSignalCategories,
   getSignalsByPaginated,
+  getSignalEntitiesByCategory,
   getTagStatistics,
 } from "@/server/api/routes/signal";
 
 import { FeaturedComponent } from "@/app/signal-catcher/_components/featured-component";
 import { type SIGNAL_PROVIDER_TYPE } from "@/lib/constants";
 import React from "react";
+import { SignalsCategory } from "@/server/db/schemas/signal";
+import { ServerResult } from "@/lib/server-result";
 
 export default async function SignalPage() {
   //获取推特列表
@@ -36,7 +40,8 @@ export default async function SignalPage() {
   const getSignalList = async (
     page: number,
     filter: {
-      providerType: SIGNAL_PROVIDER_TYPE;
+      categoryId: string;
+      providerType?: SIGNAL_PROVIDER_TYPE;
       entityId?: string;
     },
   ) => {
@@ -59,10 +64,21 @@ export default async function SignalPage() {
     return await deleteTweetFollowed(tweetUid);
   };
   //获取标签列表
-  const getTagList = async (type: SIGNAL_PROVIDER_TYPE) => {
+  // const getTagList = async (type: SIGNAL_PROVIDER_TYPE) => {
+  //   "use server";
+  //   return await getTagStatistics(type, {});
+  // };
+  //信号类别
+  const getSignalCategory = async () => {
     "use server";
-    return await getTagStatistics(type, {});
+    return await getSignalCategories();
   };
+  //查询标签
+  const getSignalTagsByCode = async (CategoryId: string) => {
+    "use server";
+    return await getSignalEntitiesByCategory(CategoryId);
+  };
+
   return (
     <div className="w-full overflow-hidden">
       <ResizablePanelGroup direction="horizontal" className="h-full w-full">
@@ -87,7 +103,8 @@ export default async function SignalPage() {
           <div className="relative block items-center justify-center overflow-hidden">
             <FeaturedComponent
               getSignalListAction={getSignalList}
-              getTagListAction={getTagList}
+              getTagListAction={getSignalTagsByCode}
+              getSignalCategoryAction={getSignalCategory}
             />
             <div className="fixed bottom-0 z-[1] h-[438px] w-full bg-[url(/images/signal/featured-bg.svg)] bg-contain bg-no-repeat"></div>
           </div>

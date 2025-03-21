@@ -118,3 +118,4 @@ export const signalsRelations = relations(signals, ({ one }) => ({
 
 export type Signals = InferSelectModel<typeof signals>;
 export type Projects = InferSelectModel<typeof projects>;
+export type SignalsCategory = InferSelectModel<typeof signalsCategory>;

@@ -4,24 +4,14 @@ import { Button } from "@/components/ui/button";
 import { type TweetInfo, type TweetUsers } from "@/server/db/schemas/tweet";
 import dayjs from "dayjs";
 import Link from "next/link";
-import { useRef, useState } from "react";
-
+import React, { useRef, useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
 import { toast } from "sonner";
-
 import TranslationComponent from "@/components/translation-component";
 import type { ServerResult } from "@/lib/server-result";
-import { toPng } from "html-to-image";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
+import Poster from "@/components/poster/poster";
 
 type Props = {
   tweet: TweetItem;
@@ -38,8 +28,6 @@ interface TweetItem extends Omit<TweetInfo, "tweetUser"> {
 export function KolCard({ tweet, addFollowAction, showShare }: Props) {
   const t = useTranslations();
   const [addLoading, setAddLoading] = useState<boolean>(false);
-  const captureRef = useRef<HTMLDivElement>(null);
-
   const handleAddFollow = (id: string) => {
     if (!addFollowAction) return;
     const fetchData = async () => {
@@ -54,18 +42,6 @@ export function KolCard({ tweet, addFollowAction, showShare }: Props) {
     fetchData();
   };
 
-  const handleSaveImage = async () => {
-    if (!captureRef.current) return;
-    const imgData = await toPng(captureRef.current, {
-      quality: 1,
-      pixelRatio: 2,
-      cacheBust: true,
-    });
-    const link = document.createElement("a");
-    link.href = imgData;
-    link.download = `screenshot-${tweet.id}.png`;
-    link.click();
-  };
   return (
     <div className="px-5 pt-5" key={tweet.id}>
       <p className="relative pl-2 before:absolute before:left-0 before:top-1/2 before:h-[4px] before:w-[4px] before:-translate-y-1/2 before:rounded-full before:bg-white before:content-['']">
@@ -124,71 +100,53 @@ export function KolCard({ tweet, addFollowAction, showShare }: Props) {
             </Link>
             <div className="flex items-center gap-1 text-xs text-[#949C9E]">
               <div className="h-2.5 w-2.5 bg-[url(/images/signal/share.svg)] bg-contain"></div>
-              <Dialog>
-                <DialogTrigger className="text-xs text-[#949C9E]">
-                  {t("common.share")}
-                </DialogTrigger>
-                <DialogContent className="border bg-white p-0 dark:bg-black">
-                  <DialogHeader>
-                    <DialogTitle className="flex items-center gap-3 border-b p-4">
-                      <div>
-                        <Image
-                          src="/images/logo.svg"
-                          alt="Logo"
-                          width={32}
-                          height={32}
-                          className="h-8 w-8"
-                        />
-                      </div>
-                      <p>Dev Site</p>
-                    </DialogTitle>
-                    <DialogDescription></DialogDescription>
-                  </DialogHeader>
-                  <div className="flex flex-col gap-2 p-4" ref={captureRef}>
-                    <p className="relative pl-2 before:absolute before:left-0 before:top-1/2 before:h-[4px] before:w-[4px] before:-translate-y-1/2 before:rounded-full before:bg-white before:content-['']">
-                      {dayjs(tweet.tweetCreatedAt).format(
-                        "YYYY/MM/DD HH:mm:ss",
-                      )}
-                    </p>
-                    <div className="flex items-center gap-1.5">
-                      <div className="h-8 w-8">
-                        <Avatar className="h-8 w-8">
-                          <AvatarImage src={tweet.tweetUser.avatar ?? ""} />
-                          <AvatarFallback></AvatarFallback>
-                        </Avatar>
-                      </div>
-                      <div>
-                        <p>{tweet.tweetUser.name}</p>
-                        <div className="flex gap-3">
-                          <p className="text-xs">
-                            @{tweet.tweetUser.screenName}
-                          </p>
-                          <p className="text-xs">
-                            {tweet.tweetUser.followersCount}&nbsp;
-                            {t("signals.kol.followers")}
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                    <div>{tweet.contentSummary}</div>
+              <Poster>
+                <div className="mb-4 flex items-center gap-2">
+                  <div>
+                    <Image
+                      src="/images/logo.svg"
+                      alt="Logo"
+                      width={32}
+                      height={32}
+                      className="h-8 w-8"
+                    />
                   </div>
-                  <div className="flex justify-between p-4">
-                    <p className="text-xs text-white/60">
-                      Web3 Major Investment Signal Catcher!
-                    </p>
-                    <div className="flex gap-2">
-                      <p className="text-xs text-white/60">www.masbate.xyz</p>
-                      <p className="text-xs text-white/60">@masbateofficial</p>
+                  <p>Dev Site</p>
+                </div>
+                <p className="relative pl-2 before:absolute before:left-0 before:top-1/2 before:h-[4px] before:w-[4px] before:-translate-y-1/2 before:rounded-full before:bg-white before:content-['']">
+                  {dayjs(tweet.tweetCreatedAt).format("YYYY/MM/DD HH:mm:ss")}
+                </p>
+                <div className="flex items-center gap-1.5">
+                  <div className="h-8 w-8">
+                    <Avatar className="h-8 w-8">
+                      <AvatarImage src={tweet.tweetUser.avatar ?? ""} />
+                      <AvatarFallback></AvatarFallback>
+                    </Avatar>
+                  </div>
+                  <div>
+                    <p>{tweet.tweetUser.name}</p>
+                    <div className="flex gap-3">
+                      <p className="text-xs">@{tweet.tweetUser.screenName}</p>
+                      <p className="text-xs">
+                        {tweet.tweetUser.followersCount}&nbsp;
+                        {t("signals.kol.followers")}
+                      </p>
                     </div>
                   </div>
-                  <div className="absolute -bottom-12 -left-1 flex w-full justify-center gap-4">
-                    <Button variant="outline">{t("signals.shareToX")}</Button>
-                    <Button variant="default" onClick={() => handleSaveImage()}>
-                      {t("common.saveImage")}
-                    </Button>
-                  </div>
-                </DialogContent>
-              </Dialog>
+                </div>
+                <div className="mt-4 min-h-80 rounded-lg border bg-white/10 p-2">
+                  {tweet.content}
+                </div>
+                <div className="mt-2 flex w-full items-center justify-center">
+                  <p className="text-xs text-white/30">
+                    Web3 Major Investment Signal Catcher!
+                  </p>
+                </div>
+                <div className="flex w-full items-center justify-center gap-2 pb-4">
+                  <p className="text-xs text-white/30">www.masbate.xyz</p>
+                  <p className="text-xs text-white/30">@masbateofficial</p>
+                </div>
+              </Poster>
             </div>
           </div>
         ) : (

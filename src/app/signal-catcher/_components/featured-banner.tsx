@@ -5,7 +5,7 @@ import { useEffect, useMemo, useState } from "react";
 import { SIGNAL_PROVIDER_TYPE } from "@/lib/constants";
 import type { ServerResult } from "@/lib/server-result";
 import { useTranslations } from "next-intl";
-import { TriangleIcon } from "@/components/ui/icon";
+import { SignalsCategory } from "@/server/db/schemas/signal";
 interface Tag {
   id: string;
   name: string;
@@ -23,79 +23,59 @@ export type FeaturedMenu = {
   tags?: Tag[];
 };
 interface Props {
-  onFeaturedMenuChangeAction: (menu: FeaturedMenu) => void;
-  getTagListAction: (type: SIGNAL_PROVIDER_TYPE) => Promise<ServerResult>;
-  onTagChangeAction: (id: string) => void;
+  onMenuChangeAction: ({
+    categoryId,
+    providerType,
+    entityId,
+  }: {
+    categoryId: string;
+    providerType?: SIGNAL_PROVIDER_TYPE;
+    entityId?: string;
+  }) => void;
+  getTagListAction: (id: string) => Promise<ServerResult>;
+  getSignalCategoryAction: () => Promise<ServerResult>;
 }
-export const featuredMenu: FeaturedMenu[] = [
-  {
-    label: SIGNAL_PROVIDER_TYPE.TWITTER,
-    id: "1",
-  },
-  {
-    label: SIGNAL_PROVIDER_TYPE.ANNOUNCEMENT,
-    id: "2",
-  },
-];
+
 export function FeaturedBanner({
-  onFeaturedMenuChangeAction,
+  onMenuChangeAction,
   getTagListAction,
-  onTagChangeAction,
+  getSignalCategoryAction,
 }: Props) {
   const t = useTranslations();
-  const [selectedMenu, setSelectedMenu] = useState<FeaturedMenu>({
-    label: SIGNAL_PROVIDER_TYPE.TWITTER,
-    id: "1",
-  });
+
   // const [showDetails, setShowDetails] = useState(false);
   const [selectedTagId, setSelectedTagId] = useState<string>("");
   const [tagLoading, setTagLoading] = useState<boolean>(true);
-  useEffect(() => {
-    const fetchData = async () => {
-      const response = await getTagListAction(SIGNAL_PROVIDER_TYPE.TWITTER);
-      setSelectedMenu({
-        ...selectedMenu,
-        tags: response.data.map((item: Tag) => ({
-          ...item,
-          selected: false,
-        })),
-      });
-      setTagLoading(false);
-    };
-    fetchData();
-  }, [getTagListAction]);
-  const handleChangeTag = async (menu: FeaturedMenu) => {
-    const response = await getTagListAction(menu.label);
-    setSelectedMenu({
-      ...menu,
-      tags: response.data.map((item: Tag) => ({
-        ...item,
-        selected: false,
-      })),
-    });
-
+  const [signalCategory, setSignalCategory] = useState<SignalsCategory[]>([]);
+  const [selectedCategoryId, setSelectedCategoryId] = useState<string>("");
+  const [currentTagList, setCurrentTagList] = useState<
+    {
+      id: string;
+      logo: string;
+      name: string;
+      providerType: SIGNAL_PROVIDER_TYPE;
+    }[]
+  >([]);
+  const handleChangeCategory = async (id: string) => {
+    const response = await getTagListAction(id);
+    setCurrentTagList(response.data);
+    console.log(response);
     setTagLoading(false);
   };
-  const selectedTag = useMemo(() => {
-    const list: Tag[] | undefined = selectedMenu.tags?.filter(
-      (item: Tag) => item.id === selectedTagId,
-    );
-    if (list && list.length > 0) {
-      return list[0];
-    }
-    return {
-      id: "string",
-      name: "string",
-      logo: "string",
-      signalsCount: 0,
-      riseCount: 0,
-      fallCount: 0,
-      avgRiseRate: 0,
-      avgFallRate: 0,
-      selected: false,
-    };
-  }, [selectedMenu.tags, selectedTagId]);
 
+  useEffect(() => {
+    const fetchData = async () => {
+      const response = await getSignalCategoryAction();
+      setSignalCategory(response.data);
+      setSelectedCategoryId(response.data[0].id);
+      handleChangeCategory(response.data[0].id);
+      onMenuChangeAction({
+        categoryId: response.data[0].id,
+      });
+    };
+    fetchData();
+    // setSignalCategory(response.data);
+  }, [getSignalCategoryAction]);
   return (
     <div className="sticky top-0 z-10">
       <div className="flex items-center gap-1 px-5 pt-5">
@@ -105,48 +85,55 @@ export function FeaturedBanner({
         </p>
       </div>
       <div className="flex border-b px-5">
-        <div className="grid grid-cols-3 gap-8">
-          {featuredMenu.map((menu) => (
+        <div className="grid grid-cols-4 gap-8">
+          {signalCategory.map((category) => (
             <div
-              key={menu.id}
-              className={`${selectedMenu?.id === menu.id ? "border-[#1F72E5] bg-gradient-to-r from-[#1F72E5] to-[#45FA25] bg-clip-text font-bold text-transparent dark:border-[#F2DA18] dark:from-[#F2DA18] dark:to-[#4DFFC4]" : "border-transparent"} cursor-pointer border-b-2 pb-2 pt-3 text-center`}
+              key={category.id}
+              className={`${selectedCategoryId === category.id ? "border-[#1F72E5] bg-gradient-to-r from-[#1F72E5] to-[#45FA25] bg-clip-text font-bold text-transparent dark:border-[#F2DA18] dark:from-[#F2DA18] dark:to-[#4DFFC4]" : "border-transparent"} cursor-pointer border-b-2 pb-2 pt-3 text-center`}
               onClick={() => {
                 setTagLoading(true);
-                onFeaturedMenuChangeAction(menu);
-                setSelectedMenu(menu);
-                handleChangeTag(menu);
+                setSelectedCategoryId(category.id);
                 setSelectedTagId("");
+                handleChangeCategory(category.id);
+                onMenuChangeAction({
+                  categoryId: category.id,
+                });
               }}
             >
-              {menu.label.replace(/^\w/, (c) => c.toUpperCase())}
+              {category.name}
             </div>
           ))}
         </div>
       </div>
 
       <div className="px-5 pt-3">
-        {!tagLoading && selectedMenu && (
+        {!tagLoading && currentTagList && (
           <Tabs
-            defaultValue={selectedMenu.tags?.find((item) => item.selected)?.id}
+            defaultValue=""
             className="w-full"
             onValueChange={(event) => {
               setSelectedTagId(event);
-              onTagChangeAction(event);
-              // setShowDetails(true);
+              onMenuChangeAction({
+                categoryId: selectedCategoryId,
+                providerType:
+                  currentTagList.filter((tag) => tag.id === event)[0]
+                    ?.providerType ?? undefined,
+                entityId: selectedTagId,
+              });
             }}
           >
             <TabsList className="flex h-auto flex-wrap justify-start gap-2 bg-transparent">
-              {selectedMenu.tags?.map((item) => (
+              {currentTagList.map((tag) => (
                 <TabsTrigger
-                  key={item.id}
-                  value={item.id}
+                  key={tag.id}
+                  value={tag.id}
                   className="flex w-fit justify-start gap-1 rounded-xl bg-white/50 p-1.5 dark:bg-secondary"
                 >
                   <Avatar className="h-5 w-5 rounded-full">
-                    <AvatarImage src={item.logo ?? ""} />
+                    <AvatarImage src={tag.logo ?? ""} />
                     <AvatarFallback></AvatarFallback>
                   </Avatar>
-                  <p>{item.name}</p>
+                  <p>{tag.name}</p>
                 </TabsTrigger>
               ))}
             </TabsList>
@@ -159,25 +146,25 @@ export function FeaturedBanner({
             <div className="relative w-full px-3">
               <p className="text-xs">Total New Token Listings</p>
               <p className="text-lg font-bold text-[#1976F7] dark:text-[#F2DA18]">
-                {selectedTag?.signalsCount}
+                {0}
               </p>
             </div>
             <div className="relative w-full px-3">
               <p className="text-xs">Total New Token Listings</p>
               <p className="text-lg font-bold text-[#1976F7] dark:text-[#F2DA18]">
-                {selectedTag?.signalsCount}
+                {0}
               </p>
             </div>
             <div className="relative w-full px-3">
               <p className="text-xs">Total New Token Listings</p>
               <p className="text-lg font-bold text-[#1976F7] dark:text-[#F2DA18]">
-                {selectedTag?.fallCount}
+                {0}
               </p>
             </div>
             <div className="relative w-full px-3">
               <p className="text-xs">Total New Token Listings</p>
               <p className="text-lg font-bold text-[#1976F7] dark:text-[#F2DA18]">
-                {selectedTag?.avgRiseRate}
+                {0}
               </p>
             </div>
           </div>

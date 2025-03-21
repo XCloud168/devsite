@@ -1,9 +1,6 @@
 "use client";
 
-import {
-  FeaturedBanner,
-  type FeaturedMenu,
-} from "@/app/signal-catcher/_components/featured-banner";
+import { FeaturedBanner } from "@/app/signal-catcher/_components/featured-banner";
 import { FeaturedList } from "@/app/signal-catcher/_components/featured-list";
 import { type ServerResult } from "@/lib/server-result";
 import { useState } from "react";
@@ -12,37 +9,43 @@ type Props = {
   getSignalListAction: (
     page: number,
     filter: {
-      providerType: SIGNAL_PROVIDER_TYPE;
+      categoryId: string;
+      providerType?: SIGNAL_PROVIDER_TYPE;
       entityId?: string;
     },
   ) => Promise<ServerResult>;
-  getTagListAction: (type: SIGNAL_PROVIDER_TYPE) => Promise<ServerResult>;
+  getTagListAction: (id: string) => Promise<ServerResult>;
+  getSignalCategoryAction: () => Promise<ServerResult>;
 };
 export function FeaturedComponent({
   getSignalListAction,
   getTagListAction,
+  getSignalCategoryAction,
 }: Props) {
-  const [featuredMenu, setFeaturedMenu] = useState<FeaturedMenu>({
-    label: SIGNAL_PROVIDER_TYPE.TWITTER,
-    id: "1",
+  const [menuInfo, setMenuInfo] = useState<{
+    categoryId: string;
+    providerType?: SIGNAL_PROVIDER_TYPE;
+    entityId?: string;
+  }>({
+    categoryId: "",
   });
-  const [selectedTagId, setSelectedTagId] = useState<string>("");
   return (
     <div className="overflow-hidden">
       <FeaturedBanner
-        onFeaturedMenuChangeAction={(menu: FeaturedMenu) =>
-          setFeaturedMenu(menu)
-        }
+        onMenuChangeAction={(info: {
+          categoryId: string;
+          providerType?: SIGNAL_PROVIDER_TYPE;
+          entityId?: string;
+        }) => setMenuInfo(info)}
         getTagListAction={getTagListAction}
-        onTagChangeAction={(id: string) => {
-          setSelectedTagId(id);
-        }}
+        getSignalCategoryAction={getSignalCategoryAction}
       />
-      <FeaturedList
-        menu={featuredMenu}
-        getSignalListAction={getSignalListAction}
-        tagId={selectedTagId}
-      />
+      {menuInfo.categoryId !== "" && (
+        <FeaturedList
+          menuInfo={menuInfo}
+          getSignalListAction={getSignalListAction}
+        />
+      )}
     </div>
   );
 }
