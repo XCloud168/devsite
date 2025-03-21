@@ -14,8 +14,8 @@ import { db } from "@/server/db";
 import { payments, profiles } from "@/server/db/schema";
 import { type PLAN_TYPE, type SUPPORTED_CHAIN } from "@/types/constants";
 import assert from "assert";
-import { getUserProfile } from "./auth";
 import dayjs from "dayjs";
+import { getUserProfile } from "./auth";
 
 /**
  * Checkout a plan
@@ -88,7 +88,8 @@ export async function confirmPayment(paymentId: string) {
 export async function checkPayment(paymentId?: string) {
   return withServerResult(async () => {
     const conditions = [];
-    conditions.push(eq(payments.status, "pending"));
+    // 只检查已支付的订单
+    conditions.push(eq(payments.status, "paid"));
 
     if (paymentId) {
       conditions.push(eq(payments.id, paymentId));
@@ -199,6 +200,11 @@ async function _transferUsdtCallback(
   if (payment.status === "confirmed") {
     console.log("Payment is confirmed");
     return;
+  }
+  if (payment.status !== "paid") {
+    console.warn(
+      `Payment status is not paid: paymentId: ${payment.id} paymentStatus: ${payment.status}`,
+    );
   }
 
   assert(

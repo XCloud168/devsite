@@ -1,7 +1,5 @@
 {
-    "home": {
-
-    },
+    "home": {},
     "metadata": {
         "siteName": "DevSite",
         "title": "My Blog",
@@ -280,7 +278,8 @@
                 "title": "Network",
                 "switching": "Switching",
                 "unavailable": "Current network is unavailable, please try another network",
-                "switching_message": "Switching network, please wait..."
+                "switching_message": "Switching network, please wait...",
+                "selected": "Selected payment network: "
             },
             "countdown": {
                 "title": "Please complete the payment within"
