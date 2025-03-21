@@ -43,7 +43,7 @@ export const news = pgTable(
     newsEntityId: uuid("news_entity_id").references(() => newsEntity.id),
     symbols: json("symbols").default([]),
     contractAddress: json("contract_address").default([]),
-    
+    mediaUrls: json("media_urls"), 
     // 价格相关字段
     signalTime: timestamp("signal_time", { withTimezone: true }),
     signalPrice: numeric("signal_price", { precision: 24, scale: 12 }).default(sql`'0'`),
