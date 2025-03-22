@@ -112,7 +112,7 @@ export function FeaturedCard({ signal, showLine }: Props) {
         </div>
 
         {signal.project ? (
-          <div className="relative block w-fit items-center gap-3 rounded-xl bg-white/80 p-4 dark:bg-[#161C25]">
+          <div className="relative block w-full items-center gap-5 rounded-xl bg-white/80 p-4 dark:bg-[#161C25]">
             <div className="flex items-center gap-1.5">
               <div className="border-spin-image flex h-9 w-9 items-center justify-center">
                 <div className="z-[8] h-8 w-8 overflow-hidden rounded-full border-2 border-primary">
@@ -136,9 +136,9 @@ export function FeaturedCard({ signal, showLine }: Props) {
               </div>
             </div>
 
-            <div className="mt-3 flex gap-10">
+            <div className="mt-3 flex w-full gap-10">
               <div>
-                <p className="mb-2 text-xs">24h max pnl%</p>
+                <p className="mb-2 text-xs">{t("signals.signal.24hPnl")}</p>
                 <p className="font-bold text-[#00CE64] dark:text-[#00FFAB]">
                   {parseFloat(signal.source.highRate24H ?? "0") > 0
                     ? "+" + signal.source.highRate24H
@@ -174,7 +174,7 @@ export function FeaturedCard({ signal, showLine }: Props) {
                   </div>
                 </div>
               ) : null}
-              <div>
+              <div className="">
                 <p className="mb-2 text-xs opacity-0">123</p>
                 <div className="flex cursor-pointer items-center gap-1 hover:scale-105">
                   <div className="h-4 w-4">
