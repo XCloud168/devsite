@@ -98,7 +98,8 @@ export function KolCard({
           <div className="flex gap-10 p-3">
             <Link
               className="flex items-center gap-1 text-xs text-[#949C9E]"
-              href="/"
+              href={tweet.tweetUrl ?? "/"}
+              target="_blank"
             >
               <div className="h-3 w-3 bg-[url(/images/signal/link.svg)] bg-contain"></div>
               <div className="text-xs text-[#949C9E]">

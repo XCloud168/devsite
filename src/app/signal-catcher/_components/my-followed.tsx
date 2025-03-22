@@ -204,11 +204,11 @@ export function MyFollowed({
             <div className="space-y-5 px-5 pt-5">
               {[1, 2, 3, 4].map((item) => (
                 <div className="flex w-full gap-3" key={item}>
-                  <Skeleton className="h-9 w-9 min-w-9 rounded-full" />
+                  <Skeleton className="h-9 w-9 min-w-9 rounded-full bg-secondary" />
                   <div className="w-full space-y-2">
-                    <Skeleton className="h-4 w-1/5" />
-                    <Skeleton className="h-4 w-2/5" />
-                    <Skeleton className="h-20 w-full" />
+                    <Skeleton className="h-4 w-1/5 bg-secondary" />
+                    <Skeleton className="h-4 w-2/5 bg-secondary" />
+                    <Skeleton className="h-20 w-full bg-secondary" />
                   </div>
                 </div>
               ))}

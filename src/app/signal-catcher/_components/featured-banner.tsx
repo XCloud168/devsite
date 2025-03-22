@@ -49,7 +49,6 @@ export function FeaturedBanner({
 }: Props) {
   const t = useTranslations();
 
-  // const [showDetails, setShowDetails] = useState(false);
   const [selectedTagId, setSelectedTagId] = useState<string>("");
   const [tagLoading, setTagLoading] = useState<boolean>(true);
   const [signalCategory, setSignalCategory] = useState<SignalsCategory[]>([]);
@@ -90,7 +89,6 @@ export function FeaturedBanner({
     const fetchData = async () => {
       const response = await getTagDataAction(current?.providerType, entityId);
       setTagData(response.data[0]);
-      console.log(response.data[0]);
     };
     fetchData();
   };
