@@ -59,15 +59,20 @@ export function KolCard({
           <div className="flex items-center gap-1.5">
             <div className="h-8 w-8">
               <Avatar className="h-8 w-8">
-                <AvatarImage src={tweet.tweetUser.avatar ?? ""} />
+                <AvatarImage src={tweet?.tweetUser?.avatar || ""} />
                 <AvatarFallback></AvatarFallback>
               </Avatar>
             </div>
             <div>
-              <p className="font-bold">{tweet.tweetUser.name}</p>
+              <p className="font-bold">{tweet?.tweetUser?.name || "--"}</p>
               <div className="flex gap-3">
-                <p className="text-xs">@{tweet.tweetUser.screenName}</p>
-                <p className="text-xs">{tweet.tweetUser.followersCount} 粉丝</p>
+                <p className="text-xs">
+                  @{tweet?.tweetUser?.screenName || "--"}
+                </p>
+                <p className="text-xs">
+                  {tweet?.tweetUser?.followersCount || 0}{" "}
+                  {t("signals.kol.followers")}
+                </p>
               </div>
             </div>
           </div>
@@ -79,9 +84,9 @@ export function KolCard({
                 setAddLoading(true);
                 if (tweet.tweetUser) handleAddFollow(tweet.tweetUser.id);
               }}
-              disabled={addLoading || tweet.tweetUser.isFollowed}
+              disabled={addLoading || tweet?.tweetUser?.isFollowed}
             >
-              {tweet.tweetUser.isFollowed
+              {tweet?.tweetUser?.isFollowed
                 ? t("signals.kol.followed")
                 : t("signals.kol.follow")}
             </Button>
@@ -127,16 +132,18 @@ export function KolCard({
                 <div className="flex items-center gap-1.5">
                   <div className="h-8 w-8">
                     <Avatar className="h-8 w-8">
-                      <AvatarImage src={tweet.tweetUser.avatar ?? ""} />
+                      <AvatarImage src={tweet?.tweetUser?.avatar || "--"} />
                       <AvatarFallback></AvatarFallback>
                     </Avatar>
                   </div>
                   <div>
-                    <p>{tweet.tweetUser.name}</p>
+                    <p>{tweet?.tweetUser?.name || "--"}</p>
                     <div className="flex gap-3">
-                      <p className="text-xs">@{tweet.tweetUser.screenName}</p>
                       <p className="text-xs">
-                        {tweet.tweetUser.followersCount}&nbsp;
+                        @{tweet?.tweetUser?.screenName || "--"}
+                      </p>
+                      <p className="text-xs">
+                        {tweet?.tweetUser?.followersCount || 0}&nbsp;
                         {t("signals.kol.followers")}
                       </p>
                     </div>
