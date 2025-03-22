@@ -1,7 +1,7 @@
 "use client";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { type SIGNAL_PROVIDER_TYPE } from "@/lib/constants";
 import type { ServerResult } from "@/lib/server-result";
 import { useTranslations } from "next-intl";
@@ -91,6 +91,12 @@ export function FeaturedBanner({
     };
     fetchData();
   };
+  const riseRate = useMemo(() => {
+    if (tagData?.riseCount && tagData?.signalsCount) {
+      return `${(tagData?.riseCount / tagData?.signalsCount) * 100}%`;
+    }
+    return "--";
+  }, [tagData]);
   return (
     <div className="sticky top-0 z-10">
       <div className="flex items-center gap-1 px-5 pt-5">
@@ -182,7 +188,7 @@ export function FeaturedBanner({
             <div className="relative w-full px-3">
               <p className="text-xs">{t("signals.signal.tokenGainRatio")}</p>
               <p className="text-lg font-bold text-[#1976F7] dark:text-[#F2DA18]">
-                {tagData?.avgRiseRate ? tagData?.avgRiseRate + "%" : "--"}
+                {riseRate}
               </p>
             </div>
             <div className="relative w-full px-3">
