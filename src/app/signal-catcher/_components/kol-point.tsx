@@ -9,6 +9,8 @@ import {
 } from "@/app/signal-catcher/_components/my-followed";
 import { KolCard } from "@/app/signal-catcher/_components/kol-card";
 import { LoadingMoreBtn } from "@/app/signal-catcher/_components/loading-more-btn";
+import { Skeleton } from "@/components/ui/skeleton";
+import { FeaturedCard } from "@/app/signal-catcher/_components/featured-card";
 
 type Props = {
   addFollowAction: (tweetUid: string) => Promise<ServerResult>;
@@ -80,16 +82,45 @@ export function KolPoint({ getTweetListAction, addFollowAction }: Props) {
   };
   return (
     <>
-      {tweetList.map((tweet) => (
-        <div key={tweet.id} className="border-b pb-4">
-          <KolCard tweet={tweet} addFollowAction={addFollowAction} showShare />
-          {tweet.replyTweet ? (
-            <div className="m-4 rounded-lg border">
-              <KolCard tweet={tweet.replyTweet} />
+      {pageLoading && tweetList.length === 0 ? (
+        <div className="space-y-5 px-5 pt-5">
+          {[1, 2, 3, 4, 5].map((item) => (
+            <div className="flex w-full gap-3" key={item}>
+              <Skeleton className="h-9 w-9 min-w-9 rounded-full" />
+              <div className="w-full space-y-2">
+                <Skeleton className="h-4 w-1/5" />
+                <Skeleton className="h-4 w-2/5" />
+                <Skeleton className="h-20 w-full" />
+              </div>
             </div>
-          ) : null}
+          ))}
         </div>
-      ))}
+      ) : (
+        tweetList.map((tweet) => (
+          <div key={tweet.id} className="border-b pb-4">
+            <KolCard
+              tweet={tweet}
+              addFollowAction={addFollowAction}
+              showShare
+              onFollowCallback={(id) => {
+                setTweetList((prev) => {
+                  const list = [...prev];
+                  const index = list.findIndex(
+                    (tweet) => tweet.tweetUser.id === id,
+                  );
+                  if (list[index]) list[index].tweetUser.isFollowed = true;
+                  return list;
+                });
+              }}
+            />
+            {tweet.replyTweet ? (
+              <div className="m-4 rounded-lg border">
+                <KolCard tweet={tweet.replyTweet} />
+              </div>
+            ) : null}
+          </div>
+        ))
+      )}
       <LoadingMoreBtn
         pageLoading={pageLoading}
         hasNext={hasNext}

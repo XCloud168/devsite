@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { type TweetInfo, type TweetUsers } from "@/server/db/schemas/tweet";
 import dayjs from "dayjs";
 import Link from "next/link";
-import React, { useRef, useState } from "react";
+import React, { useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { toast } from "sonner";
 import TranslationComponent from "@/components/translation-component";
@@ -17,6 +17,7 @@ type Props = {
   tweet: TweetItem;
   addFollowAction?: (tweetUid: string) => Promise<ServerResult>;
   showShare?: boolean;
+  onFollowCallback?: (id: string) => void;
 };
 interface TweetItem extends Omit<TweetInfo, "tweetUser"> {
   tweetUser: TweetUsers & {
@@ -25,7 +26,12 @@ interface TweetItem extends Omit<TweetInfo, "tweetUser"> {
   replyTweet: TweetInfo;
 }
 
-export function KolCard({ tweet, addFollowAction, showShare }: Props) {
+export function KolCard({
+  tweet,
+  addFollowAction,
+  showShare,
+  onFollowCallback,
+}: Props) {
   const t = useTranslations();
   const [addLoading, setAddLoading] = useState<boolean>(false);
   const handleAddFollow = (id: string) => {
@@ -37,6 +43,7 @@ export function KolCard({ tweet, addFollowAction, showShare }: Props) {
       } else {
         setAddLoading(false);
         toast.success(t("common.success"));
+        if (onFollowCallback) onFollowCallback(id);
       }
     };
     fetchData();
@@ -84,7 +91,7 @@ export function KolCard({ tweet, addFollowAction, showShare }: Props) {
       </div>
       <div className="mt-4 rounded-lg">
         {/*<p className="mb-1.5 px-3 pt-3">{tweet.content}</p>*/}
-        <div className="w-1/2 px-4">
+        <div className="px-4">
           <TranslationComponent content={tweet.content ?? ""} />
         </div>
         {showShare ? (

@@ -78,9 +78,8 @@ const TranslationComponent: React.FC<TranslationComponentProps> = ({
           className={`transition-all duration-200 ${
             isExpanded ? "" : "line-clamp-3"
           }`}
-        >
-          {content}
-        </p>
+          dangerouslySetInnerHTML={{ __html: content }}
+        ></p>
         <div className="flex items-center">
           {shouldShowExpand && (
             <Button

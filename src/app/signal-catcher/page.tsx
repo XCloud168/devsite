@@ -20,8 +20,7 @@ import {
 import { FeaturedComponent } from "@/app/signal-catcher/_components/featured-component";
 import { type SIGNAL_PROVIDER_TYPE } from "@/lib/constants";
 import React from "react";
-import { SignalsCategory } from "@/server/db/schemas/signal";
-import { ServerResult } from "@/lib/server-result";
+import RealtimeSignal from "@/components/signals/realtime-signal";
 
 export default async function SignalPage() {
   //获取推特列表
@@ -63,11 +62,11 @@ export default async function SignalPage() {
     "use server";
     return await deleteTweetFollowed(tweetUid);
   };
-  //获取标签列表
-  // const getTagList = async (type: SIGNAL_PROVIDER_TYPE) => {
-  //   "use server";
-  //   return await getTagStatistics(type, {});
-  // };
+  //获取标签统计数据
+  const getTagData = async (type: SIGNAL_PROVIDER_TYPE, entityId: string) => {
+    "use server";
+    return await getTagStatistics(type, { entityId: entityId });
+  };
   //信号类别
   const getSignalCategory = async () => {
     "use server";
@@ -105,11 +104,13 @@ export default async function SignalPage() {
               getSignalListAction={getSignalList}
               getTagListAction={getSignalTagsByCode}
               getSignalCategoryAction={getSignalCategory}
+              getTagDataAction={getTagData}
             />
             <div className="fixed bottom-0 z-[1] h-[438px] w-full bg-[url(/images/signal/featured-bg.svg)] bg-contain bg-no-repeat"></div>
           </div>
         </ResizablePanel>
       </ResizablePanelGroup>
+      <RealtimeSignal />
     </div>
   );
 }

@@ -46,9 +46,9 @@ export function FeaturedCard({ signal, showLine }: Props) {
           <div className="h-10 w-10">
             <Avatar className="h-10 w-10 border-2 border-secondary">
               {signal.source.tweetUser ? (
-                <AvatarImage src={signal.source.tweetUser.avatar} />
+                <AvatarImage src={signal?.source?.tweetUser?.avatar || ""} />
               ) : (
-                <AvatarImage src={signal.source.exchange.logo} />
+                <AvatarImage src={signal?.source?.exchange?.logo || ""} />
               )}
               <AvatarFallback></AvatarFallback>
             </Avatar>
@@ -58,9 +58,9 @@ export function FeaturedCard({ signal, showLine }: Props) {
 
       <div className="mb-3 min-h-20 border-b border-border/50">
         {signal.source.tweetUser ? (
-          <p className="leading-5">{signal.source.tweetUser.name}</p>
+          <p className="leading-5">{signal?.source?.tweetUser?.name || ""}</p>
         ) : (
-          <p className="leading-5">{signal.source.exchange.name}</p>
+          <p className="leading-5">{signal?.source?.exchange?.name || ""}</p>
         )}
         <p className="font-bold leading-5">
           {dayjs(signal.signalTime).format("YYYY/MM/DD HH:mm:ss")}
@@ -138,29 +138,34 @@ export function FeaturedCard({ signal, showLine }: Props) {
                   %
                 </p>
               </div>
-              <div>
-                <p className="mb-2 text-xs">情绪指数</p>
-                <div className="flex items-center gap-1.5">
-                  {signal.source.sentiment === "positive" ? (
-                    <div className="h-4 w-4">
-                      <PositiveIcon className="fill-[#00CE64] dark:fill-[#00FFAB]" />
-                    </div>
-                  ) : (
-                    <div className="h-4 w-4">
-                      <NegativeIcon className="fill-[#FA5B5B] dark:fill-[#F95F5F]" />
-                    </div>
-                  )}
-                  {signal.source.sentiment === "positive" ? (
-                    <p className="font-bold text-[#00CE64] dark:text-[#00FFAB]">
-                      {signal.source.sentiment?.toUpperCase()}
-                    </p>
-                  ) : (
-                    <p className="font-bold text-[#FA5B5B] dark:text-[#F95F5F]">
-                      {signal.source.sentiment?.toUpperCase()}
-                    </p>
-                  )}
+              {signal.source.sentiment ? (
+                <div>
+                  <p className="mb-2 text-xs">
+                    {t("signals.signal.cryptoIndex")}
+                  </p>
+
+                  <div className="flex items-center gap-1.5">
+                    {signal.source.sentiment === "positive" ? (
+                      <div className="h-4 w-4">
+                        <PositiveIcon className="fill-[#00CE64] dark:fill-[#00FFAB]" />
+                      </div>
+                    ) : (
+                      <div className="h-4 w-4">
+                        <NegativeIcon className="fill-[#FA5B5B] dark:fill-[#F95F5F]" />
+                      </div>
+                    )}
+                    {signal.source.sentiment === "positive" ? (
+                      <p className="font-bold text-[#00CE64] dark:text-[#00FFAB]">
+                        {signal.source.sentiment?.toUpperCase()}
+                      </p>
+                    ) : (
+                      <p className="font-bold text-[#FA5B5B] dark:text-[#F95F5F]">
+                        {signal.source.sentiment?.toUpperCase()}
+                      </p>
+                    )}
+                  </div>
                 </div>
-              </div>
+              ) : null}
               <div>
                 <p className="mb-2 text-xs opacity-0">123</p>
                 <div className="flex cursor-pointer items-center gap-1 hover:scale-105">

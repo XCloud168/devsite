@@ -9,6 +9,7 @@ import { type SetState } from "@/app/signal-catcher/_components/my-followed";
 import { LoadingMoreBtn } from "@/app/signal-catcher/_components/loading-more-btn";
 import { type SIGNAL_PROVIDER_TYPE } from "@/lib/constants";
 import { FeaturedCard } from "@/app/signal-catcher/_components/featured-card";
+import { Skeleton } from "@/components/ui/skeleton";
 
 type Props = {
   getSignalListAction: (
@@ -76,7 +77,6 @@ export function FeaturedList({ getSignalListAction, menuInfo }: Props) {
       ...(providerType !== undefined && { providerType }),
       ...(entityId !== undefined && { entityId }),
     });
-    console.log(response);
     setSignalList((prev) =>
       refresh ? response.data.items : prev.concat(response.data.items),
     );
@@ -86,6 +86,7 @@ export function FeaturedList({ getSignalListAction, menuInfo }: Props) {
   };
 
   useEffect(() => {
+    setSignalList([]);
     setCurrentPage(1);
     fetchSignalList(
       true,
@@ -118,10 +119,25 @@ export function FeaturedList({ getSignalListAction, menuInfo }: Props) {
     }
   };
   return (
-    <div className="scroll-container relative z-[5] h-[calc(100vh-324px)] overflow-y-scroll scrollbar-thin scrollbar-track-transparent scrollbar-thumb-secondary">
-      {signalList.map((signal) => (
-        <FeaturedCard signal={signal} key={signal.id} showLine />
-      ))}
+    <div className="scroll-container relative z-[5] h-[calc(100vh-300px)] overflow-y-scroll scrollbar-thin scrollbar-track-transparent scrollbar-thumb-secondary">
+      {pageLoading && signalList.length === 0 ? (
+        <div className="space-y-5 px-5">
+          {[1, 2, 3, 4].map((item) => (
+            <div className="flex w-full gap-3" key={item}>
+              <Skeleton className="h-9 w-9 min-w-9 rounded-full" />
+              <div className="w-full space-y-2">
+                <Skeleton className="h-4 w-1/5" />
+                <Skeleton className="h-4 w-2/5" />
+                <Skeleton className="h-20 w-full" />
+              </div>
+            </div>
+          ))}
+        </div>
+      ) : (
+        signalList.map((signal) => (
+          <FeaturedCard signal={signal} key={signal.id} showLine />
+        ))
+      )}
       <LoadingMoreBtn
         pageLoading={pageLoading}
         hasNext={hasNext}

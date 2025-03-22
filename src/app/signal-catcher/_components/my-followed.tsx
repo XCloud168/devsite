@@ -23,6 +23,7 @@ import { KolCard } from "@/app/signal-catcher/_components/kol-card";
 import { LoadingMoreBtn } from "@/app/signal-catcher/_components/loading-more-btn";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useTranslations } from "next-intl";
+import { Skeleton } from "@/components/ui/skeleton";
 
 type Props = {
   getFollowedListAction: () => Promise<ServerResult>;
@@ -199,9 +200,22 @@ export function MyFollowed({
               </div>
             </div>
           </div>
-          {tweetList.map((tweet) => (
-            <KolCard tweet={tweet} key={tweet.id} />
-          ))}
+          {pageLoading && tweetList.length === 0 ? (
+            <div className="space-y-5 px-5 pt-5">
+              {[1, 2, 3, 4].map((item) => (
+                <div className="flex w-full gap-3" key={item}>
+                  <Skeleton className="h-9 w-9 min-w-9 rounded-full" />
+                  <div className="w-full space-y-2">
+                    <Skeleton className="h-4 w-1/5" />
+                    <Skeleton className="h-4 w-2/5" />
+                    <Skeleton className="h-20 w-full" />
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            tweetList.map((tweet) => <KolCard tweet={tweet} key={tweet.id} />)
+          )}
           {!pageLoading && tweetList.length === 0 && (
             <div className="mt-4 flex justify-center">
               <p>{t("common.empty")}</p>

@@ -6,6 +6,7 @@ import { type SIGNAL_PROVIDER_TYPE } from "@/lib/constants";
 import type { ServerResult } from "@/lib/server-result";
 import { useTranslations } from "next-intl";
 import { type SignalsCategory } from "@/server/db/schemas/signal";
+import { Skeleton } from "@/components/ui/skeleton";
 interface Tag {
   id: string;
   name: string;
@@ -34,12 +35,17 @@ interface Props {
   }) => void;
   getTagListAction: (id: string) => Promise<ServerResult>;
   getSignalCategoryAction: () => Promise<ServerResult>;
+  getTagDataAction: (
+    providerType: SIGNAL_PROVIDER_TYPE,
+    entityId: string,
+  ) => Promise<ServerResult>;
 }
 
 export function FeaturedBanner({
   onMenuChangeAction,
   getTagListAction,
   getSignalCategoryAction,
+  getTagDataAction,
 }: Props) {
   const t = useTranslations();
 
@@ -48,6 +54,7 @@ export function FeaturedBanner({
   const [tagLoading, setTagLoading] = useState<boolean>(true);
   const [signalCategory, setSignalCategory] = useState<SignalsCategory[]>([]);
   const [selectedCategoryId, setSelectedCategoryId] = useState<string>("");
+  const [tagData, setTagData] = useState<Tag>();
   const [currentTagList, setCurrentTagList] = useState<
     {
       id: string;
@@ -76,6 +83,17 @@ export function FeaturedBanner({
     fetchData();
     // setSignalCategory(response.data);
   }, [getSignalCategoryAction]);
+
+  const handleGetTagData = (entityId: string) => {
+    const current = currentTagList.find((tag) => tag.id === entityId);
+    if (!current) return;
+    const fetchData = async () => {
+      const response = await getTagDataAction(current?.providerType, entityId);
+      setTagData(response.data[0]);
+      console.log(response.data[0]);
+    };
+    fetchData();
+  };
   return (
     <div className="sticky top-0 z-10">
       <div className="flex items-center gap-1 px-5 pt-5">
@@ -107,27 +125,30 @@ export function FeaturedBanner({
       </div>
 
       <div className="px-5 pt-3">
-        {!tagLoading && currentTagList && (
+        {tagLoading ? (
+          <Skeleton className="h-10 w-full" />
+        ) : (
           <Tabs
             defaultValue=""
             className="w-full"
             onValueChange={(event) => {
               setSelectedTagId(event);
+              handleGetTagData(event);
               onMenuChangeAction({
                 categoryId: selectedCategoryId,
                 providerType:
                   currentTagList.find((tag) => tag.id === event)
                     ?.providerType ?? undefined,
-                entityId: selectedTagId,
+                entityId: event,
               });
             }}
           >
-            <TabsList className="flex h-auto flex-wrap justify-start gap-2 bg-transparent">
+            <TabsList className="flex h-auto flex-wrap justify-start gap-3 bg-transparent">
               {currentTagList.map((tag) => (
                 <TabsTrigger
                   key={tag.id}
                   value={tag.id}
-                  className="flex w-fit justify-start gap-1 rounded-xl bg-white/50 p-1.5 dark:bg-secondary"
+                  className="flex w-fit justify-start gap-1 rounded-full bg-white/50 py-1.5 pl-1.5 pr-2 dark:bg-[#161C25]"
                 >
                   <Avatar className="h-5 w-5 rounded-full">
                     <AvatarImage src={tag.logo ?? ""} />
@@ -144,33 +165,33 @@ export function FeaturedBanner({
         <div className="relative mx-5 my-3 rounded-xl bg-white/50 py-2 dark:bg-[#161C25]">
           <div className="grid w-full grid-cols-4 gap-3 overflow-hidden">
             <div className="relative w-full px-3">
-              <p className="text-xs">Total New Token Listings</p>
+              <p className="text-xs">{t("signals.signal.newTokenListings")}</p>
               <p className="text-lg font-bold text-[#1976F7] dark:text-[#F2DA18]">
-                {0}
+                {tagData?.signalsCount || "--"}
               </p>
             </div>
             <div className="relative w-full px-3">
-              <p className="text-xs">Total New Token Listings</p>
+              <p className="text-xs">{t("signals.signal.tokenGainCount")}</p>
               <p className="text-lg font-bold text-[#1976F7] dark:text-[#F2DA18]">
-                {0}
+                {tagData?.riseCount || "--"}
               </p>
             </div>
             <div className="relative w-full px-3">
-              <p className="text-xs">Total New Token Listings</p>
+              <p className="text-xs">{t("signals.signal.tokenGainRatio")}</p>
               <p className="text-lg font-bold text-[#1976F7] dark:text-[#F2DA18]">
-                {0}
+                {tagData?.avgRiseRate ? tagData?.avgRiseRate + "%" : "--"}
               </p>
             </div>
             <div className="relative w-full px-3">
-              <p className="text-xs">Total New Token Listings</p>
+              <p className="text-xs">{t("signals.signal.24hAverageMaxGain")}</p>
               <p className="text-lg font-bold text-[#1976F7] dark:text-[#F2DA18]">
-                {0}
+                {tagData?.avgRiseRate || "--"}
               </p>
             </div>
           </div>
         </div>
       ) : (
-        <div className="my-3 opacity-0">123</div>
+        <div className="my-3 h-[60px] opacity-0">123</div>
       )}
     </div>
   );

@@ -333,7 +333,12 @@
             "quickSwap": "Quick Swap",
             "mentionAbove": "KOL mentioned above",
             "over": "Over",
-            "firstMention": "First Mention"
+            "firstMention": "First Mention",
+            "cryptoIndex": "Crypto Index",
+            "newTokenListings": "Total New Token Listings",
+            "tokenGainCount": "Token Gain Count",
+            "tokenGainRatio": "Token Gain Ratio",
+            "24hAverageMaxGain": "24h Average Max Gain"
         }
     }
 }
