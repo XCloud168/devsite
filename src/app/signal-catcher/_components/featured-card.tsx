@@ -26,6 +26,9 @@ interface SignalItems extends Signals {
     };
     tweetUser: { name: string; avatar: string; tweetUrl: string };
     source: string;
+    newsEntity: {
+      logo: string;
+    };
   };
   project: Projects;
   times: string;
@@ -50,6 +53,8 @@ export function FeaturedCard({ signal, showLine }: Props) {
             <Avatar className="h-10 w-10 border-2 border-secondary">
               {signal.source.tweetUser ? (
                 <AvatarImage src={signal?.source?.tweetUser?.avatar || ""} />
+              ) : signal.source.newsEntity ? (
+                <AvatarImage src={signal?.source?.newsEntity?.logo || ""} />
               ) : (
                 <AvatarImage src={signal?.source?.exchange?.logo || ""} />
               )}
