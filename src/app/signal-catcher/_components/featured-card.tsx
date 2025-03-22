@@ -107,7 +107,7 @@ export function FeaturedCard({ signal, showLine }: Props) {
         </div>
 
         {signal.project ? (
-          <div className="relative block w-4/5 items-center gap-3 rounded-xl bg-white/80 p-4 dark:bg-[#161C25]">
+          <div className="relative block w-fit items-center gap-3 rounded-xl bg-white/80 p-4 dark:bg-[#161C25]">
             <div className="flex items-center gap-1.5">
               <div className="border-spin-image flex h-9 w-9 items-center justify-center">
                 <div className="z-[8] h-8 w-8 overflow-hidden rounded-full border-2 border-primary">
