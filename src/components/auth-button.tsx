@@ -9,14 +9,14 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useAuth } from "@/hooks/use-auth";
-import { LogIn, LogOut, Settings, User, UserIcon } from "lucide-react";
+import { Loader2, LogIn, LogOut, Settings, User, UserIcon } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 
 export function AuthButton() {
   const t = useTranslations();
   const router = useRouter();
-  const { user, signOut } = useAuth();
+  const { user, loading, signOut } = useAuth();
 
   const handleSignOut = async () => {
     try {
@@ -26,6 +26,14 @@ export function AuthButton() {
       console.error("Error signing out:", error);
     }
   };
+
+  if (loading) {
+    return (
+      <Button variant="ghost" className="gap-2">
+        <Loader2 className="h-4 w-4" />
+      </Button>
+    );
+  }
 
   if (user) {
     return (

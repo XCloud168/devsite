@@ -22,10 +22,13 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { SUPPORTED_CHAIN_USDT_CONTRACT_ADDRESS } from "@/lib/constants";
+import {
+  ErrorCode,
+  SUPPORTED_CHAIN_USDT_CONTRACT_ADDRESS,
+} from "@/lib/constants";
 import { checkout, confirmPayment } from "@/server/api/routes/payment";
 import { type PLAN_TYPE, type SUPPORTED_CHAIN } from "@/types/constants";
-
+import { useRouter } from "next/navigation";
 interface PaymentDialogProps {
   planType: PLAN_TYPE;
   plan: {
@@ -45,6 +48,7 @@ interface PaymentData {
 export function PaymentDialog({ planType, plan }: PaymentDialogProps) {
   const t = useTranslations("payment");
   const pt = useTranslations("pricing");
+  const router = useRouter();
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [selectedNetwork, setSelectedNetwork] =
@@ -110,6 +114,9 @@ export function PaymentDialog({ planType, plan }: PaymentDialogProps) {
       toast.error(t("toast.create_order.error"), {
         description: result.error.message ?? t("toast.create_order.retry"),
       });
+      if (result.error.code === ErrorCode.UNAUTHORIZED) {
+        router.push("/auth/login");
+      }
       setLoading(false);
       return;
     }
