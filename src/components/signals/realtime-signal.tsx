@@ -29,7 +29,8 @@ interface SignalItems extends Signals {
       name: string;
       logo: string;
     };
-    tweetUser: { name: string; avatar: string };
+    tweetUser: { name: string; avatar: string; tweetUrl: string };
+    source: string;
   };
   project: Projects;
   times: string;
