@@ -11,6 +11,7 @@ import React, { type ReactNode, useRef } from "react";
 import { toPng } from "html-to-image";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
+import { QRCode } from "@/components/qrcode";
 export default function Poster({ children }: { children: ReactNode }) {
   const t = useTranslations();
   const captureRef = useRef<HTMLDivElement>(null);
@@ -42,7 +43,7 @@ export default function Poster({ children }: { children: ReactNode }) {
         </DialogHeader>
         <div>
           <div
-            className="mx-auto w-full max-w-sm bg-black p-4"
+            className="mx-auto w-full max-w-sm bg-black p-6"
             ref={captureRef}
           >
             <div className="absolute top-0 h-[200px] w-full bg-[url(/images/poster-bg.svg)] bg-contain"></div>
@@ -63,7 +64,7 @@ export default function Poster({ children }: { children: ReactNode }) {
                   Web3 Major Investment Signal Catcher!
                 </p>
               </div>
-              <div className="h-20 w-20 bg-white"></div>
+              <QRCode text={window.location.href} width={80} />
             </div>
           </div>
         </div>
