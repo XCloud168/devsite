@@ -81,6 +81,7 @@ export function FeaturedList({ getSignalListAction, menuInfo }: Props) {
       ...(providerType !== undefined && { providerType }),
       ...(entityId !== undefined && { entityId }),
     });
+    console.log(response);
     setSignalList((prev) =>
       refresh ? response.data.items : prev.concat(response.data.items),
     );

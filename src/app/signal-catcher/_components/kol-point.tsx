@@ -49,6 +49,7 @@ export function KolPoint({ getTweetListAction, addFollowAction }: Props) {
       followed: false,
       hasContractAddress,
     });
+
     setTweetList((prev) =>
       page === 1 ? response.data.items : prev.concat(response.data.items),
     );

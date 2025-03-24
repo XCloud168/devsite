@@ -9,9 +9,9 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { toast } from "sonner";
 import TranslationComponent from "@/components/translation-component";
 import type { ServerResult } from "@/lib/server-result";
-import Image from "next/image";
 import { useTranslations } from "next-intl";
 import Poster from "@/components/poster/poster";
+import TruncateText from "@/app/signal-catcher/_components/TruncateText";
 
 type Props = {
   tweet: TweetItem;
@@ -34,6 +34,9 @@ export function KolCard({
 }: Props) {
   const t = useTranslations();
   const [addLoading, setAddLoading] = useState<boolean>(false);
+  const [translatedContent, setTranslatedContent] = useState<string | null>(
+    null,
+  );
   const handleAddFollow = (id: string) => {
     if (!addFollowAction) return;
     const fetchData = async () => {
@@ -48,7 +51,6 @@ export function KolCard({
     };
     fetchData();
   };
-
   return (
     <div className="px-5 pt-5" key={tweet.id}>
       <p className="relative pl-2 before:absolute before:left-0 before:top-1/2 before:h-[4px] before:w-[4px] before:-translate-y-1/2 before:rounded-full before:bg-white before:content-['']">
@@ -97,7 +99,12 @@ export function KolCard({
       <div className="mt-4 rounded-lg">
         {/*<p className="mb-1.5 px-3 pt-3">{tweet.content}</p>*/}
         <div className="px-4">
-          <TranslationComponent content={tweet.content ?? ""} />
+          <TranslationComponent
+            content={tweet.content ?? ""}
+            onTranslateSuccess={(content: string) => {
+              setTranslatedContent(content);
+            }}
+          />
         </div>
         {showShare ? (
           <div className="flex gap-10 p-3">
@@ -114,52 +121,53 @@ export function KolCard({
             <div className="flex items-center gap-1 text-xs text-[#949C9E]">
               <div className="h-2.5 w-2.5 bg-[url(/images/signal/share.svg)] bg-contain"></div>
               <Poster>
-                <div className="mb-4 flex items-center gap-2">
-                  <div>
-                    <Image
-                      src="/images/logo.svg"
-                      alt="Logo"
-                      width={32}
-                      height={32}
-                      className="h-8 w-8"
-                    />
-                  </div>
-                  <p>Dev Site</p>
-                </div>
-                <p className="relative pl-2 before:absolute before:left-0 before:top-1/2 before:h-[4px] before:w-[4px] before:-translate-y-1/2 before:rounded-full before:bg-white before:content-['']">
-                  {dayjs(tweet.tweetCreatedAt).format("YYYY/MM/DD HH:mm:ss")}
-                </p>
-                <div className="flex items-center gap-1.5">
-                  <div className="h-8 w-8">
-                    <Avatar className="h-8 w-8">
-                      <AvatarImage src={tweet?.tweetUser?.avatar || "--"} />
-                      <AvatarFallback></AvatarFallback>
-                    </Avatar>
-                  </div>
-                  <div>
-                    <p>{tweet?.tweetUser?.name || "--"}</p>
-                    <div className="flex gap-3">
-                      <p className="text-xs">
-                        @{tweet?.tweetUser?.screenName || "--"}
+                <div>
+                  <p className="relative pl-2 text-white before:absolute before:left-0 before:top-1/2 before:h-[4px] before:w-[4px] before:-translate-y-1/2 before:rounded-full before:bg-white before:content-['']">
+                    {dayjs(tweet.tweetCreatedAt).format("YYYY/MM/DD HH:mm:ss")}
+                  </p>
+                  <div className="mt-3 flex items-center gap-2">
+                    <div className="h-8 w-8">
+                      <Avatar className="h-8 w-8">
+                        <AvatarImage src={tweet?.tweetUser?.avatar || "--"} />
+                        <AvatarFallback></AvatarFallback>
+                      </Avatar>
+                    </div>
+                    <div className="">
+                      <p className="text-white">
+                        {tweet?.tweetUser?.name || "--"}
                       </p>
-                      <p className="text-xs">
-                        {tweet?.tweetUser?.followersCount || 0}&nbsp;
-                        {t("signals.kol.followers")}
-                      </p>
+                      <div className="mt-1 flex gap-3">
+                        <p className="text-xs text-white/80">
+                          @{tweet?.tweetUser?.screenName || "--"}
+                        </p>
+                        <p className="text-xs text-white/80">
+                          {tweet?.tweetUser?.followersCount || 0}&nbsp;
+                          {t("signals.kol.followers")}
+                        </p>
+                      </div>
                     </div>
                   </div>
-                </div>
-                <div className="mt-4 min-h-80 rounded-lg border bg-white/10 p-2">
-                  {tweet.content}
-                </div>
-                <div className="mt-2 flex w-full items-center justify-center">
-                  <p className="text-xs text-white/30">
-                    Web3 Major Investment Signal Catcher!
-                  </p>
-                </div>
-                <div className="flex w-full items-center justify-center gap-2 pb-4">
-                  <p className="text-xs text-white/30">www.masbate.xyz</p>
-                  <p className="text-xs text-white/30">@masbateofficial</p>
+                  <div className="mt-3">
+                    <TruncateText
+                      text={tweet.content || ""}
+                      maxHeight={200}
+                      className="break-all text-sm text-white"
+                    />
+                  </div>
+                  {translatedContent ? (
+                    <div className="mt-3">
+                      <p className="text-sm text-primary">AI翻译：</p>
+                    </div>
+                  ) : null}
+                  {translatedContent ? (
+                    <div className="mt-3">
+                      <TruncateText
+                        text={translatedContent}
+                        maxHeight={200}
+                        className="break-all text-sm text-white"
+                      />
+                    </div>
+                  ) : null}
                 </div>
               </Poster>
             </div>

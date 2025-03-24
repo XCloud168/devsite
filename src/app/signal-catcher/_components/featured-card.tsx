@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import React from "react";
+import React, { useState } from "react";
 import { type Projects, type Signals } from "@/server/db/schemas/signal";
 import dayjs from "dayjs";
 import { type TweetInfo } from "@/server/db/schemas/tweet";
@@ -10,7 +10,7 @@ import { useTranslations } from "next-intl";
 import TranslationComponent from "@/components/translation-component";
 import { NegativeIcon, PositiveIcon, SwapIcon } from "@/components/ui/icon";
 import Poster from "@/components/poster/poster";
-import Image from "next/image";
+import TruncateText from "@/app/signal-catcher/_components/TruncateText";
 
 type Props = {
   signal: SignalItems;
@@ -29,6 +29,10 @@ interface SignalItems extends Signals {
     newsEntity: {
       logo: string;
     };
+    mediaUrls: {
+      images?: string[];
+      videos?: string[];
+    };
   };
   project: Projects;
   times: string;
@@ -41,7 +45,56 @@ interface SignalItems extends Signals {
 
 export function FeaturedCard({ signal, showLine }: Props) {
   const t = useTranslations();
+  const [translatedContent, setTranslatedContent] = useState<string | null>(
+    null,
+  );
+  const getAvatarSrc = () => {
+    if (signal.providerType === "twitter")
+      return signal?.source?.tweetUser?.avatar || "";
+    if (signal.providerType === "news")
+      return signal?.source?.newsEntity?.logo || "";
+    return signal?.source?.exchange?.logo || "";
+  };
+  const getMediaList = (mediaList?: string[]): string[] => {
+    if (!mediaList || mediaList.length == 0) {
+      return [];
+    }
+    return mediaList;
+  };
   if (!signal.source) return null;
+  const TokenItem = (className: string, signal: SignalItems) => (
+    <div className={`${className} mt-4 flex gap-1`}>
+      <div className="flex gap-0.5">
+        {signal.hitKOLs.map((kols) => (
+          <Avatar className="h-5 w-5" key={kols.id}>
+            <AvatarImage src={kols.avatar ?? ""} />
+            <AvatarFallback></AvatarFallback>
+          </Avatar>
+        ))}
+      </div>
+      {signal.hitKOLs.length <= 5 ? (
+        <p className="text-xs text-[#949C9E]">
+          {signal.hitKOLs.map((item) => item.name).join(",") +
+            signal.hitKOLs.length +
+            t("signals.signal.mentionAbove") +
+            " " +
+            signal.project.name}
+        </p>
+      ) : (
+        <p className="text-sx text-[#949C9E]">
+          {signal.hitKOLs
+            .slice(0, 5)
+            .map((item) => item.name)
+            .join(",") +
+            t("signals.signal.over") +
+            signal.hitKOLs.length +
+            t("signals.signal.mentionAbove") +
+            " " +
+            signal.project.name}
+        </p>
+      )}
+    </div>
+  );
   return (
     <div
       className={`${showLine ? "grid grid-cols-[48px_1fr] gap-1" : "block"} overflow-hidden px-5`}
@@ -51,13 +104,7 @@ export function FeaturedCard({ signal, showLine }: Props) {
         <div className="h-full">
           <div className="h-10 w-10">
             <Avatar className="h-10 w-10 border-2 border-secondary">
-              {signal.source.tweetUser ? (
-                <AvatarImage src={signal?.source?.tweetUser?.avatar || ""} />
-              ) : signal.source.newsEntity ? (
-                <AvatarImage src={signal?.source?.newsEntity?.logo || ""} />
-              ) : (
-                <AvatarImage src={signal?.source?.exchange?.logo || ""} />
-              )}
+              <AvatarImage src={getAvatarSrc()} />
               <AvatarFallback></AvatarFallback>
             </Avatar>
           </div>
@@ -65,7 +112,7 @@ export function FeaturedCard({ signal, showLine }: Props) {
       ) : null}
 
       <div className="mb-3 min-h-20 border-b border-border/50">
-        {signal.source.tweetUser ? (
+        {signal.providerType === "twitter" ? (
           <p className="leading-5">{signal?.source?.tweetUser?.name || ""}</p>
         ) : (
           <p className="leading-5">{signal?.source?.exchange?.name || ""}</p>
@@ -74,40 +121,45 @@ export function FeaturedCard({ signal, showLine }: Props) {
           {dayjs(signal.signalTime).format("YYYY/MM/DD HH:mm:ss")}
         </p>
         <div className="relative mt-2 h-fit w-full bg-transparent">
-          <TranslationComponent content={signal.source.contentSummary ?? ""} />
+          <TranslationComponent
+            content={signal.source.contentSummary ?? ""}
+            onTranslateSuccess={(content: string) => {
+              setTranslatedContent(content);
+            }}
+          />
           <div className="mb-2 flex flex-wrap">
-            {signal.source.imagesUrls && signal.source.imagesUrls.length > 0
-              ? signal.source.imagesUrls.map(
-                  (imageUrl: string, index: number) => {
-                    return (
-                      <img
-                        src={imageUrl}
-                        key={imageUrl + index}
-                        className="!max-w-[50%] rounded-lg"
-                      ></img>
-                    );
-                  },
-                )
-              : null}
-            {signal.source.videoUrls && signal.source.videoUrls.length > 0
-              ? signal.source.videoUrls.map(
-                  (videoUrl: string, index: number) => {
-                    return (
-                      <video
-                        src={videoUrl}
-                        key={videoUrl + index}
-                        width="480"
-                        height="360"
-                        preload="none"
-                        controls
-                        controlsList="nodownload noremoteplayback noplaybackrate"
-                        autoPlay={false}
-                        className="rounded-lg"
-                      ></video>
-                    );
-                  },
-                )
-              : null}
+            {getMediaList(
+              signal.providerType === "news"
+                ? signal.source.mediaUrls?.images
+                : signal.source.imagesUrls,
+            ).map((imageUrl: string, index: number) => {
+              return (
+                <img
+                  src={imageUrl}
+                  key={imageUrl + index}
+                  className="!max-w-[50%] rounded-lg"
+                ></img>
+              );
+            })}
+            {getMediaList(
+              signal.providerType === "news"
+                ? signal.source.mediaUrls?.videos
+                : signal.source.videoUrls,
+            ).map((videoUrl: string, index: number) => {
+              return (
+                <video
+                  src={videoUrl}
+                  key={videoUrl + index}
+                  width="480"
+                  height="360"
+                  preload="none"
+                  controls
+                  controlsList="nodownload noremoteplayback noplaybackrate"
+                  autoPlay={false}
+                  className="rounded-lg"
+                ></video>
+              );
+            })}
           </div>
         </div>
 
@@ -187,39 +239,9 @@ export function FeaturedCard({ signal, showLine }: Props) {
                 </div>
               </div>
             </div>
-            {signal.hitKOLs && signal.hitKOLs.length > 0 && (
-              <div className="mt-4 flex items-center gap-1">
-                <div className="flex gap-0.5">
-                  {signal.hitKOLs.map((kols) => (
-                    <Avatar className="h-5 w-5" key={kols.id}>
-                      <AvatarImage src={kols.avatar ?? ""} />
-                      <AvatarFallback></AvatarFallback>
-                    </Avatar>
-                  ))}
-                </div>
-                {signal.hitKOLs.length <= 5 ? (
-                  <p className="text-xs text-[#949C9E]">
-                    {signal.hitKOLs.map((item) => item.name).join(",") +
-                      signal.hitKOLs.length +
-                      t("signals.signal.mentionAbove") +
-                      " " +
-                      signal.project.name}
-                  </p>
-                ) : (
-                  <p className="text-sx text-[#949C9E]">
-                    {signal.hitKOLs
-                      .slice(0, 5)
-                      .map((item) => item.name)
-                      .join(",") +
-                      t("signals.signal.over") +
-                      signal.hitKOLs.length +
-                      t("signals.signal.mentionAbove") +
-                      " " +
-                      signal.project.name}
-                  </p>
-                )}
-              </div>
-            )}
+            {signal.hitKOLs &&
+              signal.hitKOLs.length > 0 &&
+              TokenItem("items-start flex", signal)}
           </div>
         ) : null}
 
@@ -241,25 +263,13 @@ export function FeaturedCard({ signal, showLine }: Props) {
           <div className="flex cursor-pointer items-center gap-1 text-xs text-[#617178]">
             <div className="h-3 w-3 bg-[url(/images/signal/share.svg)] bg-contain"></div>
             <Poster>
-              <div className="mb-4 flex items-center gap-2">
-                <div>
-                  <Image
-                    src="/images/logo.svg"
-                    alt="Logo"
-                    width={32}
-                    height={32}
-                    className="h-8 w-8"
-                  />
-                </div>
-                <p>Dev Site</p>
-              </div>
               <p className="relative pl-2 before:absolute before:left-0 before:top-1/2 before:h-[4px] before:w-[4px] before:-translate-y-1/2 before:rounded-full before:bg-white before:content-['']">
                 {dayjs(signal.signalTime).format("YYYY/MM/DD HH:mm:ss")}
               </p>
-              <div className="flex items-center gap-1.5">
+              <div className="mt-3 flex items-center gap-1.5">
                 <div className="h-8 w-8">
                   <Avatar className="h-8 w-8 border-2 border-secondary">
-                    {signal.source.tweetUser ? (
+                    {signal.providerType === "twitter" ? (
                       <AvatarImage
                         src={signal?.source?.tweetUser?.avatar || ""}
                       />
@@ -270,7 +280,7 @@ export function FeaturedCard({ signal, showLine }: Props) {
                   </Avatar>
                 </div>
                 <div>
-                  {signal.source.tweetUser ? (
+                  {signal.providerType === "twitter" ? (
                     <p className="leading-5">
                       {signal?.source?.tweetUser?.name || ""}
                     </p>
@@ -281,13 +291,33 @@ export function FeaturedCard({ signal, showLine }: Props) {
                   )}
                 </div>
               </div>
-              <div className="mt-4 min-h-60 rounded-lg border bg-white/10 p-2">
-                {signal.source.contentSummary}
+              {/*<div className="mt-4 min-h-60 rounded-lg border bg-white/10 p-2">*/}
+              {/*  {signal.source.contentSummary}*/}
+              {/*</div>*/}
+              <div className="mt-3">
+                <TruncateText
+                  text={signal.source.contentSummary || ""}
+                  maxHeight={200}
+                  className="break-all text-sm text-white"
+                />
               </div>
-
+              {translatedContent ? (
+                <div className="mt-3">
+                  <p className="text-sm text-primary">AI翻译：</p>
+                </div>
+              ) : null}
+              {translatedContent ? (
+                <div className="mt-3">
+                  <TruncateText
+                    text={translatedContent}
+                    maxHeight={200}
+                    className="break-all text-sm text-white"
+                  />
+                </div>
+              ) : null}
               {signal.project ? (
-                <div className="relative block w-full items-center gap-3 rounded-xl border bg-white/80 p-4 dark:bg-[#161C25]">
-                  <div className="flex items-center gap-1.5">
+                <div className="relative mt-3 block w-full items-center gap-3 rounded-xl border bg-white/80 p-4 dark:bg-[#161C25]">
+                  <div className="flex items-center gap-3">
                     <div className="border-spin-image flex h-9 w-9 items-center justify-center">
                       <div className="z-[8] h-8 w-8 overflow-hidden rounded-full border-2 border-primary">
                         <div className="flex h-full w-full items-center justify-center">
@@ -299,7 +329,9 @@ export function FeaturedCard({ signal, showLine }: Props) {
                       </div>
                     </div>
                     <div className="flex items-center gap-2">
-                      <p className="font-bold">{signal.project.name}</p>
+                      <p className="text-lg font-bold text-white">
+                        {signal.project.name}
+                      </p>
                       {signal.times === "0" && (
                         <div className="rounded-full bg-[#F4B31C] text-black">
                           <p className="scale-75 text-xs">
@@ -315,7 +347,7 @@ export function FeaturedCard({ signal, showLine }: Props) {
                       <p className="mb-2 text-xs">
                         {t("signals.signal.24hPnl")}
                       </p>
-                      <p className="font-bold text-[#00CE64] dark:text-[#00FFAB]">
+                      <p className="text-xl font-bold text-[#00CE64] dark:text-[#00FFAB]">
                         {parseFloat(signal.source.highRate24H ?? "0") > 0
                           ? "+" + signal.source.highRate24H
                           : signal.source.highRate24H}
@@ -343,70 +375,19 @@ export function FeaturedCard({ signal, showLine }: Props) {
                               {signal.source.sentiment?.toUpperCase()}
                             </p>
                           ) : (
-                            <p className="font-bold text-[#FA5B5B] dark:text-[#F95F5F]">
+                            <p className="justify-start font-bold text-[#FA5B5B] dark:text-[#F95F5F]">
                               {signal.source.sentiment?.toUpperCase()}
                             </p>
                           )}
                         </div>
                       </div>
                     ) : null}
-                    <div>
-                      <p className="mb-2 text-xs opacity-0">123</p>
-                      <div className="flex cursor-pointer items-center gap-1 hover:scale-105">
-                        <div className="h-4 w-4">
-                          <SwapIcon className="fill-[#1F72E5] dark:fill-[#FFFFA7]" />
-                        </div>
-                        <p className="text-[#1F72E5] dark:text-[#FFFFA7]">
-                          {" "}
-                          {t("signals.signal.quickSwap")}
-                        </p>
-                      </div>
-                    </div>
                   </div>
-                  {signal.hitKOLs && signal.hitKOLs.length > 0 && (
-                    <div className="mt-4 flex items-center gap-1">
-                      <div className="flex gap-0.5">
-                        {signal.hitKOLs.map((kols) => (
-                          <Avatar className="h-5 w-5" key={kols.id}>
-                            <AvatarImage src={kols.avatar ?? ""} />
-                            <AvatarFallback></AvatarFallback>
-                          </Avatar>
-                        ))}
-                      </div>
-                      {signal.hitKOLs.length <= 5 ? (
-                        <p className="text-xs text-[#949C9E]">
-                          {signal.hitKOLs.map((item) => item.name).join(",") +
-                            signal.hitKOLs.length +
-                            t("signals.signal.mentionAbove") +
-                            " " +
-                            signal.project.name}
-                        </p>
-                      ) : (
-                        <p className="text-sx text-[#949C9E]">
-                          {signal.hitKOLs
-                            .slice(0, 5)
-                            .map((item) => item.name)
-                            .join(",") +
-                            t("signals.signal.over") +
-                            signal.hitKOLs.length +
-                            t("signals.signal.mentionAbove") +
-                            " " +
-                            signal.project.name}
-                        </p>
-                      )}
-                    </div>
-                  )}
+                  {signal.hitKOLs &&
+                    signal.hitKOLs.length > 0 &&
+                    TokenItem("flex-col items-start", signal)}
                 </div>
               ) : null}
-              <div className="mt-2 flex w-full items-center justify-center">
-                <p className="text-xs text-white/30">
-                  Web3 Major Investment Signal Catcher!
-                </p>
-              </div>
-              <div className="flex w-full items-center justify-center gap-2 pb-4">
-                <p className="text-xs text-white/30">www.masbate.xyz</p>
-                <p className="text-xs text-white/30">@masbateofficial</p>
-              </div>
             </Poster>
           </div>
         </div>

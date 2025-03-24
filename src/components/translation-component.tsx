@@ -10,6 +10,7 @@ import { Button } from "./ui/button";
 interface TranslationComponentProps {
   lang?: string;
   content: string;
+  onTranslateSuccess?: (content: string) => void;
 }
 
 const LOCALE_DISPLAY_NAME = {
@@ -21,6 +22,7 @@ const LOCALE_DISPLAY_NAME = {
 const TranslationComponent: React.FC<TranslationComponentProps> = ({
   lang,
   content,
+  onTranslateSuccess,
 }) => {
   const [translatedContent, setTranslatedContent] = useState<string | null>(
     null,
@@ -52,6 +54,7 @@ const TranslationComponent: React.FC<TranslationComponentProps> = ({
     setIsLoading(true);
     const translation = await TranslateContent(content, currentLocale);
     setTranslatedContent(translation);
+    if (onTranslateSuccess) onTranslateSuccess(translation);
     setIsLoading(false);
   };
 

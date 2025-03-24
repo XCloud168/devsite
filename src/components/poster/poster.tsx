@@ -7,10 +7,10 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import React, { ReactNode, useRef } from "react";
+import React, { type ReactNode, useRef } from "react";
 import { toPng } from "html-to-image";
 import { useTranslations } from "next-intl";
-
+import Image from "next/image";
 export default function Poster({ children }: { children: ReactNode }) {
   const t = useTranslations();
   const captureRef = useRef<HTMLDivElement>(null);
@@ -36,17 +36,35 @@ export default function Poster({ children }: { children: ReactNode }) {
         {t("common.share")}
       </DialogTrigger>
       <DialogContent className="w-[400px] border bg-white p-0 dark:bg-black">
-        <div className="absolute top-0 h-[200px] w-full bg-[url(/images/poster-bg.svg)] bg-contain"></div>
         <DialogHeader>
           <DialogTitle></DialogTitle>
           <DialogDescription></DialogDescription>
         </DialogHeader>
-        <div className="flex flex-col gap-2 px-4">
+        <div>
           <div
-            className="mx-auto w-full max-w-sm rounded-lg p-6"
+            className="mx-auto w-full max-w-sm rounded-lg bg-black p-4"
             ref={captureRef}
           >
+            <div className="absolute top-0 h-[200px] w-full bg-[url(/images/poster-bg.svg)] bg-contain"></div>
             {children}
+            <div className="mt-4 flex items-center justify-between border-t pt-4">
+              <div className="space-y-1">
+                <div className="flex items-center gap-1">
+                  <Image
+                    src="/images/logo.svg"
+                    alt="Logo"
+                    width={32}
+                    height={32}
+                    className="h-8 w-8"
+                  />
+                  <p className="text-lg font-bold text-white">Blockbate</p>
+                </div>
+                <p className="text-xs text-white/80">
+                  Web3 Major Investment Signal Catcher!
+                </p>
+              </div>
+              <div className="h-20 w-20 bg-white"></div>
+            </div>
           </div>
         </div>
         <div className="absolute -bottom-12 -left-1 flex w-full justify-center gap-4">

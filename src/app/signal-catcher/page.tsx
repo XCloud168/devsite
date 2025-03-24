@@ -79,7 +79,7 @@ export default async function SignalPage() {
   };
 
   return (
-    <div className="w-full overflow-hidden">
+    <div className="z-1 w-full">
       <ResizablePanelGroup direction="horizontal" className="h-full w-full">
         <ResizablePanel defaultSize={55}>
           <div className="block items-center justify-center">
