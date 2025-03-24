@@ -42,7 +42,7 @@ export default function Poster({ children }: { children: ReactNode }) {
         </DialogHeader>
         <div>
           <div
-            className="mx-auto w-full max-w-sm rounded-lg bg-black p-4"
+            className="mx-auto w-full max-w-sm bg-black p-4"
             ref={captureRef}
           >
             <div className="absolute top-0 h-[200px] w-full bg-[url(/images/poster-bg.svg)] bg-contain"></div>
