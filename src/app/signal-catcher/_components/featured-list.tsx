@@ -39,6 +39,10 @@ interface SignalItems extends Signals {
     newsEntity: {
       logo: string;
     };
+    mediaUrls: {
+      images?: string[];
+      videos?: string[];
+    };
   };
   project: Projects;
   times: string;

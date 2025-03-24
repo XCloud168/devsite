@@ -136,7 +136,7 @@ export function KolCard({
                       <p className="text-white">
                         {tweet?.tweetUser?.name || "--"}
                       </p>
-                      <div className="mt-1 flex gap-3">
+                      <div className="flex gap-3">
                         <p className="text-xs text-white/80">
                           @{tweet?.tweetUser?.screenName || "--"}
                         </p>
