@@ -15,16 +15,20 @@ export default function Poster({ children }: { children: ReactNode }) {
   const t = useTranslations();
   const captureRef = useRef<HTMLDivElement>(null);
   const handleSaveImage = async () => {
-    if (!captureRef.current) return;
-    const imgData = await toPng(captureRef.current, {
-      quality: 1,
-      pixelRatio: 2,
-      cacheBust: true,
-    });
-    const link = document.createElement("a");
-    link.href = imgData;
-    link.download = `screenshot-share.png`;
-    link.click();
+    try {
+      if (!captureRef.current) return;
+      const imgData = await toPng(captureRef.current, {
+        quality: 1,
+        pixelRatio: 2,
+        cacheBust: false,
+      });
+      const link = document.createElement("a");
+      link.href = imgData;
+      link.download = `screenshot-share.png`;
+      link.click();
+    } catch (error) {
+      console.error(error);
+    }
   };
   return (
     <Dialog>
@@ -37,8 +41,13 @@ export default function Poster({ children }: { children: ReactNode }) {
           <DialogTitle></DialogTitle>
           <DialogDescription></DialogDescription>
         </DialogHeader>
-        <div className="flex flex-col gap-2 px-4" ref={captureRef}>
-          {children}
+        <div className="flex flex-col gap-2 px-4">
+          <div
+            className="mx-auto w-full max-w-sm rounded-lg p-6"
+            ref={captureRef}
+          >
+            {children}
+          </div>
         </div>
         <div className="absolute -bottom-12 -left-1 flex w-full justify-center gap-4">
           <Button variant="outline">{t("signals.shareToX")}</Button>
