@@ -11,7 +11,6 @@ import TranslationComponent from "@/components/translation-component";
 import type { ServerResult } from "@/lib/server-result";
 import { useTranslations } from "next-intl";
 import Poster from "@/components/poster/poster";
-import TruncateText from "@/app/signal-catcher/_components/TruncateText";
 
 type Props = {
   tweet: TweetItem;
@@ -147,12 +146,8 @@ export function KolCard({
                       </div>
                     </div>
                   </div>
-                  <div className="mt-3">
-                    <TruncateText
-                      text={tweet.content || ""}
-                      maxHeight={200}
-                      className="break-all text-sm text-white"
-                    />
+                  <div className="break-all text-sm text-white">
+                    {tweet.content || ""}
                   </div>
                   {translatedContent ? (
                     <div className="mt-3">
@@ -160,12 +155,8 @@ export function KolCard({
                     </div>
                   ) : null}
                   {translatedContent ? (
-                    <div className="mt-3">
-                      <TruncateText
-                        text={translatedContent}
-                        maxHeight={200}
-                        className="break-all text-sm text-white"
-                      />
+                    <div className="mt-3 break-all text-sm text-white">
+                      {translatedContent}
                     </div>
                   ) : null}
                 </div>

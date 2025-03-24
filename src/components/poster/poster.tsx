@@ -36,17 +36,17 @@ export default function Poster({ children }: { children: ReactNode }) {
       <DialogTrigger className="text-xs text-[#949C9E]">
         {t("common.share")}
       </DialogTrigger>
-      <DialogContent className="w-[400px] border bg-white p-0 dark:bg-black">
+      <DialogContent className="w-[400px] border bg-black">
+        <div className="absolute h-[200px] w-full bg-[url(/images/poster-bg.svg)] bg-contain"></div>
         <DialogHeader>
           <DialogTitle></DialogTitle>
           <DialogDescription></DialogDescription>
         </DialogHeader>
-        <div>
+        <div className="scroll relative z-[5] flex max-h-[600px] flex-col gap-4 overflow-y-auto scrollbar-thin scrollbar-track-transparent scrollbar-thumb-secondary">
           <div
-            className="mx-auto w-full max-w-sm bg-black p-6"
+            className="mx-auto w-full max-w-sm bg-transparent"
             ref={captureRef}
           >
-            <div className="absolute top-0 h-[200px] w-full bg-[url(/images/poster-bg.svg)] bg-contain"></div>
             {children}
             <div className="mt-4 flex items-center justify-between border-t pt-4">
               <div className="space-y-1">

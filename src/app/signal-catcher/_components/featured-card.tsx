@@ -10,7 +10,6 @@ import { useTranslations } from "next-intl";
 import TranslationComponent from "@/components/translation-component";
 import { NegativeIcon, PositiveIcon, SwapIcon } from "@/components/ui/icon";
 import Poster from "@/components/poster/poster";
-import TruncateText from "@/app/signal-catcher/_components/TruncateText";
 
 type Props = {
   signal: SignalItems;
@@ -294,12 +293,8 @@ export function FeaturedCard({ signal, showLine }: Props) {
               {/*<div className="mt-4 min-h-60 rounded-lg border bg-white/10 p-2">*/}
               {/*  {signal.source.contentSummary}*/}
               {/*</div>*/}
-              <div className="mt-3">
-                <TruncateText
-                  text={signal.source.contentSummary || ""}
-                  maxHeight={200}
-                  className="break-all text-sm text-white"
-                />
+              <div className="mt-3 break-all text-sm text-white">
+                {signal.source.contentSummary || ""}
               </div>
               {translatedContent ? (
                 <div className="mt-3">
@@ -307,12 +302,8 @@ export function FeaturedCard({ signal, showLine }: Props) {
                 </div>
               ) : null}
               {translatedContent ? (
-                <div className="mt-3">
-                  <TruncateText
-                    text={translatedContent}
-                    maxHeight={200}
-                    className="break-all text-sm text-white"
-                  />
+                <div className="mt-3 break-all text-sm text-white">
+                  {translatedContent}
                 </div>
               ) : null}
               {signal.project ? (

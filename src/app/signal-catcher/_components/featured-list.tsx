@@ -128,7 +128,7 @@ export function FeaturedList({ getSignalListAction, menuInfo }: Props) {
     }
   };
   return (
-    <div className="scroll-container relative z-[5] h-[calc(100vh-300px)] overflow-y-scroll scrollbar-thin scrollbar-track-transparent scrollbar-thumb-secondary">
+    <div className="relative z-[5] h-[calc(100vh-300px)] overflow-y-scroll scrollbar-thin scrollbar-track-transparent scrollbar-thumb-secondary">
       {pageLoading && signalList.length === 0 ? (
         <div className="space-y-5 px-5">
           {[1, 2, 3, 4].map((item) => (
