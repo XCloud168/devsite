@@ -51,6 +51,8 @@ interface TweetItem extends Omit<TweetInfo, "tweetUser"> {
     isFollowed: boolean;
   };
   replyTweet: TweetInfo;
+  imagesUrls: [];
+  videoUrls: [];
 }
 export function MyFollowed({
   getTweetListAction,

@@ -27,6 +27,8 @@ interface TweetItem extends Omit<TweetInfo, "tweetUser"> {
   tweetUser: TweetUsers & {
     isFollowed: boolean;
   };
+  imagesUrls: [];
+  videoUrls: [];
   replyTweet: TweetItem;
 }
 
