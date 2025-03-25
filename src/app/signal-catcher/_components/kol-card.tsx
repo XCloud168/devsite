@@ -11,6 +11,7 @@ import TranslationComponent from "@/components/translation-component";
 import type { ServerResult } from "@/lib/server-result";
 import { useTranslations } from "next-intl";
 import Poster from "@/components/poster/poster";
+import { formatNumber } from "@/components/formatNumber";
 
 type Props = {
   tweet: TweetItem;
@@ -71,7 +72,7 @@ export function KolCard({
                   @{tweet?.tweetUser?.screenName || "--"}
                 </p>
                 <p className="text-xs">
-                  {tweet?.tweetUser?.followersCount || 0}{" "}
+                  {formatNumber(tweet?.tweetUser?.followersCount)}{" "}
                   {t("signals.kol.followers")}
                 </p>
               </div>
@@ -140,7 +141,8 @@ export function KolCard({
                           @{tweet?.tweetUser?.screenName || "--"}
                         </p>
                         <p className="text-xs text-white/80">
-                          {tweet?.tweetUser?.followersCount || 0}&nbsp;
+                          {formatNumber(tweet?.tweetUser?.followersCount) || 0}
+                          &nbsp;
                           {t("signals.kol.followers")}
                         </p>
                       </div>
