@@ -35,7 +35,7 @@ export function KolBanner({ onKolMenuChangeAction }: KolMenuProps) {
         <div className="flex gap-10">
           {kolMenu.map((menu) => (
             <div
-              className={`${menu.value === selectedMenu.value ? "border-primary font-bold text-primary" : "border-transparent font-normal text-black dark:text-white"} cursor-pointer break-keep border-b-2 pb-[18px] text-center hover:text-primary`}
+              className={`${menu.value === selectedMenu.value ? "border-primary font-bold text-primary" : "border-transparent font-normal text-black dark:text-foreground/80"} cursor-pointer break-keep border-b-2 pb-[18px] text-center hover:text-primary`}
               key={menu.value}
               onClick={() => {
                 onKolMenuChangeAction(menu);

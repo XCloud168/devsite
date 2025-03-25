@@ -51,16 +51,7 @@ export default function SharePoster({ children }: { children: ReactNode }) {
             ref={captureRef}
           >
             <div className="absolute left-0 top-0 h-[200px] w-full scale-105 bg-[url(/images/poster-bg.svg)] bg-contain"></div>
-            <div className="flex items-center gap-1">
-              <Image
-                src="/images/logo.svg"
-                alt="Logo"
-                width={18}
-                height={18}
-                className="h-8 w-8"
-              />
-              <p className="text-lg font-bold text-white">Blockbate</p>
-            </div>
+            <Image src="/images/logo.svg" alt="Logo" width={130} height={20} />
             {children}
             <div className="mt-4 flex items-center justify-between border-t px-4 pt-4">
               <div className="space-y-1">

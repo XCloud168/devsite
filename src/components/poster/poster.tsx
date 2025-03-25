@@ -54,17 +54,15 @@ export default function Poster({ children }: { children: ReactNode }) {
                   <Image
                     src="/images/logo.svg"
                     alt="Logo"
-                    width={32}
-                    height={32}
-                    className="h-8 w-8"
+                    width={130}
+                    height={20}
                   />
-                  <p className="text-lg font-bold text-white">Blockbate</p>
                 </div>
                 <p className="text-xs text-white/80">
                   Web3 Major Investment Signal Catcher!
                 </p>
               </div>
-              <QRCode text={window.location.href} width={80} />
+              <QRCode text={window.location.href} width={60} />
             </div>
           </div>
         </div>

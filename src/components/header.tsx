@@ -23,24 +23,21 @@ export function Header() {
       <div className="flex h-14 items-center px-5">
         <div className="flex flex-1 items-center">
           {/* Logo */}
-          <Link href="/" className="flex items-center space-x-2">
+          <Link href="/" className="flex h-5 w-[130px] items-center space-x-2">
             <Image
-              src="/images/logo.svg"
+              src="/images/logo-blue.svg"
               alt="Logo"
-              width={32}
-              height={32}
-              className="h-8 w-8"
+              width={130}
+              height={20}
             />
-            <span className="text-xl font-bold">{siteName}</span>
           </Link>
-
           {/* Navigation */}
           <nav className="ml-10 flex items-center space-x-6">
             {navigation.map((item) => (
               <Link
                 key={item.href}
                 href={item.href}
-                className={`${pathname === item.href ? "text-black dark:text-white" : "text-foreground/60"} font-medium transition-colors hover:text-foreground/80`}
+                className={`${pathname === item.href ? "after:contents='' border-primary font-semibold text-black after:absolute after:-bottom-4 after:left-0 after:h-0.5 after:w-full after:bg-primary dark:text-primary" : "text-foreground/80"} relative font-medium transition-colors hover:text-foreground/80`}
               >
                 {item.name}
               </Link>

@@ -2,7 +2,7 @@
 
 import { type ServerResult } from "@/lib/server-result";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { type Projects, type Signals } from "@/server/db/schemas/signal";
 import { type TweetInfo } from "@/server/db/schemas/tweet";
 import { type SetState } from "@/app/signal-catcher/_components/my-followed";
@@ -67,6 +67,7 @@ export function FeaturedList({ getSignalListAction, menuInfo }: Props) {
   const [hasNext, setHasNext] = useState<boolean>(true);
   const [pageLoading, setPageLoading] = useState<boolean>(false);
   const [currentPage, setCurrentPage] = useState<number>(1);
+
   const fetchSignalList = async (
     refresh: boolean,
     page: number,
@@ -127,8 +128,15 @@ export function FeaturedList({ getSignalListAction, menuInfo }: Props) {
       );
     }
   };
+  const dynamicHeight: number = useMemo(() => {
+    if (menuInfo.entityId) return 300;
+    return 230;
+  }, [menuInfo]);
   return (
-    <div className="relative z-[5] h-[calc(100vh-300px)] overflow-y-scroll scrollbar-thin scrollbar-track-transparent scrollbar-thumb-secondary">
+    <div
+      style={{ height: `calc(100vh - ${dynamicHeight}px)` }}
+      className="relative z-[5] overflow-y-scroll scrollbar-thin scrollbar-track-transparent scrollbar-thumb-secondary"
+    >
       {pageLoading && signalList.length === 0 ? (
         <div className="space-y-5 px-5">
           {[1, 2, 3, 4].map((item) => (

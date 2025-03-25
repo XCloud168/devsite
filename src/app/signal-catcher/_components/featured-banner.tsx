@@ -110,9 +110,8 @@ export function FeaturedBanner({
           {signalCategory.map((category) => (
             <div
               key={category.id}
-              className={`${selectedCategoryId === category.id ? "border-[#1F72E5] bg-gradient-to-r from-[#1F72E5] to-[#45FA25] bg-clip-text font-bold text-transparent dark:border-[#F2DA18] dark:from-[#F2DA18] dark:to-[#4DFFC4]" : "border-transparent"} cursor-pointer border-b-2 pb-2 pt-3 text-center`}
+              className={`${selectedCategoryId === category.id ? "border-[#1F72E5] bg-gradient-to-r from-[#1F72E5] to-[#45FA25] bg-clip-text font-bold text-transparent dark:border-[#F2DA18] dark:from-[#F2DA18] dark:to-[#4DFFC4]" : "border-transparent"} cursor-pointer border-b-2 pb-2 pt-3 text-center text-foreground/80`}
               onClick={() => {
-                console.log(category.id);
                 setTagLoading(true);
                 setSelectedCategoryId(category.id);
                 setSelectedTagId("");
@@ -200,7 +199,7 @@ export function FeaturedBanner({
           </div>
         </div>
       ) : (
-        <div className="my-3 h-[60px] opacity-0">123</div>
+        <div className="h-3 opacity-0">123</div>
       )}
     </div>
   );
