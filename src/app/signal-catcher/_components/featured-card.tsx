@@ -176,7 +176,7 @@ export function FeaturedCard({ signal, showLine }: Props) {
                 </div>
               </div>
               <div className="flex items-center gap-2">
-                <p className="font-bold">{signal.project.name}</p>
+                <p className="font-bold">{signal.project.symbol}</p>
                 {signal.times === "0" && (
                   <div className="rounded-full bg-[#F4B31C] text-black">
                     <p className="scale-75 text-xs">
@@ -321,7 +321,7 @@ export function FeaturedCard({ signal, showLine }: Props) {
                     </div>
                     <div className="flex items-center gap-2">
                       <p className="text-lg font-bold text-white">
-                        {signal.project.name}
+                        {signal.project.symbol}
                       </p>
                       {signal.times === "0" && (
                         <div className="rounded-full bg-[#F4B31C] text-black">
