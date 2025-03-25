@@ -98,7 +98,7 @@ export default async function SignalPage() {
           maxSize={50}
           className="relative"
         >
-          <div className="absolute h-svh w-full bg-gradient-to-b from-[#DEECFF] to-[#FFFFFF] dark:from-[#0A132580] dark:to-[#050911]"></div>
+          <div className="absolute h-svh w-full bg-gradient-to-b from-[#DEECFF80] to-[#FFFFFF] dark:from-[#0A132580] dark:to-[#050911]"></div>
           <div className="relative block items-center justify-center overflow-hidden">
             <FeaturedComponent
               getSignalListAction={getSignalList}

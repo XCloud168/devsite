@@ -37,7 +37,7 @@ export function Header() {
               <Link
                 key={item.href}
                 href={item.href}
-                className={`${pathname === item.href ? "after:contents='' border-primary font-semibold text-black after:absolute after:-bottom-4 after:left-0 after:h-0.5 after:w-full after:bg-primary dark:text-primary" : "text-foreground/80"} relative font-medium transition-colors hover:text-foreground/80`}
+                className={`${pathname === item.href ? "after:contents='' border-primary font-semibold text-primary after:absolute after:-bottom-4 after:left-0 after:h-0.5 after:w-full after:bg-primary dark:text-primary" : "text-foreground/80"} relative font-medium transition-colors hover:text-foreground/80`}
               >
                 {item.name}
               </Link>

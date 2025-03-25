@@ -110,7 +110,7 @@ export function FeaturedBanner({
           {signalCategory.map((category) => (
             <div
               key={category.id}
-              className={`${selectedCategoryId === category.id ? "border-[#1F72E5] bg-gradient-to-r from-[#1F72E5] to-[#45FA25] bg-clip-text font-bold text-transparent dark:border-[#F2DA18] dark:from-[#F2DA18] dark:to-[#4DFFC4]" : "border-transparent"} cursor-pointer border-b-2 pb-2 pt-3 text-center text-foreground/80`}
+              className={`${selectedCategoryId === category.id ? "border-[#1F72E5] bg-gradient-to-r from-primary to-primary bg-clip-text font-bold text-primary dark:border-[#F2DA18] dark:from-[#F2DA18] dark:to-[#4DFFC4] dark:text-transparent" : "border-transparent"} cursor-pointer border-b-2 pb-2 pt-3 text-center`}
               onClick={() => {
                 setTagLoading(true);
                 setSelectedCategoryId(category.id);

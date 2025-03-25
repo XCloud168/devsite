@@ -12,6 +12,7 @@ import type { ServerResult } from "@/lib/server-result";
 import { useTranslations } from "next-intl";
 import Poster from "@/components/poster/poster";
 import { formatNumber } from "@/components/formatNumber";
+import { getMediaList } from "@/app/signal-catcher/_components/featured-card";
 
 type Props = {
   tweet: TweetItem;
@@ -23,6 +24,8 @@ interface TweetItem extends Omit<TweetInfo, "tweetUser"> {
   tweetUser: TweetUsers & {
     isFollowed: boolean;
   };
+  imagesUrls: [];
+  videoUrls: [];
   replyTweet: TweetInfo;
 }
 
@@ -51,6 +54,7 @@ export function KolCard({
     };
     fetchData();
   };
+  console.log(tweet);
   return (
     <div className="px-5 pt-5" key={tweet.id}>
       <p className="relative pl-2 before:absolute before:left-0 before:top-1/2 before:h-[4px] before:w-[4px] before:-translate-y-1/2 before:rounded-full before:bg-white before:content-['']">
@@ -105,6 +109,36 @@ export function KolCard({
               setTranslatedContent(content);
             }}
           />
+        </div>
+        <div className="mb-2 mt-2 grid grid-cols-1 gap-2">
+          {getMediaList(tweet.imagesUrls).map(
+            (imageUrl: string, index: number) => {
+              return (
+                <img
+                  src={imageUrl}
+                  key={imageUrl + index}
+                  className="!max-w-[50%] rounded-lg"
+                ></img>
+              );
+            },
+          )}
+          {getMediaList(tweet.videoUrls).map(
+            (videoUrl: string, index: number) => {
+              return (
+                <video
+                  src={videoUrl}
+                  key={videoUrl + index}
+                  width="480"
+                  height="360"
+                  preload="none"
+                  controls
+                  controlsList="nodownload noremoteplayback noplaybackrate"
+                  autoPlay={false}
+                  className="rounded-lg"
+                ></video>
+              );
+            },
+          )}
         </div>
         {showShare ? (
           <div className="flex gap-10 p-3">

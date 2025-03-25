@@ -41,7 +41,12 @@ interface SignalItems extends Signals {
     name: string;
   }[];
 }
-
+export const getMediaList = (mediaList?: string[]): string[] => {
+  if (!mediaList || mediaList.length == 0) {
+    return [];
+  }
+  return mediaList;
+};
 export function FeaturedCard({ signal, showLine }: Props) {
   const t = useTranslations();
   const [translatedContent, setTranslatedContent] = useState<string | null>(
@@ -54,12 +59,7 @@ export function FeaturedCard({ signal, showLine }: Props) {
       return signal?.source?.newsEntity?.logo || "";
     return signal?.source?.exchange?.logo || "";
   };
-  const getMediaList = (mediaList?: string[]): string[] => {
-    if (!mediaList || mediaList.length == 0) {
-      return [];
-    }
-    return mediaList;
-  };
+
   if (!signal.source) return null;
   const TokenItem = (className: string, signal: SignalItems) => (
     <div className={`${className} mt-4 flex gap-1`}>
@@ -163,7 +163,7 @@ export function FeaturedCard({ signal, showLine }: Props) {
         </div>
 
         {signal.project ? (
-          <div className="relative block w-full items-center gap-5 rounded-xl bg-white/80 p-4 dark:bg-[#161C25]">
+          <div className="relative block w-full items-center gap-5 rounded-xl bg-white/60 p-4 dark:bg-[#161C25]">
             <div className="flex items-center gap-1.5">
               <div className="border-spin-image flex h-9 w-9 items-center justify-center">
                 <div className="z-[8] h-8 w-8 overflow-hidden rounded-full border-2 border-primary">
