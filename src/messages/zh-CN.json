@@ -159,6 +159,8 @@
         "inviteCode": {
             "title": "我的邀请码",
             "description": "分享邀请码给好友",
+            "totalInvites": "总邀请数",
+            "totalInvitesDescription": "查看您的邀请活动概览",
             "code": {
                 "label": "邀请码",
                 "copy": "复制"
@@ -186,9 +188,7 @@
             }
         },
         "inviteStats": {
-            "title": "邀请统计",
-            "description": "查看您的邀请活动概览",
-            "totalInvites": "总邀请数"
+            "title": "邀请统计"
         },
         "inviteRecords": {
             "title": "邀请记录",
@@ -211,7 +211,7 @@
         "membershipStatus": {
             "title": "会员状态",
             "description": "您当前的会员状态和详细信息。",
-            "active": "活跃",
+            "active": "已激活",
             "expiresOn": "到期日期 {date}",
             "inactive": "未激活",
             "promptToSubscribe": "订阅以成为会员。",

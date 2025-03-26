@@ -159,6 +159,8 @@
         "inviteCode": {
             "title": "My Invitation Code",
             "description": "Share this code with friends to invite them",
+            "totalInvites": "Total Invitations",
+            "totalInvitesDescription": "Overview of your invitation activity",
             "code": {
                 "label": "Invitation Code",
                 "copy": "Copy"
@@ -186,9 +188,7 @@
             }
         },
         "inviteStats": {
-            "title": "Invitation Statistics",
-            "description": "Overview of your invitation activity",
-            "totalInvites": "Total Invitations"
+            "title": "Invitation Statistics"
         },
         "inviteRecords": {
             "title": "Invitation Records",

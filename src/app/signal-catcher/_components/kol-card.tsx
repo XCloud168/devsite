@@ -13,6 +13,7 @@ import { useTranslations } from "next-intl";
 import Poster from "@/components/poster/poster";
 import { formatNumber } from "@/components/formatNumber";
 import { getMediaList } from "@/app/signal-catcher/_components/featured-card";
+import Gallery from "@/components/Gallery";
 
 type Props = {
   tweet: TweetItem;
@@ -54,7 +55,7 @@ export function KolCard({
     };
     fetchData();
   };
-  console.log(tweet);
+
   return (
     <div className="px-5 pt-5" key={tweet.id}>
       <p className="relative pl-2 before:absolute before:left-0 before:top-1/2 before:h-[4px] before:w-[4px] before:-translate-y-1/2 before:rounded-full before:bg-white before:content-['']">
@@ -111,17 +112,13 @@ export function KolCard({
           />
         </div>
         <div className="mb-2 mt-2 grid grid-cols-1 gap-2">
-          {getMediaList(tweet.imagesUrls).map(
-            (imageUrl: string, index: number) => {
-              return (
-                <img
-                  src={imageUrl}
-                  key={imageUrl + index}
-                  className="!max-w-[50%] rounded-lg"
-                ></img>
-              );
-            },
-          )}
+          <Gallery
+            images={getMediaList(tweet.imagesUrls)}
+            columns={4}
+            thumbnailWidth={150}
+            thumbnailHeight={100}
+            className="my-custom-class"
+          />
           {getMediaList(tweet.videoUrls).map(
             (videoUrl: string, index: number) => {
               return (

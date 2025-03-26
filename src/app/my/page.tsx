@@ -36,77 +36,60 @@ export default async function PersonalCenter({
     <div className="container mx-auto px-4 py-8">
       <h1 className="mb-8 text-3xl font-bold">{t("title")}</h1>
 
-      <div className="mb-8 grid gap-8 md:grid-cols-3">
+      <div className="mb-8 flex w-full gap-5">
         {/* Membership Status Card */}
-        <Card>
-          <CardHeader>
-            <CardTitle>{t("membershipStatus.title")}</CardTitle>
-            <CardDescription>
-              {t("membershipStatus.description")}
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="flex h-32 items-center justify-center">
-              <div className="text-center">
-                {isMember ? (
-                  <>
-                    <span className="text-5xl font-bold">
-                      {t("membershipStatus.active")}
-                    </span>
-                    <p className="mt-2 text-muted-foreground">
-                      {t.rich("membershipStatus.expiresOn", {
-                        date: new Date(
-                          user.membershipExpiredAt ?? 0,
-                        ).toLocaleDateString(),
-                      })}
-                    </p>
-                  </>
-                ) : (
-                  <>
-                    <span className="text-5xl font-bold text-red-500">
-                      {t("membershipStatus.inactive")}
-                    </span>
-                    <p className="mt-2 text-muted-foreground">
-                      {t("membershipStatus.promptToSubscribe")}
-                    </p>
-                    <SubscribeButton />
-                  </>
-                )}
+        <div className="flex w-fit min-w-[320px] flex-col gap-5">
+          <Card>
+            <CardHeader>
+              <CardTitle>{t("membershipStatus.title")}</CardTitle>
+              <CardDescription>
+                {t("membershipStatus.description")}
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="flex h-32 items-center justify-center">
+                <div className="text-center">
+                  {isMember ? (
+                    <>
+                      <span className="text-5xl font-bold">
+                        {t("membershipStatus.active")}
+                      </span>
+                      <p className="mt-2 text-muted-foreground">
+                        {t.rich("membershipStatus.expiresOn", {
+                          date: new Date(
+                            user.membershipExpiredAt ?? 0,
+                          ).toLocaleDateString(),
+                        })}
+                      </p>
+                    </>
+                  ) : (
+                    <>
+                      <span className="text-5xl font-bold text-red-500">
+                        {t("membershipStatus.inactive")}
+                      </span>
+                      <p className="mt-2 text-muted-foreground">
+                        {t("membershipStatus.promptToSubscribe")}
+                      </p>
+                      <SubscribeButton />
+                    </>
+                  )}
+                </div>
               </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Invitation Code Card */}
-        <InviteCode inviteCode={user.inviteCode || ""} />
-
-        {/* Invitation Stats Card */}
-        <Card>
-          <CardHeader>
-            <CardTitle>{t("inviteStats.title")}</CardTitle>
-            <CardDescription>{t("inviteStats.description")}</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="flex h-32 items-center justify-center">
-              <div className="text-center">
-                <span className="text-5xl font-bold">
-                  {pagination.totalCount}
-                </span>
-                <p className="mt-2 text-muted-foreground">
-                  {t("inviteStats.totalInvites")}
-                </p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
+            </CardContent>
+          </Card>
+          {/* Invitation Code Card */}
+          <InviteCode
+            inviteCode={user.inviteCode || ""}
+            totalInvites={pagination.totalCount}
+          />
+        </div>
+        {/* Invitation Records Card */}
+        <InviteRecords
+          records={records}
+          pagination={pagination}
+          fetchRecords={fetchInviteRecords}
+        />
       </div>
-
-      {/* Invitation Records Card */}
-      <InviteRecords
-        records={records}
-        pagination={pagination}
-        fetchRecords={fetchInviteRecords}
-      />
     </div>
   );
 }

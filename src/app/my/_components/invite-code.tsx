@@ -29,9 +29,10 @@ import SharePoster from "@/components/poster/share-poster";
 import Image from "next/image";
 interface InviteCodeProps {
   inviteCode: string;
+  totalInvites: number;
 }
 
-export function InviteCode({ inviteCode }: InviteCodeProps) {
+export function InviteCode({ inviteCode, totalInvites }: InviteCodeProps) {
   const t = useTranslations("my.inviteCode");
   const [copiedCode, setCopiedCode] = useState(false);
   const [copiedLink, setCopiedLink] = useState(false);
@@ -104,7 +105,12 @@ export function InviteCode({ inviteCode }: InviteCodeProps) {
         <div className="space-y-2">
           <div className="text-sm font-medium">{t("link.label")}</div>
           <div className="flex items-center gap-2">
-            <Input value={inviteLink} readOnly className="text-sm" />
+            <Input
+              value={inviteLink}
+              readOnly
+              className="text-sm"
+              title={inviteLink}
+            />
             <Button
               variant="outline"
               onClick={() => copyToClipboard(inviteLink, "link")}
@@ -113,6 +119,15 @@ export function InviteCode({ inviteCode }: InviteCodeProps) {
               {copiedLink ? <Check size={16} /> : <Copy size={16} />}
               {t("link.copy")}
             </Button>
+          </div>
+        </div>
+        <div>
+          <p>{t("totalInvitesDescription")}</p>
+          <div className="flex h-32 items-center justify-center">
+            <div className="text-center">
+              <span className="text-5xl font-bold">{totalInvites}</span>
+              <p className="mt-2 text-muted-foreground">{t("totalInvites")}</p>
+            </div>
           </div>
         </div>
       </CardContent>

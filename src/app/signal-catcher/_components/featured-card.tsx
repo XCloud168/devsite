@@ -10,6 +10,7 @@ import { useTranslations } from "next-intl";
 import TranslationComponent from "@/components/translation-component";
 import { NegativeIcon, PositiveIcon, SwapIcon } from "@/components/ui/icon";
 import Poster from "@/components/poster/poster";
+import Gallery from "@/components/Gallery";
 
 type Props = {
   signal: SignalItems;
@@ -127,19 +128,30 @@ export function FeaturedCard({ signal, showLine }: Props) {
             }}
           />
           <div className="mb-2 flex flex-wrap">
-            {getMediaList(
-              signal.providerType === "news"
-                ? signal.source.mediaUrls?.images
-                : signal.source.imagesUrls,
-            ).map((imageUrl: string, index: number) => {
-              return (
-                <img
-                  src={imageUrl}
-                  key={imageUrl + index}
-                  className="!max-w-[50%] rounded-lg"
-                ></img>
-              );
-            })}
+            <Gallery
+              images={getMediaList(
+                signal.providerType === "news"
+                  ? signal.source.mediaUrls?.images
+                  : signal.source.imagesUrls,
+              )}
+              columns={4}
+              thumbnailWidth={150}
+              thumbnailHeight={100}
+              className="my-custom-class"
+            />
+            {/*{getMediaList(*/}
+            {/*  signal.providerType === "news"*/}
+            {/*    ? signal.source.mediaUrls?.images*/}
+            {/*    : signal.source.imagesUrls,*/}
+            {/*).map((imageUrl: string, index: number) => {*/}
+            {/*  return (*/}
+            {/*    <img*/}
+            {/*      src={imageUrl}*/}
+            {/*      key={imageUrl + index}*/}
+            {/*      className="!max-w-[50%] rounded-lg"*/}
+            {/*    ></img>*/}
+            {/*  );*/}
+            {/*})}*/}
             {getMediaList(
               signal.providerType === "news"
                 ? signal.source.mediaUrls?.videos

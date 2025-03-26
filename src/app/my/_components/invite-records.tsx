@@ -104,7 +104,7 @@ export function InviteRecords({
   };
 
   return (
-    <Card>
+    <Card className="w-full">
       <CardHeader>
         <CardTitle>{t("title")}</CardTitle>
         <CardDescription>{t("description")}</CardDescription>
@@ -140,13 +140,15 @@ export function InviteRecords({
           </Table>
         </div>
 
-        <div className="mt-4">
-          <PaginationButtons
-            pagination={currentPagination}
-            onPageChange={handlePageChange}
-            isLoading={isPending}
-          />
-        </div>
+        {currentPagination.totalPages > 1 ? (
+          <div className="mt-4">
+            <PaginationButtons
+              pagination={currentPagination}
+              onPageChange={handlePageChange}
+              isLoading={isPending}
+            />
+          </div>
+        ) : null}
       </CardContent>
     </Card>
   );
