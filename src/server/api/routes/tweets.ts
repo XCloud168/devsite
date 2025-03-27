@@ -51,7 +51,7 @@ export async function getTweetsByPaginated(
     }
 
     if (filter.hasContractAddress) {
-      conditions.push(isNotNull(tweetInfo.contractAddress));
+      conditions.push(sql`json_array_length(${tweetInfo.contractAddress}) > 0`);
     }
 
     const whereClause = conditions.length > 0 ? and(...conditions) : undefined;
