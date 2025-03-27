@@ -18,32 +18,12 @@ export function KolBanner({ onKolMenuChangeAction, isMobile }: KolMenuProps) {
     value: "2",
   });
   const kolMenu: KolMenu[] = useMemo(() => {
-    if (isMobile) {
-      return [
-        {
-          label: "signal",
-          value: "1",
-        },
-        {
-          label: "kol",
-          value: "2",
-        },
-        {
-          label: "myKol",
-          value: "3",
-        },
-      ];
-    }
-    return [
-      {
-        label: "kol",
-        value: "2",
-      },
-      {
-        label: "myKol",
-        value: "3",
-      },
+    const baseMenu: KolMenu[] = [
+      { label: "kol", value: "2" },
+      { label: "myKol", value: "3" },
     ];
+
+    return isMobile ? [{ label: "signal", value: "1" }, ...baseMenu] : baseMenu;
   }, [isMobile]);
   return (
     <>
