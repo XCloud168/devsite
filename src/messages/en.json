@@ -214,7 +214,7 @@
             "active": "Active",
             "expiresOn": "Expires on {date}",
             "inactive": "Inactive",
-            "promptToSubscribe": "Subscribe to become a member.",
+            "promptToSubscribe": "Subscribe to VIP for exclusive signals",
             "subscribeButton": "Subscribe Now"
         }
     },

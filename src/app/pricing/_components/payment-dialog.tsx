@@ -190,10 +190,12 @@ export function PaymentDialog({ planType, plan }: PaymentDialogProps) {
       </Button>
 
       <Dialog open={open} onOpenChange={setOpen}>
-        <DialogContent className="sm:max-w-md">
+        <DialogContent className="border-transparent p-2 sm:max-w-sm">
           <DialogHeader>
-            <DialogTitle>{t("dialog.title")}</DialogTitle>
-            <DialogDescription className="text-sm">
+            <DialogTitle className="text-center">
+              {t("dialog.title")}
+            </DialogTitle>
+            <DialogDescription className="text-center text-sm">
               {t("dialog.description")}
             </DialogDescription>
           </DialogHeader>
@@ -316,7 +318,7 @@ export function PaymentDialog({ planType, plan }: PaymentDialogProps) {
             </div>
           </div>
 
-          <DialogFooter className="flex flex-col gap-2 sm:flex-row sm:gap-0">
+          <DialogFooter className="flex flex-col !justify-center gap-2 sm:flex-row sm:gap-0">
             <Button
               variant="outline"
               onClick={() => setOpen(false)}

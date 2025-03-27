@@ -36,7 +36,7 @@ export default async function PricingPage() {
               <CardDescription>
                 {plan.originalPrice !== plan.price ? (
                   <div className="flex items-baseline gap-2">
-                    <span className="text-2xl font-bold text-white">
+                    <span className="dark:text-whit text-2xl font-bold text-black">
                       {plan.price} USDT
                     </span>
                     <span className="text-sm text-muted-foreground line-through">
@@ -48,7 +48,7 @@ export default async function PricingPage() {
                     </Badge>
                   </div>
                 ) : (
-                  <span className="text-2xl font-bold text-white">
+                  <span className="text-2xl font-bold text-black dark:text-white">
                     {plan.price} USDT
                   </span>
                 )}
@@ -60,7 +60,9 @@ export default async function PricingPage() {
                   (feature, i) => (
                     <li key={i} className="flex items-start">
                       <Check className="mr-2 h-4 w-4 shrink-0 text-green-500" />
-                      <span className="text-sm text-white/80">{feature}</span>
+                      <span className="text-sm text-black/80 dark:text-white/80">
+                        {feature}
+                      </span>
                     </li>
                   ),
                 )}

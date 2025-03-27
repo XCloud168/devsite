@@ -48,12 +48,14 @@ export function KolList({
 }: Props) {
   const componentsMap: Record<string, JSX.Element> = {
     "1": (
-      <FeaturedComponent
-        getSignalListAction={getSignalListAction}
-        getTagListAction={getTagListAction}
-        getSignalCategoryAction={getSignalCategoryAction}
-        getTagDataAction={getTagDataAction}
-      />
+      <div className="bg-gradient-to-b from-[#DEECFF80] to-[#FFFFFF] dark:from-[#0A132580] dark:to-[#050911]">
+        <FeaturedComponent
+          getSignalListAction={getSignalListAction}
+          getTagListAction={getTagListAction}
+          getSignalCategoryAction={getSignalCategoryAction}
+          getTagDataAction={getTagDataAction}
+        />
+      </div>
     ),
     "2": (
       <KolPoint
