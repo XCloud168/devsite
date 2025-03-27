@@ -36,7 +36,7 @@ export default async function PricingPage() {
               <CardDescription>
                 {plan.originalPrice !== plan.price ? (
                   <div className="flex items-baseline gap-2">
-                    <span className="text-2xl font-bold">
+                    <span className="text-2xl font-bold text-white">
                       {plan.price} USDT
                     </span>
                     <span className="text-sm text-muted-foreground line-through">
@@ -48,7 +48,9 @@ export default async function PricingPage() {
                     </Badge>
                   </div>
                 ) : (
-                  <span className="text-2xl font-bold">{plan.price} USDT</span>
+                  <span className="text-2xl font-bold text-white">
+                    {plan.price} USDT
+                  </span>
                 )}
               </CardDescription>
             </CardHeader>
@@ -57,8 +59,8 @@ export default async function PricingPage() {
                 {(t.raw(`plans.${key}.features`) as unknown as string[]).map(
                   (feature, i) => (
                     <li key={i} className="flex items-start">
-                      <Check className="mr-2 h-5 w-5 shrink-0 text-green-500" />
-                      <span>{feature}</span>
+                      <Check className="mr-2 h-4 w-4 shrink-0 text-green-500" />
+                      <span className="text-sm text-white/80">{feature}</span>
                     </li>
                   ),
                 )}

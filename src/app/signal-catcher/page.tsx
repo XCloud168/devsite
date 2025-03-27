@@ -21,6 +21,8 @@ import { FeaturedComponent } from "@/app/signal-catcher/_components/featured-com
 import { type SIGNAL_PROVIDER_TYPE } from "@/lib/constants";
 import React from "react";
 import RealtimeSignal from "@/components/signals/realtime-signal";
+import { headers } from "next/headers";
+import { UAParser } from "ua-parser-js";
 
 export default async function SignalPage() {
   //获取推特列表
@@ -77,40 +79,55 @@ export default async function SignalPage() {
     "use server";
     return await getSignalEntitiesByCategory(CategoryId);
   };
-
+  const headersList = await headers();
+  const userAgent = headersList.get("user-agent") || "";
+  const { device } = UAParser(userAgent);
+  // 判断是否是移动设备
+  const isMobile = device.type === "mobile" || device.type === "tablet";
+  if (isMobile) {
+    return (
+      <KolComponent
+        getTweetListAction={getTweetList}
+        getFollowedListAction={getFollowedList}
+        addFollowAction={addFollow}
+        removeFollowAction={removeFollow}
+        getSignalListAction={getSignalList}
+        getTagListAction={getSignalTagsByCode}
+        getSignalCategoryAction={getSignalCategory}
+        getTagDataAction={getTagData}
+      />
+    );
+  }
   return (
-    <div className="z-1 w-full">
-      <ResizablePanelGroup direction="horizontal" className="h-full w-full">
-        <ResizablePanel defaultSize={55}>
-          <div className="block items-center justify-center">
-            <KolComponent
-              getTweetListAction={getTweetList}
-              getFollowedListAction={getFollowedList}
-              addFollowAction={addFollow}
-              removeFollowAction={removeFollow}
-            />
-          </div>
-        </ResizablePanel>
-        <ResizableHandle className="bg-primary/20" withHandle />
-        <ResizablePanel
-          defaultSize={45}
-          minSize={35}
-          maxSize={50}
-          className="relative"
-        >
-          <div className="absolute h-svh w-full bg-gradient-to-b from-[#DEECFF80] to-[#FFFFFF] dark:from-[#0A132580] dark:to-[#050911]"></div>
-          <div className="relative block items-center justify-center overflow-hidden">
-            <FeaturedComponent
-              getSignalListAction={getSignalList}
-              getTagListAction={getSignalTagsByCode}
-              getSignalCategoryAction={getSignalCategory}
-              getTagDataAction={getTagData}
-            />
-            <div className="fixed bottom-0 z-[1] h-[438px] w-full bg-[url(/images/signal/featured-bg.svg)] bg-contain bg-no-repeat"></div>
-          </div>
-        </ResizablePanel>
-      </ResizablePanelGroup>
-      <RealtimeSignal />
-    </div>
+    <ResizablePanelGroup direction="horizontal" className="h-full w-full">
+      <ResizablePanel defaultSize={55}>
+        <div className="block items-center justify-center">
+          <KolComponent
+            getTweetListAction={getTweetList}
+            getFollowedListAction={getFollowedList}
+            addFollowAction={addFollow}
+            removeFollowAction={removeFollow}
+          />
+        </div>
+      </ResizablePanel>
+      <ResizableHandle className="bg-primary/20" withHandle />
+      <ResizablePanel
+        defaultSize={45}
+        minSize={35}
+        maxSize={50}
+        className="relative"
+      >
+        <div className="absolute h-svh w-full bg-gradient-to-b from-[#DEECFF80] to-[#FFFFFF] dark:from-[#0A132580] dark:to-[#050911]"></div>
+        <div className="relative block items-center justify-center overflow-hidden">
+          <FeaturedComponent
+            getSignalListAction={getSignalList}
+            getTagListAction={getSignalTagsByCode}
+            getSignalCategoryAction={getSignalCategory}
+            getTagDataAction={getTagData}
+          />
+          <div className="fixed bottom-0 z-[1] h-[438px] w-full bg-[url(/images/signal/featured-bg.svg)] bg-contain bg-no-repeat"></div>
+        </div>
+      </ResizablePanel>
+    </ResizablePanelGroup>
   );
 }

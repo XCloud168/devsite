@@ -6,7 +6,7 @@ import { type ServerResult } from "@/lib/server-result";
 import { useState } from "react";
 import { type SIGNAL_PROVIDER_TYPE } from "@/lib/constants";
 type Props = {
-  getSignalListAction: (
+  getSignalListAction?: (
     page: number,
     filter: {
       categoryId: string;
@@ -14,9 +14,9 @@ type Props = {
       entityId?: string;
     },
   ) => Promise<ServerResult>;
-  getTagListAction: (id: string) => Promise<ServerResult>;
-  getSignalCategoryAction: () => Promise<ServerResult>;
-  getTagDataAction: (
+  getTagListAction?: (id: string) => Promise<ServerResult>;
+  getSignalCategoryAction?: () => Promise<ServerResult>;
+  getTagDataAction?: (
     providerType: SIGNAL_PROVIDER_TYPE,
     entityId: string,
   ) => Promise<ServerResult>;

@@ -12,7 +12,7 @@ import { FeaturedCard } from "@/app/signal-catcher/_components/featured-card";
 import { Skeleton } from "@/components/ui/skeleton";
 
 type Props = {
-  getSignalListAction: (
+  getSignalListAction?: (
     page: number,
     filter: {
       categoryId: string;
@@ -76,23 +76,24 @@ export function FeaturedList({ getSignalListAction, menuInfo }: Props) {
     setHasNext: SetState<boolean>,
     setCurrentPage: SetState<number>,
     setPageLoading: SetState<boolean>,
-    getSignalListAction: FetchSignalListAction,
+    getSignalListAction?: FetchSignalListAction,
     providerType?: SIGNAL_PROVIDER_TYPE,
     entityId?: string,
   ) => {
     setPageLoading(true);
-    const response = await getSignalListAction(page, {
-      categoryId,
-      ...(providerType !== undefined && { providerType }),
-      ...(entityId !== undefined && { entityId }),
-    });
-    console.log(response);
-    setSignalList((prev) =>
-      refresh ? response.data.items : prev.concat(response.data.items),
-    );
-    setHasNext(response.data.pagination.hasNextPage);
-    setCurrentPage(response.data.pagination.currentPage);
-    setPageLoading(false);
+    if (getSignalListAction) {
+      const response = await getSignalListAction(page, {
+        categoryId,
+        ...(providerType !== undefined && { providerType }),
+        ...(entityId !== undefined && { entityId }),
+      });
+      setSignalList((prev) =>
+        refresh ? response.data.items : prev.concat(response.data.items),
+      );
+      setHasNext(response.data.pagination.hasNextPage);
+      setCurrentPage(response.data.pagination.currentPage);
+      setPageLoading(false);
+    }
   };
 
   useEffect(() => {

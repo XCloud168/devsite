@@ -33,9 +33,9 @@ interface Props {
     providerType?: SIGNAL_PROVIDER_TYPE;
     entityId?: string;
   }) => void;
-  getTagListAction: (id: string) => Promise<ServerResult>;
-  getSignalCategoryAction: () => Promise<ServerResult>;
-  getTagDataAction: (
+  getTagListAction?: (id: string) => Promise<ServerResult>;
+  getSignalCategoryAction?: () => Promise<ServerResult>;
+  getTagDataAction?: (
     providerType: SIGNAL_PROVIDER_TYPE,
     entityId: string,
   ) => Promise<ServerResult>;
@@ -63,20 +63,24 @@ export function FeaturedBanner({
     }[]
   >([]);
   const handleChangeCategory = async (id: string) => {
-    const response = await getTagListAction(id);
-    setCurrentTagList(response.data);
-    setTagLoading(false);
+    if (getTagListAction) {
+      const response = await getTagListAction(id);
+      setCurrentTagList(response.data);
+      setTagLoading(false);
+    }
   };
 
   useEffect(() => {
     const fetchData = async () => {
-      const response = await getSignalCategoryAction();
-      setSignalCategory(response.data);
-      setSelectedCategoryId(response.data[0].id);
-      handleChangeCategory(response.data[0].id);
-      onMenuChangeAction({
-        categoryId: response.data[0].id,
-      });
+      if (getSignalCategoryAction) {
+        const response = await getSignalCategoryAction();
+        setSignalCategory(response.data);
+        setSelectedCategoryId(response.data[0].id);
+        handleChangeCategory(response.data[0].id);
+        onMenuChangeAction({
+          categoryId: response.data[0].id,
+        });
+      }
     };
     fetchData();
     // setSignalCategory(response.data);
@@ -86,8 +90,13 @@ export function FeaturedBanner({
     const current = currentTagList.find((tag) => tag.id === entityId);
     if (!current) return;
     const fetchData = async () => {
-      const response = await getTagDataAction(current?.providerType, entityId);
-      setTagData(response.data[0]);
+      if (getTagDataAction) {
+        const response = await getTagDataAction(
+          current?.providerType,
+          entityId,
+        );
+        setTagData(response.data[0]);
+      }
     };
     fetchData();
   };
@@ -106,11 +115,11 @@ export function FeaturedBanner({
         </p>
       </div>
       <div className="flex border-b px-5">
-        <div className="grid grid-cols-4 gap-8">
+        <div className="flex gap-4 md:grid md:grid-cols-4 md:gap-8">
           {signalCategory.map((category) => (
             <div
               key={category.id}
-              className={`${selectedCategoryId === category.id ? "border-[#1F72E5] bg-gradient-to-r from-primary to-primary bg-clip-text font-bold text-primary dark:border-[#F2DA18] dark:from-[#F2DA18] dark:to-[#4DFFC4] dark:text-transparent" : "border-transparent"} cursor-pointer border-b-2 pb-2 pt-3 text-center`}
+              className={`${selectedCategoryId === category.id ? "border-[#1F72E5] bg-gradient-to-r from-primary to-primary bg-clip-text font-bold text-primary dark:border-[#F2DA18] dark:from-[#F2DA18] dark:to-[#4DFFC4] dark:text-transparent" : "border-transparent"} cursor-pointer break-keep border-b-2 pb-2 pt-3 text-center text-sm md:text-base`}
               onClick={() => {
                 setTagLoading(true);
                 setSelectedCategoryId(category.id);

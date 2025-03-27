@@ -57,7 +57,7 @@ export function KolCard({
   };
 
   return (
-    <div className="px-5 pt-5" key={tweet.id}>
+    <div className="p-3 md:p-5" key={tweet.id}>
       <p className="relative pl-2 before:absolute before:left-0 before:top-1/2 before:h-[4px] before:w-[4px] before:-translate-y-1/2 before:rounded-full before:bg-white before:content-['']">
         {dayjs(tweet.tweetCreatedAt).format("YYYY/MM/DD HH:mm:ss")}
       </p>

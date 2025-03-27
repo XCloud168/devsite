@@ -2,6 +2,7 @@
 
 import { Header } from "@/components/header";
 import { usePathname } from "next/navigation";
+import { MobileSideBar } from "@/components/mobile-side-bar";
 
 export default function Template({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
@@ -14,6 +15,7 @@ export default function Template({ children }: { children: React.ReactNode }) {
   return (
     <>
       <Header />
+      <MobileSideBar />
       {children}
     </>
   );

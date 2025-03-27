@@ -35,10 +35,9 @@ export default async function PersonalCenter({
   return (
     <div className="container mx-auto px-4 py-8">
       <h1 className="mb-8 text-3xl font-bold">{t("title")}</h1>
-
-      <div className="mb-8 flex w-full gap-5">
+      <div className="mb-8 flex w-full flex-wrap gap-5">
         {/* Membership Status Card */}
-        <div className="flex w-fit min-w-[320px] flex-col gap-5">
+        <div className="flex w-full min-w-[320px] flex-col gap-5 md:w-fit">
           <Card>
             <CardHeader>
               <CardTitle>{t("membershipStatus.title")}</CardTitle>

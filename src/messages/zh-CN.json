@@ -160,7 +160,7 @@
             "title": "我的邀请码",
             "description": "分享邀请码给好友",
             "totalInvites": "总邀请数",
-            "totalInvitesDescription": "查看您的邀请活动概览",
+            "totalInvitesDescription": "查看你的推荐指数",
             "code": {
                 "label": "邀请码",
                 "copy": "复制"
@@ -325,7 +325,8 @@
             "kolList": "监控列表",
             "addTime": "监控时间",
             "removeKol": "取消监控",
-            "followed": "已监控"
+            "followed": "已监控",
+            "signal": "信号"
         },
         "signal": {
             "curatedSignals": "精选信号",

@@ -177,7 +177,7 @@ export function MyFollowed({
   return (
     <>
       {!showTable ? (
-        <div className="p-5">
+        <div className="p-3 md:p-5">
           <div className="flex gap-3 p-3">
             <div className="flex w-[240px] items-center justify-between border px-6">
               <p>{t("signals.kol.withToken")}</p>

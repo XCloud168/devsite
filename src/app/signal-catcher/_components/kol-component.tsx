@@ -4,6 +4,7 @@ import { KolBanner, type KolMenu } from "./kol-banner";
 import { KolList } from "./kol-list";
 import { useState } from "react";
 import { type ServerResult } from "@/lib/server-result";
+import type { SIGNAL_PROVIDER_TYPE } from "@/lib/constants";
 type Props = {
   getFollowedListAction: () => Promise<ServerResult>;
   addFollowAction: (tweetUid: string) => Promise<ServerResult>;
@@ -16,12 +17,30 @@ type Props = {
       hasContractAddress?: boolean;
     },
   ) => Promise<ServerResult>;
+  getSignalListAction?: (
+    page: number,
+    filter: {
+      categoryId: string;
+      providerType?: SIGNAL_PROVIDER_TYPE;
+      entityId?: string;
+    },
+  ) => Promise<ServerResult>;
+  getTagListAction?: (id: string) => Promise<ServerResult>;
+  getSignalCategoryAction?: () => Promise<ServerResult>;
+  getTagDataAction?: (
+    providerType: SIGNAL_PROVIDER_TYPE,
+    entityId: string,
+  ) => Promise<ServerResult>;
 };
 export function KolComponent({
   getTweetListAction,
   getFollowedListAction,
   addFollowAction,
   removeFollowAction,
+  getSignalListAction,
+  getTagListAction,
+  getSignalCategoryAction,
+  getTagDataAction,
 }: Props) {
   const [kolMenu, setKolMenu] = useState<KolMenu>({
     label: "kolPoint",
@@ -37,6 +56,10 @@ export function KolComponent({
         getFollowedListAction={getFollowedListAction}
         addFollowAction={addFollowAction}
         removeFollowAction={removeFollowAction}
+        getSignalListAction={getSignalListAction}
+        getTagListAction={getTagListAction}
+        getSignalCategoryAction={getSignalCategoryAction}
+        getTagDataAction={getTagDataAction}
       />
     </div>
   );

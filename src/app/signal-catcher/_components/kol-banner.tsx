@@ -4,13 +4,13 @@ import { useState } from "react";
 import { useTranslations } from "next-intl";
 export type KolMenu = {
   label: string;
-  value: "2" | "3";
+  value: "1" | "2" | "3";
 };
 export const kolMenu: KolMenu[] = [
-  // {
-  //   label: "CRYPTO速递",
-  //   value: "1",
-  // },
+  {
+    label: "signal",
+    value: "1",
+  },
   {
     label: "kol",
     value: "2",

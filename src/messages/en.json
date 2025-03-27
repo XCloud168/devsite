@@ -160,7 +160,7 @@
             "title": "My Invitation Code",
             "description": "Share this code with friends to invite them",
             "totalInvites": "Total Invitations",
-            "totalInvitesDescription": "Overview of your invitation activity",
+            "totalInvitesDescription": "View Your Referral Index",
             "code": {
                 "label": "Invitation Code",
                 "copy": "Copy"
@@ -319,13 +319,14 @@
         "kol": {
             "followers": "followers",
             "kol": "Kol Point",
-            "myKol": "My Followed",
-            "follow": "Follow",
-            "withToken": "Token",
+            "myKol": "Watchlist",
+            "follow": "Monitor",
+            "withToken": "Token Insights",
             "kolList": "Monitor List",
             "addTime": "Add time",
             "removeKol": "Cancel",
-            "followed": "Followed"
+            "followed": "Monitored",
+            "signal": "Signal"
         },
         "signal": {
             "curatedSignals": "Curated Signals",
