@@ -86,48 +86,55 @@ export default async function SignalPage() {
   const isMobile = device.type === "mobile" || device.type === "tablet";
   if (isMobile) {
     return (
-      <KolComponent
-        getTweetListAction={getTweetList}
-        getFollowedListAction={getFollowedList}
-        addFollowAction={addFollow}
-        removeFollowAction={removeFollow}
-        getSignalListAction={getSignalList}
-        getTagListAction={getSignalTagsByCode}
-        getSignalCategoryAction={getSignalCategory}
-        getTagDataAction={getTagData}
-      />
+      <>
+        <KolComponent
+          getTweetListAction={getTweetList}
+          getFollowedListAction={getFollowedList}
+          addFollowAction={addFollow}
+          removeFollowAction={removeFollow}
+          getSignalListAction={getSignalList}
+          getTagListAction={getSignalTagsByCode}
+          getSignalCategoryAction={getSignalCategory}
+          getTagDataAction={getTagData}
+          isMobile={isMobile}
+        />
+        <RealtimeSignal />
+      </>
     );
   }
   return (
-    <ResizablePanelGroup direction="horizontal" className="h-full w-full">
-      <ResizablePanel defaultSize={55}>
-        <div className="block items-center justify-center">
-          <KolComponent
-            getTweetListAction={getTweetList}
-            getFollowedListAction={getFollowedList}
-            addFollowAction={addFollow}
-            removeFollowAction={removeFollow}
-          />
-        </div>
-      </ResizablePanel>
-      <ResizableHandle className="bg-primary/20" withHandle />
-      <ResizablePanel
-        defaultSize={45}
-        minSize={35}
-        maxSize={50}
-        className="relative"
-      >
-        <div className="absolute h-svh w-full bg-gradient-to-b from-[#DEECFF80] to-[#FFFFFF] dark:from-[#0A132580] dark:to-[#050911]"></div>
-        <div className="relative block items-center justify-center overflow-hidden">
-          <FeaturedComponent
-            getSignalListAction={getSignalList}
-            getTagListAction={getSignalTagsByCode}
-            getSignalCategoryAction={getSignalCategory}
-            getTagDataAction={getTagData}
-          />
-          <div className="fixed bottom-0 z-[1] h-[438px] w-full bg-[url(/images/signal/featured-bg.svg)] bg-contain bg-no-repeat"></div>
-        </div>
-      </ResizablePanel>
-    </ResizablePanelGroup>
+    <>
+      <ResizablePanelGroup direction="horizontal" className="h-full w-full">
+        <ResizablePanel defaultSize={55}>
+          <div className="block items-center justify-center">
+            <KolComponent
+              getTweetListAction={getTweetList}
+              getFollowedListAction={getFollowedList}
+              addFollowAction={addFollow}
+              removeFollowAction={removeFollow}
+            />
+          </div>
+        </ResizablePanel>
+        <ResizableHandle className="bg-primary/20" withHandle />
+        <ResizablePanel
+          defaultSize={45}
+          minSize={35}
+          maxSize={50}
+          className="relative"
+        >
+          <div className="absolute h-svh w-full bg-gradient-to-b from-[#DEECFF80] to-[#FFFFFF] dark:from-[#0A132580] dark:to-[#050911]"></div>
+          <div className="relative block items-center justify-center overflow-hidden">
+            <FeaturedComponent
+              getSignalListAction={getSignalList}
+              getTagListAction={getSignalTagsByCode}
+              getSignalCategoryAction={getSignalCategory}
+              getTagDataAction={getTagData}
+            />
+            <div className="fixed bottom-0 z-[1] h-[438px] w-full bg-[url(/images/signal/featured-bg.svg)] bg-contain bg-no-repeat"></div>
+          </div>
+        </ResizablePanel>
+      </ResizablePanelGroup>
+      <RealtimeSignal />
+    </>
   );
 }

@@ -1,34 +1,50 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
 export type KolMenu = {
   label: string;
   value: "1" | "2" | "3";
 };
-export const kolMenu: KolMenu[] = [
-  {
-    label: "signal",
-    value: "1",
-  },
-  {
-    label: "kol",
-    value: "2",
-  },
-  {
-    label: "myKol",
-    value: "3",
-  },
-];
+
 interface KolMenuProps {
   onKolMenuChangeAction: (menu: KolMenu) => void;
+  isMobile?: boolean;
 }
-export function KolBanner({ onKolMenuChangeAction }: KolMenuProps) {
+export function KolBanner({ onKolMenuChangeAction, isMobile }: KolMenuProps) {
   const t = useTranslations();
   const [selectedMenu, setSelectedMenu] = useState<KolMenu>({
     label: "kol",
     value: "2",
   });
+  const kolMenu: KolMenu[] = useMemo(() => {
+    if (isMobile) {
+      return [
+        {
+          label: "signal",
+          value: "1",
+        },
+        {
+          label: "kol",
+          value: "2",
+        },
+        {
+          label: "myKol",
+          value: "3",
+        },
+      ];
+    }
+    return [
+      {
+        label: "kol",
+        value: "2",
+      },
+      {
+        label: "myKol",
+        value: "3",
+      },
+    ];
+  }, [isMobile]);
   return (
     <>
       <div className="sticky top-0 z-10 flex border-b bg-background px-5 pt-5">

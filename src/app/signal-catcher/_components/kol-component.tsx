@@ -31,6 +31,7 @@ type Props = {
     providerType: SIGNAL_PROVIDER_TYPE,
     entityId: string,
   ) => Promise<ServerResult>;
+  isMobile?: boolean;
 };
 export function KolComponent({
   getTweetListAction,
@@ -41,6 +42,7 @@ export function KolComponent({
   getTagListAction,
   getSignalCategoryAction,
   getTagDataAction,
+  isMobile,
 }: Props) {
   const [kolMenu, setKolMenu] = useState<KolMenu>({
     label: "kolPoint",
@@ -49,7 +51,10 @@ export function KolComponent({
 
   return (
     <div className="">
-      <KolBanner onKolMenuChangeAction={(menu: KolMenu) => setKolMenu(menu)} />
+      <KolBanner
+        onKolMenuChangeAction={(menu: KolMenu) => setKolMenu(menu)}
+        isMobile={isMobile}
+      />
       <KolList
         menu={kolMenu}
         getTweetListAction={getTweetListAction}
