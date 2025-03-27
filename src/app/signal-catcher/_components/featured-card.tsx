@@ -64,8 +64,8 @@ export function FeaturedCard({ signal, showLine }: Props) {
   if (!signal.source) return null;
   const TokenItem = (className: string, signal: SignalItems) => (
     <div className={`${className} mt-4 flex gap-1`}>
-      <div className="flex gap-0.5">
-        {signal.hitKOLs.map((kols) => (
+      <div className="flex -space-x-2">
+        {signal.hitKOLs.slice(0, 5).map((kols) => (
           <Avatar className="h-5 w-5" key={kols.id}>
             <AvatarImage src={kols.avatar ?? ""} />
             <AvatarFallback></AvatarFallback>
@@ -81,7 +81,7 @@ export function FeaturedCard({ signal, showLine }: Props) {
             signal.project.name}
         </p>
       ) : (
-        <p className="text-sx text-[#949C9E]">
+        <p className="text-xs text-[#949C9E]">
           {signal.hitKOLs
             .slice(0, 5)
             .map((item) => item.name)
