@@ -160,7 +160,7 @@
             "title": "我的邀请码",
             "description": "分享邀请码给好友",
             "totalInvites": "总邀请数",
-            "totalInvitesDescription": "查看你的推荐指数",
+            "totalInvitesDescription": "查看您的邀请统计",
             "code": {
                 "label": "邀请码",
                 "copy": "复制"

@@ -97,30 +97,33 @@ export function FeaturedCard({ signal, showLine }: Props) {
   );
   return (
     <div
-      className={`${showLine ? "grid grid-cols-[48px_1fr] gap-1" : "block"} overflow-hidden px-5`}
+      className="grid grid-cols-1 gap-1 overflow-hidden px-5"
       key={signal.id}
     >
-      {showLine ? (
-        <div className="h-full">
-          <div className="h-10 w-10">
-            <Avatar className="h-10 w-10 border-2 border-secondary">
-              <AvatarImage src={getAvatarSrc()} />
-              <AvatarFallback></AvatarFallback>
-            </Avatar>
+      <div className="mb-3 min-h-20 border-b border-border/50">
+        <div className="flex gap-2">
+          <Avatar className="h-10 w-10 border-2 border-secondary">
+            <AvatarImage src={getAvatarSrc()} />
+            <AvatarFallback></AvatarFallback>
+          </Avatar>
+
+          <div>
+            {signal.providerType === "twitter" ? (
+              <p className="leading-5">
+                {signal?.source?.tweetUser?.name || ""}
+              </p>
+            ) : (
+              <p className="leading-5">
+                {signal?.source?.exchange?.name || ""}
+              </p>
+            )}
+            <p className="font-bold leading-5">
+              {dayjs(signal.signalTime).format("YYYY/MM/DD HH:mm:ss")}
+            </p>
           </div>
         </div>
-      ) : null}
 
-      <div className="mb-3 min-h-20 border-b border-border/50">
-        {signal.providerType === "twitter" ? (
-          <p className="leading-5">{signal?.source?.tweetUser?.name || ""}</p>
-        ) : (
-          <p className="leading-5">{signal?.source?.exchange?.name || ""}</p>
-        )}
-        <p className="font-bold leading-5">
-          {dayjs(signal.signalTime).format("YYYY/MM/DD HH:mm:ss")}
-        </p>
-        <div className="relative mt-2 h-fit w-full bg-transparent">
+        <div className="relative mt-2 h-fit w-full bg-transparent pl-0 md:pl-12">
           <TranslationComponent
             content={signal.source.contentSummary ?? ""}
             onTranslateSuccess={(content: string) => {
@@ -175,7 +178,7 @@ export function FeaturedCard({ signal, showLine }: Props) {
         </div>
 
         {signal.project ? (
-          <div className="relative block w-full items-center gap-5 rounded-xl bg-white/60 p-4 dark:bg-[#161C25]">
+          <div className="relative ml-0 block w-full items-center gap-5 rounded-xl bg-white/60 p-4 dark:bg-[#161C25] md:ml-12">
             <div className="flex items-center gap-1.5">
               <div className="border-spin-image flex h-9 w-9 items-center justify-center">
                 <div className="z-[8] h-8 w-8 overflow-hidden rounded-full border-2 border-primary">
@@ -256,7 +259,7 @@ export function FeaturedCard({ signal, showLine }: Props) {
           </div>
         ) : null}
 
-        <div className="mt-4 flex gap-6 px-3 pb-4">
+        <div className="mt-4 flex gap-6 px-3 pb-4 pl-0 md:pl-12">
           <Link
             className="flex items-center gap-1 text-xs text-[#949C9E]"
             target="_blank"

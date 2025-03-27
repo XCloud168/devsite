@@ -160,7 +160,7 @@
             "title": "My Invitation Code",
             "description": "Share this code with friends to invite them",
             "totalInvites": "Total Invitations",
-            "totalInvitesDescription": "View Your Referral Index",
+            "totalInvitesDescription": "View Your Referral Data",
             "code": {
                 "label": "Invitation Code",
                 "copy": "Copy"
