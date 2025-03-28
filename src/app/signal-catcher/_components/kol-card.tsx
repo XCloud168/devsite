@@ -112,13 +112,7 @@ export function KolCard({
           />
         </div>
         <div className="mb-2 mt-2 grid grid-cols-1 gap-2">
-          <Gallery
-            images={getMediaList(tweet.imagesUrls)}
-            columns={4}
-            thumbnailWidth={150}
-            thumbnailHeight={100}
-            className="my-custom-class"
-          />
+          <Gallery images={getMediaList(tweet.imagesUrls)} />
           {getMediaList(tweet.videoUrls).map(
             (videoUrl: string, index: number) => {
               return (

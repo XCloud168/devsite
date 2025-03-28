@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import Image from "next/image";
 import lightGallery from "lightgallery";
 import "lightgallery/css/lightgallery.css";
 import "lightgallery/css/lg-zoom.css";
@@ -11,15 +10,13 @@ import lgZoom from "lightgallery/plugins/zoom";
 
 type GalleryProps = {
   images: string[];
-  columns?: number;
-  thumbnailWidth?: number;
-  thumbnailHeight?: number;
+  imageHeight?: number;
   className?: string;
 };
 
 export default function Gallery({
   images,
-  columns = 3,
+  imageHeight = 200, // 设定固定高度
   className = "",
 }: GalleryProps) {
   const galleryRef = useRef<HTMLDivElement>(null);
@@ -43,16 +40,14 @@ export default function Gallery({
   }, []);
 
   return (
-    <div
-      ref={galleryRef}
-      className={`grid grid-cols-${columns} gap-4 ${className}`}
-    >
+    <div ref={galleryRef} className={`flex gap-4 ${className}`}>
       {images.map((image, index) => (
-        <a key={index} href={image}>
+        <a key={index} href={image} className="block">
           <img
             src={image}
-            alt={"Gallery Image"}
-            className="cursor-pointer rounded-lg object-cover shadow-md"
+            alt="Gallery Image"
+            className="h-[200px] w-auto rounded-lg object-cover shadow-md"
+            style={{ height: `${imageHeight}px` }}
           />
         </a>
       ))}

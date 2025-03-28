@@ -14,7 +14,6 @@ import Gallery from "@/components/Gallery";
 
 type Props = {
   signal: SignalItems;
-  showLine?: boolean;
 };
 interface SignalItems extends Signals {
   source: TweetInfo & {
@@ -48,7 +47,7 @@ export const getMediaList = (mediaList?: string[]): string[] => {
   }
   return mediaList;
 };
-export function FeaturedCard({ signal, showLine }: Props) {
+export function FeaturedCard({ signal }: Props) {
   const t = useTranslations();
   const [translatedContent, setTranslatedContent] = useState<string | null>(
     null,
@@ -137,24 +136,7 @@ export function FeaturedCard({ signal, showLine }: Props) {
                   ? signal.source.mediaUrls?.images
                   : signal.source.imagesUrls,
               )}
-              columns={4}
-              thumbnailWidth={150}
-              thumbnailHeight={100}
-              className="my-custom-class"
             />
-            {/*{getMediaList(*/}
-            {/*  signal.providerType === "news"*/}
-            {/*    ? signal.source.mediaUrls?.images*/}
-            {/*    : signal.source.imagesUrls,*/}
-            {/*).map((imageUrl: string, index: number) => {*/}
-            {/*  return (*/}
-            {/*    <img*/}
-            {/*      src={imageUrl}*/}
-            {/*      key={imageUrl + index}*/}
-            {/*      className="!max-w-[50%] rounded-lg"*/}
-            {/*    ></img>*/}
-            {/*  );*/}
-            {/*})}*/}
             {getMediaList(
               signal.providerType === "news"
                 ? signal.source.mediaUrls?.videos

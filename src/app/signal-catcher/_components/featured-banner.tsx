@@ -177,12 +177,7 @@ export function FeaturedBanner({
         <div className="relative mx-5 my-3 rounded-xl bg-white/50 py-2 dark:bg-[#161C25]">
           <div className="grid w-full grid-cols-4 gap-3 overflow-hidden">
             <div className="relative w-full px-3">
-              <p className="text-xs">
-                {selectedCategoryId === "83d28d2b-25b4-42e7-9335-ba2affbb3c31"
-                  ? t("signals.signal.totalTokenSignals")
-                  : t("signals.signal.newTokenListings")}
-              </p>
-
+              <p className="text-xs">{t("signals.signal.totalTokenSignals")}</p>
               <p className="text-lg font-bold text-[#1976F7] dark:text-[#F2DA18]">
                 {tagData?.signalsCount || "--"}
               </p>

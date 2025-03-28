@@ -153,7 +153,7 @@ export function FeaturedList({ getSignalListAction, menuInfo }: Props) {
         </div>
       ) : (
         signalList.map((signal) => (
-          <FeaturedCard signal={signal} key={signal.id} showLine />
+          <FeaturedCard signal={signal} key={signal.id} />
         ))
       )}
       <LoadingMoreBtn
