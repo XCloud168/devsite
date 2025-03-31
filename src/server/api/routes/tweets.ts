@@ -209,10 +209,10 @@ export async function getTweetUserByScreenName(screenName: string) {
     }
 
     // 清理用户名，移除 @ 符号和链接前缀
-    const regex = new RegExp(/^((https:\/\/(x|twitter)\.com\/)|@)?(\w+).*/);
-    const match = screenName.match(regex);
+    const regex = /^((https:\/\/(x|twitter)\.com\/)|@)?(\w+).*/;
+    const match = regex.exec(screenName);
     
-    if (!match || !match[4]) {
+    if (!match?.[4]) {
       throw createError.invalidParams("Invalid Twitter username");
     }
 
@@ -330,14 +330,14 @@ function parseTwitterTime(dateStr: string): Date | null {
   try {
     // Twitter时间格式的正则表达式
     const regex = /(\w{3}) (\w{3}) (\d{2}) (\d{2}):(\d{2}):(\d{2}) ([+-]\d{4}) (\d{4})/;
-    const match = dateStr.match(regex);
+    const match = regex.exec(dateStr);
     
     if (!match) {
       return null;
     }
     
     // 将月份名称转换为数字
-    const months: { [key: string]: number } = {
+    const months: Record<string, number> = {
       'Jan': 0, 'Feb': 1, 'Mar': 2, 'Apr': 3,
       'May': 4, 'Jun': 5, 'Jul': 6, 'Aug': 7,
       'Sep': 8, 'Oct': 9, 'Nov': 10, 'Dec': 11
