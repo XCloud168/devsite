@@ -340,7 +340,11 @@
             "tokenGainRatio": "Token Gain Ratio",
             "24hAverageMaxGain": "24h Average Max Gain",
             "totalTokenSignals": "Total Token Signals",
-            "24hPnl": "24h max pnl"
+            "24hPnl": "24h max pnl",
+            "exchange_listing": "Exchange listings",
+            "super_influencer": "Super influence",
+            "institution_projects": "Institutions &Projects",
+            "kol_opinions": "KOL Opinions"
         }
     }
 }

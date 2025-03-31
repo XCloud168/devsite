@@ -130,7 +130,7 @@ export function FeaturedBanner({
                 });
               }}
             >
-              {category.name}
+              {t("signals.signal." + category.code)}
             </div>
           ))}
         </div>

@@ -124,12 +124,11 @@ export function KolCard({
                 <video
                   src={videoUrl}
                   key={videoUrl + index}
-                  width="480"
-                  height="360"
-                  preload="none"
+                  width="400"
+                  height="320"
                   controls
                   controlsList="nodownload noremoteplayback noplaybackrate"
-                  autoPlay={false}
+                  autoPlay
                   className="rounded-lg"
                 ></video>
               );

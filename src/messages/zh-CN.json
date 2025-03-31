@@ -340,7 +340,12 @@
             "tokenGainRatio": "代币上涨率",
             "24hAverageMaxGain": "24H平均最大涨幅",
             "totalTokenSignals": "代币信号总量",
-            "24hPnl": "24h最佳收益率"
+            "24hPnl": "24h最佳收益率",
+            "exchange_listing": "交易所上新",
+            "super_influencer": "意见领袖",
+            "institution_projects": "项目&机构",
+            "kol_opinions": "KOL观点"
+
         }
     }
 }
