@@ -232,11 +232,14 @@ export async function getTweetUserByScreenName(screenName: string) {
         name: apiUserData.name,
         avatar: apiUserData.avatar,
         restId: apiUserData.rest_id,
-        description: apiUserData.description,
-        followersCount: apiUserData.followers_count,
-        followingCount: apiUserData.following_count,
-        dateUpdated: new Date(),
-        // 其他需要的字段...
+        description: apiUserData.desc,
+        followersCount: apiUserData.sub_count || 0,
+        followingCount: apiUserData.friends || 0,
+        tweetCount: apiUserData.statuses_count || 0,
+        banner: apiUserData.header_image,
+        pinnedTweetIdsStr: apiUserData.pinned_tweet_ids_str || [],
+        joinDate: apiUserData.created_at ? parseTwitterTime(apiUserData.created_at) : null,
+        dateUpdated: new Date()
       };
 
       const [updatedUser] = await db
@@ -296,5 +299,45 @@ async function fetchUserFromScraperTech(screenName: string, restId?: string) {
   }
 
   return await response.json();
+}
+
+/**
+ * 将Twitter格式的时间字符串转换为Date对象
+ * @param dateStr Twitter格式的时间字符串，如 "Thu Mar 13 06:33:14 +0000 2025"
+ * @returns Date对象
+ */
+function parseTwitterTime(dateStr: string): Date | null {
+  try {
+    // Twitter时间格式的正则表达式
+    const regex = /(\w{3}) (\w{3}) (\d{2}) (\d{2}):(\d{2}):(\d{2}) ([+-]\d{4}) (\d{4})/;
+    const match = dateStr.match(regex);
+    
+    if (!match) {
+      return null;
+    }
+    
+    // 将月份名称转换为数字
+    const months: { [key: string]: number } = {
+      'Jan': 0, 'Feb': 1, 'Mar': 2, 'Apr': 3,
+      'May': 4, 'Jun': 5, 'Jul': 6, 'Aug': 7,
+      'Sep': 8, 'Oct': 9, 'Nov': 10, 'Dec': 11
+    };
+    
+    const [, , month, day, hours, minutes, seconds, timezone, year] = match;
+    
+    if (month && day && hours && minutes && seconds && year) {
+      return new Date(Date.UTC(
+        parseInt(year),
+        months[month as keyof typeof months],
+        parseInt(day),
+        parseInt(hours),
+        parseInt(minutes),
+        parseInt(seconds)
+      ));
+    }
+    return null;
+  } catch (error) {
+    return null;
+  }
 }
 
