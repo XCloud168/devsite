@@ -222,13 +222,12 @@ export async function getTweetUserByScreenName(screenName: string) {
       // 调用第三方API获取用户信息
       const apiUserData = await fetchUserFromScraperTech(cleanScreenName);
       
-      if (!apiUserData.screen_name) {
+      if (!apiUserData.rest_id) {
         throw createError.server("无法从API获取用户信息");
       }
 
-      // 更新或创建用户信息
       const userData = {
-        screenName: apiUserData.screen_name,
+        screenName: apiUserData.profile,
         name: apiUserData.name,
         avatar: apiUserData.avatar,
         restId: apiUserData.rest_id,
@@ -242,15 +241,21 @@ export async function getTweetUserByScreenName(screenName: string) {
         dateUpdated: new Date()
       };
 
-      const [updatedUser] = await db
-        .insert(tweetUsers)
-        .values(userData)
-        .onConflictDoUpdate({
-          target: tweetUsers.id,
-          where: eq(tweetUsers.screenName, cleanScreenName),
-          set: userData,
-        })
-        .returning();
+      let updatedUser;
+      if (existingUser) {
+        // 如果用户存在，执行更新操作
+        [updatedUser] = await db
+          .update(tweetUsers)
+          .set(userData)
+          .where(eq(tweetUsers.screenName, cleanScreenName))
+          .returning();
+      } else {
+        // 如果用户不存在，执行插入操作
+        [updatedUser] = await db
+          .insert(tweetUsers)
+          .values(userData)
+          .returning();
+      }
 
       return updatedUser;
     }
@@ -291,16 +296,19 @@ async function fetchUserFromScraperTech(screenName: string, restId?: string) {
   
   const response = await fetch(url.toString(), {
     headers: {
-      'X-Scraper-Key': `${apiKey}`,
+      'scraper-key': `${apiKey}`,
       'Content-Type': 'application/json',
     },
+    // 添加30秒超时
+    signal: AbortSignal.timeout(30000),
   });
 
   if (!response.ok) {
     return null;
   }
 
-  return await response.json();
+  const data = await response.json();
+  return data;
 }
 
 /**
