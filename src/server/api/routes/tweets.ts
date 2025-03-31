@@ -198,12 +198,22 @@ export async function getTweetFollowedList() {
  */
 export async function getTweetUserByScreenName(screenName: string) {
   return withServerResult(async () => {
+    // 检查用户登录状态和会员资格
+    const user = await getUserProfile();
+    if (!user) {
+      throw createError.unauthorized("Please login first");
+    }
+    
+    if (!user.membershipExpiredAt || new Date(user.membershipExpiredAt) < new Date()) {
+      throw createError.forbidden("Please upgrade your membership");
+    }
+
     // 清理用户名，移除 @ 符号和链接前缀
     const regex = new RegExp(/^((https:\/\/(x|twitter)\.com\/)|@)?(\w+).*/);
     const match = screenName.match(regex);
     
     if (!match || !match[4]) {
-      throw createError.invalidParams("无效的推特用户名");
+      throw createError.invalidParams("Invalid Twitter username");
     }
 
     const cleanScreenName = match[4];
@@ -223,7 +233,7 @@ export async function getTweetUserByScreenName(screenName: string) {
       const apiUserData = await fetchUserFromScraperTech(cleanScreenName);
       
       if (!apiUserData.rest_id) {
-        throw createError.server("无法从API获取用户信息");
+        throw createError.server("Failed to get user information from API");
       }
 
       const userData = {
