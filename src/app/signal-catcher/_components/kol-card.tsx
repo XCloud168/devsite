@@ -86,13 +86,18 @@ export function KolCard({
           {addFollowAction && (
             <Button
               variant="outline"
-              className="rounded-xl"
+              className="w-28 justify-start rounded-xl"
               onClick={() => {
                 setAddLoading(true);
                 if (tweet.tweetUser) handleAddFollow(tweet.tweetUser.id);
               }}
               disabled={addLoading || tweet?.tweetUser?.isFollowed}
             >
+              {tweet?.tweetUser?.isFollowed ? (
+                <div className="h-5 w-5 min-w-5 bg-[url(/images/kol/followed-kol.svg)]"></div>
+              ) : (
+                <div className="h-5 w-5 min-w-5 bg-[url(/images/kol/add-kol.svg)]"></div>
+              )}
               {tweet?.tweetUser?.isFollowed
                 ? t("signals.kol.followed")
                 : t("signals.kol.follow")}
@@ -103,7 +108,7 @@ export function KolCard({
       </div>
       <div className="mt-4 rounded-lg">
         {/*<p className="mb-1.5 px-3 pt-3">{tweet.content}</p>*/}
-        <div className="px-4">
+        <div className="">
           <TranslationComponent
             content={tweet.content ?? ""}
             onTranslateSuccess={(content: string) => {
@@ -111,7 +116,7 @@ export function KolCard({
             }}
           />
         </div>
-        <div className="mb-2 mt-2 grid grid-cols-1 gap-2">
+        <div className="my-2 grid grid-cols-1 gap-2">
           <Gallery images={getMediaList(tweet.imagesUrls)} />
           {getMediaList(tweet.videoUrls).map(
             (videoUrl: string, index: number) => {

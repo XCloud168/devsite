@@ -36,7 +36,7 @@ export default async function PricingPage() {
               <CardDescription>
                 {plan.originalPrice !== plan.price ? (
                   <div className="flex items-baseline gap-2">
-                    <span className="dark:text-whit text-2xl font-bold text-black">
+                    <span className="text-2xl font-bold text-black dark:text-white">
                       {plan.price} USDT
                     </span>
                     <span className="text-sm text-muted-foreground line-through">

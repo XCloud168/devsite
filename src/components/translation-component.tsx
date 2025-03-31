@@ -131,7 +131,7 @@ const TranslationComponent: React.FC<TranslationComponentProps> = ({
         )}
         {translatedContent && (
           <p
-            className="rounded-xl bg-[#F2F2F2] p-3 dark:bg-[#2B2C2C]"
+            className="break-all rounded-xl bg-[#F2F2F2] p-3 dark:bg-[#2B2C2C]"
             dangerouslySetInnerHTML={{ __html: translatedContent }}
           ></p>
         )}

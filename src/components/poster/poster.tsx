@@ -42,10 +42,7 @@ export default function Poster({ children }: { children: ReactNode }) {
           <DialogDescription></DialogDescription>
         </DialogHeader>
         <div className="scroll relative flex max-h-[600px] flex-col gap-4 overflow-y-auto overflow-x-hidden scrollbar-thin scrollbar-track-transparent scrollbar-thumb-secondary">
-          <div
-            className="relative w-full overflow-hidden bg-black"
-            ref={captureRef}
-          >
+          <div className="relative w-full bg-black" ref={captureRef}>
             <div className="absolute left-0 top-0 h-[200px] w-full scale-105 bg-[url(/images/poster-bg.svg)] bg-contain"></div>
             <div className="p-6">{children}</div>
             <div className="flex items-center justify-between border-t px-6 pt-4">

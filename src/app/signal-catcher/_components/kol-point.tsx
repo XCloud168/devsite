@@ -10,7 +10,8 @@ import {
 import { KolCard } from "@/app/signal-catcher/_components/kol-card";
 import { LoadingMoreBtn } from "@/app/signal-catcher/_components/loading-more-btn";
 import { Skeleton } from "@/components/ui/skeleton";
-import { FeaturedCard } from "@/app/signal-catcher/_components/featured-card";
+import { Switch } from "@/components/ui/switch";
+import { useTranslations } from "next-intl";
 
 type Props = {
   addFollowAction: (tweetUid: string) => Promise<ServerResult>;
@@ -33,10 +34,12 @@ interface TweetItem extends Omit<TweetInfo, "tweetUser"> {
 }
 
 export function KolPoint({ getTweetListAction, addFollowAction }: Props) {
+  const t = useTranslations();
   const [tweetList, setTweetList] = useState<TweetItem[]>([]);
   const [hasNext, setHasNext] = useState<boolean>(true);
   const [pageLoading, setPageLoading] = useState<boolean>(false);
   const [currentPage, setCurrentPage] = useState<number>(1);
+  const [hasContractAddress, setHasContractAddress] = useState<boolean>(false);
   const fetchTweetList = async (
     page: number,
     hasContractAddress: boolean,
@@ -59,10 +62,24 @@ export function KolPoint({ getTweetListAction, addFollowAction }: Props) {
     setCurrentPage(response.data.pagination.currentPage);
     setPageLoading(false);
   };
+
+  const changeHasContractAddress = (flag: boolean) => {
+    setHasContractAddress(flag);
+    fetchTweetList(
+      1,
+      flag,
+      setTweetList,
+      setHasNext,
+      setCurrentPage,
+      setPageLoading,
+      getTweetListAction,
+    );
+  };
+
   useEffect(() => {
     fetchTweetList(
       1,
-      false,
+      hasContractAddress,
       setTweetList,
       setHasNext,
       setCurrentPage,
@@ -70,11 +87,12 @@ export function KolPoint({ getTweetListAction, addFollowAction }: Props) {
       getTweetListAction,
     );
   }, [getTweetListAction]);
+
   const handleNextPage = () => {
     if (hasNext) {
       fetchTweetList(
         currentPage + 1,
-        false,
+        hasContractAddress,
         setTweetList,
         setHasNext,
         setCurrentPage,
@@ -84,7 +102,17 @@ export function KolPoint({ getTweetListAction, addFollowAction }: Props) {
     }
   };
   return (
-    <>
+    <div className="p-3 md:p-5">
+      <div className="ml-2 mt-2 flex h-14 w-[240px] items-center justify-between border px-6">
+        <p>{t("signals.kol.withToken")}</p>
+        <div>
+          <Switch
+            id="airplane-mode"
+            checked={hasContractAddress}
+            onCheckedChange={changeHasContractAddress}
+          />
+        </div>
+      </div>
       {pageLoading && tweetList.length === 0 ? (
         <div className="space-y-5 px-5 pt-5">
           {[1, 2, 3, 4, 5].map((item) => (
@@ -100,7 +128,7 @@ export function KolPoint({ getTweetListAction, addFollowAction }: Props) {
         </div>
       ) : (
         tweetList.map((tweet) => (
-          <div key={tweet.id} className="border-b pb-4">
+          <div key={tweet.id} className="border-b">
             <KolCard
               tweet={tweet}
               addFollowAction={addFollowAction}
@@ -129,6 +157,6 @@ export function KolPoint({ getTweetListAction, addFollowAction }: Props) {
         hasNext={hasNext}
         onNextAction={handleNextPage}
       />
-    </>
+    </div>
   );
 }

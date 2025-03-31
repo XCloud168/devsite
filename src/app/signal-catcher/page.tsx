@@ -9,6 +9,7 @@ import {
   deleteTweetFollowed,
   getTweetFollowedList,
   getTweetsByPaginated,
+  getTweetUserByScreenName,
 } from "@/server/api/routes/tweets";
 import {
   getSignalCategories,
@@ -23,6 +24,7 @@ import React from "react";
 import RealtimeSignal from "@/components/signals/realtime-signal";
 import { headers } from "next/headers";
 import { UAParser } from "ua-parser-js";
+import { getUserProfile } from "@/server/api/routes/auth";
 
 export default async function SignalPage() {
   //获取推特列表
@@ -79,15 +81,27 @@ export default async function SignalPage() {
     "use server";
     return await getSignalEntitiesByCategory(CategoryId);
   };
+  //搜索用户
+  const searchTweetUser = async (name: string) => {
+    "use server";
+    return await getTweetUserByScreenName(name);
+  };
+
   const headersList = await headers();
   const userAgent = headersList.get("user-agent") || "";
   const { device } = UAParser(userAgent);
   // 判断是否是移动设备
   const isMobile = device.type === "mobile" || device.type === "tablet";
+  //获取用户信息
+  const user = await getUserProfile();
+  const isMember =
+    user?.membershipExpiredAt &&
+    new Date(user?.membershipExpiredAt) > new Date();
   if (isMobile) {
     return (
       <>
         <KolComponent
+          searchTweetUserAction={searchTweetUser}
           getTweetListAction={getTweetList}
           getFollowedListAction={getFollowedList}
           addFollowAction={addFollow}
@@ -97,6 +111,7 @@ export default async function SignalPage() {
           getSignalCategoryAction={getSignalCategory}
           getTagDataAction={getTagData}
           isMobile={isMobile}
+          isMember={isMember}
         />
         <RealtimeSignal />
       </>
@@ -112,6 +127,8 @@ export default async function SignalPage() {
               getFollowedListAction={getFollowedList}
               addFollowAction={addFollow}
               removeFollowAction={removeFollow}
+              searchTweetUserAction={searchTweetUser}
+              isMember={isMember}
             />
           </div>
         </ResizablePanel>

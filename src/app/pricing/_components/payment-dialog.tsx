@@ -190,7 +190,7 @@ export function PaymentDialog({ planType, plan }: PaymentDialogProps) {
       </Button>
 
       <Dialog open={open} onOpenChange={setOpen}>
-        <DialogContent className="border-transparent p-2 sm:max-w-sm">
+        <DialogContent className="border-transparent p-5 sm:max-w-sm">
           <DialogHeader>
             <DialogTitle className="text-center">
               {t("dialog.title")}

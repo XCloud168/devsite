@@ -216,7 +216,11 @@ export function MyFollowed({
               ))}
             </div>
           ) : (
-            tweetList.map((tweet) => <KolCard tweet={tweet} key={tweet.id} />)
+            tweetList.map((tweet) => (
+              <div key={tweet.id} className="border-b">
+                <KolCard tweet={tweet} showShare />
+              </div>
+            ))
           )}
           {!pageLoading && tweetList.length === 0 && (
             <div className="mt-4 flex justify-center">

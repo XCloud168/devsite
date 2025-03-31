@@ -62,7 +62,7 @@ export function FeaturedCard({ signal }: Props) {
 
   if (!signal.source) return null;
   const TokenItem = (className: string, signal: SignalItems) => (
-    <div className={`${className} mt-4 flex items-center gap-1`}>
+    <div className={`${className} mt-4 flex gap-1`}>
       <div className="flex -space-x-2">
         {signal.hitKOLs.slice(0, 5).map((kols) => (
           <Avatar className="h-5 w-5" key={kols.id}>
@@ -129,7 +129,7 @@ export function FeaturedCard({ signal }: Props) {
               setTranslatedContent(content);
             }}
           />
-          <div className="mb-2 flex flex-wrap">
+          <div className="my-2 flex flex-wrap">
             <Gallery
               images={getMediaList(
                 signal.providerType === "news"
@@ -237,7 +237,7 @@ export function FeaturedCard({ signal }: Props) {
             </div>
             {signal.hitKOLs &&
               signal.hitKOLs.length > 0 &&
-              TokenItem("items-start flex", signal)}
+              TokenItem("items-center flex", signal)}
           </div>
         ) : null}
 

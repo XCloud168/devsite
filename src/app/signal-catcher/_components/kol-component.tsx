@@ -32,6 +32,8 @@ type Props = {
     entityId: string,
   ) => Promise<ServerResult>;
   isMobile?: boolean;
+  searchTweetUserAction: (name: string) => Promise<ServerResult>;
+  isMember?: boolean | null;
 };
 export function KolComponent({
   getTweetListAction,
@@ -43,17 +45,21 @@ export function KolComponent({
   getSignalCategoryAction,
   getTagDataAction,
   isMobile,
+  searchTweetUserAction,
+  isMember,
 }: Props) {
   const [kolMenu, setKolMenu] = useState<KolMenu>({
     label: "kolPoint",
     value: "2",
   });
-
   return (
     <div className="">
       <KolBanner
         onKolMenuChangeAction={(menu: KolMenu) => setKolMenu(menu)}
         isMobile={isMobile}
+        searchTweetUserAction={searchTweetUserAction}
+        addFollowAction={addFollowAction}
+        isMember={isMember}
       />
       <KolList
         menu={kolMenu}
