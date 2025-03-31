@@ -222,13 +222,13 @@ export async function getTweetUserByScreenName(screenName: string) {
       // 调用第三方API获取用户信息
       const apiUserData = await fetchUserFromScraperTech(cleanScreenName);
       
-      if (!apiUserData) {
+      if (!apiUserData.screen_name) {
         throw createError.server("无法从API获取用户信息");
       }
 
       // 更新或创建用户信息
       const userData = {
-        screenName: cleanScreenName,
+        screenName: apiUserData.screen_name,
         name: apiUserData.name,
         avatar: apiUserData.avatar,
         restId: apiUserData.rest_id,
@@ -291,7 +291,8 @@ async function fetchUserFromScraperTech(screenName: string, restId?: string) {
   
   const response = await fetch(url.toString(), {
     headers: {
-      'Authorization': `Bearer ${apiKey}`,
+      'X-Scraper-Key': `${apiKey}`,
+      'Content-Type': 'application/json',
     },
   });
 
