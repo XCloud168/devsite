@@ -190,3 +190,111 @@ export async function getTweetFollowedList() {
     return result;
   });
 }
+
+/**
+ * 获取推特用户信息
+ * @param screenName 推特用户名
+ * @returns 推特用户信息
+ */
+export async function getTweetUserByScreenName(screenName: string) {
+  return withServerResult(async () => {
+    // 清理用户名，移除 @ 符号和链接前缀
+    const regex = new RegExp(/^((https:\/\/(x|twitter)\.com\/)|@)?(\w+).*/);
+    const match = screenName.match(regex);
+    
+    if (!match || !match[4]) {
+      throw createError.invalidParams("无效的推特用户名");
+    }
+
+    const cleanScreenName = match[4];
+
+    // 从数据库查询用户信息
+    const existingUser = await db.query.tweetUsers.findFirst({
+      where: eq(tweetUsers.screenName, cleanScreenName),
+    });
+
+    // 检查用户信息是否需要更新
+    const needsUpdate = existingUser 
+      ? shouldUpdateUserInfo(existingUser)
+      : true;
+
+    if (!existingUser || needsUpdate) {
+      // 调用第三方API获取用户信息
+      const apiUserData = await fetchUserFromScraperTech(cleanScreenName);
+      
+      if (!apiUserData) {
+        throw createError.server("无法从API获取用户信息");
+      }
+
+      // 更新或创建用户信息
+      const userData = {
+        screenName: cleanScreenName,
+        name: apiUserData.name,
+        avatar: apiUserData.avatar,
+        restId: apiUserData.rest_id,
+        description: apiUserData.description,
+        followersCount: apiUserData.followers_count,
+        followingCount: apiUserData.following_count,
+        dateUpdated: new Date(),
+        // 其他需要的字段...
+      };
+
+      const [updatedUser] = await db
+        .insert(tweetUsers)
+        .values(userData)
+        .onConflictDoUpdate({
+          target: [tweetUsers.screenName],
+          set: userData,
+        })
+        .returning();
+
+      return updatedUser;
+    }
+
+    return existingUser;
+  });
+}
+
+/**
+ * 检查用户信息是否需要更新
+ */
+function shouldUpdateUserInfo(user: any) {
+  // 检查必需字段是否完整
+  const requiredFields = ['screenName', 'name', 'avatar', 'restId'];
+  const isComplete = requiredFields.every(field => Boolean(user[field]));
+
+  // 检查更新时间是否超过15天
+  const currentTime = new Date();
+  const lastUpdated = new Date(user.dateUpdated);
+  const daysSinceUpdate = (currentTime.getTime() - lastUpdated.getTime()) / (1000 * 60 * 60 * 24);
+  const needsUpdate = daysSinceUpdate > 15;
+
+  return !isComplete || needsUpdate;
+}
+
+/**
+ * 从ScraperTech API获取用户信息
+ */
+async function fetchUserFromScraperTech(screenName: string, restId?: string) {
+  const baseUrl = process.env.SCRAPER_TECH_API_URL;
+  const apiKey = process.env.SCRAPER_TECH_API_KEY;
+  
+  const url = new URL(`${baseUrl}/screenname.php`);
+  url.searchParams.append('screenname', screenName);
+  if (restId) {
+    url.searchParams.append('rest_id', restId);
+  }
+  
+  const response = await fetch(url.toString(), {
+    headers: {
+      'Authorization': `Bearer ${apiKey}`,
+    },
+  });
+
+  if (!response.ok) {
+    return null;
+  }
+
+  return await response.json();
+}
+
