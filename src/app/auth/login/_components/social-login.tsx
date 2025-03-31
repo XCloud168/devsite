@@ -8,9 +8,10 @@ import { toast } from "sonner";
 
 interface SocialLoginProps {
   onEmailLogin: () => void;
+  callbackUrl: string;
 }
 
-export function SocialLogin({ onEmailLogin }: SocialLoginProps) {
+export function SocialLogin({ onEmailLogin, callbackUrl }: SocialLoginProps) {
   const t = useTranslations("auth");
 
   const handleSignIn = async (provider: "google" | "twitter") => {
@@ -19,7 +20,7 @@ export function SocialLogin({ onEmailLogin }: SocialLoginProps) {
       const { error, data } = await supabase.auth.signInWithOAuth({
         provider,
         options: {
-          redirectTo: `${window.location.origin}/auth/callback`,
+          redirectTo: `${window.location.origin}${callbackUrl}`,
         },
       });
 

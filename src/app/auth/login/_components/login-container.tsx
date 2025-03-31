@@ -3,13 +3,20 @@
 import { useTranslations } from "next-intl";
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { EmailLogin } from "./email-login";
 import { SocialLogin } from "./social-login";
 
-export function LoginContainer() {
+export function LoginContainer({ inviteCode }: { inviteCode?: string }) {
   const t = useTranslations("auth");
   const [isEmailLogin, setIsEmailLogin] = useState(false);
+
+  const callbackUrl = useMemo(() => {
+    if (inviteCode) {
+      return `/auth/callback?invite_code=${inviteCode}`;
+    }
+    return "/auth/callback";
+  }, [inviteCode]);
 
   return (
     <div className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-background to-muted/50 px-4">
@@ -33,9 +40,15 @@ export function LoginContainer() {
         </div>
 
         {isEmailLogin ? (
-          <EmailLogin onBack={() => setIsEmailLogin(false)} />
+          <EmailLogin
+            onBack={() => setIsEmailLogin(false)}
+            callbackUrl={callbackUrl}
+          />
         ) : (
-          <SocialLogin onEmailLogin={() => setIsEmailLogin(true)} />
+          <SocialLogin
+            onEmailLogin={() => setIsEmailLogin(true)}
+            callbackUrl={callbackUrl}
+          />
         )}
 
         {/* Terms */}

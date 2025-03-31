@@ -17,11 +17,12 @@ interface EmailLoginFormData {
 
 interface EmailLoginProps {
   onBack: () => void;
+  callbackUrl: string;
 }
 
 const EMAIL_REGEX = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
-export function EmailLogin({ onBack }: EmailLoginProps) {
+export function EmailLogin({ onBack, callbackUrl }: EmailLoginProps) {
   const t = useTranslations("auth");
   const router = useRouter();
   const [countdown, setCountdown] = useState(0);
@@ -92,7 +93,7 @@ export function EmailLogin({ onBack }: EmailLoginProps) {
         toast.error(t("invalidOTP"));
         return;
       }
-      router.replace("/auth/callback");
+      router.replace(callbackUrl);
     } catch (error) {
       console.error("Error verifying OTP:", error);
       toast.error(t("signInError"));

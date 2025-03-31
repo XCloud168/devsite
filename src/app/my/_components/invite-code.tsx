@@ -41,7 +41,9 @@ export function InviteCode({ inviteCode, totalInvites }: InviteCodeProps) {
   const posterRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    setInviteLink(`${window.location.origin}/invite/${inviteCode}`);
+    setInviteLink(
+      `${window.location.origin}/auth/login?invite_code=${inviteCode}`,
+    );
   }, [inviteCode]);
 
   const copyToClipboard = (text: string, type: "code" | "link") => {
