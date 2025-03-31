@@ -246,7 +246,8 @@ export async function getTweetUserByScreenName(screenName: string) {
         .insert(tweetUsers)
         .values(userData)
         .onConflictDoUpdate({
-          target: [tweetUsers.screenName],
+          target: tweetUsers.id,
+          where: eq(tweetUsers.screenName, cleanScreenName),
           set: userData,
         })
         .returning();
