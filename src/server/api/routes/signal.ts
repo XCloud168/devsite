@@ -416,7 +416,7 @@ export async function getTagStatistics(
       case SIGNAL_PROVIDER_TYPE.TWITTER:
       default:
         if (filter.entityId) {
-          conditions.push(eq(tweetInfo.projectId, filter.entityId));
+          conditions.push(eq(tweetInfo.tweetUserId, filter.entityId));
         }
         conditions.push(isNotNull(tweetInfo.projectId));
 
