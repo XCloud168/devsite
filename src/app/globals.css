@@ -106,3 +106,12 @@ body {
 .lg-backdrop {
   background-color: rgba(0, 0, 0, 0.6) !important; /* 60% 透明黑色 */
 }
+
+/* 隐藏滚动条 */
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}

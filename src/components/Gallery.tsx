@@ -1,12 +1,11 @@
 "use client";
 
-import { useEffect, useRef } from "react";
-import lightGallery from "lightgallery";
-import "lightgallery/css/lightgallery.css";
-import "lightgallery/css/lg-zoom.css";
-import "lightgallery/css/lg-thumbnail.css";
-import lgThumbnail from "lightgallery/plugins/thumbnail";
-import lgZoom from "lightgallery/plugins/zoom";
+import React, { useState } from "react";
+import Masonry from "react-masonry-css";
+import Lightbox from "yet-another-react-lightbox";
+import "yet-another-react-lightbox/styles.css";
+import "yet-another-react-lightbox/plugins/thumbnails.css";
+import Thumbnails from "yet-another-react-lightbox/plugins/thumbnails";
 
 type GalleryProps = {
   images: string[];
@@ -14,43 +13,47 @@ type GalleryProps = {
   className?: string;
 };
 
-export default function Gallery({
+export default function ImageGallery({
   images,
-  imageHeight = 200, // 设定固定高度
+  imageHeight = 200,
   className = "",
 }: GalleryProps) {
-  const galleryRef = useRef<HTMLDivElement>(null);
-  const lgInstance = useRef<any>(null);
+  const [index, setIndex] = useState<number | null>(null);
 
-  useEffect(() => {
-    if (galleryRef.current && !lgInstance.current) {
-      lgInstance.current = lightGallery(galleryRef.current, {
-        plugins: [lgThumbnail, lgZoom],
-        speed: 500,
-        thumbnail: true,
-        actualSize: false,
-        dynamic: false,
-      });
-    }
-
-    return () => {
-      lgInstance.current?.destroy();
-      lgInstance.current = null;
-    };
-  }, []);
+  // 响应式 Masonry 网格
+  const breakpointColumns = {
+    default: 4, // 默认 4 列
+    1024: 3, // 1024px 以下 3 列
+    768: 2, // 768px 以下 2 列
+    480: 1, // 480px 以下 1 列
+  };
 
   return (
-    <div ref={galleryRef} className={`flex gap-4 ${className}`}>
-      {images.map((image, index) => (
-        <a key={index} href={image} className="block">
-          <img
-            src={image}
-            alt="Gallery Image"
-            className="h-[200px] w-auto rounded-lg object-cover shadow-md"
-            style={{ height: `${imageHeight}px` }}
-          />
-        </a>
-      ))}
+    <div className={className}>
+      {/* 瀑布流布局 */}
+      <Masonry breakpointCols={breakpointColumns} className="flex gap-4">
+        {images.map((image, idx) => (
+          <div key={idx} className="mb-4" onClick={() => setIndex(idx)}>
+            <img
+              src={image}
+              alt={`Thumbnail ${idx}`}
+              className="cursor-pointer rounded-lg object-cover shadow-md"
+              style={{ height: `${imageHeight}px`, width: "100%" }}
+            />
+          </div>
+        ))}
+      </Masonry>
+
+      {/* 预览 Lightbox */}
+      {index !== null && (
+        <Lightbox
+          slides={images.map((src) => ({ src }))}
+          open={true}
+          index={index}
+          close={() => setIndex(null)}
+          plugins={[Thumbnails]}
+        />
+      )}
     </div>
   );
 }

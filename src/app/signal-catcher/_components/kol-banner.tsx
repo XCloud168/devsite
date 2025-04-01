@@ -77,67 +77,70 @@ export function KolBanner({
         <DialogTrigger className={triggerClass}>
           <div className="ml-auto flex h-9 cursor-pointer items-center gap-2 rounded-full bg-[#17191C] pl-2 pr-4">
             <Search />
-            <p className="text-xs text-white/80">搜索推特账号</p>
+            <p className="text-xs text-white/80">
+              {t("signals.kol.searchTweeter")}
+            </p>
           </div>
         </DialogTrigger>
-        <DialogContent className="w-[400px] gap-0 bg-black">
-          <DialogHeader className="hidden">
-            <DialogTitle></DialogTitle>
+        <DialogContent className="w-[480px] gap-0 bg-black p-4">
+          <DialogHeader className="border-b pb-3">
+            <DialogTitle>{t("signals.kol.searchTweeter")}</DialogTitle>
             <DialogDescription></DialogDescription>
           </DialogHeader>
-          <div className="flex items-center p-2">
-            <Search className="h-5 w-5 min-w-5" />
-            <Input
-              className="border-transparent focus-visible:ring-transparent"
-              placeholder="请输入搜索推特账号"
-              value={tweetUserName}
-              onChange={(event) => setTweetUserName(event.target.value)}
-            ></Input>
+          <div
+            className={`flex items-center justify-between gap-2 pt-5 ${tweetUser ? "pb-4" : ""}`}
+          >
+            <div className="flex w-full items-center rounded-md border pl-2">
+              <Search className="h-5 w-5 min-w-5 opacity-75" />
+              <Input
+                className="border-transparent focus-visible:ring-transparent"
+                placeholder={`${t("signals.kol.enterTweeter")}`}
+                value={tweetUserName}
+                onChange={(event) => setTweetUserName(event.target.value)}
+              ></Input>
+            </div>
             <Button
-              variant="ghost"
+              variant="outline"
               onClick={() => {
                 setSearchLoading(true);
                 handleSearch(tweetUserName);
               }}
               disabled={searchLoading || tweetUserName.trim() === ""}
             >
-              搜索
+              {t("common.search")}
             </Button>
           </div>
 
-          <div className="border-t">
+          <div>
             {searchLoading ? (
               <div className="flex items-center justify-center py-5">
                 <LoaderCircle className="animate-spin" />
               </div>
-            ) : tweetUser ? (
-              <div className="flex items-center gap-2 p-4">
-                <Avatar className="h-8 w-8">
-                  <AvatarImage src={tweetUser?.avatar || ""} />
-                  <AvatarFallback></AvatarFallback>
-                </Avatar>
-                <p className="">{tweetUser?.name}</p>
-                <p className="text-xs">@{tweetUser?.screenName}</p>
-                <p className="text-xs">
-                  {formatNumber(tweetUser?.followersCount)} followers
-                </p>
-                <Button
-                  variant="default"
-                  size="sm"
-                  className="ml-auto"
-                  onClick={() => {
-                    addFollowAction(tweetUser.id).then(() => {
-                      toast.success("添加成功");
-                    });
-                  }}
-                >
-                  监控
-                </Button>
-              </div>
             ) : (
-              <div className="flex items-center justify-center py-5">
-                <p>暂无数据</p>
-              </div>
+              tweetUser && (
+                <div className="flex w-full items-center justify-between gap-2 py-4">
+                  <Avatar className="h-8 w-8">
+                    <AvatarImage src={tweetUser?.avatar || ""} />
+                    <AvatarFallback></AvatarFallback>
+                  </Avatar>
+                  <p className="">{tweetUser?.name}</p>
+                  <p className="text-xs">@{tweetUser?.screenName}</p>
+                  <p className="text-xs">
+                    {formatNumber(tweetUser?.followersCount)} followers
+                  </p>
+                  <Button
+                    variant="default"
+                    className="ml-auto"
+                    onClick={() => {
+                      addFollowAction(tweetUser.id).then(() => {
+                        toast.success(t("common.success"));
+                      });
+                    }}
+                  >
+                    {t("signals.kol.follow")}
+                  </Button>
+                </div>
+              )
             )}
           </div>
         </DialogContent>
@@ -147,7 +150,7 @@ export function KolBanner({
   const menu = () => {
     return kolMenu.map((menu) => (
       <div
-        className={`${menu.value === selectedMenu.value ? "border-primary font-bold text-primary" : "border-transparent font-normal text-black dark:text-foreground/80"} cursor-pointer break-keep border-b-2 text-center hover:text-primary`}
+        className={`${menu.value === selectedMenu.value ? "border-primary font-bold text-primary" : "border-transparent font-normal text-black dark:text-foreground/80"} cursor-pointer break-keep border-b-2 pt-2 text-center hover:text-primary`}
         key={menu.value}
         onClick={() => {
           onKolMenuChangeAction(menu);
@@ -161,7 +164,7 @@ export function KolBanner({
   if (isMobile) {
     return (
       <>
-        <div className="sticky top-0 z-10 block border-b bg-background px-5 pt-5">
+        <div className="sticky top-0 z-10 block border-b bg-background px-5 pt-2">
           {isMember && SearchDialog("mb-3 w-full")}
           <div>
             <div className="flex w-full gap-10">{menu()}</div>
@@ -172,7 +175,7 @@ export function KolBanner({
   }
   return (
     <>
-      <div className="sticky top-0 z-10 flex border-b bg-background px-5 pt-5">
+      <div className="sticky top-0 z-10 flex border-b bg-background px-5 pt-2">
         <div className="flex w-full gap-10">
           {menu()}
           {isMember && SearchDialog("ml-auto pb-2")}

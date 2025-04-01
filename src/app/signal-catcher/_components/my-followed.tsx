@@ -134,6 +134,7 @@ export function MyFollowed({
     if (showTable) {
       fetchData();
     } else {
+      fetchData();
       fetchTweetList(
         1,
         hasContractAddress,
@@ -189,17 +190,24 @@ export function MyFollowed({
                 />
               </div>
             </div>
-            <div className="flex w-[240px] items-center justify-between border px-6 py-4">
+            <div
+              className="flex w-[240px] cursor-pointer items-center justify-between border px-6 py-4"
+              onClick={() => {
+                setTableDataLoading(true);
+                setShowTable(true);
+              }}
+            >
               <p>{t("signals.kol.myKol")}</p>
-              <div
-                className="cursor-pointer"
-                onClick={() => {
-                  setTableDataLoading(true);
-                  setShowTable(true);
-                }}
-              >
-                <AngleIcon className="h-4 w-2 fill-black stroke-[#494949]" />
+              <div className="flex -space-x-2">
+                {tableData.slice(0, 5).map((data) => (
+                  <Avatar className="h-5 w-5" key={data.id}>
+                    <AvatarImage src={data.tweetUser.avatar ?? ""} />
+                    <AvatarFallback></AvatarFallback>
+                  </Avatar>
+                ))}
               </div>
+
+              <AngleIcon className="h-4 w-2 fill-black stroke-[#494949]" />
             </div>
           </div>
           {pageLoading && tweetList.length === 0 ? (

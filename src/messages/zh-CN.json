@@ -36,7 +36,8 @@
         "empty": "暂无数据",
         "loadMore": "加载更多",
         "share": "分享",
-        "saveImage": "保存图片"
+        "saveImage": "保存图片",
+        "search": "搜索"
     },
     "Error": {
         "pageNotFound": "页面未找到",
@@ -326,7 +327,10 @@
             "addTime": "监控时间",
             "removeKol": "取消监控",
             "followed": "已监控",
-            "signal": "信号"
+            "signal": "信号",
+            "searchTweeter": "搜索推特账号",
+            "enterTweeter": "请输入推特账号"
+
         },
         "signal": {
             "curatedSignals": "精选信号",

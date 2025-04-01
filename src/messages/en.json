@@ -36,7 +36,8 @@
         "empty": "Empty",
         "loadMore": "More Data",
         "share": "Share",
-        "saveImage": "Save Image"
+        "saveImage": "Save Image",
+        "search": "Search"
     },
     "Error": {
         "pageNotFound": "Page Not Found",
@@ -326,7 +327,9 @@
             "addTime": "Add time",
             "removeKol": "Cancel",
             "followed": "Monitored",
-            "signal": "Signal"
+            "signal": "Signal",
+            "searchTweeter": "搜索推特账号",
+            "enterTweeter": "请输入推特账号"
         },
         "signal": {
             "curatedSignals": "Curated Signals",

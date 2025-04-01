@@ -1,12 +1,22 @@
 "use client";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { type SIGNAL_PROVIDER_TYPE } from "@/lib/constants";
 import type { ServerResult } from "@/lib/server-result";
 import { useTranslations } from "next-intl";
 import { type SignalsCategory } from "@/server/db/schemas/signal";
 import { Skeleton } from "@/components/ui/skeleton";
+import {
+  ArrowBigLeft,
+  ArrowBigRight,
+  ArrowLeft,
+  ArrowRight,
+  ChevronLeft,
+  ChevronRight,
+  CircleArrowLeft,
+  CircleArrowRight,
+} from "lucide-react";
 interface Tag {
   id: string;
   name: string;
@@ -106,6 +116,47 @@ export function FeaturedBanner({
     }
     return "--";
   }, [tagData]);
+
+  const tabRef = useRef<HTMLDivElement>(null);
+  const [showLeftButton, setShowLeftButton] = useState(false);
+  const [showRightButton, setShowRightButton] = useState(false);
+
+  // 检查是否需要显示按钮
+  const checkScrollable = () => {
+    if (tabRef.current) {
+      const { scrollLeft, scrollWidth, clientWidth } = tabRef.current;
+      setShowLeftButton(scrollLeft > 0);
+      setShowRightButton(scrollLeft + clientWidth < scrollWidth);
+    }
+  };
+
+  useEffect(() => {
+    checkScrollable();
+    window.addEventListener("resize", checkScrollable);
+    return () => window.removeEventListener("resize", checkScrollable);
+  }, [signalCategory]);
+
+  useEffect(() => {
+    if (tabRef.current) {
+      tabRef.current.addEventListener("scroll", checkScrollable);
+    }
+    return () => {
+      if (tabRef.current) {
+        tabRef.current.removeEventListener("scroll", checkScrollable);
+      }
+    };
+  }, []);
+
+  const scroll = (direction: "left" | "right") => {
+    if (tabRef.current) {
+      const scrollAmount = 100; // 每次滚动的距离
+      tabRef.current.scrollBy({
+        left: direction === "left" ? -scrollAmount : scrollAmount,
+        behavior: "smooth",
+      });
+    }
+  };
+
   return (
     <div className="sticky top-0 z-10">
       <div className="flex items-center gap-1 p-5">
@@ -114,12 +165,34 @@ export function FeaturedBanner({
           *{t("signals.signal.notVip")}
         </p>
       </div>
-      <div className="flex border-b px-5">
-        <div className="flex gap-4 md:grid md:grid-cols-4 md:gap-8">
+      <div className="relative border-b px-5">
+        {/* 左滑按钮（如果 showLeftButton 为 true 才显示） */}
+        {showLeftButton && (
+          <button
+            className="absolute left-1 top-1/2 z-10 -translate-y-1/2 rounded-lg bg-black/80 p-1 shadow-md"
+            onClick={() => scroll("left")}
+          >
+            <ChevronLeft />
+          </button>
+        )}
+        {/* 右滑按钮（如果 showRightButton 为 true 才显示） */}
+        {showRightButton && (
+          <button
+            className="absolute right-1 top-1/2 z-10 -translate-y-1/2 rounded-lg bg-black/80 p-1 shadow-md"
+            onClick={() => scroll("right")}
+          >
+            <ChevronRight />
+          </button>
+        )}
+        {/* 滚动容器 */}
+        <div
+          ref={tabRef}
+          className="scrollbar-hide flex snap-x snap-mandatory gap-4 overflow-x-auto scroll-smooth whitespace-nowrap"
+        >
           {signalCategory.map((category) => (
             <div
               key={category.id}
-              className={`${selectedCategoryId === category.id ? "border-[#1F72E5] bg-gradient-to-r from-primary to-primary bg-clip-text font-bold text-primary dark:border-[#F2DA18] dark:from-[#F2DA18] dark:to-[#4DFFC4] dark:text-transparent" : "border-transparent"} cursor-pointer break-keep border-b-2 pb-2 pt-3 text-center text-sm md:text-base`}
+              className={`${selectedCategoryId === category.id ? "border-[#1F72E5] bg-gradient-to-r from-primary to-primary bg-clip-text font-bold text-primary dark:border-[#F2DA18] dark:from-[#F2DA18] dark:to-[#4DFFC4] dark:text-transparent" : "border-transparent"} min-w-max cursor-pointer border-b-2 pb-2 pt-3 text-center text-sm`}
               onClick={() => {
                 setTagLoading(true);
                 setSelectedCategoryId(category.id);

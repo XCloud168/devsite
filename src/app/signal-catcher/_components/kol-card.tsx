@@ -14,6 +14,7 @@ import Poster from "@/components/poster/poster";
 import { formatNumber } from "@/components/formatNumber";
 import { getMediaList } from "@/app/signal-catcher/_components/featured-card";
 import Gallery from "@/components/Gallery";
+import { AddKolIcon, FollowedKolIcon } from "@/components/ui/icon";
 
 type Props = {
   tweet: TweetItem;
@@ -86,7 +87,7 @@ export function KolCard({
           {addFollowAction && (
             <Button
               variant="outline"
-              className="w-28 justify-start rounded-xl"
+              className="justify-start gap-1 rounded-xl"
               onClick={() => {
                 setAddLoading(true);
                 if (tweet.tweetUser) handleAddFollow(tweet.tweetUser.id);
@@ -94,9 +95,9 @@ export function KolCard({
               disabled={addLoading || tweet?.tweetUser?.isFollowed}
             >
               {tweet?.tweetUser?.isFollowed ? (
-                <div className="h-5 w-5 min-w-5 bg-[url(/images/kol/followed-kol.svg)]"></div>
+                <FollowedKolIcon className="fill-text-accent dark:fill-[#e6e6e6]" />
               ) : (
-                <div className="h-5 w-5 min-w-5 bg-[url(/images/kol/add-kol.svg)]"></div>
+                <AddKolIcon className="fill-text-accent-foreground dark:fill-[#e6e6e6]" />
               )}
               {tweet?.tweetUser?.isFollowed
                 ? t("signals.kol.followed")
@@ -124,11 +125,11 @@ export function KolCard({
                 <video
                   src={videoUrl}
                   key={videoUrl + index}
-                  width="400"
-                  height="320"
+                  width="320"
+                  height="240"
                   controls
                   controlsList="nodownload noremoteplayback noplaybackrate"
-                  autoPlay
+                  autoPlay={false}
                   className="rounded-lg"
                 ></video>
               );
@@ -177,9 +178,15 @@ export function KolCard({
                       </div>
                     </div>
                   </div>
-                  <div className="break-all text-sm text-white">
-                    {tweet.content || ""}
-                  </div>
+                  {/*<div className="break-all text-sm text-white">*/}
+                  {/*  {tweet.content || ""}*/}
+                  {/*</div>*/}
+                  <p
+                    className="mt-3 break-all text-white"
+                    dangerouslySetInnerHTML={{
+                      __html: tweet.content || "",
+                    }}
+                  ></p>
                   {translatedContent ? (
                     <div className="mt-3">
                       <p className="text-sm text-primary">AI翻译：</p>

@@ -14,6 +14,8 @@ import Gallery from "@/components/Gallery";
 
 type Props = {
   signal: SignalItems;
+  showShare?: boolean;
+  tokenItemWidth?: "w-fit" | "w-auto";
 };
 interface SignalItems extends Signals {
   source: TweetInfo & {
@@ -47,7 +49,11 @@ export const getMediaList = (mediaList?: string[]): string[] => {
   }
   return mediaList;
 };
-export function FeaturedCard({ signal }: Props) {
+export function FeaturedCard({
+  signal,
+  showShare = true,
+  tokenItemWidth = "w-auto",
+}: Props) {
   const t = useTranslations();
   const [translatedContent, setTranslatedContent] = useState<string | null>(
     null,
@@ -99,7 +105,9 @@ export function FeaturedCard({ signal }: Props) {
       className="grid grid-cols-1 gap-1 overflow-hidden px-5"
       key={signal.id}
     >
-      <div className="mb-3 min-h-20 border-b border-border/50">
+      <div
+        className={`mb-3 min-h-20 border-b ${showShare ? "border-border/50" : "border-transparent"}`}
+      >
         <div className="flex gap-2">
           <Avatar className="h-10 w-10 border-2 border-secondary">
             <AvatarImage src={getAvatarSrc()} />
@@ -146,9 +154,8 @@ export function FeaturedCard({ signal }: Props) {
                 <video
                   src={videoUrl}
                   key={videoUrl + index}
-                  width="480"
-                  height="360"
-                  preload="none"
+                  width="320"
+                  height="240"
                   controls
                   controlsList="nodownload noremoteplayback noplaybackrate"
                   autoPlay={false}
@@ -160,7 +167,9 @@ export function FeaturedCard({ signal }: Props) {
         </div>
 
         {signal.project ? (
-          <div className="relative ml-0 block w-full items-center gap-5 rounded-xl bg-white/60 p-4 dark:bg-[#161C25] md:ml-12">
+          <div
+            className={`relative ml-0 block ${tokenItemWidth} items-center gap-5 rounded-xl bg-white/60 p-4 dark:bg-[#161C25] md:ml-12`}
+          >
             <div className="flex items-center gap-1.5">
               <div className="border-spin-image flex h-9 w-9 items-center justify-center">
                 <div className="z-[8] h-8 w-8 overflow-hidden rounded-full border-2 border-primary">
@@ -241,144 +250,151 @@ export function FeaturedCard({ signal }: Props) {
           </div>
         ) : null}
 
-        <div className="mt-4 flex gap-6 px-3 pb-4 pl-0 md:pl-12">
-          <Link
-            className="flex items-center gap-1 text-xs text-[#949C9E]"
-            target="_blank"
-            href={
-              signal.providerType === "twitter"
-                ? (signal.source.tweetUrl ?? "/")
-                : signal.source.source
-            }
-          >
-            <div className="h-4 w-4 bg-[url(/images/signal/link.svg)] bg-contain"></div>
-            <p className="text-xs text-[#949C9E]">
-              {t("signals.showOriginal")}
-            </p>
-          </Link>
-          <div className="flex cursor-pointer items-center gap-1 text-xs text-[#617178]">
-            <div className="h-3 w-3 bg-[url(/images/signal/share.svg)] bg-contain"></div>
-            <Poster>
-              <p className="relative pl-2 before:absolute before:left-0 before:top-1/2 before:h-[4px] before:w-[4px] before:-translate-y-1/2 before:rounded-full before:bg-white before:content-['']">
-                {dayjs(signal.signalTime).format("YYYY/MM/DD HH:mm:ss")}
+        {showShare && (
+          <div className="mt-4 flex gap-6 px-3 pb-4 pl-0 md:pl-12">
+            <Link
+              className="flex items-center gap-1 text-xs text-[#949C9E]"
+              target="_blank"
+              href={
+                signal.providerType === "twitter"
+                  ? (signal.source.tweetUrl ?? "/")
+                  : signal.source.source
+              }
+            >
+              <div className="h-4 w-4 bg-[url(/images/signal/link.svg)] bg-contain"></div>
+              <p className="text-xs text-[#949C9E]">
+                {t("signals.showOriginal")}
               </p>
-              <div className="mt-3 flex items-center gap-1.5">
-                <div className="h-8 w-8">
-                  <Avatar className="h-8 w-8 border-2 border-secondary">
+            </Link>
+            <div className="flex cursor-pointer items-center gap-1 text-xs text-[#617178]">
+              <div className="h-3 w-3 bg-[url(/images/signal/share.svg)] bg-contain"></div>
+              <Poster>
+                <p className="relative pl-2 before:absolute before:left-0 before:top-1/2 before:h-[4px] before:w-[4px] before:-translate-y-1/2 before:rounded-full before:bg-white before:content-['']">
+                  {dayjs(signal.signalTime).format("YYYY/MM/DD HH:mm:ss")}
+                </p>
+                <div className="mt-3 flex items-center gap-1.5">
+                  <div className="h-8 w-8">
+                    <Avatar className="h-8 w-8 border-2 border-secondary">
+                      {signal.providerType === "twitter" ? (
+                        <AvatarImage
+                          src={signal?.source?.tweetUser?.avatar || ""}
+                        />
+                      ) : (
+                        <AvatarImage
+                          src={signal?.source?.exchange?.logo || ""}
+                        />
+                      )}
+                      <AvatarFallback></AvatarFallback>
+                    </Avatar>
+                  </div>
+                  <div>
                     {signal.providerType === "twitter" ? (
-                      <AvatarImage
-                        src={signal?.source?.tweetUser?.avatar || ""}
-                      />
+                      <p className="leading-5">
+                        {signal?.source?.tweetUser?.name || ""}
+                      </p>
                     ) : (
-                      <AvatarImage src={signal?.source?.exchange?.logo || ""} />
+                      <p className="leading-5">
+                        {signal?.source?.exchange?.name || ""}
+                      </p>
                     )}
-                    <AvatarFallback></AvatarFallback>
-                  </Avatar>
+                  </div>
                 </div>
-                <div>
-                  {signal.providerType === "twitter" ? (
-                    <p className="leading-5">
-                      {signal?.source?.tweetUser?.name || ""}
-                    </p>
-                  ) : (
-                    <p className="leading-5">
-                      {signal?.source?.exchange?.name || ""}
-                    </p>
-                  )}
-                </div>
-              </div>
-              {/*<div className="mt-4 min-h-60 rounded-lg border bg-white/10 p-2">*/}
-              {/*  {signal.source.contentSummary}*/}
-              {/*</div>*/}
-              <div className="mt-3 break-all text-sm text-white">
-                {signal.source.contentSummary || ""}
-              </div>
-              {translatedContent ? (
-                <div className="mt-3">
-                  <p className="text-sm text-primary">AI翻译：</p>
-                </div>
-              ) : null}
-              {translatedContent ? (
-                <div className="mt-3 break-all text-sm text-white">
-                  {translatedContent}
-                </div>
-              ) : null}
-              {signal.project ? (
-                <div className="relative mt-3 block w-full items-center gap-3 rounded-xl border bg-white/80 p-4 dark:bg-[#161C25]">
-                  <div className="flex items-center gap-3">
-                    <div className="border-spin-image flex h-9 w-9 items-center justify-center">
-                      <div className="z-[8] h-8 w-8 overflow-hidden rounded-full border-2 border-primary">
-                        <div className="flex h-full w-full items-center justify-center">
-                          <Avatar className="h-8 w-8">
-                            <AvatarImage src={signal.project.logo ?? ""} />
-                            <AvatarFallback></AvatarFallback>
-                          </Avatar>
+                {/*<div className="mt-4 min-h-60 rounded-lg border bg-white/10 p-2">*/}
+                {/*  {signal.source.contentSummary}*/}
+                {/*</div>*/}
+                <p
+                  className="mt-3 break-all text-white"
+                  dangerouslySetInnerHTML={{
+                    __html: signal.source.contentSummary || "",
+                  }}
+                ></p>
+                {translatedContent ? (
+                  <div className="mt-3">
+                    <p className="text-sm text-primary">AI翻译：</p>
+                  </div>
+                ) : null}
+                {translatedContent ? (
+                  <div className="mt-3 break-all text-sm text-white">
+                    {translatedContent}
+                  </div>
+                ) : null}
+                {signal.project ? (
+                  <div className="relative mt-3 block w-full items-center gap-3 rounded-xl border bg-white/80 p-4 dark:bg-[#161C25]">
+                    <div className="flex items-center gap-3">
+                      <div className="border-spin-image flex h-9 w-9 items-center justify-center">
+                        <div className="z-[8] h-8 w-8 overflow-hidden rounded-full border-2 border-primary">
+                          <div className="flex h-full w-full items-center justify-center">
+                            <Avatar className="h-8 w-8">
+                              <AvatarImage src={signal.project.logo ?? ""} />
+                              <AvatarFallback></AvatarFallback>
+                            </Avatar>
+                          </div>
                         </div>
                       </div>
+                      <div className="flex items-center gap-2">
+                        <p className="text-lg font-bold text-white">
+                          {signal.project.symbol}
+                        </p>
+                        {signal.times === "0" && (
+                          <div className="rounded-full bg-[#F4B31C] text-black">
+                            <p className="scale-75 text-xs">
+                              {t("signals.signal.firstMention")}
+                            </p>
+                          </div>
+                        )}
+                      </div>
                     </div>
-                    <div className="flex items-center gap-2">
-                      <p className="text-lg font-bold text-white">
-                        {signal.project.symbol}
-                      </p>
-                      {signal.times === "0" && (
-                        <div className="rounded-full bg-[#F4B31C] text-black">
-                          <p className="scale-75 text-xs">
-                            {t("signals.signal.firstMention")}
-                          </p>
-                        </div>
-                      )}
-                    </div>
-                  </div>
 
-                  <div className="mt-3 flex gap-10">
-                    <div>
-                      <p className="mb-2 text-xs">
-                        {t("signals.signal.24hPnl")}
-                      </p>
-                      <p className="text-xl font-bold text-[#00CE64] dark:text-[#00FFAB]">
-                        {parseFloat(signal.source.highRate24H ?? "0") > 0
-                          ? "+" + signal.source.highRate24H
-                          : signal.source.highRate24H}
-                        %
-                      </p>
-                    </div>
-                    {signal.source.sentiment ? (
+                    <div className="mt-3 flex gap-10">
                       <div>
                         <p className="mb-2 text-xs">
-                          {t("signals.signal.cryptoIndex")}
+                          {t("signals.signal.24hPnl")}
                         </p>
-
-                        <div className="flex items-center gap-1.5">
-                          {signal.source.sentiment === "positive" ? (
-                            <div className="h-4 w-4">
-                              <PositiveIcon className="fill-[#00CE64] dark:fill-[#00FFAB]" />
-                            </div>
-                          ) : (
-                            <div className="h-4 w-4">
-                              <NegativeIcon className="fill-[#FA5B5B] dark:fill-[#F95F5F]" />
-                            </div>
-                          )}
-                          {signal.source.sentiment === "positive" ? (
-                            <p className="font-bold text-[#00CE64] dark:text-[#00FFAB]">
-                              {signal.source.sentiment?.toUpperCase()}
-                            </p>
-                          ) : (
-                            <p className="justify-start font-bold text-[#FA5B5B] dark:text-[#F95F5F]">
-                              {signal.source.sentiment?.toUpperCase()}
-                            </p>
-                          )}
-                        </div>
+                        <p className="text-xl font-bold text-[#00CE64] dark:text-[#00FFAB]">
+                          {parseFloat(signal.source.highRate24H ?? "0") > 0
+                            ? "+" + signal.source.highRate24H
+                            : signal.source.highRate24H}
+                          %
+                        </p>
                       </div>
-                    ) : null}
+                      {signal.source.sentiment ? (
+                        <div>
+                          <p className="mb-2 text-xs">
+                            {t("signals.signal.cryptoIndex")}
+                          </p>
+
+                          <div className="flex items-center gap-1.5">
+                            {signal.source.sentiment === "positive" ? (
+                              <div className="h-4 w-4">
+                                <PositiveIcon className="fill-[#00CE64] dark:fill-[#00FFAB]" />
+                              </div>
+                            ) : (
+                              <div className="h-4 w-4">
+                                <NegativeIcon className="fill-[#FA5B5B] dark:fill-[#F95F5F]" />
+                              </div>
+                            )}
+                            {signal.source.sentiment === "positive" ? (
+                              <p className="font-bold text-[#00CE64] dark:text-[#00FFAB]">
+                                {signal.source.sentiment?.toUpperCase()}
+                              </p>
+                            ) : (
+                              <p className="justify-start font-bold text-[#FA5B5B] dark:text-[#F95F5F]">
+                                {signal.source.sentiment?.toUpperCase()}
+                              </p>
+                            )}
+                          </div>
+                        </div>
+                      ) : null}
+                    </div>
+                    {signal.hitKOLs &&
+                      signal.hitKOLs.length > 0 &&
+                      TokenItem("flex-col items-start", signal)}
                   </div>
-                  {signal.hitKOLs &&
-                    signal.hitKOLs.length > 0 &&
-                    TokenItem("flex-col items-start", signal)}
-                </div>
-              ) : null}
-            </Poster>
+                ) : null}
+              </Poster>
+            </div>
           </div>
-        </div>
+        )}
       </div>
     </div>
   );

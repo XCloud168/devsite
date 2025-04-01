@@ -2,7 +2,7 @@
 
 import { Howl } from "howler";
 import { useTranslations } from "next-intl";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import { FeaturedCard } from "@/app/signal-catcher/_components/featured-card";
 import { Button } from "@/components/ui/button";
@@ -12,6 +12,7 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
+  DialogTrigger,
 } from "@/components/ui/dialog";
 import { useLocalStorage } from "@/hooks/use-localstorage";
 import { useMembership } from "@/hooks/use-membership";
@@ -104,10 +105,10 @@ export default function RealtimeSignal() {
 
   useEffect(() => {
     // 如果正在加载会员状态或者不是会员，则不订阅实时信号
+    console.log(isLoading, !isMember, isExpired);
     if (isLoading || !isMember || isExpired) {
       return;
     }
-
     const supabase = createClient();
     const channel = supabase
       .channel("realtime-signal")
@@ -181,16 +182,21 @@ export default function RealtimeSignal() {
   return (
     <>
       <Dialog open={showDialog} onOpenChange={setShowDialog}>
-        <DialogContent>
+        <DialogTrigger className="text-xs text-[#949C9E]">123</DialogTrigger>
+        <DialogContent className="w-[600px] bg-[#DEECFF] p-5 dark:bg-black">
           <DialogHeader>
-            <DialogTitle>{t("newSignalNotification")}</DialogTitle>
+            <DialogTitle className="border-b pb-5 text-center font-normal">
+              {t("newSignalNotification")}
+            </DialogTitle>
           </DialogHeader>
 
-          <div className="py-4">
+          <div className="grid py-4">
             {currentSignal && (
-              <div>
-                <FeaturedCard signal={currentSignal} />
-              </div>
+              <FeaturedCard
+                signal={currentSignal}
+                tokenItemWidth="w-fit"
+                showShare={false}
+              />
             )}
           </div>
 
@@ -206,7 +212,7 @@ export default function RealtimeSignal() {
                 {t("previous")} (1/{signals.length})
               </Button>
             )}
-            <Button onClick={handleViewDetails}>{t("viewDetails")}</Button>
+            {/*<Button onClick={handleViewDetails}>{t("viewDetails")}</Button>*/}
           </DialogFooter>
         </DialogContent>
       </Dialog>
