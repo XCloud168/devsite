@@ -2,7 +2,7 @@ import { useAuth } from "@/hooks/use-auth";
 import { useEffect, useState } from "react";
 
 export function useMembership() {
-  const { user } = useAuth();
+  const { profile } = useAuth();
   const [isMember, setIsMember] = useState(false);
   const [isExpired, setIsExpired] = useState(true);
   const [isLoading, setIsLoading] = useState(true);
@@ -10,20 +10,12 @@ export function useMembership() {
   useEffect(() => {
     const checkMembership = async () => {
       try {
-        if (!user) {
+        if (!profile?.membershipExpiredAt) {
           setIsMember(false);
           return;
         }
 
-        // 检查用户的会员过期时间
-        const membershipExpiredAt = user.user_metadata?.membershipExpiredAt;
-        if (!membershipExpiredAt) {
-          setIsMember(false);
-          return;
-        }
-
-        // 检查是否过期
-        const expiredAt = new Date(membershipExpiredAt);
+        const expiredAt = new Date(profile.membershipExpiredAt);
         const now = new Date();
         setIsExpired(expiredAt < now);
         setIsMember(expiredAt > now);
@@ -36,7 +28,7 @@ export function useMembership() {
     };
 
     checkMembership();
-  }, [user]);
+  }, [profile]);
 
   return { isMember, isExpired, isLoading };
 }
