@@ -185,7 +185,8 @@ export default function RealtimeSignal() {
         <DialogTrigger className="text-xs text-[#949C9E]">123</DialogTrigger>
         <DialogContent className="w-[600px] bg-[#DEECFF] p-5 dark:bg-black">
           <DialogHeader>
-            <DialogTitle className="border-b pb-5 text-center font-normal">
+            <DialogTitle className="flex items-center gap-2 border-b pb-5 text-center font-normal">
+              <div className="h-[18px] w-[18px] bg-[url(/images/signal/bell.svg)]"></div>
               {t("newSignalNotification")}
             </DialogTitle>
           </DialogHeader>

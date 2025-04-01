@@ -68,10 +68,13 @@ export function KolBanner({
     setSearchLoading(false);
     setTweetUser(response.data);
   };
+  const [dialogOpen, setDialogOpen] = useState<boolean>(false);
   const SearchDialog = (triggerClass: string) => {
     return (
       <Dialog
-        onOpenChange={() => {
+        open={dialogOpen}
+        onOpenChange={(f) => {
+          setDialogOpen(f);
           setTweetUserName("");
           setTweetUser(null);
         }}
@@ -84,7 +87,7 @@ export function KolBanner({
             </p>
           </div>
         </DialogTrigger>
-        <DialogContent className="w-[480px] gap-0 bg-black p-4">
+        <DialogContent className="w-[560px] gap-0 bg-black p-4">
           <DialogHeader className="border-b pb-3">
             <DialogTitle>{t("signals.kol.searchTweeter")}</DialogTitle>
             <DialogDescription></DialogDescription>
@@ -137,6 +140,7 @@ export function KolBanner({
                       if (isMember) {
                         addFollowAction(tweetUser.id).then(() => {
                           toast.success(t("common.success"));
+                          setDialogOpen(false);
                         });
                       } else {
                         toast.info("请购买办会员");
