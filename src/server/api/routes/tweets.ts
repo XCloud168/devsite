@@ -126,6 +126,11 @@ export async function addTweetFollowed(tweetUid: string) {
     if (!user) {
       throw createError.unauthorized("Please login first");
     }
+
+    if (!user.membershipExpiredAt || new Date(user.membershipExpiredAt) < new Date()) {
+      throw createError.forbidden("Please upgrade your membership");
+    }
+
     const [result] = await db
       .insert(watchlist)
       .values({
