@@ -204,10 +204,6 @@ export async function getTweetUserByScreenName(screenName: string) {
       throw createError.unauthorized("Please login first");
     }
     
-    if (!user.membershipExpiredAt || new Date(user.membershipExpiredAt) < new Date()) {
-      throw createError.forbidden("Please upgrade your membership");
-    }
-
     // 清理用户名，移除 @ 符号和链接前缀
     const regex = /^((https:\/\/(x|twitter)\.com\/)|@)?(\w+).*/;
     const match = regex.exec(screenName);
