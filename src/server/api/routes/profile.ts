@@ -130,3 +130,37 @@ export async function updateUserProfile(
     };
   });
 }
+
+/**
+ * 获取用户资料
+ * @param userId - 用户ID
+ * @returns 用户资料
+ */
+export async function getUserProfileById(userId: string) {
+  return withServerResult(async () => {
+    const profile = await db.query.profiles.findFirst({
+      where: (profiles, { eq }) => eq(profiles.id, userId),
+      columns: {
+        id: true,
+        email: true,
+        username: true,
+        bio: true,
+        membershipExpiredAt: true,
+        inviteCode: true,
+        inviterId: true,
+        inviterSkipped: true,
+        enableNotification: true,
+        notificationSound: true,
+      }
+    });
+    
+    if (!profile) {
+      throw createError.notFound("User profile not found");
+    }
+
+    return {
+      success: true,
+      data: profile,
+    };
+  });
+}
