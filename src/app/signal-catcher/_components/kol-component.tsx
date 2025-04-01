@@ -71,6 +71,7 @@ export function KolComponent({
         getTagListAction={getTagListAction}
         getSignalCategoryAction={getSignalCategoryAction}
         getTagDataAction={getTagDataAction}
+        isMember={isMember}
       />
     </div>
   );

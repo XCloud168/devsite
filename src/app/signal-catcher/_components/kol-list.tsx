@@ -34,6 +34,7 @@ type Props = {
     providerType: SIGNAL_PROVIDER_TYPE,
     entityId: string,
   ) => Promise<ServerResult>;
+  isMember?: boolean | null;
 };
 export function KolList({
   menu,
@@ -45,6 +46,7 @@ export function KolList({
   getTagListAction,
   getSignalCategoryAction,
   getTagDataAction,
+  isMember,
 }: Props) {
   const componentsMap: Record<string, JSX.Element> = {
     "1": (
@@ -61,6 +63,7 @@ export function KolList({
       <KolPoint
         getTweetListAction={getTweetListAction}
         addFollowAction={addFollowAction}
+        isMember={isMember}
       />
     ),
     "3": (
@@ -68,6 +71,7 @@ export function KolList({
         getTweetListAction={getTweetListAction}
         getFollowedListAction={getFollowedListAction}
         removeFollowAction={removeFollowAction}
+        isMember={isMember}
       />
     ),
   };

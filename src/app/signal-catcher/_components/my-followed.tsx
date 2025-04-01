@@ -36,6 +36,7 @@ type Props = {
       hasContractAddress?: boolean;
     },
   ) => Promise<ServerResult>;
+  isMember?: boolean | null;
 };
 
 export type FetchTweetListAction = (
@@ -58,6 +59,7 @@ export function MyFollowed({
   getTweetListAction,
   getFollowedListAction,
   removeFollowAction,
+  isMember,
 }: Props) {
   const t = useTranslations();
   const [showTable, setShowTable] = useState(false);
@@ -226,7 +228,7 @@ export function MyFollowed({
           ) : (
             tweetList.map((tweet) => (
               <div key={tweet.id} className="border-b">
-                <KolCard tweet={tweet} showShare />
+                <KolCard tweet={tweet} showShare isMember={isMember} />
               </div>
             ))
           )}

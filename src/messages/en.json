@@ -328,8 +328,9 @@
             "removeKol": "Cancel",
             "followed": "Monitored",
             "signal": "Signal",
-            "searchTweeter": "搜索推特账号",
-            "enterTweeter": "请输入推特账号"
+            "searchTweeter": "Search X Account",
+            "enterTweeter": "Please enter X account",
+            "notVip": "Subscribe to VIP for custom monitoring"
         },
         "signal": {
             "curatedSignals": "Curated Signals",

@@ -39,7 +39,10 @@ export function InviteCodeDialog({ open, onSubmit }: InviteCodeDialogProps) {
 
   return (
     <Dialog open={open} onOpenChange={() => handleSkip()} modal>
-      <DialogContent onPointerDownOutside={(e) => e.preventDefault()}>
+      <DialogContent
+        onPointerDownOutside={(e) => e.preventDefault()}
+        className="w-[400px] p-5"
+      >
         <DialogHeader>
           <DialogTitle>{t("auth.enterInviteCode")}</DialogTitle>
           <DialogDescription>

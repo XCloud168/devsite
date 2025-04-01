@@ -15,12 +15,14 @@ import { formatNumber } from "@/components/formatNumber";
 import { getMediaList } from "@/app/signal-catcher/_components/featured-card";
 import Gallery from "@/components/Gallery";
 import { AddKolIcon, FollowedKolIcon } from "@/components/ui/icon";
+import { useRouter } from "next/navigation";
 
 type Props = {
   tweet: TweetItem;
   addFollowAction?: (tweetUid: string) => Promise<ServerResult>;
   showShare?: boolean;
   onFollowCallback?: (id: string) => void;
+  isMember?: boolean | null;
 };
 interface TweetItem extends Omit<TweetInfo, "tweetUser"> {
   tweetUser: TweetUsers & {
@@ -36,7 +38,9 @@ export function KolCard({
   addFollowAction,
   showShare,
   onFollowCallback,
+  isMember,
 }: Props) {
+  const router = useRouter();
   const t = useTranslations();
   const [addLoading, setAddLoading] = useState<boolean>(false);
   const [translatedContent, setTranslatedContent] = useState<string | null>(
@@ -89,6 +93,10 @@ export function KolCard({
               variant="outline"
               className="justify-start gap-1 rounded-xl"
               onClick={() => {
+                if (!isMember) {
+                  router.push("/auth/login");
+                  return;
+                }
                 setAddLoading(true);
                 if (tweet.tweetUser) handleAddFollow(tweet.tweetUser.id);
               }}

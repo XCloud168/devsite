@@ -23,6 +23,7 @@ type Props = {
       hasContractAddress?: boolean;
     },
   ) => Promise<ServerResult>;
+  isMember?: boolean | null;
 };
 interface TweetItem extends Omit<TweetInfo, "tweetUser"> {
   tweetUser: TweetUsers & {
@@ -33,7 +34,11 @@ interface TweetItem extends Omit<TweetInfo, "tweetUser"> {
   replyTweet: TweetItem;
 }
 
-export function KolPoint({ getTweetListAction, addFollowAction }: Props) {
+export function KolPoint({
+  getTweetListAction,
+  addFollowAction,
+  isMember,
+}: Props) {
   const t = useTranslations();
   const [tweetList, setTweetList] = useState<TweetItem[]>([]);
   const [hasNext, setHasNext] = useState<boolean>(true);
@@ -130,6 +135,7 @@ export function KolPoint({ getTweetListAction, addFollowAction }: Props) {
         tweetList.map((tweet) => (
           <div key={tweet.id} className="border-b">
             <KolCard
+              isMember={isMember}
               tweet={tweet}
               addFollowAction={addFollowAction}
               showShare
@@ -146,7 +152,7 @@ export function KolPoint({ getTweetListAction, addFollowAction }: Props) {
             />
             {tweet.replyTweet ? (
               <div className="m-4 rounded-lg border">
-                <KolCard tweet={tweet.replyTweet} />
+                <KolCard tweet={tweet.replyTweet} isMember={isMember} />
               </div>
             ) : null}
           </div>

@@ -17,6 +17,7 @@ import type { ServerResult } from "@/lib/server-result";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { formatNumber } from "@/components/formatNumber";
 import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 export type KolMenu = {
   label: string;
@@ -46,6 +47,7 @@ export function KolBanner({
   isMember,
 }: KolMenuProps) {
   const t = useTranslations();
+  const router = useRouter();
   const [selectedMenu, setSelectedMenu] = useState<KolMenu>({
     label: "kol",
     value: "2",
@@ -132,9 +134,13 @@ export function KolBanner({
                     variant="default"
                     className="ml-auto"
                     onClick={() => {
-                      addFollowAction(tweetUser.id).then(() => {
-                        toast.success(t("common.success"));
-                      });
+                      if (isMember) {
+                        addFollowAction(tweetUser.id).then(() => {
+                          toast.success(t("common.success"));
+                        });
+                      } else {
+                        toast.info("请购买办会员");
+                      }
                     }}
                   >
                     {t("signals.kol.follow")}
@@ -153,6 +159,10 @@ export function KolBanner({
         className={`${menu.value === selectedMenu.value ? "border-primary font-bold text-primary" : "border-transparent font-normal text-black dark:text-foreground/80"} cursor-pointer break-keep border-b-2 pt-2 text-center hover:text-primary`}
         key={menu.value}
         onClick={() => {
+          if (!isMember && menu.value === "3") {
+            router.push("/auth/login");
+            return;
+          }
           onKolMenuChangeAction(menu);
           setSelectedMenu(menu);
         }}
@@ -165,7 +175,7 @@ export function KolBanner({
     return (
       <>
         <div className="sticky top-0 z-10 block border-b bg-background px-5 pt-2">
-          {isMember && SearchDialog("mb-3 w-full")}
+          {SearchDialog("mb-3 w-full")}
           <div>
             <div className="flex w-full gap-10">{menu()}</div>
           </div>
@@ -178,7 +188,7 @@ export function KolBanner({
       <div className="sticky top-0 z-10 flex border-b bg-background px-5 pt-2">
         <div className="flex w-full gap-10">
           {menu()}
-          {isMember && SearchDialog("ml-auto pb-2")}
+          {SearchDialog("ml-auto pb-2")}
         </div>
       </div>
     </>

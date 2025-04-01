@@ -328,9 +328,9 @@
             "removeKol": "取消监控",
             "followed": "已监控",
             "signal": "信号",
-            "searchTweeter": "搜索推特账号",
-            "enterTweeter": "请输入推特账号"
-
+            "searchTweeter": "搜索 X 账号",
+            "enterTweeter": "请输入 X 账号",
+            "notVip": "订阅 VIP，即可自定义添加监控对象"
         },
         "signal": {
             "curatedSignals": "精选信号",
