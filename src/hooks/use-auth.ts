@@ -9,18 +9,33 @@ export interface UserProfile {
   bio: string | null;
   created_at: string;
   updated_at: string;
+  membershipExpiredAt: string | null;
 }
 
 export function useAuth() {
   const [user, setUser] = useState<User | null>(null);
+  const [profile, setProfile] = useState<UserProfile | null>(null);
   const [loading, setLoading] = useState(true);
   const supabase = createClient();
 
   useEffect(() => {
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, session) => {
-      setUser(session?.user ?? null);
+    } = supabase.auth.onAuthStateChange(async (_event, session) => {
+      const currentUser = session?.user ?? null;
+      setUser(currentUser);
+
+      if (currentUser) {
+        const { data: userProfile } = await supabase
+          .from('profiles')
+          .select('*')
+          .eq('id', currentUser.id)
+          .single();
+        setProfile(userProfile);
+      } else {
+        setProfile(null);
+      }
+      
       setLoading(false);
     });
 
@@ -36,6 +51,7 @@ export function useAuth() {
 
   return {
     user,
+    profile,
     loading,
     signOut,
   };
