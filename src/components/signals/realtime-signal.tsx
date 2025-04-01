@@ -89,8 +89,7 @@ export default function RealtimeSignal() {
       setNotificationEnabled(profile?.enableNotification ?? false);
       setSound(profile?.notificationSound ?? "/audios/coin.wav");
     };
-
-    getUserSettings();
+getUserSettings();
 
     // 在客户端初始化音频
     if (typeof window !== "undefined" && audioEnabled && !audio) {
@@ -114,7 +113,7 @@ export default function RealtimeSignal() {
       .channel("realtime-signal")
       .on(
         "postgres_changes",
-        { event: "*", schema: "public", table: "site_signals" },
+        { event: "INSERT", schema: "public", table: "site_signals" },
         (payload) => {
           console.log("payload", payload);
           handleNewSignal(payload);
