@@ -1,15 +1,19 @@
 import { createClient } from "@/utils/supabase/client";
 import type { User } from "@supabase/supabase-js";
 import { useCallback, useEffect, useState } from "react";
+import { getUserProfileById } from "@/server/api/routes/profile";
 
 export interface UserProfile {
   id: string;
-  email: string;
-  username: string | null;
+  email: string | null;
+  username: string;
   bio: string | null;
-  created_at: string;
-  updated_at: string;
-  membershipExpiredAt: string | null;
+  membershipExpiredAt: Date | null;
+  inviteCode: string | null;
+  inviterId: string | null;
+  inviterSkipped: boolean | null;
+  enableNotification: boolean | null;
+  notificationSound: string | null;
 }
 
 export function useAuth() {
@@ -26,16 +30,17 @@ export function useAuth() {
       setUser(currentUser);
 
       if (currentUser) {
-        const { data: userProfile } = await supabase
-          .from('profiles')
-          .select('*')
-          .eq('id', currentUser.id)
-          .single();
-        setProfile(userProfile);
+        try {
+          const result = await getUserProfileById(currentUser.id);
+          if (result.data) {
+            setProfile(result.data as unknown as UserProfile);
+          }
+        } catch (error) {
+          console.error("Error fetching user profile:", error);
+        }
       } else {
         setProfile(null);
       }
-      
       setLoading(false);
     });
 
