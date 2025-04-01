@@ -7,16 +7,7 @@ import type { ServerResult } from "@/lib/server-result";
 import { useTranslations } from "next-intl";
 import { type SignalsCategory } from "@/server/db/schemas/signal";
 import { Skeleton } from "@/components/ui/skeleton";
-import {
-  ArrowBigLeft,
-  ArrowBigRight,
-  ArrowLeft,
-  ArrowRight,
-  ChevronLeft,
-  ChevronRight,
-  CircleArrowLeft,
-  CircleArrowRight,
-} from "lucide-react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 interface Tag {
   id: string;
   name: string;
@@ -192,7 +183,7 @@ export function FeaturedBanner({
           {signalCategory.map((category) => (
             <div
               key={category.id}
-              className={`${selectedCategoryId === category.id ? "border-[#1F72E5] bg-gradient-to-r from-primary to-primary bg-clip-text font-bold text-primary dark:border-[#F2DA18] dark:from-[#F2DA18] dark:to-[#4DFFC4] dark:text-transparent" : "border-transparent"} min-w-max cursor-pointer border-b-2 pb-2 pt-3 text-center text-sm`}
+              className={`${selectedCategoryId === category.id ? "border-[#1F72E5] bg-gradient-to-r from-primary to-primary bg-clip-text font-bold text-primary dark:border-[#F2DA18] dark:from-[#F2DA18] dark:to-[#4DFFC4] dark:text-transparent" : "border-transparent"} min-w-max cursor-pointer border-b-2 pb-2 pt-3 text-center`}
               onClick={() => {
                 setTagLoading(true);
                 setSelectedCategoryId(category.id);

@@ -80,14 +80,14 @@ export function KolBanner({
         }}
       >
         <DialogTrigger className={triggerClass}>
-          <div className="ml-auto flex h-9 cursor-pointer items-center gap-2 rounded-full bg-[#17191C] pl-2 pr-4">
-            <Search />
-            <p className="text-xs text-white/80">
+          <div className="ml-auto flex h-9 cursor-pointer items-center gap-2 rounded-full bg-secondary pl-2 pr-12">
+            <Search size="20px" />
+            <p className="text-xs text-black/80 dark:text-white/80">
               {t("signals.kol.searchTweeter")}
             </p>
           </div>
         </DialogTrigger>
-        <DialogContent className="w-[560px] gap-0 bg-black p-4">
+        <DialogContent className="w-[560px] gap-0 bg-secondary p-4">
           <DialogHeader className="border-b pb-3">
             <DialogTitle>{t("signals.kol.searchTweeter")}</DialogTitle>
             <DialogDescription></DialogDescription>
