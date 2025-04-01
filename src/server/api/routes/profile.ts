@@ -158,9 +158,6 @@ export async function getUserProfileById(userId: string) {
       throw createError.notFound("User profile not found");
     }
 
-    return {
-      success: true,
-      data: profile,
-    };
+    return profile;
   });
 }
