@@ -36,7 +36,7 @@ export default function Poster({ children }: { children: ReactNode }) {
       <DialogTrigger className="text-xs text-[#949C9E]">
         {t("common.share")}
       </DialogTrigger>
-      <DialogContent className="w-[400px] bg-black">
+      <DialogContent className="w-[98%] bg-black md:w-[400px]">
         <DialogHeader className="hidden">
           <DialogTitle></DialogTitle>
           <DialogDescription></DialogDescription>
@@ -49,7 +49,7 @@ export default function Poster({ children }: { children: ReactNode }) {
               <div className="space-y-1">
                 <div className="flex items-center gap-1">
                   <Image
-                    src="/images/logo.svg"
+                    src="/images/logo-blue.svg"
                     alt="Logo"
                     width={130}
                     height={20}

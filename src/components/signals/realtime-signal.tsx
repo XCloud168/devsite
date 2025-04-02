@@ -50,6 +50,17 @@ interface SignalItems extends Signals {
 }
 
 export default function RealtimeSignal() {
+  // useEffect(() => {
+  //   if (getSignalListAction) {
+  //     getSignalListAction(1, {
+  //       categoryId: "83d28d2b-25b4-42e7-9335-ba2affbb3c31",
+  //     }).then((res) => {
+  //       console.log(res);
+  //       setSignals(res.data.items);
+  //       setShowDialog(true);
+  //     });
+  //   }
+  // }, [getSignalListAction]);
   const [signals, setSignals] = useState<SignalItems[]>([]);
   const [showDialog, setShowDialog] = useState(false);
   const [sound, setSound] = useState<string>("/audios/coin.wav");
@@ -182,7 +193,7 @@ export default function RealtimeSignal() {
     <>
       <Dialog open={showDialog} onOpenChange={setShowDialog}>
         <DialogTrigger className="text-xs text-[#949C9E]">123</DialogTrigger>
-        <DialogContent className="w-[600px] bg-[#DEECFF] p-5 dark:bg-black">
+        <DialogContent className="w-[98%] bg-[#DEECFF] p-3 dark:bg-black md:w-[600px] md:p-5">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2 border-b pb-5 text-center font-normal">
               <div className="h-[18px] w-[18px] bg-[url(/images/signal/bell.svg)]"></div>

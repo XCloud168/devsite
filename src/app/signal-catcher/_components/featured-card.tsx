@@ -193,7 +193,7 @@ export function FeaturedCard({
               </div>
             </div>
 
-            <div className="mt-3 flex w-full gap-10">
+            <div className="mt-3 flex w-full gap-3 md:gap-10">
               <div>
                 <p className="mb-2 text-xs">{t("signals.signal.24hPnl")}</p>
                 <p className="font-bold text-[#00CE64] dark:text-[#00FFAB]">
