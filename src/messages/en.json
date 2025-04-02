@@ -348,7 +348,9 @@
             "exchange_listing": "Exchange listings",
             "super_influencer": "Super influence",
             "institution_projects": "Institutions &Projects",
-            "kol_opinions": "KOL Opinions"
+            "kol_opinions": "KOL Opinions",
+            "positive": "positive",
+            "negative": "negative"
         }
     }
 }

@@ -348,7 +348,9 @@
             "exchange_listing": "交易所上新",
             "super_influencer": "意见领袖",
             "institution_projects": "项目&机构",
-            "kol_opinions": "KOL观点"
+            "kol_opinions": "KOL观点",
+            "positive": "利好",
+            "negative": "利空"
 
         }
     }

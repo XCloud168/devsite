@@ -24,6 +24,7 @@ import { LoadingMoreBtn } from "@/app/signal-catcher/_components/loading-more-bt
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useTranslations } from "next-intl";
 import { Skeleton } from "@/components/ui/skeleton";
+import { LoaderCircle } from "lucide-react";
 
 type Props = {
   getFollowedListAction: () => Promise<ServerResult>;
@@ -252,17 +253,8 @@ export function MyFollowed({
             <p>{t("signals.kol.myKol")}</p>
           </div>
           {tableDataLoading ? (
-            <div className="mt-4 flex items-center justify-center text-primary">
-              {t("common.loading")}
-              <span className="animate-dots inline-block w-2 text-center text-primary">
-                .
-              </span>
-              <span className="animate-dots animation-delay-200 inline-block w-2 text-center text-primary">
-                .
-              </span>
-              <span className="animate-dots animation-delay-400 inline-block w-2 text-center text-primary">
-                .
-              </span>
+            <div className="flex items-center justify-center py-2">
+              <LoaderCircle className="animate-spin" />
             </div>
           ) : (
             <Table>

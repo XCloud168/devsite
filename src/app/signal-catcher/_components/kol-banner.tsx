@@ -87,7 +87,7 @@ export function KolBanner({
             </p>
           </div>
         </DialogTrigger>
-        <DialogContent className="w-[98%] gap-0 bg-secondary p-4 md:w-[560px]">
+        <DialogContent className="w-[94%] gap-0 bg-secondary p-4 md:w-[560px]">
           <DialogHeader className="border-b pb-3">
             <DialogTitle>{t("signals.kol.searchTweeter")}</DialogTitle>
             <DialogDescription></DialogDescription>
@@ -160,7 +160,7 @@ export function KolBanner({
   const menu = () => {
     return kolMenu.map((menu) => (
       <div
-        className={`${menu.value === selectedMenu.value ? "border-primary font-bold text-primary" : "border-transparent font-normal text-black dark:text-foreground/80"} cursor-pointer break-keep border-b-2 pt-2 text-center hover:text-primary`}
+        className={`${menu.value === selectedMenu.value ? "border-primary font-bold text-primary" : "border-transparent font-normal text-black dark:text-foreground/80"} cursor-pointer break-keep border-b-2 pb-2 pt-2 text-center hover:text-primary md:pb-0`}
         key={menu.value}
         onClick={() => {
           if (!isMember && menu.value === "3") {
@@ -181,7 +181,7 @@ export function KolBanner({
         <div className="sticky top-0 z-10 block border-b bg-background px-5 pt-2">
           {SearchDialog("mb-3 w-full")}
           <div>
-            <div className="flex w-full gap-10">{menu()}</div>
+            <div className="flex w-full gap-5">{menu()}</div>
           </div>
         </div>
       </>

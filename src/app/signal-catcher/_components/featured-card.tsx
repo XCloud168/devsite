@@ -221,11 +221,11 @@ export function FeaturedCard({
                     )}
                     {signal.source.sentiment === "positive" ? (
                       <p className="font-bold text-[#00CE64] dark:text-[#00FFAB]">
-                        {signal.source.sentiment?.toUpperCase()}
+                        {t("signals.signal.positive").toUpperCase()}
                       </p>
                     ) : (
                       <p className="font-bold text-[#FA5B5B] dark:text-[#F95F5F]">
-                        {signal.source.sentiment?.toUpperCase()}
+                        {t("signals.signal.negative").toUpperCase()}
                       </p>
                     )}
                   </div>

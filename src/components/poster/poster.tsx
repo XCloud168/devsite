@@ -36,7 +36,7 @@ export default function Poster({ children }: { children: ReactNode }) {
       <DialogTrigger className="text-xs text-[#949C9E]">
         {t("common.share")}
       </DialogTrigger>
-      <DialogContent className="w-[98%] bg-black md:w-[400px]">
+      <DialogContent className="w-[94%] bg-black md:w-[400px]">
         <DialogHeader className="hidden">
           <DialogTitle></DialogTitle>
           <DialogDescription></DialogDescription>

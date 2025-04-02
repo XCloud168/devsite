@@ -193,7 +193,7 @@ export default function RealtimeSignal() {
     <>
       <Dialog open={showDialog} onOpenChange={setShowDialog}>
         <DialogTrigger className="text-xs text-[#949C9E]">123</DialogTrigger>
-        <DialogContent className="w-[98%] bg-[#DEECFF] p-3 dark:bg-black md:w-[600px] md:p-5">
+        <DialogContent className="w-[94%] bg-[#DEECFF] p-3 dark:bg-black md:w-[600px] md:p-5">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2 border-b pb-5 text-center font-normal">
               <div className="h-[18px] w-[18px] bg-[url(/images/signal/bell.svg)]"></div>
