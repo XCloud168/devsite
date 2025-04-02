@@ -132,7 +132,7 @@ export default async function SignalPage() {
             />
           </div>
         </ResizablePanel>
-        <ResizableHandle className="bg-primary/20" withHandle />
+        <ResizableHandle className="bg-border" withHandle />
         <ResizablePanel
           defaultSize={45}
           minSize={35}
