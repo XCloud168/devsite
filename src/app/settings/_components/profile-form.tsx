@@ -19,8 +19,9 @@ import { Textarea } from "@/components/ui/textarea";
 import { getUserProfile } from "@/server/api/routes/auth";
 import { updateUserProfile } from "@/server/api/routes/profile";
 import { useTranslations } from "next-intl";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { toast } from "sonner";
+import { LoaderCircle } from "lucide-react";
 
 export function ProfileForm() {
   const t = useTranslations("profile.sections.profile");
@@ -103,7 +104,11 @@ export function ProfileForm() {
   }
 
   if (isLoading) {
-    return <div>{commonT("loading")}</div>;
+    return (
+      <div className="flex items-center justify-center py-2">
+        <LoaderCircle className="animate-spin" />
+      </div>
+    );
   }
 
   return (
@@ -147,25 +152,25 @@ export function ProfileForm() {
             </FormItem>
           )}
         />
-        <FormField
-          control={form.control}
-          name="bio"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>{t("bio")}</FormLabel>
-              <FormControl>
-                <Textarea
-                  placeholder={t("bioPlaceholder")}
-                  className="resize-none"
-                  {...field}
-                />
-              </FormControl>
-              <FormDescription>{t("bioDescription")}</FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <Button type="submit">{commonT("update")}</Button>
+        {/*<FormField*/}
+        {/*  control={form.control}*/}
+        {/*  name="bio"*/}
+        {/*  render={({ field }) => (*/}
+        {/*    <FormItem>*/}
+        {/*      <FormLabel>{t("bio")}</FormLabel>*/}
+        {/*      <FormControl>*/}
+        {/*        <Textarea*/}
+        {/*          placeholder={t("bioPlaceholder")}*/}
+        {/*          className="resize-none"*/}
+        {/*          {...field}*/}
+        {/*        />*/}
+        {/*      </FormControl>*/}
+        {/*      <FormDescription>{t("bioDescription")}</FormDescription>*/}
+        {/*      <FormMessage />*/}
+        {/*    </FormItem>*/}
+        {/*  )}*/}
+        {/*/>*/}
+        {/*<Button type="submit">{commonT("update")}</Button>*/}
       </form>
     </Form>
   );

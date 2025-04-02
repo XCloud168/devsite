@@ -143,7 +143,7 @@ export function KolBanner({
                           setDialogOpen(false);
                         });
                       } else {
-                        toast.info("请购买办会员");
+                        toast.info(t("signals.kol.notVip"));
                       }
                     }}
                   >

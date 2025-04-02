@@ -19,7 +19,7 @@ export function LoadingMoreBtn({ hasNext, pageLoading, onNextAction }: Props) {
     <div className="my-4 flex justify-center">
       {pageLoading ? (
         <div className="flex items-center justify-center py-2">
-          <LoaderCircle className="animate-spin" color="#1f72e5" />
+          <LoaderCircle className="animate-spin" />
         </div>
       ) : (
         <Button onClick={() => onNextAction()}> {t("common.loadMore")}</Button>
