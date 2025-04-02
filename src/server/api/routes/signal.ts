@@ -105,9 +105,9 @@ export async function getSignalsByPaginated(
         extras: {
           times: sql<number>`(SELECT COUNT(*)
             FROM ${signals} si
-            WHERE si.project_id = ${signals.projectId}
-            AND si.entity_id = ${signals.entityId}
-            AND si.signal_time >= ${signals.signalTime} - INTERVAL '7 days')`.as(
+            WHERE si.project_id = signals.project_id
+            AND si.entity_id = signals.entity_id
+            AND si.signal_time BETWEEN signals.signal_time - INTERVAL '7 days' AND signals.signal_time)`.as(
             "times",
           ),
           hitKOLs: sql<any[]>`(SELECT jsonb_agg(DISTINCT jsonb_build_object(
@@ -117,8 +117,8 @@ export async function getSignalsByPaginated(
             ))
             FROM ${tweetInfo} ti
             JOIN ${tweetUsers} tu ON ti.tweet_user_id = tu.id
-            WHERE ti.project_id = ${signals.projectId}
-            AND ti.signal_time >= ${signals.signalTime} - INTERVAL '7 days')`.as(
+            WHERE ti.project_id = signals.project_id
+            AND ti.signal_time BETWEEN signals.signal_time - INTERVAL '7 days' AND signals.signal_time)`.as(
             "hitKOLs",
           ),
         },
