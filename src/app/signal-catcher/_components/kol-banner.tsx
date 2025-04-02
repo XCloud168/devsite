@@ -87,7 +87,7 @@ export function KolBanner({
             </p>
           </div>
         </DialogTrigger>
-        <DialogContent className="w-[94%] gap-0 bg-secondary p-4 md:w-[560px]">
+        <DialogContent className="w-[94%] gap-0 p-4 md:w-[560px]">
           <DialogHeader className="border-b pb-3">
             <DialogTitle>{t("signals.kol.searchTweeter")}</DialogTitle>
             <DialogDescription></DialogDescription>

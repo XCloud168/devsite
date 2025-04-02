@@ -7,14 +7,15 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import React, { type ReactNode, useRef } from "react";
+import React, { type ReactNode, useCallback, useRef } from "react";
 import { toPng } from "html-to-image";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import Image from "next/image";
 import { QRCode } from "@/components/qrcode";
 import { Share2 } from "lucide-react";
 export default function SharePoster({ children }: { children: ReactNode }) {
   const t = useTranslations();
+  const locale = useLocale();
   const captureRef = useRef<HTMLDivElement>(null);
   const handleSaveImage = async () => {
     try {
@@ -32,6 +33,17 @@ export default function SharePoster({ children }: { children: ReactNode }) {
       console.error(error);
     }
   };
+
+  const shareToX = useCallback(() => {
+    let url: string;
+    if (locale === "zh") {
+      url = `https://x.com/share?text=${encodeURIComponent("邀请好友一起加入，解锁更多投资机会！精准信号，分钟级推送，胜率回测，助您信号获取快人一步！")}&url=${window.location.href}`;
+    } else {
+      url = `https://x.com/share?text=${encodeURIComponent("Invite friends and unlock more investment opportunities!Precision signals, real-time alerts, and win-rate backtesting to keep you ahead!")}&url=${window.location.href}`;
+    }
+    window.open(url);
+  }, [locale]);
+
   return (
     <Dialog>
       <DialogTrigger className="w-full text-xs text-[#949C9E]">
@@ -60,15 +72,19 @@ export default function SharePoster({ children }: { children: ReactNode }) {
             {children}
             <div className="mt-4 flex items-center justify-between border-t px-4 pt-4">
               <div className="space-y-1">
-                <p className="text-xs text-white/80">加入Blockbate</p>
-                <p>扫码加入赚钱快人一步</p>
+                <p className="text-xs text-white/80">
+                  {t("signals.share.title")}
+                </p>
+                <p>{t("signals.share.content")}</p>
               </div>
               <QRCode text={window.location.href} width={80} />
             </div>
           </div>
         </div>
         <div className="absolute -bottom-12 -left-1 flex w-full justify-center gap-4">
-          <Button variant="outline">{t("signals.shareToX")}</Button>
+          <Button variant="outline" onClick={() => shareToX()}>
+            {t("signals.shareToX")}
+          </Button>
           <Button variant="default" onClick={() => handleSaveImage()}>
             {t("common.saveImage")}
           </Button>

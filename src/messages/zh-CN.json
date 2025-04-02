@@ -317,6 +317,11 @@
         "viewDetails": "查看详情",
         "showOriginal": "查看原文",
         "shareToX": "分享到X",
+        "share": {
+            "title": "分享即财富！",
+            "content": "越多好友，越多机会!",
+            "shareImg": "分享图片"
+        },
         "kol": {
             "followers": "粉丝",
             "kol": "KOL观点",
@@ -328,7 +333,7 @@
             "removeKol": "取消监控",
             "followed": "已监控",
             "signal": "信号",
-            "searchTweeter": "搜索 X 账号",
+            "searchTweeter": "自定义 X 监控",
             "enterTweeter": "请输入 X 账号",
             "notVip": "订阅 VIP，即可自定义添加监控对象"
         },
@@ -339,11 +344,12 @@
             "mentionAbove": "位KOL提到了该",
             "over": "超过",
             "firstMention": "首次提及",
+            "repeatedMentions": "多次提及",
             "cryptoIndex": "情绪指标",
             "tokenGainCount": "代币上涨数",
             "tokenGainRatio": "代币上涨率",
             "24hAverageMaxGain": "24H平均最大涨幅",
-            "totalTokenSignals": "代币信号总量",
+            "totalTokenSignals": "代币信号总量(90D)",
             "24hPnl": "24h最佳收益率",
             "exchange_listing": "交易所上新",
             "super_influencer": "意见领袖",
@@ -351,7 +357,6 @@
             "kol_opinions": "KOL观点",
             "positive": "利好",
             "negative": "利空"
-
         }
     }
 }

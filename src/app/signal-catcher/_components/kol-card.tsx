@@ -14,8 +14,8 @@ import Poster from "@/components/poster/poster";
 import { formatNumber } from "@/components/formatNumber";
 import { getMediaList } from "@/app/signal-catcher/_components/featured-card";
 import Gallery from "@/components/Gallery";
-import { AddKolIcon, FollowedKolIcon } from "@/components/ui/icon";
 import { useRouter } from "next/navigation";
+import { BellPlus, BellRing } from "lucide-react";
 
 type Props = {
   tweet: TweetItem;
@@ -103,9 +103,9 @@ export function KolCard({
               disabled={addLoading || tweet?.tweetUser?.isFollowed}
             >
               {tweet?.tweetUser?.isFollowed ? (
-                <FollowedKolIcon className="fill-text-accent dark:fill-[#e6e6e6]" />
+                <BellRing className="fill-text-accent dark:fill-[#e6e6e6]" />
               ) : (
-                <AddKolIcon className="fill-text-accent-foreground dark:fill-[#e6e6e6]" />
+                <BellPlus className="fill-text-accent" />
               )}
               {tweet?.tweetUser?.isFollowed
                 ? t("signals.kol.followed")

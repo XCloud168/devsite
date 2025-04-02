@@ -317,6 +317,11 @@
         "viewDetails": "View Details",
         "showOriginal": "Show Original",
         "shareToX": "Share to X",
+        "share": {
+            "title": "Sharing is wealth！",
+            "content": "More friends, More opportunities!",
+            "shareImg": "Share Image"
+        },
         "kol": {
             "followers": "followers",
             "kol": "KOL Opinions",
@@ -328,7 +333,7 @@
             "removeKol": "Cancel",
             "followed": "Monitored",
             "signal": "Signal",
-            "searchTweeter": "Search X Account",
+            "searchTweeter": "Custom X Monitor",
             "enterTweeter": "Please enter X account",
             "notVip": "Subscribe to VIP for custom monitoring"
         },
@@ -339,11 +344,12 @@
             "mentionAbove": "KOL mentioned above",
             "over": "Over",
             "firstMention": "First Mention",
+            "repeatedMentions": "Repeated Mentions",
             "cryptoIndex": "Crypto Index",
             "tokenGainCount": "Token Gain Count",
             "tokenGainRatio": "Token Gain Ratio",
             "24hAverageMaxGain": "24h Average Max Gain",
-            "totalTokenSignals": "Total Token Signals",
+            "totalTokenSignals": "Total Token Signals(90D)",
             "24hPnl": "24h max pnl",
             "exchange_listing": "Exchange listings",
             "super_influencer": "Super influence",
