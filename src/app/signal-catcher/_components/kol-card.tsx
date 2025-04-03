@@ -15,7 +15,7 @@ import { formatNumber } from "@/components/formatNumber";
 import { getMediaList } from "@/app/signal-catcher/_components/featured-card";
 import Gallery from "@/components/Gallery";
 import { useRouter } from "next/navigation";
-import { BellPlus, BellRing } from "lucide-react";
+import { BellPlus, BellRing, Share2, Link as Link2 } from "lucide-react";
 
 type Props = {
   tweet: TweetItem;
@@ -151,13 +151,13 @@ export function KolCard({
               href={tweet.tweetUrl ?? "/"}
               target="_blank"
             >
-              <div className="h-3 w-3 bg-[url(/images/signal/link.svg)] bg-contain"></div>
+              <Link2 size={12} />
               <div className="text-xs text-[#949C9E]">
                 {t("signals.showOriginal")}
               </div>
             </Link>
-            <div className="flex items-center gap-1 text-xs text-[#949C9E]">
-              <div className="h-2.5 w-2.5 bg-[url(/images/signal/share.svg)] bg-contain"></div>
+            <div className="flex cursor-pointer items-center gap-1 text-xs text-[#949C9E]">
+              <Share2 size={12} />
               <Poster>
                 <div>
                   <p className="relative pl-2 text-white before:absolute before:left-0 before:top-1/2 before:h-[4px] before:w-[4px] before:-translate-y-1/2 before:rounded-full before:bg-white before:content-['']">

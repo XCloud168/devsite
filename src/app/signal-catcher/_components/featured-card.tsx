@@ -11,6 +11,7 @@ import TranslationComponent from "@/components/translation-component";
 import { NegativeIcon, PositiveIcon, SwapIcon } from "@/components/ui/icon";
 import Poster from "@/components/poster/poster";
 import Gallery from "@/components/Gallery";
+import { Link as Link2, Share2 } from "lucide-react";
 
 type Props = {
   signal: SignalItems;
@@ -190,7 +191,7 @@ export function FeaturedCard({
                     </p>
                   </div>
                 )}
-                {parseInt(signal.times) > 3 && (
+                {parseInt(signal.times) > 2 && (
                   <div className="rounded-full bg-primary text-black">
                     <p className="scale-75 text-xs">
                       {t("signals.signal.repeatedMentions")}
@@ -200,10 +201,10 @@ export function FeaturedCard({
               </div>
             </div>
 
-            <div className="mt-3 flex w-full gap-3 md:gap-10">
+            <div className="mt-3 flex w-full items-center gap-3 md:gap-10">
               <div>
                 <p className="mb-2 text-xs">{t("signals.signal.24hPnl")}</p>
-                <p className="font-bold text-[#00CE64] dark:text-[#00FFAB]">
+                <p className="text-xl font-bold text-[#00CE64] dark:text-[#00FFAB]">
                   {parseFloat(signal.source.highRate24H ?? "0") > 0
                     ? "+" + signal.source.highRate24H
                     : signal.source.highRate24H}
@@ -268,13 +269,13 @@ export function FeaturedCard({
                   : signal.source.source
               }
             >
-              <div className="h-4 w-4 bg-[url(/images/signal/link.svg)] bg-contain"></div>
+              <Link2 size={12} />
               <p className="text-xs text-[#949C9E]">
                 {t("signals.showOriginal")}
               </p>
             </Link>
             <div className="flex cursor-pointer items-center gap-1 text-xs text-[#617178]">
-              <div className="h-3 w-3 bg-[url(/images/signal/share.svg)] bg-contain"></div>
+              <Share2 size={12} />
               <Poster>
                 <p className="relative pl-2 before:absolute before:left-0 before:top-1/2 before:h-[4px] before:w-[4px] before:-translate-y-1/2 before:rounded-full before:bg-white before:content-['']">
                   {dayjs(signal.signalTime).format("YYYY/MM/DD HH:mm:ss")}

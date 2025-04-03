@@ -10,7 +10,6 @@ import {
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import React, { useEffect, useState } from "react";
-import { AngleIcon } from "@/components/ui/icon";
 import {
   type TweetInfo,
   type TweetUsers,
@@ -24,7 +23,12 @@ import { LoadingMoreBtn } from "@/app/signal-catcher/_components/loading-more-bt
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useTranslations } from "next-intl";
 import { Skeleton } from "@/components/ui/skeleton";
-import { LoaderCircle } from "lucide-react";
+import {
+  BellMinus,
+  ChevronLeft,
+  ChevronRight,
+  LoaderCircle,
+} from "lucide-react";
 
 type Props = {
   getFollowedListAction: () => Promise<ServerResult>;
@@ -209,8 +213,7 @@ export function MyFollowed({
                   </Avatar>
                 ))}
               </div>
-
-              <AngleIcon className="h-4 w-2 fill-black stroke-[#494949]" />
+              <ChevronRight color="#494949" />
             </div>
           </div>
           {pageLoading && tweetList.length === 0 ? (
@@ -246,10 +249,11 @@ export function MyFollowed({
         </div>
       ) : (
         <div className="p-5">
-          <div className="flex items-center gap-3 py-4">
-            <div className="cursor-pointer" onClick={() => setShowTable(false)}>
-              <AngleIcon className="h-4 w-2 rotate-180 fill-black stroke-[#fff]" />
-            </div>
+          <div
+            className="flex cursor-pointer items-center gap-1 py-4"
+            onClick={() => setShowTable(false)}
+          >
+            <ChevronLeft />
             <p>{t("signals.kol.myKol")}</p>
           </div>
           {tableDataLoading ? (
@@ -285,11 +289,12 @@ export function MyFollowed({
                     </TableCell>
                     <TableCell>
                       <Button
-                        size="sm"
-                        variant="secondary"
+                        variant="outline"
+                        className="justify-start gap-2 rounded-xl"
                         onClick={() => handleRemoveFollow(data.tweetUser.id)}
                         disabled={tableDataLoading}
                       >
+                        <BellMinus className="fill-text-accent" />
                         {t("signals.kol.removeKol")}
                       </Button>
                     </TableCell>
