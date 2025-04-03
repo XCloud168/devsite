@@ -184,14 +184,14 @@ export function FeaturedCard({
               </div>
               <div className="flex items-center gap-2">
                 <p className="font-bold">{signal.project.symbol}</p>
-                {signal.times === "0" && (
+                {signal.times === "1" && (
                   <div className="rounded-full bg-[#F4B31C] text-black">
                     <p className="scale-75 text-xs">
                       {t("signals.signal.firstMention")}
                     </p>
                   </div>
                 )}
-                {parseInt(signal.times) > 2 && (
+                {parseInt(signal.times) >= 3 && (
                   <div className="rounded-full bg-primary text-black">
                     <p className="scale-75 text-xs">
                       {t("signals.signal.repeatedMentions")}
