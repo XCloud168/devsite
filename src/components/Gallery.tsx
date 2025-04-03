@@ -30,7 +30,7 @@ export default function ImageGallery({ images, className = "" }: GalleryProps) {
             <img
               src={image}
               alt={`Thumbnail ${idx}`}
-              className="max-h-[200px] w-full cursor-pointer rounded-lg object-cover shadow-md"
+              className="w-full cursor-pointer rounded-lg object-cover shadow-md"
             />
           </div>
         ))}
