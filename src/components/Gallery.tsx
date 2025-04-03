@@ -9,42 +9,32 @@ import Thumbnails from "yet-another-react-lightbox/plugins/thumbnails";
 
 type GalleryProps = {
   images: string[];
-  imageHeight?: number;
   className?: string;
 };
 
-export default function ImageGallery({
-  images,
-  imageHeight = 200,
-  className = "",
-}: GalleryProps) {
+export default function ImageGallery({ images, className = "" }: GalleryProps) {
   const [index, setIndex] = useState<number | null>(null);
 
-  // 响应式 Masonry 网格
   const breakpointColumns = {
-    default: 4, // 默认 4 列
-    1024: 3, // 1024px 以下 3 列
-    768: 2, // 768px 以下 2 列
-    480: 1, // 480px 以下 1 列
+    default: 4,
+    1024: 3,
+    768: 2,
+    480: 1,
   };
 
   return (
     <div className={className}>
-      {/* 瀑布流布局 */}
       <Masonry breakpointCols={breakpointColumns} className="flex gap-4">
         {images.map((image, idx) => (
           <div key={idx} className="mb-4" onClick={() => setIndex(idx)}>
             <img
               src={image}
               alt={`Thumbnail ${idx}`}
-              className="cursor-pointer rounded-lg object-cover shadow-md"
-              style={{ height: `${imageHeight}px`, width: "100%" }}
+              className="max-h-[200px] w-full cursor-pointer rounded-lg object-cover shadow-md"
             />
           </div>
         ))}
       </Masonry>
-
-      {/* 预览 Lightbox */}
       {index !== null && (
         <Lightbox
           slides={images.map((src) => ({ src }))}
