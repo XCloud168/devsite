@@ -130,8 +130,8 @@ export function FeaturedList({ getSignalListAction, menuInfo }: Props) {
     }
   };
   const dynamicHeight: number = useMemo(() => {
-    if (menuInfo.entityId) return 300;
-    return 230;
+    if (menuInfo.entityId) return 320;
+    return 260;
   }, [menuInfo]);
   return (
     <div

@@ -76,7 +76,7 @@ export function KolList({
     ),
   };
   return (
-    <div className="scroll-container h-[calc(100vh-124px)] overflow-y-scroll scrollbar-thin scrollbar-track-transparent scrollbar-thumb-secondary">
+    <div className="scroll-container h-[calc(100vh-200px)] overflow-y-scroll scrollbar-thin scrollbar-track-transparent scrollbar-thumb-secondary">
       {componentsMap[menu.value]}
     </div>
   );
