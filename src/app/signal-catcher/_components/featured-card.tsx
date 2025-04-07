@@ -240,7 +240,7 @@ export function FeaturedCard({
                 </div>
               ) : null}
               <div className="">
-                <p className="mb-2 text-xs opacity-0"></p>
+                <p className="mb-2 text-xs opacity-0">&nbsp;</p>
                 <div className="flex cursor-pointer items-center gap-1 hover:scale-105">
                   <div className="h-4 w-4">
                     <SwapIcon className="fill-[#1F72E5] dark:fill-[#FFFFA7]" />
