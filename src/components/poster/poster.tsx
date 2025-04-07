@@ -69,7 +69,7 @@ export default function Poster({ children }: { children: ReactNode }) {
                   />
                 </div>
                 <p className="text-xs text-white/80">
-                  Web3 Major Investment Signal Catcher!
+                  {t("signals.share.slogan")}
                 </p>
               </div>
               <QRCode text={window.location.href} width={60} />
