@@ -320,7 +320,8 @@
         "share": {
             "title": "分享即财富！",
             "content": "越多好友，越多机会!",
-            "shareImg": "分享图片"
+            "shareImg": "分享图片",
+            "slogan": "Web3重大投资消息捕获器！"
         },
         "kol": {
             "followers": "粉丝",
