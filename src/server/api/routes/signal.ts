@@ -13,7 +13,7 @@ import {
   tweetInfo,
   tweetUsers,
 } from "@/server/db/schema";
-import { and, count, eq, inArray, isNotNull, lte, sql } from "drizzle-orm";
+import { and, count, eq, inArray, isNotNull, lte, sql, asc } from "drizzle-orm";
 import { getUserProfile } from "./auth";
 
 /**
@@ -328,6 +328,7 @@ export async function getSignalEntitiesByCategory(categoryId: string) {
           break;
       }
     }
+    tags = tags.sort((a, b) => a.name.localeCompare(b.name));
     return tags;
   });
 }
