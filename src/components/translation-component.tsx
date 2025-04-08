@@ -19,6 +19,10 @@ const LOCALE_DISPLAY_NAME = {
   en: "English",
 };
 
+const localeEquals = (a: string, b: string) => {
+  return a === b || a.replace("zh-CN", "zh") === b.replace("zh-CN", "zh");
+};
+
 const TranslationComponent: React.FC<TranslationComponentProps> = ({
   lang,
   content,
@@ -106,7 +110,7 @@ const TranslationComponent: React.FC<TranslationComponentProps> = ({
             </Button>
           )}
 
-          {currentLocale != sourceLanguage && (
+          {!localeEquals(currentLocale, sourceLanguage) && (
             <Button
               variant="link"
               onClick={handleTranslate}
