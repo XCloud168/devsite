@@ -1,9 +1,9 @@
 {
     "home": {},
     "metadata": {
-        "siteName": "DevSite",
-        "title": "我的博客",
-        "description": "个人博客网站"
+        "siteName": "Masbate",
+        "title": "Masbate | AI驱动的Web3投资分析平台，提升投资成功率",
+        "description": "Masbate 是一个AI驱动的Web3投资分析平台，通过智能分析Web3 KOL喊单质量，提供即时市场资讯，7x24小时捕捉精准投资信号，帮助用户实现高效投资决策，打造全方位的投资闭环。"
     },
     "navigation": {
         "signal-catcher": "信号捕手",
@@ -37,7 +37,8 @@
         "loadMore": "加载更多",
         "share": "分享",
         "saveImage": "保存图片",
-        "search": "搜索"
+        "search": "搜索",
+        "more": "更多"
     },
     "Error": {
         "pageNotFound": "页面未找到",

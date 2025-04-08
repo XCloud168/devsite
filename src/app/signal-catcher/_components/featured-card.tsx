@@ -8,7 +8,7 @@ import { type TweetInfo } from "@/server/db/schemas/tweet";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useTranslations } from "next-intl";
 import TranslationComponent from "@/components/translation-component";
-import { NegativeIcon, PositiveIcon, SwapIcon } from "@/components/ui/icon";
+import { NegativeIcon, PositiveIcon } from "@/components/ui/icon";
 import Poster from "@/components/poster/poster";
 import Gallery from "@/components/Gallery";
 import { Link as Link2, Share2 } from "lucide-react";
@@ -239,18 +239,18 @@ export function FeaturedCard({
                   </div>
                 </div>
               ) : null}
-              <div className="">
-                <p className="mb-2 text-xs opacity-0">&nbsp;</p>
-                <div className="flex cursor-pointer items-center gap-1 hover:scale-105">
-                  <div className="h-4 w-4">
-                    <SwapIcon className="fill-[#1F72E5] dark:fill-[#FFFFA7]" />
-                  </div>
-                  <p className="text-[#1F72E5] dark:text-[#FFFFA7]">
-                    {" "}
-                    {t("signals.signal.quickSwap")}
-                  </p>
-                </div>
-              </div>
+              {/*<div className="">*/}
+              {/*  <p className="mb-2 text-xs opacity-0">&nbsp;</p>*/}
+              {/*  <div className="flex cursor-pointer items-center gap-1 hover:scale-105">*/}
+              {/*    <div className="h-4 w-4">*/}
+              {/*      <SwapIcon className="fill-[#1F72E5] dark:fill-[#FFFFA7]" />*/}
+              {/*    </div>*/}
+              {/*    <p className="text-[#1F72E5] dark:text-[#FFFFA7]">*/}
+              {/*      {" "}*/}
+              {/*      {t("signals.signal.quickSwap")}*/}
+              {/*    </p>*/}
+              {/*  </div>*/}
+              {/*</div>*/}
             </div>
             {signal.hitKOLs &&
               signal.hitKOLs.length > 0 &&

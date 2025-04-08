@@ -1,9 +1,9 @@
 {
     "home": {},
     "metadata": {
-        "siteName": "DevSite",
-        "title": "My Blog",
-        "description": "Personal Blog Website"
+        "siteName": "Masbate",
+        "title": "Masbate | AI-powered Web3 Investment Analysis Platform to Enhance Success Rates",
+        "description": "Masbate is an AI-driven Web3 investment analysis platform that evaluates Web3 KOL call quality, provides real-time market insights, and captures accurate investment signals 24/7 to help users make efficient decisions and create a comprehensive investment loop."
     },
     "navigation": {
         "signal-catcher": "Signal Catcher",
@@ -37,7 +37,8 @@
         "loadMore": "More Data",
         "share": "Share",
         "saveImage": "Save Image",
-        "search": "Search"
+        "search": "Search",
+        "more": "More"
     },
     "Error": {
         "pageNotFound": "Page Not Found",

@@ -8,6 +8,7 @@ import { useTranslations } from "next-intl";
 import { type SignalsCategory } from "@/server/db/schemas/signal";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { MultiSelect } from "@/components/MultiSelect";
 interface Tag {
   id: string;
   name: string;
@@ -63,11 +64,26 @@ export function FeaturedBanner({
       providerType: SIGNAL_PROVIDER_TYPE;
     }[]
   >([]);
+
+  const [selectedValues, setSelectedValues] = useState<string[]>([]);
+
   const handleChangeCategory = async (id: string) => {
     if (getTagListAction) {
       const response = await getTagListAction(id);
       setCurrentTagList(response.data);
       setTagLoading(false);
+      setSelectedValues(
+        response.data
+          .slice(0, Math.min(5, response.data.length))
+          .map(
+            (opt: {
+              id: string;
+              logo: string;
+              name: string;
+              providerType: SIGNAL_PROVIDER_TYPE;
+            }) => opt.id,
+          ),
+      );
     }
   };
 
@@ -200,7 +216,7 @@ export function FeaturedBanner({
         </div>
       </div>
 
-      <div className="px-5 pt-3">
+      <div className="flex px-5 pt-3">
         {tagLoading ? (
           <Skeleton className="h-10 w-full" />
         ) : (
@@ -220,22 +236,36 @@ export function FeaturedBanner({
             }}
           >
             <TabsList className="flex h-auto flex-wrap justify-start gap-3 bg-transparent">
-              {currentTagList.map((tag) => (
-                <TabsTrigger
-                  key={tag.id}
-                  value={tag.id}
-                  className="flex w-fit justify-start gap-1 rounded-full bg-white/50 py-1.5 pl-1.5 pr-2 dark:bg-[#161C25]"
-                >
-                  <Avatar className="h-5 w-5 rounded-full">
-                    <AvatarImage src={tag.logo ?? ""} />
-                    <AvatarFallback></AvatarFallback>
-                  </Avatar>
-                  <p>{tag.name}</p>
-                </TabsTrigger>
-              ))}
+              {currentTagList
+                .filter((tag) => selectedValues.includes(tag.id))
+                .map((tag) => (
+                  <TabsTrigger
+                    key={tag.id}
+                    value={tag.id}
+                    className="flex w-fit justify-start gap-1 rounded-full bg-white/50 py-1.5 pl-1.5 pr-2 dark:bg-[#161C25]"
+                  >
+                    <Avatar className="h-5 w-5 rounded-full">
+                      <AvatarImage src={tag.logo ?? ""} />
+                      <AvatarFallback></AvatarFallback>
+                    </Avatar>
+                    <p>{tag.name}</p>
+                  </TabsTrigger>
+                ))}
             </TabsList>
           </Tabs>
         )}
+        {!tagLoading ? (
+          <MultiSelect
+            options={currentTagList.map((item) => ({
+              value: item.id,
+              label: item.name,
+            }))}
+            value={selectedValues}
+            onChangeAction={setSelectedValues} // 使用 onChangeAction
+            maxSelections={5}
+            placeholder={t("common.more")}
+          />
+        ) : null}
       </div>
       {selectedTagId !== "" ? (
         <div className="relative mx-5 my-3 rounded-xl bg-white/50 py-2 dark:bg-[#161C25]">
