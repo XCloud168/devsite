@@ -11,8 +11,8 @@ import {
 } from "@/components/ui/card";
 import { PRICING_PLANS } from "@/lib/constants";
 import { type PLAN_TYPE } from "@/types/constants";
-import { PaymentDialog } from "./_components/payment-dialog";
 import { getTranslations } from "next-intl/server";
+import { PaymentDialog } from "./_components/payment-dialog";
 
 export default async function PricingPage() {
   const t = await getTranslations("pricing");
@@ -35,14 +35,14 @@ export default async function PricingPage() {
               </CardTitle>
               <CardDescription>
                 {plan.originalPrice !== plan.price ? (
-                  <div className="flex items-baseline gap-2">
+                  <div className="flex flex-wrap items-baseline gap-2">
                     <span className="text-2xl font-bold text-black dark:text-white">
                       {plan.price} USDT
                     </span>
                     <span className="text-sm text-muted-foreground line-through">
                       {plan.originalPrice} USDT
                     </span>
-                    <Badge variant="secondary" className="ml-2">
+                    <Badge variant="destructive" className="ml-2">
                       {t("save")}{" "}
                       {Math.round((1 - plan.price / plan.originalPrice) * 100)}%
                     </Badge>

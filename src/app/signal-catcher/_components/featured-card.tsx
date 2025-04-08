@@ -80,7 +80,8 @@ export function FeaturedCard({
       </div>
       {signal.hitKOLs.length <= 5 ? (
         <p className="text-xs text-[#949C9E]">
-          {signal.hitKOLs.map((item) => item.name).join(",") +
+          {signal.hitKOLs.map((item) => item.name).join(", ") +
+            " " +
             signal.hitKOLs.length +
             t("signals.signal.mentionAbove") +
             " " +
@@ -91,7 +92,8 @@ export function FeaturedCard({
           {signal.hitKOLs
             .slice(0, 5)
             .map((item) => item.name)
-            .join(",") +
+            .join(", ") +
+            " " +
             t("signals.signal.over") +
             signal.hitKOLs.length +
             t("signals.signal.mentionAbove") +
@@ -239,7 +241,7 @@ export function FeaturedCard({
                   </div>
                 </div>
               ) : null}
-              <div className="">
+              {/* <div className="">
                 <p className="mb-2 text-xs opacity-0">&nbsp;</p>
                 <div className="flex cursor-pointer items-center gap-1 hover:scale-105">
                   <div className="h-4 w-4">
@@ -250,7 +252,7 @@ export function FeaturedCard({
                     {t("signals.signal.quickSwap")}
                   </p>
                 </div>
-              </div>
+              </div> */}
             </div>
             {signal.hitKOLs &&
               signal.hitKOLs.length > 0 &&
