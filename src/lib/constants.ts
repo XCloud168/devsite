@@ -54,18 +54,18 @@ export const FEE_CONFIG: IFeeConfig = {
 export const PRICING_PLANS = {
   monthly: {
     id: "monthly",
-    price: 10,
-    originalPrice: 10,
+    price: 49.9,
+    originalPrice: 49.9,
   },
   quarterly: {
     id: "quarterly",
-    price: 20,
-    originalPrice: 30,
+    price: 127.5,
+    originalPrice: 150,
   },
   yearly: {
     id: "yearly",
-    price: 30,
-    originalPrice: 90,
+    price: 449.5,
+    originalPrice: 599,
   },
 };
 

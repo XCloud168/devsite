@@ -35,6 +35,9 @@ export default async function RootLayout({
 
   return (
     <html suppressHydrationWarning lang={locale}>
+      <head>
+        <link rel="icon" href="/images/favicon.png" type="image/png" />
+      </head>
       <body
         suppressHydrationWarning
         className={`${geistSans.variable} ${geistMono.variable} min-h-screen antialiased`}
