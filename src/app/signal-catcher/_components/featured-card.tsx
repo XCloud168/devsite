@@ -1,17 +1,22 @@
 "use client";
 
-import Link from "next/link";
-import React, { useState } from "react";
-import { type Projects, type Signals } from "@/server/db/schemas/signal";
-import dayjs from "dayjs";
-import { type TweetInfo } from "@/server/db/schemas/tweet";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { useTranslations } from "next-intl";
-import TranslationComponent from "@/components/translation-component";
-import { NegativeIcon, PositiveIcon, SwapIcon } from "@/components/ui/icon";
-import Poster from "@/components/poster/poster";
 import Gallery from "@/components/Gallery";
+import Poster from "@/components/poster/poster";
+import TranslationComponent from "@/components/translation-component";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { NegativeIcon, PositiveIcon } from "@/components/ui/icon";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { type Projects, type Signals } from "@/server/db/schemas/signal";
+import { type TweetInfo } from "@/server/db/schemas/tweet";
+import dayjs from "dayjs";
 import { Link as Link2, Share2 } from "lucide-react";
+import { useTranslations } from "next-intl";
+import Link from "next/link";
+import { useState } from "react";
 
 type Props = {
   signal: SignalItems;
@@ -103,6 +108,36 @@ export function FeaturedCard({
       )}
     </div>
   );
+
+  const contractAddresses = signal.project
+    ? [
+        {
+          chain: "SOL",
+          address: signal.project.solContract,
+        },
+        {
+          chain: "ETH",
+          address: signal.project.ethContract,
+        },
+        {
+          chain: "BSC",
+          address: signal.project.bscContract,
+        },
+        {
+          chain: "Tron",
+          address: signal.project.tronContract,
+        },
+        {
+          chain: "BASE",
+          address: signal.project.baseContract,
+        },
+        {
+          chain: "Blast",
+          address: signal.project.blastContract,
+        },
+      ].filter((address) => address.address !== "")
+    : [];
+
   return (
     <div
       className="grid grid-cols-1 gap-1 overflow-hidden px-5"
@@ -185,7 +220,26 @@ export function FeaturedCard({
                 </div>
               </div>
               <div className="flex items-center gap-2">
-                <p className="font-bold">{signal.project.symbol}</p>
+                {contractAddresses && contractAddresses.length > 0 ? (
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <p className="cursor-pointer font-bold">
+                        {signal.project.symbol}
+                      </p>
+                    </PopoverTrigger>
+                    <PopoverContent className="max-w-xs p-2">
+                      <ul className="break-words">
+                        {contractAddresses.map((address, index) => (
+                          <li key={index}>
+                            {address.chain}: {address.address}
+                          </li>
+                        ))}
+                      </ul>
+                    </PopoverContent>
+                  </Popover>
+                ) : (
+                  <p className="font-bold">{signal.project.symbol}</p>
+                )}
                 {signal.times === "1" && (
                   <div className="rounded-full bg-[#F4B31C] text-black">
                     <p className="scale-75 text-xs">
