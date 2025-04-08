@@ -103,7 +103,9 @@ export function FeaturedBanner({
   };
   const riseRate = useMemo(() => {
     if (tagData?.riseCount && tagData?.signalsCount) {
-      return `${(tagData?.riseCount / tagData?.signalsCount) * 100}%`;
+      return `${((tagData?.riseCount / tagData?.signalsCount) * 100).toFixed(
+        2,
+      )}%`;
     }
     return "--";
   }, [tagData]);

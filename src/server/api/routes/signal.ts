@@ -379,8 +379,12 @@ export async function getTagStatistics(
             name: exchange.name,
             logo: exchange.logo,
             signalsCount: count(),
-            riseCount: count(sql`${announcement.highRate24H}::numeric > 0`),
-            fallCount: count(sql`${announcement.lowRate24H}::numeric < 0`),
+            riseCount: count(
+              sql`CASE WHEN ${announcement.highRate24H}::numeric > 0 THEN 1 ELSE NULL END`,
+            ),
+            fallCount: count(
+              sql`CASE WHEN ${announcement.lowRate24H}::numeric < 0 THEN 1 ELSE NULL END`,
+            ),
             avgRiseRate: sql`ROUND(AVG(${announcement.highRate24H}), 2)`,
             avgFallRate: sql`ROUND(AVG(${announcement.lowRate24H}), 2)`,
             projectIds: sql`COALESCE(jsonb_agg(DISTINCT ${announcement.projectId}) FILTER (WHERE ${announcement.highRate24H}::numeric > 0), jsonb '[]')`,
@@ -406,8 +410,12 @@ export async function getTagStatistics(
             name: newsEntity.name,
             logo: newsEntity.logo,
             signalsCount: count(),
-            riseCount: count(sql`${news.highRate24H}::numeric > 0`),
-            fallCount: count(sql`${news.lowRate24H}::numeric < 0`),
+            riseCount: count(
+              sql`CASE WHEN ${news.highRate24H}::numeric > 0 THEN 1 ELSE NULL END`,
+            ),
+            fallCount: count(
+              sql`CASE WHEN ${news.lowRate24H}::numeric < 0 THEN 1 ELSE NULL END`,
+            ),
             avgRiseRate: sql`ROUND(AVG(${news.highRate24H}), 2)`,
             avgFallRate: sql`ROUND(AVG(${news.lowRate24H}), 2)`,
             projectIds: sql`COALESCE(jsonb_agg(DISTINCT ${news.projectId}) FILTER (WHERE ${news.highRate24H}::numeric > 0), jsonb '[]')`,
@@ -433,8 +441,12 @@ export async function getTagStatistics(
             name: tweetUsers.name,
             logo: tweetUsers.avatar,
             signalsCount: count(),
-            riseCount: count(sql`${tweetInfo.highRate24H}::numeric > 0`),
-            fallCount: count(sql`${tweetInfo.lowRate24H}::numeric < 0`),
+            riseCount: count(
+              sql`CASE WHEN ${tweetInfo.highRate24H}::numeric > 0 THEN 1 ELSE NULL END`,
+            ),
+            fallCount: count(
+              sql`CASE WHEN ${tweetInfo.lowRate24H}::numeric < 0 THEN 1 ELSE NULL END`,
+            ),
             avgRiseRate: sql`ROUND(AVG(${tweetInfo.highRate24H}), 2)`,
             avgFallRate: sql`ROUND(AVG(${tweetInfo.lowRate24H}), 2)`,
           })
