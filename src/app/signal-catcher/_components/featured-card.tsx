@@ -135,7 +135,7 @@ export function FeaturedCard({
           chain: "Blast",
           address: signal.project.blastContract,
         },
-      ].filter((address) => address.address !== "")
+      ].filter((contract) => contract.address && contract.address.trim() !== "")
     : [];
 
   return (
