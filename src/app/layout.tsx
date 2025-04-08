@@ -4,8 +4,8 @@ import { QueryProvider } from "@/providers/query-provider";
 import { NextIntlClientProvider } from "next-intl";
 import { getLocale, getMessages, getTranslations } from "next-intl/server";
 import { Geist, Geist_Mono } from "next/font/google";
+import { headers } from "next/headers";
 import "./globals.css";
-import { env } from "@/env";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -17,7 +17,17 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-export async function generateMetadata() {
+type Props = {
+  params: { slug: string[] };
+};
+
+export async function generateMetadata({ params }: Props) {
+  const headersList = await headers();
+  const host = headersList.get("host");
+  const proto = headersList.get("x-forwarded-proto") || "http";
+  const pathname = params.slug ? `/${params.slug.join("/")}` : "";
+  const currentUrl = `${proto}://${host}${pathname}`;
+
   const locale = await getLocale();
   const t = await getTranslations({ locale, namespace: "metadata" });
   return {
@@ -34,15 +44,16 @@ export async function generateMetadata() {
     ],
     title: t("title"),
     description: t("description"),
-    metadataBase: env.NEXTAUTH_URL,
+    metadataBase: new URL(`${proto}://${host}`),
     openGraph: {
       title: t("title"),
       description: t("description"),
-      url: env.NEXTAUTH_URL,
+      url: currentUrl,
       siteName: t("title"),
+      type: "website",
       images: [
         {
-          url: env.NEXTAUTH_URL + "/images/userCenter/sharePosterBg.png",
+          url: `${proto}://${host}/images/share/shareImg.jpg`,
           width: 1200,
           height: 630,
         },
@@ -53,11 +64,11 @@ export async function generateMetadata() {
       title: t("title"),
       description: t("description"),
       // @ts-ignore
-      url: env.NEXTAUTH_URL,
-      siteName: t("title"),
+      url: currentUrl,
+      site: t("title"),
       images: [
         {
-          url: env.NEXTAUTH_URL + "/images/userCenter/sharePosterBg.png",
+          url: `${proto}://${host}/images/share/shareImg.jpg`,
           width: 1200,
           height: 630,
         },
