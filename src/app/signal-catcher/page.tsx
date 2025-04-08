@@ -146,6 +146,7 @@ export default async function SignalPage() {
               getTagListAction={getSignalTagsByCode}
               getSignalCategoryAction={getSignalCategory}
               getTagDataAction={getTagData}
+              isMember={isMember}
             />
             <div className="fixed bottom-0 z-[1] h-[438px] w-full bg-[url(/images/signal/featured-bg.svg)] bg-contain bg-no-repeat"></div>
           </div>
