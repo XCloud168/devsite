@@ -342,6 +342,7 @@
         "signal": {
             "curatedSignals": "Curated Signals",
             "notVip": "Non-VIP users can't access 24h real-time data",
+            "isVip": "Faster&Sharper access to major Web3 signals!",
             "quickSwap": "Quick Swap",
             "mentionAbove": "KOL mentioned above",
             "over": "Over",

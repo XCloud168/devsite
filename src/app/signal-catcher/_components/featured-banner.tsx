@@ -41,6 +41,7 @@ interface Props {
     providerType: SIGNAL_PROVIDER_TYPE,
     entityId: string,
   ) => Promise<ServerResult>;
+  isMember?: boolean | null;
 }
 
 export function FeaturedBanner({
@@ -48,6 +49,7 @@ export function FeaturedBanner({
   getTagListAction,
   getSignalCategoryAction,
   getTagDataAction,
+  isMember,
 }: Props) {
   const t = useTranslations();
 
@@ -171,7 +173,7 @@ export function FeaturedBanner({
       <div className="flex items-center gap-1 p-5">
         <p className="font-bold">{t("signals.signal.curatedSignals")}</p>
         <p className="text-xs text-black/50 dark:text-white/50">
-          *{t("signals.signal.notVip")}
+          *{!isMember ? t("signals.signal.notVip") : t("signals.signal.isVip")}
         </p>
       </div>
       <div className="relative border-b px-5">

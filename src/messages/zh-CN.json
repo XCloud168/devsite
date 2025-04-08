@@ -342,6 +342,7 @@
         "signal": {
             "curatedSignals": "精选信号",
             "notVip": "非VIP无法查看24H内实时数据",
+            "isVip": "更快、更精准的获取 Web3 重大投资信号！",
             "quickSwap": "快捷交易",
             "mentionAbove": "位KOL提到了",
             "over": "超过",
