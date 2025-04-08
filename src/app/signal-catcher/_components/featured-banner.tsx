@@ -263,8 +263,7 @@ export function FeaturedBanner({
               label: item.name,
             }))}
             value={selectedValues}
-            onChangeAction={setSelectedValues} // 使用 onChangeAction
-            maxSelections={5}
+            onChangeAction={setSelectedValues}
             placeholder={t("common.more")}
           />
         ) : null}
