@@ -119,6 +119,7 @@ export function KolCard({
         {/*<p className="mb-1.5 px-3 pt-3">{tweet.content}</p>*/}
         <div className="">
           <TranslationComponent
+            lang={tweet.lang}
             content={tweet.content ?? ""}
             onTranslateSuccess={(content: string) => {
               setTranslatedContent(content);

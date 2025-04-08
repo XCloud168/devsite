@@ -8,7 +8,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { Button } from "./ui/button";
 
 interface TranslationComponentProps {
-  lang?: string;
+  lang?: string | null;
   content: string;
   onTranslateSuccess?: (content: string) => void;
 }
@@ -17,6 +17,10 @@ const LOCALE_DISPLAY_NAME = {
   zh: "中文",
   "zh-CN": "中文",
   en: "English",
+};
+
+const localeEquals = (a: string, b: string) => {
+  return a === b || a.replace("zh-CN", "zh") === b.replace("zh-CN", "zh");
 };
 
 const TranslationComponent: React.FC<TranslationComponentProps> = ({
@@ -106,7 +110,7 @@ const TranslationComponent: React.FC<TranslationComponentProps> = ({
             </Button>
           )}
 
-          {currentLocale != sourceLanguage && (
+          {!localeEquals(currentLocale, sourceLanguage) && (
             <Button
               variant="link"
               onClick={handleTranslate}
