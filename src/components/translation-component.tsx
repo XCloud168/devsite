@@ -8,7 +8,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { Button } from "./ui/button";
 
 interface TranslationComponentProps {
-  lang?: string;
+  lang?: string | null;
   content: string;
   onTranslateSuccess?: (content: string) => void;
 }
