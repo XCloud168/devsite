@@ -53,19 +53,19 @@ export function KolPoint({
     setCurrentPage: SetState<number>,
     setPageLoading: SetState<boolean>,
     getTweetListAction: FetchTweetListAction,
+    showPageLoading = true,
   ) => {
-    setPageLoading(true);
+    if (showPageLoading) setPageLoading(true);
     const response = await getTweetListAction(page, {
       followed: false,
       hasContractAddress,
     });
-
     setTweetList((prev) =>
       page === 1 ? response.data.items : prev.concat(response.data.items),
     );
     setHasNext(response.data.pagination.hasNextPage);
     setCurrentPage(response.data.pagination.currentPage);
-    setPageLoading(false);
+    if (showPageLoading) setPageLoading(false);
   };
 
   const changeHasContractAddress = (flag: boolean) => {
@@ -106,6 +106,23 @@ export function KolPoint({
       );
     }
   };
+  useEffect(() => {
+    const interval = 45 * 1000;
+    const timer = setInterval(() => {
+      fetchTweetList(
+        1,
+        true,
+        setTweetList,
+        setHasNext,
+        setCurrentPage,
+        setPageLoading,
+        getTweetListAction,
+        false,
+      );
+    }, interval);
+    return () => clearInterval(timer);
+  }, [getTweetListAction]);
+
   return (
     <div className="p-3 md:p-5">
       <div className="ml-2 mt-2 flex h-14 w-[240px] items-center justify-between border px-6">

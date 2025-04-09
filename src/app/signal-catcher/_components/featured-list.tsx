@@ -79,8 +79,9 @@ export function FeaturedList({ getSignalListAction, menuInfo }: Props) {
     getSignalListAction?: FetchSignalListAction,
     providerType?: SIGNAL_PROVIDER_TYPE,
     entityId?: string,
+    showPageLoading = true,
   ) => {
-    setPageLoading(true);
+    if (showPageLoading) setPageLoading(true);
     if (getSignalListAction) {
       const response = await getSignalListAction(page, {
         categoryId,
@@ -92,7 +93,7 @@ export function FeaturedList({ getSignalListAction, menuInfo }: Props) {
       );
       setHasNext(response.data.pagination.hasNextPage);
       setCurrentPage(response.data.pagination.currentPage);
-      setPageLoading(false);
+      if (showPageLoading) setPageLoading(false);
     }
   };
 
@@ -129,6 +130,32 @@ export function FeaturedList({ getSignalListAction, menuInfo }: Props) {
       );
     }
   };
+
+  useEffect(() => {
+    const interval = 45 * 1000;
+    const timer = setInterval(() => {
+      fetchSignalList(
+        true,
+        1,
+        menuInfo.categoryId,
+        setSignalList,
+        setHasNext,
+        setCurrentPage,
+        setPageLoading,
+        getSignalListAction,
+        menuInfo.providerType,
+        menuInfo.entityId,
+        false,
+      );
+    }, interval);
+    return () => clearInterval(timer);
+  }, [
+    getSignalListAction,
+    menuInfo.categoryId,
+    menuInfo.entityId,
+    menuInfo.providerType,
+  ]);
+
   const dynamicHeight: number = useMemo(() => {
     if (menuInfo.entityId) return 330;
     return 260;

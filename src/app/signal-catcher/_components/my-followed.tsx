@@ -83,8 +83,9 @@ export function MyFollowed({
     setCurrentPage: SetState<number>,
     setPageLoading: SetState<boolean>,
     getTweetListAction: FetchTweetListAction,
+    showPageLoading = true,
   ) => {
-    setPageLoading(true);
+    if (showPageLoading) setPageLoading(true);
     const response = await getTweetListAction(page, {
       followed: true,
       hasContractAddress,
@@ -94,7 +95,7 @@ export function MyFollowed({
     );
     setHasNext(response.data.pagination.hasNextPage);
     setCurrentPage(response.data.pagination.currentPage);
-    setPageLoading(false);
+    if (showPageLoading) setPageLoading(false);
   };
   useEffect(() => {
     fetchTweetList(
@@ -138,10 +139,8 @@ export function MyFollowed({
       setTableData(response.data);
       setTableDataLoading(false);
     };
-    if (showTable) {
-      fetchData();
-    } else {
-      fetchData();
+    fetchData();
+    if (!showTable) {
       fetchTweetList(
         1,
         hasContractAddress,
@@ -168,7 +167,7 @@ export function MyFollowed({
         if (showTable) getTableData();
         else {
           fetchTweetList(
-            1,
+            currentPage + 1,
             hasContractAddress,
             setTweetList,
             setHasNext,
@@ -181,7 +180,22 @@ export function MyFollowed({
     };
     fetchData();
   };
-
+  useEffect(() => {
+    const interval = 45 * 1000;
+    const timer = setInterval(() => {
+      fetchTweetList(
+        1,
+        true,
+        setTweetList,
+        setHasNext,
+        setCurrentPage,
+        setPageLoading,
+        getTweetListAction,
+        false,
+      );
+    }, interval);
+    return () => clearInterval(timer);
+  }, [getTweetListAction]);
   return (
     <>
       {!showTable ? (
