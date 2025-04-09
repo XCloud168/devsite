@@ -185,7 +185,7 @@ export function MyFollowed({
     const timer = setInterval(() => {
       fetchTweetList(
         1,
-        true,
+        hasContractAddress,
         setTweetList,
         setHasNext,
         setCurrentPage,
