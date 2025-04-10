@@ -366,17 +366,15 @@ export async function getTagStatistics(
     switch (type) {
       case SIGNAL_PROVIDER_TYPE.ANNOUNCEMENT:
         if (filter.entityId) {
-          conditions.push(eq(announcement.exchangeId, filter.entityId));
+          conditions.push(eq(signals.entityId, filter.entityId));
         }
-        conditions.push(isNotNull(announcement.exchangeId));
-        conditions.push(isNotNull(announcement.projectId));
+        conditions.push(eq(signals.providerType, SIGNAL_PROVIDER_TYPE.ANNOUNCEMENT));
 
-        const whereClause =
-          conditions.length > 0 ? and(...conditions) : undefined;
+        const whereClause = conditions.length > 0 ? and(...conditions) : undefined;
 
         tags = await db
           .select({
-            id: announcement.exchangeId,
+            id: signals.entityId,
             name: exchange.name,
             logo: exchange.logo,
             signalsCount: count(),
@@ -388,26 +386,26 @@ export async function getTagStatistics(
             ),
             avgRiseRate: sql`ROUND(AVG(${announcement.highRate24H}), 2)`,
             avgFallRate: sql`ROUND(AVG(${announcement.lowRate24H}), 2)`,
-            projectIds: sql`COALESCE(jsonb_agg(DISTINCT ${announcement.projectId}) FILTER (WHERE ${announcement.highRate24H}::numeric > 0), jsonb '[]')`,
+            projectIds: sql`COALESCE(jsonb_agg(DISTINCT ${signals.projectId}) FILTER (WHERE ${announcement.highRate24H}::numeric > 0), jsonb '[]')`,
           })
-          .from(announcement)
-          .leftJoin(exchange, eq(announcement.exchangeId, exchange.id))
+          .from(signals)
+          .leftJoin(announcement, eq(signals.providerId, announcement.id))
+          .leftJoin(exchange, eq(signals.entityId, exchange.id))
           .where(whereClause)
-          .groupBy(announcement.exchangeId, exchange.name, exchange.logo);
+          .groupBy(signals.entityId, exchange.name, exchange.logo);
         break;
+
       case SIGNAL_PROVIDER_TYPE.NEWS:
         if (filter.entityId) {
-          conditions.push(eq(news.newsEntityId, filter.entityId));
+          conditions.push(eq(signals.entityId, filter.entityId));
         }
-        conditions.push(isNotNull(news.newsEntityId));
-        conditions.push(isNotNull(news.projectId));
+        conditions.push(eq(signals.providerType, SIGNAL_PROVIDER_TYPE.NEWS));
 
-        const newsWhereClause =
-          conditions.length > 0 ? and(...conditions) : undefined;
+        const newsWhereClause = conditions.length > 0 ? and(...conditions) : undefined;
 
         tags = await db
           .select({
-            id: news.newsEntityId,
+            id: signals.entityId,
             name: newsEntity.name,
             logo: newsEntity.logo,
             signalsCount: count(),
@@ -419,26 +417,27 @@ export async function getTagStatistics(
             ),
             avgRiseRate: sql`ROUND(AVG(${news.highRate24H}), 2)`,
             avgFallRate: sql`ROUND(AVG(${news.lowRate24H}), 2)`,
-            projectIds: sql`COALESCE(jsonb_agg(DISTINCT ${news.projectId}) FILTER (WHERE ${news.highRate24H}::numeric > 0), jsonb '[]')`,
+            projectIds: sql`COALESCE(jsonb_agg(DISTINCT ${signals.projectId}) FILTER (WHERE ${news.highRate24H}::numeric > 0), jsonb '[]')`,
           })
-          .from(news)
-          .leftJoin(newsEntity, eq(news.newsEntityId, newsEntity.id))
+          .from(signals)
+          .leftJoin(news, eq(signals.providerId, news.id))
+          .leftJoin(newsEntity, eq(signals.entityId, newsEntity.id))
           .where(newsWhereClause)
-          .groupBy(news.newsEntityId, newsEntity.name, newsEntity.logo);
+          .groupBy(signals.entityId, newsEntity.name, newsEntity.logo);
         break;
+
       case SIGNAL_PROVIDER_TYPE.TWITTER:
       default:
         if (filter.entityId) {
-          conditions.push(eq(tweetInfo.tweetUserId, filter.entityId));
+          conditions.push(eq(signals.entityId, filter.entityId));
         }
-        conditions.push(isNotNull(tweetInfo.projectId));
+        conditions.push(eq(signals.providerType, SIGNAL_PROVIDER_TYPE.TWITTER));
 
-        const tweetWhereClause =
-          conditions.length > 0 ? and(...conditions) : undefined;
+        const tweetWhereClause = conditions.length > 0 ? and(...conditions) : undefined;
 
         tags = await db
           .select({
-            id: tweetUsers.id,
+            id: signals.entityId,
             name: tweetUsers.name,
             logo: tweetUsers.avatar,
             signalsCount: count(),
@@ -451,10 +450,11 @@ export async function getTagStatistics(
             avgRiseRate: sql`ROUND(AVG(${tweetInfo.highRate24H}), 2)`,
             avgFallRate: sql`ROUND(AVG(${tweetInfo.lowRate24H}), 2)`,
           })
-          .from(tweetInfo)
-          .leftJoin(tweetUsers, eq(tweetInfo.tweetUserId, tweetUsers.id))
+          .from(signals)
+          .leftJoin(tweetInfo, eq(signals.providerId, tweetInfo.id))
+          .leftJoin(tweetUsers, eq(signals.entityId, tweetUsers.id))
           .where(tweetWhereClause)
-          .groupBy(tweetUsers.id, tweetUsers.name, tweetUsers.avatar);
+          .groupBy(signals.entityId, tweetUsers.name, tweetUsers.avatar);
         break;
     }
 
