@@ -30,8 +30,17 @@ export default async function PricingPage() {
         {Object.entries(PRICING_PLANS).map(([key, plan]) => (
           <Card key={key} className="flex flex-col">
             <CardHeader>
-              <CardTitle className="text-xl">
+              <CardTitle className="flex items-center text-xl">
                 {t(`plans.${key}.name`)}
+                {plan.originalPrice !== plan.price ? (
+                  <Badge
+                    variant="destructive"
+                    className="ml-2 bg-[#FA5B5B] dark:bg-[#F95F5F]"
+                  >
+                    {t("save")}{" "}
+                    {Math.round((1 - plan.price / plan.originalPrice) * 100)}%
+                  </Badge>
+                ) : null}
               </CardTitle>
               <CardDescription>
                 {plan.originalPrice !== plan.price ? (
@@ -42,10 +51,6 @@ export default async function PricingPage() {
                     <span className="text-sm text-muted-foreground line-through">
                       {plan.originalPrice} USDT
                     </span>
-                    <Badge variant="destructive" className="ml-2">
-                      {t("save")}{" "}
-                      {Math.round((1 - plan.price / plan.originalPrice) * 100)}%
-                    </Badge>
                   </div>
                 ) : (
                   <span className="text-2xl font-bold text-black dark:text-white">
