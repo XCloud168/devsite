@@ -13,7 +13,7 @@ import {
   tweetInfo,
   tweetUsers,
 } from "@/server/db/schema";
-import { and, count, eq, inArray, isNotNull, lte, sql, asc } from "drizzle-orm";
+import { and, count, eq, inArray, isNotNull, lte, sql } from "drizzle-orm";
 import { getUserProfile } from "./auth";
 
 /**
@@ -377,7 +377,9 @@ export async function getTagStatistics(
             id: signals.entityId,
             name: exchange.name,
             logo: exchange.logo,
-            signalsCount: count(),
+            signalsCount: count(
+              sql`CASE WHEN ${announcement.projectId} IS NOT NULL THEN 1 ELSE NULL END`,
+            ),
             riseCount: count(
               sql`CASE WHEN ${announcement.highRate24H}::numeric > 0 THEN 1 ELSE NULL END`,
             ),
@@ -408,7 +410,9 @@ export async function getTagStatistics(
             id: signals.entityId,
             name: newsEntity.name,
             logo: newsEntity.logo,
-            signalsCount: count(),
+            signalsCount: count(
+              sql`CASE WHEN ${news.projectId} IS NOT NULL THEN 1 ELSE NULL END`,
+            ),
             riseCount: count(
               sql`CASE WHEN ${news.highRate24H}::numeric > 0 THEN 1 ELSE NULL END`,
             ),
@@ -440,7 +444,9 @@ export async function getTagStatistics(
             id: signals.entityId,
             name: tweetUsers.name,
             logo: tweetUsers.avatar,
-            signalsCount: count(),
+            signalsCount: count(
+              sql`CASE WHEN ${tweetInfo.projectId} IS NOT NULL THEN 1 ELSE NULL END`,
+            ),
             riseCount: count(
               sql`CASE WHEN ${tweetInfo.highRate24H}::numeric > 0 THEN 1 ELSE NULL END`,
             ),
