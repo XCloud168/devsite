@@ -113,7 +113,6 @@ export default async function SignalPage() {
           isMobile={isMobile}
           isMember={isMember}
         />
-        <RealtimeSignal />
       </>
     );
   }
