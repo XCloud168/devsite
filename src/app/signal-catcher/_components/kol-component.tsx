@@ -34,6 +34,7 @@ type Props = {
   isMobile?: boolean;
   searchTweetUserAction: (name: string) => Promise<ServerResult>;
   isMember?: boolean | null;
+  isLogged: boolean;
 };
 export function KolComponent({
   getTweetListAction,
@@ -47,6 +48,7 @@ export function KolComponent({
   isMobile,
   searchTweetUserAction,
   isMember,
+  isLogged,
 }: Props) {
   const [kolMenu, setKolMenu] = useState<KolMenu>({
     label: "kolPoint",
@@ -72,6 +74,7 @@ export function KolComponent({
         getSignalCategoryAction={getSignalCategoryAction}
         getTagDataAction={getTagDataAction}
         isMember={isMember}
+        isLogged={isLogged}
       />
     </div>
   );

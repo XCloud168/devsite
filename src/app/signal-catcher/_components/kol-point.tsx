@@ -25,6 +25,7 @@ type Props = {
     },
   ) => Promise<ServerResult>;
   isMember?: boolean | null;
+  isLogged: boolean;
 };
 interface TweetItem extends Omit<TweetInfo, "tweetUser"> {
   tweetUser: TweetUsers & {
@@ -39,6 +40,7 @@ export function KolPoint({
   getTweetListAction,
   addFollowAction,
   isMember,
+  isLogged,
 }: Props) {
   const t = useTranslations();
   const [tweetList, setTweetList] = useState<TweetItem[]>([]);
@@ -207,6 +209,7 @@ export function KolPoint({
         tweetList.map((tweet) => (
           <div key={tweet.id} className="border-b">
             <KolCard
+              isLogged={isLogged}
               isMember={isMember}
               tweet={tweet}
               addFollowAction={addFollowAction}
@@ -224,7 +227,11 @@ export function KolPoint({
             />
             {tweet.replyTweet ? (
               <div className="mx-4 mb-4 rounded-lg border">
-                <KolCard tweet={tweet.replyTweet} isMember={isMember} />
+                <KolCard
+                  tweet={tweet.replyTweet}
+                  isMember={isMember}
+                  isLogged={isLogged}
+                />
               </div>
             ) : null}
           </div>

@@ -97,6 +97,7 @@ export default async function SignalPage() {
   const isMember =
     user?.membershipExpiredAt &&
     new Date(user?.membershipExpiredAt) > new Date();
+  console.log(!!user);
   if (isMobile) {
     return (
       <>
@@ -112,6 +113,7 @@ export default async function SignalPage() {
           getTagDataAction={getTagData}
           isMobile={isMobile}
           isMember={isMember}
+          isLogged={!!user}
         />
       </>
     );
@@ -128,6 +130,7 @@ export default async function SignalPage() {
               removeFollowAction={removeFollow}
               searchTweetUserAction={searchTweetUser}
               isMember={isMember}
+              isLogged={!!user}
             />
           </div>
         </ResizablePanel>

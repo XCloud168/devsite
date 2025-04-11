@@ -317,7 +317,7 @@ export function FeaturedBanner({
               <p className="text-xs">{t("signals.signal.24hAverageMaxGain")}</p>
               {!tabDataLoading ? (
                 <p className="text-lg font-bold text-[#1976F7] dark:text-[#F2DA18]">
-                  {!tagData?.avgRiseRate ? tagData?.avgRiseRate + "%" : "--"}
+                  {tagData?.avgRiseRate ? tagData?.avgRiseRate + "%" : "--"}
                 </p>
               ) : (
                 <div className="flex">

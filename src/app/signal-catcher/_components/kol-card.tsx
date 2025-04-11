@@ -16,6 +16,7 @@ import { getMediaList } from "@/app/signal-catcher/_components/featured-card";
 import Gallery from "@/components/Gallery";
 import { useRouter } from "next/navigation";
 import { BellPlus, BellRing, Share2, Link as Link2 } from "lucide-react";
+import { useMembership } from "@/hooks/use-membership";
 
 type Props = {
   tweet: TweetItem;
@@ -23,6 +24,7 @@ type Props = {
   showShare?: boolean;
   onFollowCallback?: (id: string) => void;
   isMember?: boolean | null;
+  isLogged: boolean;
 };
 interface TweetItem extends Omit<TweetInfo, "tweetUser"> {
   tweetUser: TweetUsers & {
@@ -39,6 +41,7 @@ export function KolCard({
   showShare,
   onFollowCallback,
   isMember,
+  isLogged,
 }: Props) {
   const router = useRouter();
   const t = useTranslations();
@@ -94,7 +97,11 @@ export function KolCard({
               className="justify-start gap-1 rounded-xl"
               onClick={() => {
                 if (!isMember) {
-                  router.push("/auth/login");
+                  if (isLogged) {
+                    toast.info(t("signals.kol.notVip"));
+                  } else {
+                    router.push("/auth/login");
+                  }
                   return;
                 }
                 setAddLoading(true);
