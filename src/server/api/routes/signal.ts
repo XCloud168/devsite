@@ -53,7 +53,7 @@ export async function getSignalsByPaginated(
     let filterTimestamp;
     const user = await getUserProfile();
     // 检查三种情况：未登录、非会员、会员过期
-    if (!user || !user.membershipExpiredAt || (user.membershipExpiredAt && new Date(user.membershipExpiredAt) < new Date())) {
+    if (!user?.membershipExpiredAt || new Date(user?.membershipExpiredAt) < new Date()) {
       // 未登录用户、非会员用户或会员过期用户返回24h前的信号
       filterTimestamp = new Date().getTime() - 24 * 60 * 60 * 1000;
     }
