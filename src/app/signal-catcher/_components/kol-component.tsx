@@ -62,6 +62,7 @@ export function KolComponent({
         searchTweetUserAction={searchTweetUserAction}
         addFollowAction={addFollowAction}
         isMember={isMember}
+        isLogged={isLogged}
       />
       <KolList
         menu={kolMenu}

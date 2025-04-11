@@ -30,6 +30,7 @@ interface KolMenuProps {
   searchTweetUserAction: (name: string) => Promise<ServerResult>;
   addFollowAction: (tweetUid: string) => Promise<ServerResult>;
   isMember?: boolean | null;
+  isLogged: boolean;
 }
 
 type UserInfo = {
@@ -45,6 +46,7 @@ export function KolBanner({
   searchTweetUserAction,
   addFollowAction,
   isMember,
+  isLogged,
 }: KolMenuProps) {
   const t = useTranslations();
   const router = useRouter();
@@ -165,6 +167,10 @@ export function KolBanner({
         className={`${menu.value === selectedMenu.value ? "border-primary font-bold text-primary" : "border-transparent font-normal text-black dark:text-foreground/80"} cursor-pointer break-keep border-b-2 pb-2 pt-2 text-center hover:text-primary md:pb-0`}
         key={menu.value}
         onClick={() => {
+          if (isLogged && !isMember) {
+            toast.info(t("signals.kol.notVip"));
+            return;
+          }
           if (!isMember && menu.value === "3") {
             router.push("/auth/login");
             return;
