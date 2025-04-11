@@ -115,7 +115,6 @@ export default function RealtimeSignal() {
 
   useEffect(() => {
     // 如果正在加载会员状态或者不是会员，则不订阅实时信号
-    console.log(isLoading, !isMember, isExpired);
     if (isLoading || !isMember || isExpired) {
       return;
     }

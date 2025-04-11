@@ -2,7 +2,7 @@
 
 import { type ServerResult } from "@/lib/server-result";
 
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { type Projects, type Signals } from "@/server/db/schemas/signal";
 import { type TweetInfo } from "@/server/db/schemas/tweet";
 import { type SetState } from "@/app/signal-catcher/_components/my-followed";
@@ -67,7 +67,7 @@ export function FeaturedList({ getSignalListAction, menuInfo }: Props) {
   const [hasNext, setHasNext] = useState<boolean>(true);
   const [pageLoading, setPageLoading] = useState<boolean>(false);
   const [currentPage, setCurrentPage] = useState<number>(1);
-
+  const scrollRef = useRef<HTMLDivElement>(null);
   const fetchSignalList = async (
     refresh: boolean,
     page: number,
@@ -132,21 +132,33 @@ export function FeaturedList({ getSignalListAction, menuInfo }: Props) {
   };
 
   useEffect(() => {
-    const interval = 45 * 1000;
+    const interval = 60 * 1000;
+    const checkNewSignals = async () => {
+      if (getSignalListAction) {
+        const response = await getSignalListAction(1, {
+          categoryId: menuInfo.categoryId,
+          ...(menuInfo.providerType !== undefined && {
+            providerType: menuInfo.providerType,
+          }),
+          ...(menuInfo.entityId !== undefined && {
+            entityId: menuInfo.entityId,
+          }),
+        });
+        const newItems = response.data.items;
+        const currentIds = signalList.map((item) => item.id);
+        const differentItems = newItems.filter(
+          (item: SignalItems) => !currentIds.includes(item.id),
+        );
+        if (differentItems.length > 0) {
+          if (scrollRef.current) {
+            scrollRef.current.scrollTo({ top: 0, behavior: "smooth" });
+          }
+        }
+      }
+    };
+
     const timer = setInterval(() => {
-      fetchSignalList(
-        true,
-        1,
-        menuInfo.categoryId,
-        setSignalList,
-        setHasNext,
-        setCurrentPage,
-        setPageLoading,
-        getSignalListAction,
-        menuInfo.providerType,
-        menuInfo.entityId,
-        false,
-      );
+      void checkNewSignals();
     }, interval);
     return () => clearInterval(timer);
   }, [
@@ -154,6 +166,7 @@ export function FeaturedList({ getSignalListAction, menuInfo }: Props) {
     menuInfo.categoryId,
     menuInfo.entityId,
     menuInfo.providerType,
+    signalList,
   ]);
 
   const dynamicHeight: number = useMemo(() => {
@@ -162,6 +175,7 @@ export function FeaturedList({ getSignalListAction, menuInfo }: Props) {
   }, [menuInfo]);
   return (
     <div
+      ref={scrollRef}
       style={{ height: `calc(100vh - ${dynamicHeight}px)` }}
       className="relative z-[5] overflow-y-scroll scrollbar-thin scrollbar-track-transparent scrollbar-thumb-secondary"
     >

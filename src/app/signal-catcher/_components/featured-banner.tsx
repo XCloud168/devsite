@@ -7,7 +7,7 @@ import type { ServerResult } from "@/lib/server-result";
 import { useTranslations } from "next-intl";
 import { type SignalsCategory } from "@/server/db/schemas/signal";
 import { Skeleton } from "@/components/ui/skeleton";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight, Loader2 } from "lucide-react";
 import { MultiSelect } from "@/components/MultiSelect";
 interface Tag {
   id: string;
@@ -58,6 +58,7 @@ export function FeaturedBanner({
   const [signalCategory, setSignalCategory] = useState<SignalsCategory[]>([]);
   const [selectedCategoryId, setSelectedCategoryId] = useState<string>("");
   const [tagData, setTagData] = useState<Tag>();
+  const [tabDataLoading, setTabDataLoading] = useState<boolean>(false);
   const [currentTagList, setCurrentTagList] = useState<
     {
       id: string;
@@ -110,10 +111,12 @@ export function FeaturedBanner({
     if (!current) return;
     const fetchData = async () => {
       if (getTagDataAction) {
+        setTabDataLoading(true);
         const response = await getTagDataAction(
           current?.providerType,
           entityId,
         );
+        setTabDataLoading(false);
         setTagData(response.data[0]);
       }
     };
@@ -230,6 +233,7 @@ export function FeaturedBanner({
             onValueChange={(event) => {
               setSelectedTagId(event);
               handleGetTagData(event);
+
               onMenuChangeAction({
                 categoryId: selectedCategoryId,
                 providerType:
@@ -275,27 +279,51 @@ export function FeaturedBanner({
           <div className="grid w-full grid-cols-4 gap-3 overflow-hidden">
             <div className="relative w-full px-3">
               <p className="text-xs">{t("signals.signal.totalTokenSignals")}</p>
-              <p className="text-lg font-bold text-[#1976F7] dark:text-[#F2DA18]">
-                {tagData?.signalsCount || "--"}
-              </p>
+              {!tabDataLoading ? (
+                <p className="text-lg font-bold text-[#1976F7] dark:text-[#F2DA18]">
+                  {tagData?.signalsCount || "--"}
+                </p>
+              ) : (
+                <div className="flex">
+                  <Loader2 className="mt-1 h-6 w-6 animate-spin text-[#1976F7] dark:text-[#F2DA18]" />
+                </div>
+              )}
             </div>
             <div className="relative w-full px-3">
               <p className="text-xs">{t("signals.signal.tokenGainCount")}</p>
-              <p className="text-lg font-bold text-[#1976F7] dark:text-[#F2DA18]">
-                {tagData?.riseCount || "--"}
-              </p>
+              {!tabDataLoading ? (
+                <p className="text-lg font-bold text-[#1976F7] dark:text-[#F2DA18]">
+                  {tagData?.riseCount || "--"}
+                </p>
+              ) : (
+                <div className="flex">
+                  <Loader2 className="mt-1 h-6 w-6 animate-spin text-[#1976F7] dark:text-[#F2DA18]" />
+                </div>
+              )}
             </div>
             <div className="relative w-full px-3">
               <p className="text-xs">{t("signals.signal.tokenGainRatio")}</p>
-              <p className="text-lg font-bold text-[#1976F7] dark:text-[#F2DA18]">
-                {riseRate}
-              </p>
+              {!tabDataLoading ? (
+                <p className="text-lg font-bold text-[#1976F7] dark:text-[#F2DA18]">
+                  {riseRate}
+                </p>
+              ) : (
+                <div className="flex">
+                  <Loader2 className="mt-1 h-6 w-6 animate-spin text-[#1976F7] dark:text-[#F2DA18]" />
+                </div>
+              )}
             </div>
             <div className="relative w-full px-3">
               <p className="text-xs">{t("signals.signal.24hAverageMaxGain")}</p>
-              <p className="text-lg font-bold text-[#1976F7] dark:text-[#F2DA18]">
-                {tagData?.avgRiseRate ? tagData?.avgRiseRate + "%" : "--"}
-              </p>
+              {!tabDataLoading ? (
+                <p className="text-lg font-bold text-[#1976F7] dark:text-[#F2DA18]">
+                  {!tagData?.avgRiseRate ? tagData?.avgRiseRate + "%" : "--"}
+                </p>
+              ) : (
+                <div className="flex">
+                  <Loader2 className="mt-1 h-6 w-6 animate-spin text-[#1976F7] dark:text-[#F2DA18]" />
+                </div>
+              )}
             </div>
           </div>
         </div>

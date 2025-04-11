@@ -71,7 +71,6 @@ export function FeaturedCard({
       return signal?.source?.newsEntity?.logo || "";
     return signal?.source?.exchange?.logo || "";
   };
-  console.log(signal);
   if (!signal.source) return null;
   const TokenItem = (className: string, signal: SignalItems) => (
     <div className={`${className} mt-4 flex gap-1`}>

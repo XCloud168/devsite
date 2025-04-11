@@ -63,6 +63,11 @@ const config = {
         sm: "calc(var(--radius) - 4px)",
       },
       keyframes: {
+        loadingBar: {
+          "0%": { transform: "translateX(-100%)" },
+          "50%": { transform: "translateX(0%)" },
+          "100%": { transform: "translateX(100%)" },
+        },
         "accordion-down": {
           from: { height: "0" },
           to: { height: "var(--radix-accordion-content-height)" },
@@ -90,6 +95,7 @@ const config = {
         "border-spin": "border-spin 4s linear infinite",
         "slide-in-from-left": "slide-in-from-left 0.3s ease-out",
         "slide-out-to-left": "slide-out-to-left 0.3s ease-in",
+        "loading-bar": "loadingBar 1.5s ease-in-out infinite",
       },
     },
   },

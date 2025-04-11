@@ -337,7 +337,8 @@
             "signal": "Signal",
             "searchTweeter": "Custom X Monitor",
             "enterTweeter": "Please enter X account",
-            "notVip": "Subscribe to VIP for custom monitoring"
+            "notVip": "Subscribe to VIP for custom monitoring",
+            "newTweetsAvailable": "New tweets available!"
         },
         "signal": {
             "curatedSignals": "Curated Signals",

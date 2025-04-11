@@ -1,7 +1,7 @@
 "use client";
 
 import { type ServerResult } from "@/lib/server-result";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { type TweetInfo, type TweetUsers } from "@/server/db/schemas/tweet";
 import {
   type FetchTweetListAction,
@@ -12,7 +12,8 @@ import { LoadingMoreBtn } from "@/app/signal-catcher/_components/loading-more-bt
 import { Skeleton } from "@/components/ui/skeleton";
 import { Switch } from "@/components/ui/switch";
 import { useTranslations } from "next-intl";
-
+import { ChevronUp } from "lucide-react";
+import { TopLoadingBar } from "@/components/TopLoadingBar";
 type Props = {
   addFollowAction: (tweetUid: string) => Promise<ServerResult>;
   getTweetListAction: (
@@ -45,6 +46,19 @@ export function KolPoint({
   const [pageLoading, setPageLoading] = useState<boolean>(false);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [hasContractAddress, setHasContractAddress] = useState<boolean>(false);
+  const [newTweets, setNewTweets] = useState<TweetItem[]>([]); // 存储新消息
+  const [showNewMessage, setShowNewMessage] = useState<boolean>(false); // 控制提示显示
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const [hasScrolled, setHasScrolled] = useState<boolean>(false);
+  useEffect(() => {
+    const scrollContainer = scrollRef.current;
+    if (!scrollContainer) return;
+    const handleScroll = () => {
+      setHasScrolled(scrollContainer.scrollTop > 0);
+    };
+    scrollContainer.addEventListener("scroll", handleScroll);
+    return () => scrollContainer.removeEventListener("scroll", handleScroll);
+  }, []);
   const fetchTweetList = async (
     page: number,
     hasContractAddress: boolean,
@@ -60,14 +74,21 @@ export function KolPoint({
       followed: false,
       hasContractAddress,
     });
-    setTweetList((prev) =>
-      page === 1 ? response.data.items : prev.concat(response.data.items),
-    );
+    setTweetList((prev) => {
+      if (page === 1) {
+        return response.data.items;
+      } else {
+        const existingIds = new Set(prev.map((item) => item.id));
+        const filteredNewItems = response.data.items.filter(
+          (item: TweetItem) => !existingIds.has(item.id),
+        );
+        return prev.concat(filteredNewItems);
+      }
+    });
     setHasNext(response.data.pagination.hasNextPage);
     setCurrentPage(response.data.pagination.currentPage);
     if (showPageLoading) setPageLoading(false);
   };
-
   const changeHasContractAddress = (flag: boolean) => {
     setHasContractAddress(flag);
     fetchTweetList(
@@ -80,7 +101,6 @@ export function KolPoint({
       getTweetListAction,
     );
   };
-
   useEffect(() => {
     fetchTweetList(
       1,
@@ -92,7 +112,6 @@ export function KolPoint({
       getTweetListAction,
     );
   }, [getTweetListAction]);
-
   const handleNextPage = () => {
     if (hasNext) {
       fetchTweetList(
@@ -108,23 +127,58 @@ export function KolPoint({
   };
   useEffect(() => {
     const interval = 45 * 1000;
-    const timer = setInterval(() => {
-      fetchTweetList(
-        1,
-        true,
-        setTweetList,
-        setHasNext,
-        setCurrentPage,
-        setPageLoading,
-        getTweetListAction,
-        false,
+    const checkNewTweets = async () => {
+      const response = await getTweetListAction(1, {
+        followed: false,
+        hasContractAddress: hasContractAddress,
+      });
+      const newItems = response.data.items;
+      const currentIds = tweetList.map((item) => item.id);
+      const differentItems = newItems.filter(
+        (item: TweetItem) => !currentIds.includes(item.id),
       );
+
+      if (differentItems.length > 0) {
+        if (!hasScrolled) {
+          setTweetList((prev) => [...differentItems, ...prev]);
+        } else {
+          setNewTweets(differentItems);
+          setShowNewMessage(true);
+        }
+      }
+    };
+    const timer = setInterval(() => {
+      void checkNewTweets();
     }, interval);
     return () => clearInterval(timer);
-  }, [getTweetListAction]);
-
+  }, [tweetList, getTweetListAction, hasContractAddress, hasScrolled]);
+  const handleNewMessageClick = () => {
+    if (scrollRef.current) {
+      scrollRef.current.scrollTo({ top: 0, behavior: "smooth" });
+      setTweetList((prev) => [...newTweets, ...prev]);
+      setShowNewMessage(false);
+      setNewTweets([]);
+    }
+  };
   return (
-    <div className="p-3 md:p-5">
+    <div
+      className="relative h-[calc(100vh-136px)] overflow-y-scroll p-3 scrollbar-thin scrollbar-track-transparent scrollbar-thumb-secondary md:p-5"
+      ref={scrollRef}
+    >
+      <TopLoadingBar loading={pageLoading} />
+      {showNewMessage && (
+        <div
+          className="sticky left-0 right-0 top-0 z-50 flex justify-center bg-transparent text-center text-white" // 使用 sticky 替代 fixed，相对于 scrollRef
+        >
+          <div
+            className="flex w-fit cursor-pointer gap-2 rounded-full border bg-card px-4 py-2 text-black dark:text-white/80"
+            onClick={handleNewMessageClick}
+          >
+            {t("signals.kol.newTweetsAvailable", { count: newTweets.length })}
+            <ChevronUp />
+          </div>
+        </div>
+      )}
       <div className="ml-2 mt-2 flex h-14 w-[240px] items-center justify-between border px-6">
         <p>{t("signals.kol.withToken")}</p>
         <div>
@@ -132,6 +186,7 @@ export function KolPoint({
             id="airplane-mode"
             checked={hasContractAddress}
             onCheckedChange={changeHasContractAddress}
+            disabled={pageLoading}
           />
         </div>
       </div>
@@ -168,7 +223,7 @@ export function KolPoint({
               }}
             />
             {tweet.replyTweet ? (
-              <div className="m-4 rounded-lg border">
+              <div className="mx-4 mb-4 rounded-lg border">
                 <KolCard tweet={tweet.replyTweet} isMember={isMember} />
               </div>
             ) : null}
