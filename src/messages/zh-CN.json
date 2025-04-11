@@ -338,7 +338,8 @@
             "searchTweeter": "自定义 X 监控",
             "enterTweeter": "请输入 X 账号",
             "notVip": "订阅 VIP，即可自定义添加监控对象",
-            "newTweetsAvailable": "有新消息！"
+            "newTweetsAvailable": "有新消息！",
+            "curatedSignals": "精选信号"
         },
         "signal": {
             "curatedSignals": "精选信号",
