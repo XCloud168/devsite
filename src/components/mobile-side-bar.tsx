@@ -23,7 +23,7 @@ export function MobileSideBar() {
   const pathname = usePathname();
   const navigation = [
     { name: t("signal-catcher"), href: "/signal-catcher" },
-    { name: t("swap"), href: "/swap" },
+    // { name: t("swap"), href: "/swap" },
     { name: t("pricing"), href: "/pricing" },
   ];
 

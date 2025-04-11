@@ -58,7 +58,9 @@ export function KolBanner({
       { label: "myKol", value: "3" },
     ];
 
-    return isMobile ? [{ label: "signal", value: "1" }, ...baseMenu] : baseMenu;
+    return isMobile
+      ? [{ label: "curatedSignals", value: "1" }, ...baseMenu]
+      : baseMenu;
   }, [isMobile]);
   const [tweetUserName, setTweetUserName] = useState<string>("");
   const [searchLoading, setSearchLoading] = useState<boolean>(false);
