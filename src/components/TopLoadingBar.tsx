@@ -40,7 +40,7 @@ export const TopLoadingBar: React.FC<TopLoadingBarProps> = ({ loading }) => {
   }, [loading]);
 
   return visible ? (
-    <div className="pointer-events-none fixed left-0 right-0 top-0 z-50 h-[3px]">
+    <div className="pointer-events-none fixed left-0 right-0 top-0 z-50 h-0.5">
       <div
         className={cn(
           "h-full transition-all duration-300",

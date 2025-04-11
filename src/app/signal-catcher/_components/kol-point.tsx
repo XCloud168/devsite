@@ -12,7 +12,7 @@ import { LoadingMoreBtn } from "@/app/signal-catcher/_components/loading-more-bt
 import { Skeleton } from "@/components/ui/skeleton";
 import { Switch } from "@/components/ui/switch";
 import { useTranslations } from "next-intl";
-import { ChevronUp } from "lucide-react";
+import { BellRing, ChevronUp } from "lucide-react";
 import { TopLoadingBar } from "@/components/TopLoadingBar";
 type Props = {
   addFollowAction: (tweetUid: string) => Promise<ServerResult>;
@@ -171,11 +171,11 @@ export function KolPoint({
           className="sticky left-0 right-0 top-0 z-50 flex justify-center bg-transparent text-center text-white" // 使用 sticky 替代 fixed，相对于 scrollRef
         >
           <div
-            className="flex w-fit cursor-pointer gap-2 rounded-full border bg-card px-4 py-2 text-black dark:text-white/80"
+            className="flex w-fit cursor-pointer items-center gap-2 rounded-full bg-card px-3 py-2 text-primary ring-1 ring-primary"
             onClick={handleNewMessageClick}
           >
+            <BellRing className="animate-bell h-5 w-5 text-primary" />
             {t("signals.kol.newTweetsAvailable", { count: newTweets.length })}
-            <ChevronUp />
           </div>
         </div>
       )}

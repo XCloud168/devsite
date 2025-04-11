@@ -63,6 +63,15 @@ const config = {
         sm: "calc(var(--radius) - 4px)",
       },
       keyframes: {
+        bell: {
+          "0%": { transform: "rotate(0deg)" },
+          "15%": { transform: "rotate(15deg)" },
+          "30%": { transform: "rotate(-10deg)" },
+          "45%": { transform: "rotate(10deg)" },
+          "60%": { transform: "rotate(-6deg)" },
+          "75%": { transform: "rotate(4deg)" },
+          "100%": { transform: "rotate(0deg)" },
+        },
         loadingBar: {
           "0%": { transform: "translateX(-100%)" },
           "50%": { transform: "translateX(0%)" },
@@ -96,6 +105,7 @@ const config = {
         "slide-in-from-left": "slide-in-from-left 0.3s ease-out",
         "slide-out-to-left": "slide-out-to-left 0.3s ease-in",
         "loading-bar": "loadingBar 1.5s ease-in-out infinite",
+        bell: "bell 0.8s ease-in-out infinite",
       },
     },
   },
