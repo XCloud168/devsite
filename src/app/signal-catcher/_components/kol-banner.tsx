@@ -167,12 +167,12 @@ export function KolBanner({
         className={`${menu.value === selectedMenu.value ? "border-primary font-bold text-primary" : "border-transparent font-normal text-black dark:text-foreground/80"} cursor-pointer break-keep border-b-2 pb-2 pt-2 text-center hover:text-primary md:pb-0`}
         key={menu.value}
         onClick={() => {
-          if (isLogged && !isMember) {
-            toast.info(t("signals.kol.notVip"));
+          if (!isLogged && menu.value === "3") {
+            router.push("/auth/login");
             return;
           }
-          if (!isMember && menu.value === "3") {
-            router.push("/auth/login");
+          if (isLogged && !isMember && menu.value === "3") {
+            toast.info(t("signals.kol.notVip"));
             return;
           }
           onKolMenuChangeAction(menu);
