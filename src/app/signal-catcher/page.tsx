@@ -97,7 +97,6 @@ export default async function SignalPage() {
   const isMember =
     user?.membershipExpiredAt &&
     new Date(user?.membershipExpiredAt) > new Date();
-  console.log(!!user);
   if (isMobile) {
     return (
       <>
@@ -149,6 +148,7 @@ export default async function SignalPage() {
               getSignalCategoryAction={getSignalCategory}
               getTagDataAction={getTagData}
               isMember={isMember}
+              isMobile={isMobile}
             />
             <div className="fixed bottom-0 z-[1] h-[438px] w-full bg-[url(/images/signal/featured-bg.svg)] bg-contain bg-no-repeat"></div>
           </div>

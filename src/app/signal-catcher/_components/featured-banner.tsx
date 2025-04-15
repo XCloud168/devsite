@@ -6,7 +6,7 @@ import type { ServerResult } from "@/lib/server-result";
 import { useTranslations } from "next-intl";
 import { type SignalsCategory } from "@/server/db/schemas/signal";
 import { Skeleton } from "@/components/ui/skeleton";
-import { ChevronRight, Loader2 } from "lucide-react";
+import { ChevronLeft, ChevronRight, Loader2 } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -128,18 +128,28 @@ export function FeaturedBanner({
 
   const scrollRef = useRef<HTMLDivElement>(null);
 
-  const handleItemClick = (index: number) => {
-    const container = scrollRef.current;
-    if (!container) return;
+  const [showLeft, setShowLeft] = useState(false);
+  const [showRight, setShowRight] = useState(false);
 
-    const target = container.children[index] as HTMLElement;
-    if (target) {
-      target.scrollIntoView({
-        behavior: "smooth",
-        inline: "center", // 可选值: "start"（左对齐） | "center"（居中） | "end"（右对齐）
-        block: "nearest",
-      });
-    }
+  useEffect(() => {
+    const el = scrollRef.current;
+    if (!el) return;
+    const checkScroll = () => {
+      const { scrollLeft, scrollWidth, clientWidth } = el;
+      setShowLeft(scrollLeft > 0);
+      setShowRight(scrollLeft + clientWidth < scrollWidth - 1); // 减1是为了防止浮点误差
+    };
+    checkScroll();
+    el.addEventListener("scroll", checkScroll);
+    window.addEventListener("resize", checkScroll);
+    return () => {
+      el.removeEventListener("scroll", checkScroll);
+      window.removeEventListener("resize", checkScroll);
+    };
+  }, [selectedCategoryId, tagLoading]);
+
+  const scrollBy = (offset: number) => {
+    scrollRef.current?.scrollBy({ left: offset, behavior: "smooth" });
   };
 
   const DetailDialog = () => {
@@ -264,48 +274,65 @@ export function FeaturedBanner({
         </div>
       </div>
 
-      <div className="relative px-5 pt-3">
+      <div className="px-5 pt-3">
         {tagLoading ? (
           <Skeleton className="h-10 w-full bg-secondary" />
         ) : (
-          <div
-            ref={scrollRef}
-            className="scrollbar-hide flex snap-x snap-mandatory gap-3 overflow-x-auto scroll-smooth whitespace-nowrap"
-          >
-            {currentTagList.map((tag, index) => (
-              <div
-                className={`${selectedTagId === tag.id ? "bg-primary/20" : "bg-[#4949493a]"} flex cursor-pointer items-center justify-center gap-1.5 rounded-lg p-2`}
-                key={tag.id}
-                onClick={() => {
-                  handleItemClick(index);
-                  setSelectedTagId(tag.id);
-                  handleGetTagData(tag.id);
-                  onMenuChangeAction({
-                    categoryId: selectedCategoryId,
-                    providerType:
-                      currentTagList.find((item) => tag.id === item.id)
-                        ?.providerType ?? undefined,
-                    entityId: tag.id,
-                  });
-                }}
+          <div className="relative">
+            {showLeft && (
+              <button
+                onClick={() => scrollBy(-200)}
+                className="absolute left-0 top-1/2 z-10 -translate-y-1/2 bg-black/80 p-2 shadow"
               >
-                <Avatar className="h-6 w-6 rounded-full">
-                  <AvatarImage src={tag.logo ?? ""} />
-                  <AvatarFallback></AvatarFallback>
-                </Avatar>
-                <p
-                  className="overflow-hidden truncate text-xs"
-                  style={{
-                    width: "48px",
-                    whiteSpace: "nowrap",
-                    overflow: "hidden",
-                    textOverflow: "ellipsis",
+                <ChevronLeft />
+              </button>
+            )}
+
+            {showRight && (
+              <button
+                onClick={() => scrollBy(200)}
+                className="absolute right-0 top-1/2 z-10 -translate-y-1/2 bg-black/80 p-2 shadow"
+              >
+                <ChevronRight />
+              </button>
+            )}
+            <div
+              ref={scrollRef}
+              className="scrollbar-hide flex snap-x snap-mandatory gap-3 overflow-x-auto scroll-smooth whitespace-nowrap"
+            >
+              {currentTagList.map((tag) => (
+                <div
+                  className={`${selectedTagId === tag.id ? "bg-primary/20" : "bg-[#4949493a]"} flex cursor-pointer items-center justify-center gap-1.5 rounded-lg p-2`}
+                  key={tag.id}
+                  onClick={() => {
+                    setSelectedTagId(tag.id);
+                    handleGetTagData(tag.id);
+                    onMenuChangeAction({
+                      categoryId: selectedCategoryId,
+                      providerType:
+                        currentTagList.find((item) => tag.id === item.id)
+                          ?.providerType ?? undefined,
+                      entityId: tag.id,
+                    });
                   }}
                 >
-                  {tag.name}
-                </p>
-              </div>
-            ))}
+                  <Avatar className="h-6 w-6 rounded-full">
+                    <AvatarImage src={tag.logo ?? ""} />
+                    <AvatarFallback></AvatarFallback>
+                  </Avatar>
+                  <p
+                    className="overflow-hidden truncate text-xs"
+                    style={{
+                      whiteSpace: "nowrap",
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                    }}
+                  >
+                    {tag.name}
+                  </p>
+                </div>
+              ))}
+            </div>
           </div>
         )}
       </div>
