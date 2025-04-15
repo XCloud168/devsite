@@ -76,6 +76,7 @@ export function KolComponent({
         getTagDataAction={getTagDataAction}
         isMember={isMember}
         isLogged={isLogged}
+        isMobile={isMobile}
       />
     </div>
   );

@@ -12,7 +12,8 @@
         "pricing": "Pricing",
         "swap": "Swap",
         "about": "About",
-        "buySlogan": "Subscribe to VIP for exclusive signals"
+        "buySlogan": "Subscribe to VIP for exclusive signals",
+        "dashboard": "KOL Dashboard"
     },
     "theme": {
         "toggle": "Toggle theme",
@@ -38,7 +39,8 @@
         "share": "Share",
         "saveImage": "Save Image",
         "search": "Search",
-        "more": "More"
+        "more": "More",
+        "detail": "Details"
     },
     "Error": {
         "pageNotFound": "Page Not Found",

@@ -12,7 +12,8 @@
         "pricing": "订阅",
         "swap": "快捷交易",
         "about": "关于",
-        "buySlogan": "订阅 VIP 解锁精选信号"
+        "buySlogan": "订阅 VIP 解锁精选信号",
+        "dashboard": "KOL 仪表盘"
     },
     "theme": {
         "toggle": "切换主题",
@@ -38,7 +39,8 @@
         "share": "分享",
         "saveImage": "保存图片",
         "search": "搜索",
-        "more": "更多"
+        "more": "更多",
+        "detail": "详情"
     },
     "Error": {
         "pageNotFound": "页面未找到",

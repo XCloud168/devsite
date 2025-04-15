@@ -36,6 +36,7 @@ type Props = {
   ) => Promise<ServerResult>;
   isMember?: boolean | null;
   isLogged: boolean;
+  isMobile?: boolean;
 };
 export function KolList({
   menu,
@@ -49,15 +50,17 @@ export function KolList({
   getTagDataAction,
   isMember,
   isLogged,
+  isMobile,
 }: Props) {
   const componentsMap: Record<string, JSX.Element> = {
     "1": (
-      <div className="bg-gradient-to-b from-[#DEECFF80] to-[#FFFFFF] dark:from-[#0A132580] dark:to-[#050911]">
+      <div className="bg-gradient-to-b from-[#DEECFF80] to-[#FFFFFF] pb-16 dark:from-[#0A132580] dark:to-[#050911]">
         <FeaturedComponent
           getSignalListAction={getSignalListAction}
           getTagListAction={getTagListAction}
           getSignalCategoryAction={getSignalCategoryAction}
           getTagDataAction={getTagDataAction}
+          isMobile={isMobile}
         />
       </div>
     ),

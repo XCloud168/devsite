@@ -25,6 +25,7 @@ type Props = {
     providerType?: SIGNAL_PROVIDER_TYPE;
     entityId?: string;
   };
+  isMobile?: boolean;
 };
 interface SignalItems extends Signals {
   source: TweetInfo & {
@@ -62,7 +63,11 @@ export type FetchSignalListAction = (
   },
 ) => Promise<ServerResult>;
 
-export function FeaturedList({ getSignalListAction, menuInfo }: Props) {
+export function FeaturedList({
+  getSignalListAction,
+  menuInfo,
+  isMobile,
+}: Props) {
   const [signalList, setSignalList] = useState<SignalItems[]>([]);
   const [hasNext, setHasNext] = useState<boolean>(true);
   const [pageLoading, setPageLoading] = useState<boolean>(false);
@@ -170,9 +175,10 @@ export function FeaturedList({ getSignalListAction, menuInfo }: Props) {
   ]);
 
   const dynamicHeight: number = useMemo(() => {
+    if (isMobile) return 0;
     if (menuInfo.entityId) return 330;
     return 260;
-  }, [menuInfo]);
+  }, [isMobile, menuInfo.entityId]);
   return (
     <div
       ref={scrollRef}

@@ -1,14 +1,20 @@
 "use client";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { useEffect, useMemo, useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { type SIGNAL_PROVIDER_TYPE } from "@/lib/constants";
 import type { ServerResult } from "@/lib/server-result";
 import { useTranslations } from "next-intl";
 import { type SignalsCategory } from "@/server/db/schemas/signal";
 import { Skeleton } from "@/components/ui/skeleton";
-import { ChevronLeft, ChevronRight, Loader2 } from "lucide-react";
-import { MultiSelect } from "@/components/MultiSelect";
+import { ChevronRight, Loader2 } from "lucide-react";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 interface Tag {
   id: string;
   name: string;
@@ -42,6 +48,7 @@ interface Props {
     entityId: string,
   ) => Promise<ServerResult>;
   isMember?: boolean | null;
+  isMobile?: boolean;
 }
 
 export function FeaturedBanner({
@@ -50,6 +57,7 @@ export function FeaturedBanner({
   getSignalCategoryAction,
   getTagDataAction,
   isMember,
+  isMobile,
 }: Props) {
   const t = useTranslations();
 
@@ -68,25 +76,11 @@ export function FeaturedBanner({
     }[]
   >([]);
 
-  const [selectedValues, setSelectedValues] = useState<string[]>([]);
-
   const handleChangeCategory = async (id: string) => {
     if (getTagListAction) {
       const response = await getTagListAction(id);
       setCurrentTagList(response.data);
       setTagLoading(false);
-      setSelectedValues(
-        response.data
-          .slice(0, Math.min(5, response.data.length))
-          .map(
-            (opt: {
-              id: string;
-              logo: string;
-              name: string;
-              providerType: SIGNAL_PROVIDER_TYPE;
-            }) => opt.id,
-          ),
-      );
     }
   };
 
@@ -103,7 +97,6 @@ export function FeaturedBanner({
       }
     };
     fetchData();
-    // setSignalCategory(response.data);
   }, [getSignalCategoryAction]);
 
   const handleGetTagData = (entityId: string) => {
@@ -131,78 +124,126 @@ export function FeaturedBanner({
     return "--";
   }, [tagData]);
 
-  const tabRef = useRef<HTMLDivElement>(null);
-  const [showLeftButton, setShowLeftButton] = useState(false);
-  const [showRightButton, setShowRightButton] = useState(false);
+  const [showDetail, setShowDetail] = useState(false);
 
-  // 检查是否需要显示按钮
-  const checkScrollable = () => {
-    if (tabRef.current) {
-      const { scrollLeft, scrollWidth, clientWidth } = tabRef.current;
-      setShowLeftButton(scrollLeft > 0);
-      setShowRightButton(scrollLeft + clientWidth < scrollWidth);
-    }
-  };
+  const scrollRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    checkScrollable();
-    window.addEventListener("resize", checkScrollable);
-    return () => window.removeEventListener("resize", checkScrollable);
-  }, [signalCategory]);
+  const handleItemClick = (index: number) => {
+    const container = scrollRef.current;
+    if (!container) return;
 
-  useEffect(() => {
-    if (tabRef.current) {
-      tabRef.current.addEventListener("scroll", checkScrollable);
-    }
-    return () => {
-      if (tabRef.current) {
-        tabRef.current.removeEventListener("scroll", checkScrollable);
-      }
-    };
-  }, []);
-
-  const scroll = (direction: "left" | "right") => {
-    if (tabRef.current) {
-      const scrollAmount = 100; // 每次滚动的距离
-      tabRef.current.scrollBy({
-        left: direction === "left" ? -scrollAmount : scrollAmount,
+    const target = container.children[index] as HTMLElement;
+    if (target) {
+      target.scrollIntoView({
         behavior: "smooth",
+        inline: "center", // 可选值: "start"（左对齐） | "center"（居中） | "end"（右对齐）
+        block: "nearest",
       });
     }
   };
 
+  const DetailDialog = () => {
+    return (
+      <Dialog
+        open={showDetail}
+        onOpenChange={(f) => {
+          setShowDetail(f);
+        }}
+      >
+        <DialogTrigger className="w-full">
+          <div className="w-full px-5 py-3">
+            <div className="flex items-center justify-between rounded-lg bg-[#4949493a] p-3 text-left">
+              <div>
+                <p>
+                  {t("signals.signal.totalTokenSignals")}/
+                  {t("signals.signal.tokenGainCount")}
+                </p>
+                <p className="text-lg font-bold text-[#1976F7] dark:text-[#F2DA18]">
+                  {tagData?.signalsCount || "--"} /{" "}
+                  {tagData?.avgRiseRate ? tagData?.avgRiseRate + "%" : "--"}
+                </p>
+              </div>
+              <div>
+                <ChevronRight />
+              </div>
+            </div>
+          </div>
+        </DialogTrigger>
+        <DialogContent className="w-[94%] gap-0 p-4 md:w-[560px]">
+          <DialogHeader>
+            <DialogTitle className="text-left">
+              {t("common.detail")}
+            </DialogTitle>
+            <DialogDescription></DialogDescription>
+          </DialogHeader>
+          <div className="mt-2 grid w-full grid-cols-2 gap-3 overflow-hidden">
+            <div className="relative w-full rounded-lg bg-[#4949493a] p-3">
+              <p className="text-xs">{t("signals.signal.totalTokenSignals")}</p>
+              {!tabDataLoading ? (
+                <p className="text-lg font-bold text-[#1976F7] dark:text-[#F2DA18]">
+                  {tagData?.signalsCount || "--"}
+                </p>
+              ) : (
+                <div className="flex">
+                  <Loader2 className="mt-1 h-6 w-6 animate-spin text-[#1976F7] dark:text-[#F2DA18]" />
+                </div>
+              )}
+            </div>
+            <div className="relative w-full rounded-lg bg-[#4949493a] p-3">
+              <p className="text-xs">{t("signals.signal.tokenGainCount")}</p>
+              {!tabDataLoading ? (
+                <p className="text-lg font-bold text-[#1976F7] dark:text-[#F2DA18]">
+                  {tagData?.riseCount || "--"}
+                </p>
+              ) : (
+                <div className="flex">
+                  <Loader2 className="mt-1 h-6 w-6 animate-spin text-[#1976F7] dark:text-[#F2DA18]" />
+                </div>
+              )}
+            </div>
+            <div className="relative w-full rounded-lg bg-[#4949493a] p-3">
+              <p className="text-xs">{t("signals.signal.tokenGainRatio")}</p>
+              {!tabDataLoading ? (
+                <p className="text-lg font-bold text-[#1976F7] dark:text-[#F2DA18]">
+                  {riseRate}
+                </p>
+              ) : (
+                <div className="flex">
+                  <Loader2 className="mt-1 h-6 w-6 animate-spin text-[#1976F7] dark:text-[#F2DA18]" />
+                </div>
+              )}
+            </div>
+            <div className="relative w-full rounded-lg bg-[#4949493a] p-3">
+              <p className="text-xs">{t("signals.signal.24hAverageMaxGain")}</p>
+              {!tabDataLoading ? (
+                <p className="text-lg font-bold text-[#1976F7] dark:text-[#F2DA18]">
+                  {tagData?.avgRiseRate ? tagData?.avgRiseRate + "%" : "--"}
+                </p>
+              ) : (
+                <div className="flex">
+                  <Loader2 className="mt-1 h-6 w-6 animate-spin text-[#1976F7] dark:text-[#F2DA18]" />
+                </div>
+              )}
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+    );
+  };
+
   return (
     <div className="sticky top-0 z-10">
-      <div className="flex items-center gap-1 p-5">
-        <p className="font-bold">{t("signals.signal.curatedSignals")}</p>
-        <p className="text-xs text-black/50 dark:text-white/50">
-          *{!isMember ? t("signals.signal.notVip") : t("signals.signal.isVip")}
-        </p>
-      </div>
+      {!isMobile && (
+        <div className="flex items-center gap-1 p-5">
+          <p className="font-bold">{t("signals.signal.curatedSignals")}</p>
+          <p className="text-xs text-black/50 dark:text-white/50">
+            *
+            {!isMember ? t("signals.signal.notVip") : t("signals.signal.isVip")}
+          </p>
+        </div>
+      )}
       <div className="relative border-b px-5">
-        {/* 左滑按钮（如果 showLeftButton 为 true 才显示） */}
-        {showLeftButton && (
-          <button
-            className="absolute left-1 top-1/2 z-10 -translate-y-1/2 rounded-lg bg-black/80 p-1 shadow-md"
-            onClick={() => scroll("left")}
-          >
-            <ChevronLeft />
-          </button>
-        )}
-        {/* 右滑按钮（如果 showRightButton 为 true 才显示） */}
-        {showRightButton && (
-          <button
-            className="absolute right-1 top-1/2 z-10 -translate-y-1/2 rounded-lg bg-black/80 p-1 shadow-md"
-            onClick={() => scroll("right")}
-          >
-            <ChevronRight />
-          </button>
-        )}
-        {/* 滚动容器 */}
-        <div
-          ref={tabRef}
-          className="scrollbar-hide flex snap-x snap-mandatory gap-4 overflow-x-auto scroll-smooth whitespace-nowrap"
-        >
+        <div className="scrollbar-hide flex snap-x snap-mandatory gap-4 overflow-x-auto scroll-smooth whitespace-nowrap">
           {signalCategory.map((category) => (
             <div
               key={category.id}
@@ -223,112 +264,114 @@ export function FeaturedBanner({
         </div>
       </div>
 
-      <div className="flex px-5 pt-3">
+      <div className="relative px-5 pt-3">
         {tagLoading ? (
           <Skeleton className="h-10 w-full" />
         ) : (
-          <Tabs
-            defaultValue=""
-            className="w-full"
-            onValueChange={(event) => {
-              setSelectedTagId(event);
-              handleGetTagData(event);
-
-              onMenuChangeAction({
-                categoryId: selectedCategoryId,
-                providerType:
-                  currentTagList.find((tag) => tag.id === event)
-                    ?.providerType ?? undefined,
-                entityId: event,
-              });
-            }}
+          <div
+            ref={scrollRef}
+            className="scrollbar-hide flex snap-x snap-mandatory gap-3 overflow-x-auto scroll-smooth whitespace-nowrap"
           >
-            <TabsList className="flex h-auto flex-wrap justify-start gap-3 bg-transparent">
-              {currentTagList
-                .filter((tag) => selectedValues.includes(tag.id))
-                .map((tag) => (
-                  <TabsTrigger
-                    key={tag.id}
-                    value={tag.id}
-                    className="flex w-fit justify-start gap-1 rounded-full bg-white/50 py-1.5 pl-1.5 pr-2 dark:bg-[#161C25]"
-                  >
-                    <Avatar className="h-5 w-5 rounded-full">
-                      <AvatarImage src={tag.logo ?? ""} />
-                      <AvatarFallback></AvatarFallback>
-                    </Avatar>
-                    <p>{tag.name}</p>
-                  </TabsTrigger>
-                ))}
-            </TabsList>
-          </Tabs>
+            {currentTagList.map((tag, index) => (
+              <div
+                className={`${selectedTagId === tag.id ? "bg-primary/20" : "bg-[#4949493a]"} flex cursor-pointer items-center justify-center gap-1.5 rounded-lg p-2`}
+                key={tag.id}
+                onClick={() => {
+                  handleItemClick(index);
+                  setSelectedTagId(tag.id);
+                  handleGetTagData(tag.id);
+                  onMenuChangeAction({
+                    categoryId: selectedCategoryId,
+                    providerType:
+                      currentTagList.find((item) => tag.id === item.id)
+                        ?.providerType ?? undefined,
+                    entityId: tag.id,
+                  });
+                }}
+              >
+                <Avatar className="h-6 w-6 rounded-full">
+                  <AvatarImage src={tag.logo ?? ""} />
+                  <AvatarFallback></AvatarFallback>
+                </Avatar>
+                <p
+                  className="overflow-hidden truncate text-xs"
+                  style={{
+                    width: "48px",
+                    whiteSpace: "nowrap",
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                  }}
+                >
+                  {tag.name}
+                </p>
+              </div>
+            ))}
+          </div>
         )}
-        {!tagLoading ? (
-          <MultiSelect
-            options={currentTagList.map((item) => ({
-              value: item.id,
-              label: item.name,
-            }))}
-            value={selectedValues}
-            onChangeAction={setSelectedValues}
-            placeholder={t("common.more")}
-          />
-        ) : null}
       </div>
       {selectedTagId !== "" ? (
-        <div className="relative mx-5 my-3 rounded-xl bg-white/50 py-2 dark:bg-[#161C25]">
-          <div className="grid w-full grid-cols-4 gap-3 overflow-hidden">
-            <div className="relative w-full px-3">
-              <p className="text-xs">{t("signals.signal.totalTokenSignals")}</p>
-              {!tabDataLoading ? (
-                <p className="text-lg font-bold text-[#1976F7] dark:text-[#F2DA18]">
-                  {tagData?.signalsCount || "--"}
+        isMobile ? (
+          <div className="w-full">{DetailDialog()}</div>
+        ) : (
+          <div className="relative mx-5 my-3 rounded-xl bg-white/50 py-2 dark:bg-[#161C25]">
+            <div className="grid w-full grid-cols-4 gap-3 overflow-hidden">
+              <div className="relative flex w-full flex-col justify-between px-3">
+                <p className="text-xs">
+                  {t("signals.signal.totalTokenSignals")}
                 </p>
-              ) : (
-                <div className="flex">
-                  <Loader2 className="mt-1 h-6 w-6 animate-spin text-[#1976F7] dark:text-[#F2DA18]" />
-                </div>
-              )}
-            </div>
-            <div className="relative w-full px-3">
-              <p className="text-xs">{t("signals.signal.tokenGainCount")}</p>
-              {!tabDataLoading ? (
-                <p className="text-lg font-bold text-[#1976F7] dark:text-[#F2DA18]">
-                  {tagData?.riseCount || "--"}
+                {!tabDataLoading ? (
+                  <p className="text-lg font-bold text-[#1976F7] dark:text-[#F2DA18]">
+                    {tagData?.signalsCount || "--"}
+                  </p>
+                ) : (
+                  <p className="text-lg font-bold text-[#1976F7] dark:text-[#F2DA18]">
+                    --
+                  </p>
+                )}
+              </div>
+              <div className="relative flex w-full flex-col justify-between px-3">
+                <p className="text-xs">{t("signals.signal.tokenGainCount")}</p>
+                {!tabDataLoading ? (
+                  <p className="text-lg font-bold text-[#1976F7] dark:text-[#F2DA18]">
+                    {tagData?.riseCount || "--"}
+                  </p>
+                ) : (
+                  <p className="text-lg font-bold text-[#1976F7] dark:text-[#F2DA18]">
+                    --
+                  </p>
+                )}
+              </div>
+              <div className="relative flex w-full flex-col justify-between px-3">
+                <p className="text-xs">{t("signals.signal.tokenGainRatio")}</p>
+                {!tabDataLoading ? (
+                  <p className="text-lg font-bold text-[#1976F7] dark:text-[#F2DA18]">
+                    {riseRate}
+                  </p>
+                ) : (
+                  <p className="text-lg font-bold text-[#1976F7] dark:text-[#F2DA18]">
+                    --
+                  </p>
+                )}
+              </div>
+              <div className="relative flex w-full flex-col justify-between px-3">
+                <p className="text-xs">
+                  {t("signals.signal.24hAverageMaxGain")}
                 </p>
-              ) : (
-                <div className="flex">
-                  <Loader2 className="mt-1 h-6 w-6 animate-spin text-[#1976F7] dark:text-[#F2DA18]" />
-                </div>
-              )}
-            </div>
-            <div className="relative w-full px-3">
-              <p className="text-xs">{t("signals.signal.tokenGainRatio")}</p>
-              {!tabDataLoading ? (
-                <p className="text-lg font-bold text-[#1976F7] dark:text-[#F2DA18]">
-                  {riseRate}
-                </p>
-              ) : (
-                <div className="flex">
-                  <Loader2 className="mt-1 h-6 w-6 animate-spin text-[#1976F7] dark:text-[#F2DA18]" />
-                </div>
-              )}
-            </div>
-            <div className="relative w-full px-3">
-              <p className="text-xs">{t("signals.signal.24hAverageMaxGain")}</p>
-              {!tabDataLoading ? (
-                <p className="text-lg font-bold text-[#1976F7] dark:text-[#F2DA18]">
-                  {tagData?.avgRiseRate ? tagData?.avgRiseRate + "%" : "--"}
-                </p>
-              ) : (
-                <div className="flex">
-                  <Loader2 className="mt-1 h-6 w-6 animate-spin text-[#1976F7] dark:text-[#F2DA18]" />
-                </div>
-              )}
+                {!tabDataLoading ? (
+                  <p className="text-lg font-bold text-[#1976F7] dark:text-[#F2DA18]">
+                    {tagData?.avgRiseRate ? tagData?.avgRiseRate + "%" : "--"}
+                  </p>
+                ) : (
+                  <p className="text-lg font-bold text-[#1976F7] dark:text-[#F2DA18]">
+                    --
+                  </p>
+                )}
+              </div>
             </div>
           </div>
-        </div>
+        )
       ) : (
-        <div className="h-3 opacity-0">123</div>
+        <div className="h-3 opacity-0">0</div>
       )}
     </div>
   );

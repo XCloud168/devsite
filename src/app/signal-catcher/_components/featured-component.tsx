@@ -21,6 +21,7 @@ type Props = {
     entityId: string,
   ) => Promise<ServerResult>;
   isMember?: boolean | null;
+  isMobile?: boolean;
 };
 export function FeaturedComponent({
   getSignalListAction,
@@ -28,6 +29,7 @@ export function FeaturedComponent({
   getSignalCategoryAction,
   getTagDataAction,
   isMember,
+  isMobile,
 }: Props) {
   const [menuInfo, setMenuInfo] = useState<{
     categoryId: string;
@@ -48,11 +50,13 @@ export function FeaturedComponent({
         getSignalCategoryAction={getSignalCategoryAction}
         getTagDataAction={getTagDataAction}
         isMember={isMember}
+        isMobile={isMobile}
       />
       {menuInfo.categoryId !== "" && (
         <FeaturedList
           menuInfo={menuInfo}
           getSignalListAction={getSignalListAction}
+          isMobile={isMobile}
         />
       )}
     </div>

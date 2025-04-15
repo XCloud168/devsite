@@ -73,6 +73,7 @@ export function KolBanner({
     setTweetUser(response.data);
   };
   const [dialogOpen, setDialogOpen] = useState<boolean>(false);
+
   const SearchDialog = (triggerClass: string) => {
     return (
       <Dialog
@@ -161,10 +162,11 @@ export function KolBanner({
       </Dialog>
     );
   };
-  const menu = () => {
+
+  const menu = (isMobile = false) => {
     return kolMenu.map((menu) => (
       <div
-        className={`${menu.value === selectedMenu.value ? "border-primary font-bold text-primary" : "border-transparent font-normal text-black dark:text-foreground/80"} cursor-pointer break-keep border-b-2 pb-2 pt-2 text-center hover:text-primary md:pb-0`}
+        className={`${menu.value === selectedMenu.value ? "border-primary text-primary" : "border-transparent text-black dark:text-foreground/80"} flex cursor-pointer flex-col items-center justify-center gap-1 break-keep border-b-2 pb-2 pt-2 text-center hover:text-primary md:pb-0`}
         key={menu.value}
         onClick={() => {
           if (!isLogged && menu.value === "3") {
@@ -179,6 +181,11 @@ export function KolBanner({
           setSelectedMenu(menu);
         }}
       >
+        {isMobile && (
+          <div
+            className={`h-4 w-4 rounded-full ${menu.value === selectedMenu.value ? "bg-primary" : "bg-foreground/80"}`}
+          ></div>
+        )}
         {t("signals.kol." + menu.label)}
       </div>
     ));
@@ -186,11 +193,9 @@ export function KolBanner({
   if (isMobile) {
     return (
       <>
-        <div className="sticky top-0 z-10 block border-b bg-background px-5 pt-2">
-          {SearchDialog("mb-3 w-full")}
-          <div>
-            <div className="flex w-full gap-5">{menu()}</div>
-          </div>
+        <div className="fixed -bottom-[3px] left-0 right-0 z-10 border-t bg-background px-5 pt-2">
+          {/*{SearchDialog("mb-3 w-full")}*/}
+          <div className="grid grid-cols-3">{menu(true)}</div>
         </div>
       </>
     );
