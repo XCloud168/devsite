@@ -266,7 +266,7 @@ export function FeaturedBanner({
 
       <div className="relative px-5 pt-3">
         {tagLoading ? (
-          <Skeleton className="h-10 w-full" />
+          <Skeleton className="h-10 w-full bg-secondary" />
         ) : (
           <div
             ref={scrollRef}
