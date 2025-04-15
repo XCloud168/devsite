@@ -2,7 +2,13 @@
 
 import React, { useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
-import { LoaderCircle, Search } from "lucide-react";
+import {
+  Bell,
+  LoaderCircle,
+  Search,
+  Sparkles,
+  UserRoundSearch,
+} from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -22,6 +28,7 @@ import { useRouter } from "next/navigation";
 export type KolMenu = {
   label: string;
   value: "1" | "2" | "3";
+  icon?: React.ReactNode;
 };
 
 interface KolMenuProps {
@@ -56,12 +63,12 @@ export function KolBanner({
   });
   const kolMenu: KolMenu[] = useMemo(() => {
     const baseMenu: KolMenu[] = [
-      { label: "kol", value: "2" },
-      { label: "myKol", value: "3" },
+      { label: "kol", value: "2", icon: <Sparkles /> },
+      { label: "myKol", value: "3", icon: <UserRoundSearch /> },
     ];
 
     return isMobile
-      ? [{ label: "curatedSignals", value: "1" }, ...baseMenu]
+      ? [{ label: "curatedSignals", value: "1", icon: <Bell /> }, ...baseMenu]
       : baseMenu;
   }, [isMobile]);
   const [tweetUserName, setTweetUserName] = useState<string>("");
@@ -166,7 +173,7 @@ export function KolBanner({
   const menu = (isMobile = false) => {
     return kolMenu.map((menu) => (
       <div
-        className={`${menu.value === selectedMenu.value ? "border-primary text-primary" : "border-transparent text-black dark:text-foreground/80"} flex cursor-pointer flex-col items-center justify-center gap-1 break-keep border-b-2 pb-2 pt-2 text-center hover:text-primary md:pb-0`}
+        className={`${menu.value === selectedMenu.value ? "border-primary text-primary" : "border-transparent text-black dark:text-foreground/80"} flex cursor-pointer flex-col items-center justify-center gap-2 break-keep border-b-2 pb-2 pt-2 text-center hover:text-primary md:pb-0`}
         key={menu.value}
         onClick={() => {
           if (!isLogged && menu.value === "3") {
@@ -183,8 +190,10 @@ export function KolBanner({
       >
         {isMobile && (
           <div
-            className={`h-4 w-4 rounded-full ${menu.value === selectedMenu.value ? "bg-primary" : "bg-foreground/80"}`}
-          ></div>
+            className={`h-4 w-4 ${menu.value === selectedMenu.value ? "[&>svg]:fill-primary" : "[&>svg]:fill-foreground/80"}`}
+          >
+            {menu.icon}
+          </div>
         )}
         {t("signals.kol." + menu.label)}
       </div>
