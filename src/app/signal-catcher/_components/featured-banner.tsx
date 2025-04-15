@@ -279,7 +279,7 @@ export function FeaturedBanner({
           <Skeleton className="h-10 w-full bg-secondary" />
         ) : (
           <div className="relative">
-            {showLeft && (
+            {!isMobile && showLeft && (
               <button
                 onClick={() => scrollBy(-200)}
                 className="absolute left-0 top-1/2 z-10 -translate-y-1/2 bg-black/80 p-2 shadow"
@@ -288,7 +288,7 @@ export function FeaturedBanner({
               </button>
             )}
 
-            {showRight && (
+            {!isMobile && showRight && (
               <button
                 onClick={() => scrollBy(200)}
                 className="absolute right-0 top-1/2 z-10 -translate-y-1/2 bg-black/80 p-2 shadow"
