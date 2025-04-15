@@ -195,7 +195,7 @@ export function KolBanner({
       >
         {isMobile && (
           <div
-            className={`flex h-4 w-4 items-center justify-center ${menu.value === selectedMenu.value ? "[&>*]:text-primary" : "[&>*]:text-foreground/80"}`}
+            className={`flex h-5 w-5 items-center justify-center ${menu.value === selectedMenu.value ? "[&>*]:text-primary" : "[&>*]:text-foreground/80"}`}
           >
             {menu.icon}
           </div>
