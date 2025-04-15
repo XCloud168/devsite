@@ -63,12 +63,15 @@ export function KolBanner({
   });
   const kolMenu: KolMenu[] = useMemo(() => {
     const baseMenu: KolMenu[] = [
-      { label: "kol", value: "2", icon: <Sparkles /> },
-      { label: "myKol", value: "3", icon: <UserRoundSearch /> },
+      { label: "kol", value: "2", icon: <Sparkles size={20} /> },
+      { label: "myKol", value: "3", icon: <UserRoundSearch size={20} /> },
     ];
 
     return isMobile
-      ? [{ label: "curatedSignals", value: "1", icon: <Bell /> }, ...baseMenu]
+      ? [
+          { label: "curatedSignals", value: "1", icon: <Bell size={20} /> },
+          ...baseMenu,
+        ]
       : baseMenu;
   }, [isMobile]);
   const [tweetUserName, setTweetUserName] = useState<string>("");
@@ -173,7 +176,9 @@ export function KolBanner({
   const menu = (isMobile = false) => {
     return kolMenu.map((menu) => (
       <div
-        className={`${menu.value === selectedMenu.value ? "border-primary text-primary" : "border-transparent text-black dark:text-foreground/80"} flex cursor-pointer flex-col items-center justify-center gap-2 break-keep border-b-2 pb-2 pt-2 text-center hover:text-primary md:pb-0`}
+        className={`${menu.value === selectedMenu.value ? "border-primary text-primary" : "border-transparent text-black dark:text-foreground/80"} ${
+          isMobile ? "text-xs" : "text-base"
+        } flex cursor-pointer flex-col items-center justify-center gap-2 break-keep border-b-2 pb-2 pt-2 text-center hover:text-primary md:pb-0`}
         key={menu.value}
         onClick={() => {
           if (!isLogged && menu.value === "3") {
@@ -190,7 +195,7 @@ export function KolBanner({
       >
         {isMobile && (
           <div
-            className={`h-4 w-4 ${menu.value === selectedMenu.value ? "[&>svg]:fill-primary" : "[&>svg]:fill-foreground/80"}`}
+            className={`flex h-4 w-4 items-center justify-center ${menu.value === selectedMenu.value ? "[&>*]:text-primary" : "[&>*]:text-foreground/80"}`}
           >
             {menu.icon}
           </div>
