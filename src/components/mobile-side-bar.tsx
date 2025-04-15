@@ -63,14 +63,21 @@ export function MobileSideBar() {
                 </Link>
               ))}
             </nav>
+
+            <div className="mt-auto flex gap-1">
+              <AuthButton />
+              <LanguageSwitcher />
+              <ThemeToggle />
+            </div>
           </div>
         </SheetContent>
       </Sheet>
-      <div className="flex gap-1">
-        <AuthButton />
-        <LanguageSwitcher />
-        <ThemeToggle />
-      </div>
+      <Link className="ml-auto flex gap-1.5 hover:scale-105" href={"/pricing"}>
+        <Image src="/images/diamond.svg" alt="Logo" width={22} height={22} />
+        <p className="bg-gradient-to-r from-[#1F72E5] to-[#45FA25] bg-clip-text font-bold text-transparent dark:from-[#F2DA18] dark:to-[#4DFFC4]">
+          {t("buySlogan")}
+        </p>
+      </Link>
     </div>
   );
 }
