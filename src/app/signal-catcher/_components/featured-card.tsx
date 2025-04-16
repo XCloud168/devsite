@@ -13,7 +13,12 @@ import TranslationComponent from "@/components/translation-component";
 import { NegativeIcon, PositiveIcon } from "@/components/ui/icon";
 import Poster from "@/components/poster/poster";
 import Gallery from "@/components/Gallery";
-import { Link as Link2, Share2, TriangleAlert } from "lucide-react";
+import {
+  CircleAlert,
+  Link as Link2,
+  Share2,
+  TriangleAlert,
+} from "lucide-react";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
 import { useState } from "react";
@@ -266,7 +271,10 @@ export function FeaturedCard({
                   <TooltipProvider>
                     <Tooltip>
                       <TooltipTrigger>
-                        <TriangleAlert size={16} className="text-[#BF4040]" />
+                        <CircleAlert
+                          size={16}
+                          className="text-accent-foreground"
+                        />
                       </TooltipTrigger>
                       <TooltipContent className="w-96 border bg-background">
                         {t("signals.signal.suspectedToken")}
