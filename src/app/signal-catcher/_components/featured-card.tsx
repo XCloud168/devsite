@@ -268,19 +268,30 @@ export function FeaturedCard({
                   </div>
                 )}
                 {!signal.source.isAccurate && (
-                  <TooltipProvider>
-                    <Tooltip>
-                      <TooltipTrigger>
-                        <CircleAlert
-                          size={16}
-                          className="text-accent-foreground"
-                        />
-                      </TooltipTrigger>
-                      <TooltipContent className="w-96 border bg-background">
-                        {t("signals.signal.suspectedToken")}
-                      </TooltipContent>
-                    </Tooltip>
-                  </TooltipProvider>
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <CircleAlert
+                        size={16}
+                        className="text-accent-foreground"
+                      />
+                    </PopoverTrigger>
+                    <PopoverContent className="w-96 rounded-lg border bg-background p-2">
+                      {t("signals.signal.suspectedToken")}
+                    </PopoverContent>
+                  </Popover>
+                  // <TooltipProvider>
+                  //   <Tooltip>
+                  //     <TooltipTrigger>
+                  //       <CircleAlert
+                  //         size={16}
+                  //         className="text-accent-foreground"
+                  //       />
+                  //     </TooltipTrigger>
+                  //     <TooltipContent className="w-96 border bg-background">
+                  //       {t("signals.signal.suspectedToken")}
+                  //     </TooltipContent>
+                  //   </Tooltip>
+                  // </TooltipProvider>
                 )}
               </div>
             </div>
