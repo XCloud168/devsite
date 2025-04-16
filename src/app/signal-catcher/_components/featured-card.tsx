@@ -17,6 +17,14 @@ import { Link as Link2, Share2, TriangleAlert } from "lucide-react";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
 import { useState } from "react";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import { Button } from "@/components/ui/button";
+import type { SUPPORTED_CHAIN } from "@/types/constants";
 
 type Props = {
   signal: SignalItems;
@@ -255,12 +263,16 @@ export function FeaturedCard({
                   </div>
                 )}
                 {!signal.source.isAccurate && (
-                  <div className="flex items-center rounded-full bg-[#BF4040] px-1 text-white">
-                    <TriangleAlert size={12} />
-                    <p className="scale-75 text-xs">
-                      {t("signals.signal.suspectedToken")}
-                    </p>
-                  </div>
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger>
+                        <TriangleAlert size={16} className="text-[#BF4040]" />
+                      </TooltipTrigger>
+                      <TooltipContent className="w-96 border bg-background">
+                        {t("signals.signal.suspectedToken")}
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
                 )}
               </div>
             </div>

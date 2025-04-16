@@ -364,7 +364,7 @@
             "kol_opinions": "KOL Opinions",
             "positive": "positive",
             "negative": "negative",
-            "suspectedToken": "Suspected Token"
+            "suspectedToken": "No contract address detected. Matching is based on liquidity, market cap, and volume, and may contain inaccuracies."
         }
     }
 }

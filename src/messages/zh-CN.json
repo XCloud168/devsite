@@ -364,7 +364,7 @@
             "kol_opinions": "KOL观点",
             "positive": "利好",
             "negative": "利空",
-            "suspectedToken": "疑似代币"
+            "suspectedToken": "由于内容未包含合约地址，系统将基于流动性、市值、交易量等参数自动匹配，可能存在误差，请悉知。"
         }
     }
 }
