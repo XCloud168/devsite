@@ -7,6 +7,7 @@ import { type ServerResult } from "@/lib/server-result";
 import React, { type JSX } from "react";
 import { FeaturedComponent } from "@/app/signal-catcher/_components/featured-component";
 import type { SIGNAL_PROVIDER_TYPE } from "@/lib/constants";
+import { MobileBuyBar } from "@/app/signal-catcher/_components/mobile-buy-bar";
 type Props = {
   getFollowedListAction: () => Promise<ServerResult>;
   addFollowAction: (tweetUid: string) => Promise<ServerResult>;
@@ -62,6 +63,7 @@ export function KolList({
           getTagDataAction={getTagDataAction}
           isMobile={isMobile}
         />
+        {(!isMember || !isLogged) && <MobileBuyBar />}
       </div>
     ),
     "2": (
