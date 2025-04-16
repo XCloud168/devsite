@@ -13,7 +13,7 @@ import TranslationComponent from "@/components/translation-component";
 import { NegativeIcon, PositiveIcon } from "@/components/ui/icon";
 import Poster from "@/components/poster/poster";
 import Gallery from "@/components/Gallery";
-import { Link as Link2, Share2 } from "lucide-react";
+import { Link as Link2, Share2, TriangleAlert } from "lucide-react";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
 import { useState } from "react";
@@ -25,6 +25,7 @@ type Props = {
 };
 interface SignalItems extends Signals {
   source: TweetInfo & {
+    isAccurate: boolean;
     imagesUrls: string[];
     videoUrls: string[];
     exchange: {
@@ -250,6 +251,14 @@ export function FeaturedCard({
                   <div className="rounded-full bg-primary text-black">
                     <p className="scale-75 text-xs">
                       {t("signals.signal.repeatedMentions")}
+                    </p>
+                  </div>
+                )}
+                {!signal.source.isAccurate && (
+                  <div className="flex items-center rounded-full bg-[#BF4040] px-1 text-white">
+                    <TriangleAlert size={12} />
+                    <p className="scale-75 text-xs">
+                      {t("signals.signal.suspectedToken")}
                     </p>
                   </div>
                 )}

@@ -16,6 +16,7 @@ export function Header() {
     { name: t("signal-catcher"), href: "/signal-catcher" },
     // { name: t("swap"), href: "/swap" },
     { name: t("pricing"), href: "/pricing" },
+    // { name: t("dashboard"), href: "/dashboard" },
   ];
 
   return (
@@ -58,6 +59,20 @@ export function Header() {
               <p className="bg-gradient-to-r from-[#1F72E5] to-[#45FA25] bg-clip-text font-bold text-transparent dark:from-[#F2DA18] dark:to-[#4DFFC4]">
                 {t("buySlogan")}
               </p>
+            </Link>
+            <Link
+              href="https://x.com/masbateofficial"
+              target="_blank"
+              className="ml-4"
+            >
+              <div className="h-5 w-5 bg-[url(/images/x_white.svg)]"></div>
+            </Link>
+            <Link
+              href="https://t.me/masbateofficial"
+              target="_blank"
+              className="ml-2"
+            >
+              <div className="h-5 w-5 bg-[url(/images/tel.svg)]"></div>
             </Link>
             <AuthButton />
             <LanguageSwitcher />

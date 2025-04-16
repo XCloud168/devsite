@@ -24,6 +24,7 @@ import { getUserProfile } from "@/server/api/routes/auth";
 
 interface SignalItems extends Signals {
   source: TweetInfo & {
+    isAccurate: boolean;
     imagesUrls: string[];
     videoUrls: string[];
     exchange: {

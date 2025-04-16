@@ -1,11 +1,9 @@
 "use client";
 
 import { LanguageSwitcher } from "@/components/language-switcher";
-import { ThemeToggle } from "@/components/theme-toggle";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
 import Link from "next/link";
-import { AuthButton } from "./auth-button";
 import { usePathname } from "next/navigation";
 import {
   Sheet,
@@ -18,17 +16,18 @@ import {
 import { Menu } from "lucide-react";
 
 export function MobileSideBar() {
-  const t = useTranslations("navigation");
+  const t = useTranslations();
   const siteName = useTranslations("metadata").raw("siteName");
   const pathname = usePathname();
   const navigation = [
-    { name: t("signal-catcher"), href: "/signal-catcher" },
+    { name: t("navigation.signal-catcher"), href: "/signal-catcher" },
     // { name: t("swap"), href: "/swap" },
-    { name: t("pricing"), href: "/pricing" },
+    { name: t("navigation.pricing"), href: "/pricing" },
+    { name: t("my.title"), href: "/my" },
   ];
 
   return (
-    <div className="flex items-center justify-between px-4 pt-3 md:hidden">
+    <div className="flex items-center justify-between p-3 md:hidden">
       <Sheet>
         <SheetTrigger>
           <Menu />
@@ -63,11 +62,24 @@ export function MobileSideBar() {
                 </Link>
               ))}
             </nav>
-
-            <div className="mt-auto flex gap-1">
-              <AuthButton />
-              <LanguageSwitcher />
-              <ThemeToggle />
+            <div className="mt-3">
+              <LanguageSwitcher type="text" />
+            </div>
+            <div className="mt-auto grid grid-cols-2 justify-center gap-3 pb-5">
+              <Link
+                href="https://x.com/masbateofficial"
+                target="_blank"
+                className="flex justify-center"
+              >
+                <div className="h-7 w-7 bg-[url(/images/x_white.svg)] bg-contain"></div>
+              </Link>
+              <Link
+                href="https://t.me/masbateofficial"
+                target="_blank"
+                className="flex justify-center"
+              >
+                <div className="h-7 w-7 bg-[url(/images/tel.svg)] bg-contain"></div>
+              </Link>
             </div>
           </div>
         </SheetContent>
@@ -75,7 +87,7 @@ export function MobileSideBar() {
       <Link className="ml-auto flex gap-1.5 hover:scale-105" href={"/pricing"}>
         <Image src="/images/diamond.svg" alt="Logo" width={22} height={22} />
         <p className="bg-gradient-to-r from-[#1F72E5] to-[#45FA25] bg-clip-text font-bold text-transparent dark:from-[#F2DA18] dark:to-[#4DFFC4]">
-          {t("buySlogan")}
+          {t("navigation.buySlogan")}
         </p>
       </Link>
     </div>

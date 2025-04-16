@@ -363,7 +363,8 @@
             "institution_projects": "Institutions &Projects",
             "kol_opinions": "KOL Opinions",
             "positive": "positive",
-            "negative": "negative"
+            "negative": "negative",
+            "suspectedToken": "Suspected Token"
         }
     }
 }
