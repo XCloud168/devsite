@@ -11,6 +11,8 @@ import {
   timestamp,
   uuid,
   varchar,
+  boolean,
+  numeric,
 } from "drizzle-orm/pg-core";
 import { pgTable } from "./base";
 import { announcement } from "./exchange";
@@ -70,6 +72,8 @@ export const signals = pgTable(
     mediaUrls: json("media_urls"),
     providerId: uuid("provider_id").notNull(), // tweet_info.id announcement.id
     entityId: uuid("entity_id").notNull(), // 实体id 如twitter用户id exchange id
+    isAccurate: boolean("is_accurate"),
+    accuracy_rate: numeric("accuracy_rate", { precision: 5, scale: 2 }),
     providerType: varchar("provider_type", { length: 255 })
       .default("twitter")
       .$type<SIGNAL_PROVIDER_TYPE>(),
