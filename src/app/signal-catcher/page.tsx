@@ -25,6 +25,7 @@ import RealtimeSignal from "@/components/signals/realtime-signal";
 import { headers } from "next/headers";
 import { UAParser } from "ua-parser-js";
 import { getUserProfile } from "@/server/api/routes/auth";
+import { MobileBuyBar } from "@/app/signal-catcher/_components/mobile-buy-bar";
 
 export default async function SignalPage() {
   //获取推特列表
@@ -114,6 +115,7 @@ export default async function SignalPage() {
           isMember={isMember}
           isLogged={!!user}
         />
+        {(!isMember || !user) && <MobileBuyBar />}
       </>
     );
   }
