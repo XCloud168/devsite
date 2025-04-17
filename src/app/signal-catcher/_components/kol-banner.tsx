@@ -58,8 +58,8 @@ export function KolBanner({
   const t = useTranslations();
   const router = useRouter();
   const [selectedMenu, setSelectedMenu] = useState<KolMenu>({
-    label: "kol",
-    value: "2",
+    label: "curatedSignals",
+    value: "1",
   });
   const kolMenu: KolMenu[] = useMemo(() => {
     const baseMenu: KolMenu[] = [

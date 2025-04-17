@@ -14,6 +14,7 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { Menu } from "lucide-react";
+import { AuthButton } from "@/components/auth-button";
 
 export function MobileSideBar() {
   const t = useTranslations();
@@ -37,7 +38,7 @@ export function MobileSideBar() {
             <SheetTitle></SheetTitle>
             <SheetDescription></SheetDescription>
           </SheetHeader>
-          <div className="flex !h-full flex-col">
+          <div className="flex h-full flex-col">
             {/* Logo */}
             <Link
               href="/"
@@ -65,26 +66,21 @@ export function MobileSideBar() {
             <div className="mt-3">
               <LanguageSwitcher type="text" />
             </div>
-            <div className="mt-auto grid grid-cols-2 justify-center gap-3 pb-5">
-              <Link
-                href="https://x.com/masbateofficial"
-                target="_blank"
-                className="flex justify-center"
-              >
+            <div className="mt-auto">
+              <AuthButton />
+            </div>
+            <div className="mb-5 mt-3 flex gap-5 pl-2">
+              <Link href="https://x.com/masbateofficial" target="_blank">
                 <div className="h-7 w-7 bg-[url(/images/x_white.svg)] bg-contain"></div>
               </Link>
-              <Link
-                href="https://t.me/masbateofficial"
-                target="_blank"
-                className="flex justify-center"
-              >
+              <Link href="https://t.me/masbateofficial" target="_blank">
                 <div className="h-7 w-7 bg-[url(/images/tel.svg)] bg-contain"></div>
               </Link>
             </div>
           </div>
         </SheetContent>
       </Sheet>
-      <Link className="ml-auto flex gap-1.5 hover:scale-105" href={"/pricing"}>
+      <Link className="flex gap-1.5" href={"/pricing"}>
         <Image src="/images/diamond.svg" alt="Logo" width={22} height={22} />
         <p className="bg-gradient-to-r from-[#1F72E5] to-[#45FA25] bg-clip-text font-bold text-transparent dark:from-[#F2DA18] dark:to-[#4DFFC4]">
           {t("navigation.buySlogan")}

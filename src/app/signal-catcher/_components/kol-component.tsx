@@ -51,8 +51,8 @@ export function KolComponent({
   isLogged,
 }: Props) {
   const [kolMenu, setKolMenu] = useState<KolMenu>({
-    label: "kolPoint",
-    value: "2",
+    label: "curatedSignals",
+    value: "1",
   });
   return (
     <div className="">

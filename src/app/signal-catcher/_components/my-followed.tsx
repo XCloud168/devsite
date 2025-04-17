@@ -203,16 +203,16 @@ export function MyFollowed({
       {!showTable ? (
         <div className="p-3 md:p-5">
           <div className="flex gap-3 p-3">
-            <div className="flex w-[240px] items-center justify-between border px-6">
-              <p>{t("signals.kol.withToken")}</p>
-              <div>
-                <Switch
-                  id="airplane-mode"
-                  checked={hasContractAddress}
-                  onCheckedChange={changeHasContractAddress}
-                />
-              </div>
-            </div>
+            {/*<div className="flex w-[240px] items-center justify-between border px-6">*/}
+            {/*  <p>{t("signals.kol.withToken")}</p>*/}
+            {/*  <div>*/}
+            {/*    <Switch*/}
+            {/*      id="airplane-mode"*/}
+            {/*      checked={hasContractAddress}*/}
+            {/*      onCheckedChange={changeHasContractAddress}*/}
+            {/*    />*/}
+            {/*  </div>*/}
+            {/*</div>*/}
             <div
               className="flex w-[240px] cursor-pointer items-center justify-between border px-6 py-4"
               onClick={() => {

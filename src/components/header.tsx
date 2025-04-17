@@ -16,7 +16,7 @@ export function Header() {
     { name: t("signal-catcher"), href: "/signal-catcher" },
     // { name: t("swap"), href: "/swap" },
     { name: t("pricing"), href: "/pricing" },
-    // { name: t("dashboard"), href: "/dashboard" },
+    { name: t("dashboard"), href: "/dashboard" },
   ];
 
   return (

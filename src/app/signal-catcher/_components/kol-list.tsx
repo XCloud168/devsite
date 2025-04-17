@@ -63,7 +63,9 @@ export function KolList({
           getTagDataAction={getTagDataAction}
           isMobile={isMobile}
         />
-        {(!isMember || !isLogged) && <MobileBuyBar />}
+        {(!isLogged || !isMember) && (
+          <MobileBuyBar isMember={isMember} isLogged={isLogged} />
+        )}
       </div>
     ),
     "2": (
@@ -84,5 +86,5 @@ export function KolList({
       />
     ),
   };
-  return <div className="">{componentsMap[menu.value]}</div>;
+  return componentsMap[menu.value];
 }
