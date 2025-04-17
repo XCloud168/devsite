@@ -157,7 +157,7 @@
         "updateError": "Failed to update settings"
     },
     "my": {
-        "title": "Personal Center",
+        "title": "User Center",
         "description": "Manage your account settings and preferences",
         "sections": {},
         "inviteCode": {
