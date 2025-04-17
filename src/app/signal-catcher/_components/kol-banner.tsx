@@ -57,10 +57,11 @@ export function KolBanner({
 }: KolMenuProps) {
   const t = useTranslations();
   const router = useRouter();
-  const [selectedMenu, setSelectedMenu] = useState<KolMenu>({
-    label: "curatedSignals",
-    value: "1",
-  });
+  const [selectedMenu, setSelectedMenu] = useState<KolMenu>(
+    isMobile
+      ? { label: "curatedSignals", value: "1" }
+      : { label: "kol", value: "2" },
+  );
   const kolMenu: KolMenu[] = useMemo(() => {
     const baseMenu: KolMenu[] = [
       { label: "kol", value: "2", icon: <Sparkles size={20} /> },

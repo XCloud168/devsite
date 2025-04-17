@@ -7,12 +7,14 @@ import Link from "next/link";
 export function MobileBuyBar({
   isLogged,
   isMember,
+  isMobile,
 }: {
   isLogged: boolean;
   isMember?: boolean | null;
+  isMobile?: boolean;
 }) {
   const t = useTranslations();
-
+  if (!isMobile) return null;
   return (
     <div className="fixed bottom-20 left-0 right-0 z-50 flex items-center justify-center">
       <div className="rounded-full bg-background px-3 py-2 text-sm ring-1">

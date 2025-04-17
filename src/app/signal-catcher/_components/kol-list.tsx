@@ -64,7 +64,11 @@ export function KolList({
           isMobile={isMobile}
         />
         {(!isLogged || !isMember) && (
-          <MobileBuyBar isMember={isMember} isLogged={isLogged} />
+          <MobileBuyBar
+            isMember={isMember}
+            isLogged={isLogged}
+            isMobile={isMobile}
+          />
         )}
       </div>
     ),

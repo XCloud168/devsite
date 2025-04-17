@@ -50,10 +50,17 @@ export function KolComponent({
   isMember,
   isLogged,
 }: Props) {
-  const [kolMenu, setKolMenu] = useState<KolMenu>({
-    label: "curatedSignals",
-    value: "1",
-  });
+  const [kolMenu, setKolMenu] = useState<KolMenu>(
+    isMobile
+      ? {
+          label: "curatedSignals",
+          value: "1",
+        }
+      : {
+          label: "kol",
+          value: "2",
+        },
+  );
   return (
     <div className="">
       <KolBanner
