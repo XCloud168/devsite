@@ -2,7 +2,7 @@
 
 import { db } from "@/server/db";
 import { tweetInfo, tweetUsers } from "@/server/db/schemas/tweet";
-import { and, count, eq, gt, inArray, isNotNull, sql } from "drizzle-orm";
+import { and, count, desc, eq, gt, inArray, isNotNull, sql } from "drizzle-orm";
 import { withServerResult } from "@/lib/server-result";
 import { type USER_TYPE } from "@/types/constants";
 import { projects } from "@/server/db/schemas/signal";
@@ -65,7 +65,7 @@ export async function getTwitterUserGains(period: string = "24h") {
           FROM ${tweetInfo} ti
           JOIN ${projects} p ON ti.project_id = p.id
           WHERE ti.tweet_user_id = ${tweetUsers.id}
-          AND ti.${highRateField.name} = (
+          AND ti.high_rate_24h = (
             SELECT MAX(${highRateField})
             FROM ${tweetInfo} ti2
             WHERE ti2.tweet_user_id = ${tweetUsers.id}
@@ -101,4 +101,296 @@ export async function getTwitterUserGains(period: string = "24h") {
 
     return stats;
   });
+}
+
+type ProjectStats = {
+  projectId: string;
+  symbol: string;
+  logo: string;
+  mentionCount: number;
+  firstPrice: number;
+  highestPrice: number;
+  highestRate: number;
+};
+
+/**
+ * 获取单个Twitter用户的详细统计数据
+ * 
+ * @param userId Twitter用户ID
+ * @param period 统计周期，默认为"7d"，可选"30d"
+ * @returns 用户统计数据
+ */
+export async function getTwitterUserStats(userId: string, period: string = "7d") {
+  return withServerResult(async () => {
+    // 确定要使用的时间周期
+    const timeAgo = new Date();
+    const days = period === "30d" ? 30 : 7; // 默认7天
+    timeAgo.setDate(timeAgo.getDate() - days);
+    
+    // 获取用户基本信息
+    const user = await db.query.tweetUsers.findFirst({
+      where: eq(tweetUsers.id, userId)
+    });
+    
+    if (!user) {
+      throw new Error("用户不存在");
+    }
+    
+    // 1. 用户基本统计数据
+    const userStats = await db
+      .select({
+        // 用户基本信息
+        id: tweetUsers.id,
+        name: tweetUsers.name,
+        screenName: tweetUsers.screenName,
+        avatar: tweetUsers.avatar,
+        followersCount: tweetUsers.followersCount,
+        description: tweetUsers.description,
+        
+        // 统计数据
+        tweetsCount: count(tweetInfo.id),
+        
+        // 周期内涨幅大于0的胜率
+        positiveRatePercentage: sql`ROUND(
+          COUNT(CASE WHEN ${tweetInfo.highRate24H}::numeric > 0 THEN 1 ELSE NULL END) * 100.0 / 
+          NULLIF(COUNT(CASE WHEN ${tweetInfo.highRate24H} IS NOT NULL THEN 1 ELSE NULL END), 0),
+          2
+        )`,
+        
+        // 最高涨幅及对应项目
+        maxHighRate: sql`MAX(${tweetInfo.highRate24H})`,
+        maxHighRateProject: sql`(
+          SELECT jsonb_build_object(
+            'symbol', p.symbol,
+            'logo', p.logo,
+            'id', p.id
+          )
+          FROM ${tweetInfo} ti
+          JOIN ${projects} p ON ti.project_id = p.id
+          WHERE ti.high_rate_24h = (
+            SELECT MAX(ti2.high_rate_24h)
+            FROM ${tweetInfo} ti2
+            WHERE ti2.tweet_user_id = ${tweetUsers.id}
+            AND ti2.date_created > ${timeAgo}
+            AND ti2.project_id IS NOT NULL
+          )
+          LIMIT 1
+        )`,
+        
+        // 最大跌幅及对应项目
+        maxLowRate: sql`MIN(${tweetInfo.lowRate24H})`,
+        maxLowRateProject: sql`(
+          SELECT jsonb_build_object(
+            'symbol', p.symbol,
+            'logo', p.logo,
+            'id', p.id
+          )
+          FROM ${tweetInfo} ti
+          JOIN ${projects} p ON ti.project_id = p.id
+          WHERE ti.low_rate_24h = (
+            SELECT MIN(ti2.low_rate_24h)
+            FROM ${tweetInfo} ti2
+            WHERE ti2.tweet_user_id = ${tweetUsers.id}
+            AND ti2.date_created > ${timeAgo}
+            AND ti2.project_id IS NOT NULL
+          )
+          LIMIT 1
+        )`,
+        
+        // 周期内的代币总数
+        projectsCount: sql`COUNT(DISTINCT ${tweetInfo.projectId})`,
+      })
+      .from(tweetUsers)
+      .leftJoin(tweetInfo, eq(tweetUsers.id, tweetInfo.tweetUserId))
+      .where(
+        and(
+          eq(tweetUsers.id, userId),
+          isNotNull(tweetInfo.projectId),
+          gt(tweetInfo.dateCreated, timeAgo)
+        )
+      )
+      .groupBy(
+        tweetUsers.id,
+        tweetUsers.name,
+        tweetUsers.screenName,
+        tweetUsers.avatar,
+        tweetUsers.followersCount,
+        tweetUsers.description
+      )
+      .execute()
+      .then(rows => rows[0]);
+      
+    // 2. 胜率趋势数据（每日胜率）
+    const dailyWinRate = await getDailyWinRate(userId, days);
+    
+    // 3. 获取周期内推文对应的所有项目的涨跌幅数据
+    const projectsPerformance = await getProjectsPerformance(userId, timeAgo);
+    
+    // 4. 代币维度统计 - 按提及次数统计，包含代币符号、logo、提及次数、首次提及价格、最高点价格、最高收益率
+    const projectStats = await getProjectStats(userId, timeAgo);
+    
+    // 5. 获取用户的所有推文（周期内的）
+    const tweets = await getAllTweets(userId, timeAgo);
+    
+    return {
+      userInfo: userStats,
+      dailyWinRate,
+      projectsPerformance,
+      projectStats,
+      tweets
+    };
+  });
+}
+
+/**
+ * 获取每日胜率趋势数据
+ */
+async function getDailyWinRate(userId: string, days: number) {
+  // 定义返回结果的类型
+  interface DailyWinRateResult {
+    date: string | unknown;
+    winRate: number | unknown;
+    tweetsCount: number;
+  }
+  
+  const results: DailyWinRateResult[] = [];
+  
+  for (let i = 0; i < days; i++) {
+    const dayStart = new Date();
+    dayStart.setDate(dayStart.getDate() - i);
+    dayStart.setHours(0, 0, 0, 0);
+    
+    const dayEnd = new Date(dayStart);
+    dayEnd.setHours(23, 59, 59, 999);
+    
+    const dayResult = await db
+      .select({
+        date: sql`TO_CHAR(${tweetInfo.dateCreated}, 'YYYY-MM-DD')`,
+        winRate: sql`ROUND(
+          COUNT(CASE WHEN ${tweetInfo.highRate24H}::numeric > 0 THEN 1 ELSE NULL END) * 100.0 / 
+          NULLIF(COUNT(CASE WHEN ${tweetInfo.highRate24H} IS NOT NULL THEN 1 ELSE NULL END), 0),
+          2
+        )`,
+        tweetsCount: count(tweetInfo.id),
+      })
+      .from(tweetInfo)
+      .where(
+        and(
+          eq(tweetInfo.tweetUserId, userId),
+          isNotNull(tweetInfo.projectId),
+          sql`${tweetInfo.dateCreated} >= ${dayStart}`,
+          sql`${tweetInfo.dateCreated} <= ${dayEnd}`
+        )
+      )
+      .groupBy(sql`TO_CHAR(${tweetInfo.dateCreated}, 'YYYY-MM-DD')`)
+      .execute()
+      .then(rows => rows[0] || {
+        date: dayStart.toISOString().split('T')[0],
+        winRate: 0,
+        tweetsCount: 0
+      });
+      
+    results.push(dayResult);
+  }
+  
+  // 按日期排序
+  return results.sort((a, b) => {
+    const dateA = String(a.date);
+    const dateB = String(b.date);
+    return dateA > dateB ? 1 : -1;
+  });
+}
+
+/**
+ * 获取项目表现数据
+ */
+async function getProjectsPerformance(userId: string, timeAgo: Date) {
+  return await db
+    .select({
+      id: tweetInfo.id,
+      tweetCreatedAt: tweetInfo.tweetCreatedAt,
+      content: tweetInfo.content,
+      highRate24H: tweetInfo.highRate24H,
+      lowRate24H: tweetInfo.lowRate24H,
+      projectId: projects.id,
+      projectSymbol: projects.symbol,
+      projectLogo: projects.logo,
+    })
+    .from(tweetInfo)
+    .leftJoin(projects, eq(tweetInfo.projectId, projects.id))
+    .where(
+      and(
+        eq(tweetInfo.tweetUserId, userId),
+        isNotNull(tweetInfo.projectId),
+        gt(tweetInfo.dateCreated, timeAgo)
+      )
+    )
+    .orderBy(desc(tweetInfo.dateCreated))
+    .execute();
+}
+
+/**
+ * 获取项目统计数据
+ */
+async function getProjectStats(userId: string, timeAgo: Date) {
+  return await db
+    .select({
+      projectId: projects.id,
+      symbol: projects.symbol,
+      logo: projects.logo,
+      mentionCount: count(tweetInfo.id),
+      firstPrice: sql`MIN(${tweetInfo.signalPrice})`,
+      highestPrice: sql`MAX(${tweetInfo.highPrice24H})`,
+      highestRate: sql`MAX(${tweetInfo.highRate24H})`,
+    })
+    .from(tweetInfo)
+    .leftJoin(projects, eq(tweetInfo.projectId, projects.id))
+    .where(
+      and(
+        eq(tweetInfo.tweetUserId, userId),
+        isNotNull(tweetInfo.projectId),
+        gt(tweetInfo.dateCreated, timeAgo)
+      )
+    )
+    .groupBy(projects.id, projects.symbol, projects.logo)
+    .orderBy(desc(sql`COUNT(${tweetInfo.id})`))
+    .execute();
+}
+
+/**
+ * 获取所有推文
+ */
+async function getAllTweets(userId: string, timeAgo: Date) {
+  return await db
+    .select({
+      id: tweetInfo.id,
+      content: tweetInfo.content,
+      contentSummary: tweetInfo.contentSummary,
+      tweetCreatedAt: tweetInfo.tweetCreatedAt,
+      tweetUrl: tweetInfo.tweetUrl,
+      likes: tweetInfo.likes,
+      retweets: tweetInfo.retweets,
+      replies: tweetInfo.replies,
+      highRate24H: tweetInfo.highRate24H,
+      lowRate24H: tweetInfo.lowRate24H,
+      signalPrice: tweetInfo.signalPrice,
+      projectInfo: sql`(
+        SELECT jsonb_build_object(
+          'id', p.id,
+          'symbol', p.symbol,
+          'logo', p.logo
+        )
+        FROM ${projects} p
+        WHERE p.id = ${tweetInfo.projectId}
+      )`,
+    })
+    .from(tweetInfo)
+    .where(
+      and(
+        eq(tweetInfo.tweetUserId, userId),
+        gt(tweetInfo.dateCreated, timeAgo)
+      )
+    )
+    .orderBy(desc(tweetInfo.dateCreated))
+    .execute();
 }
