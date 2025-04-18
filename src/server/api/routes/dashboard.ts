@@ -5,6 +5,7 @@ import { tweetInfo, tweetUsers } from "@/server/db/schemas/tweet";
 import { and, count, eq, gt, inArray, isNotNull, sql } from "drizzle-orm";
 import { withServerResult } from "@/lib/server-result";
 import { type USER_TYPE } from "@/types/constants";
+import { projects } from "@/server/db/schemas/signal";
 
 /**
  * 获取Twitter用户涨幅排行榜
@@ -51,10 +52,28 @@ export async function getTwitterUserGains(period: string = "24h") {
         id: tweetUsers.id,
         name: tweetUsers.name,
         screenName: tweetUsers.screenName,
+        avatar: tweetUsers.avatar,
         followersCount: tweetUsers.followersCount,
         // 统计数据
         signalsCount: count(tweetInfo.id),
         maxHighRate: sql`MAX(${highRateField})`,
+        maxHighRateProject: sql`(
+          SELECT jsonb_build_object(
+            'symbol', p.symbol,
+            'logo', p.logo
+          )
+          FROM ${tweetInfo} ti
+          JOIN ${projects} p ON ti.project_id = p.id
+          WHERE ti.tweet_user_id = ${tweetUsers.id}
+          AND ti.${highRateField.name} = (
+            SELECT MAX(${highRateField})
+            FROM ${tweetInfo} ti2
+            WHERE ti2.tweet_user_id = ${tweetUsers.id}
+            AND ti2.date_created > ${timeAgo}
+            AND ti2.project_id IS NOT NULL
+          )
+          LIMIT 1
+        )`,
         positiveRatePercentage: sql`ROUND(
           COUNT(CASE WHEN ${highRateField}::numeric > 0 THEN 1 ELSE NULL END) * 100.0 / 
           NULLIF(COUNT(CASE WHEN ${highRateField} IS NOT NULL THEN 1 ELSE NULL END), 0),
@@ -73,7 +92,8 @@ export async function getTwitterUserGains(period: string = "24h") {
       .groupBy(
         tweetUsers.id, 
         tweetUsers.name, 
-        tweetUsers.screenName, 
+        tweetUsers.screenName,
+        tweetUsers.avatar,
         tweetUsers.followersCount
       )
       .orderBy(sql`MAX(${highRateField})::numeric DESC`)
