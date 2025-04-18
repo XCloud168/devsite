@@ -60,19 +60,19 @@ export async function getTwitterUserGains(period: string = "24h") {
         maxHighRateProject: sql`(
           SELECT jsonb_build_object(
             'symbol', p.symbol,
-            'logo', p.logo
+            'logo', p.logo,
+            'id', p.id
           )
-          FROM ${tweetInfo} ti
-          JOIN ${projects} p ON ti.project_id = p.id
-          WHERE ti.tweet_user_id = ${tweetUsers.id}
-          AND ti.high_rate_24h = (
-            SELECT MAX(${highRateField})
-            FROM ${tweetInfo} ti2
-            WHERE ti2.tweet_user_id = ${tweetUsers.id}
-            AND ti2.date_created > ${timeAgo}
-            AND ti2.project_id IS NOT NULL
+          FROM ${projects} p
+          WHERE p.id = (
+            SELECT ti.project_id
+            FROM ${tweetInfo} ti
+            WHERE ti.tweet_user_id = ${tweetUsers.id}
+            AND ti.date_created > ${timeAgo.toISOString()}
+            AND ti.project_id IS NOT NULL
+            ORDER BY ti.high_rate_24h DESC
+            LIMIT 1
           )
-          LIMIT 1
         )`,
         positiveRatePercentage: sql`ROUND(
           COUNT(CASE WHEN ${highRateField}::numeric > 0 THEN 1 ELSE NULL END) * 100.0 / 
@@ -86,7 +86,7 @@ export async function getTwitterUserGains(period: string = "24h") {
         and(
           inArray(tweetUsers.userType, allowedUserTypes),
           isNotNull(tweetInfo.projectId),
-          gt(tweetInfo.dateCreated, timeAgo)
+          sql`${tweetInfo.dateCreated} > ${timeAgo.toISOString()}`
         )
       )
       .groupBy(
@@ -165,16 +165,16 @@ export async function getTwitterUserStats(userId: string, period: string = "7d")
             'logo', p.logo,
             'id', p.id
           )
-          FROM ${tweetInfo} ti
-          JOIN ${projects} p ON ti.project_id = p.id
-          WHERE ti.high_rate_24h = (
-            SELECT MAX(ti2.high_rate_24h)
-            FROM ${tweetInfo} ti2
-            WHERE ti2.tweet_user_id = ${tweetUsers.id}
-            AND ti2.date_created > ${timeAgo}
-            AND ti2.project_id IS NOT NULL
+          FROM ${projects} p
+          WHERE p.id = (
+            SELECT ti.project_id
+            FROM ${tweetInfo} ti
+            WHERE ti.tweet_user_id = ${tweetUsers.id}
+            AND ti.date_created > ${timeAgo.toISOString()}
+            AND ti.project_id IS NOT NULL
+            ORDER BY ti.high_rate_24h DESC
+            LIMIT 1
           )
-          LIMIT 1
         )`,
         
         // 最大跌幅及对应项目
@@ -191,7 +191,7 @@ export async function getTwitterUserStats(userId: string, period: string = "7d")
             SELECT MIN(ti2.low_rate_24h)
             FROM ${tweetInfo} ti2
             WHERE ti2.tweet_user_id = ${tweetUsers.id}
-            AND ti2.date_created > ${timeAgo}
+            AND ti2.date_created > ${timeAgo.toISOString()}
             AND ti2.project_id IS NOT NULL
           )
           LIMIT 1
@@ -206,7 +206,7 @@ export async function getTwitterUserStats(userId: string, period: string = "7d")
         and(
           eq(tweetUsers.id, userId),
           isNotNull(tweetInfo.projectId),
-          gt(tweetInfo.dateCreated, timeAgo)
+          sql`${tweetInfo.dateCreated} > ${timeAgo.toISOString()}`
         )
       )
       .groupBy(
@@ -278,8 +278,8 @@ async function getDailyWinRate(userId: string, days: number) {
         and(
           eq(tweetInfo.tweetUserId, userId),
           isNotNull(tweetInfo.projectId),
-          sql`${tweetInfo.dateCreated} >= ${dayStart}`,
-          sql`${tweetInfo.dateCreated} <= ${dayEnd}`
+          sql`${tweetInfo.dateCreated} >= ${dayStart.toISOString()}`,
+          sql`${tweetInfo.dateCreated} <= ${dayEnd.toISOString()}`
         )
       )
       .groupBy(sql`TO_CHAR(${tweetInfo.dateCreated}, 'YYYY-MM-DD')`)
@@ -322,7 +322,7 @@ async function getProjectsPerformance(userId: string, timeAgo: Date) {
       and(
         eq(tweetInfo.tweetUserId, userId),
         isNotNull(tweetInfo.projectId),
-        gt(tweetInfo.dateCreated, timeAgo)
+        sql`${tweetInfo.dateCreated} > ${timeAgo.toISOString()}`
       )
     )
     .orderBy(desc(tweetInfo.dateCreated))
@@ -349,7 +349,7 @@ async function getProjectStats(userId: string, timeAgo: Date) {
       and(
         eq(tweetInfo.tweetUserId, userId),
         isNotNull(tweetInfo.projectId),
-        gt(tweetInfo.dateCreated, timeAgo)
+        sql`${tweetInfo.dateCreated} > ${timeAgo.toISOString()}`
       )
     )
     .groupBy(projects.id, projects.symbol, projects.logo)
@@ -388,7 +388,7 @@ async function getAllTweets(userId: string, timeAgo: Date) {
     .where(
       and(
         eq(tweetInfo.tweetUserId, userId),
-        gt(tweetInfo.dateCreated, timeAgo)
+        sql`${tweetInfo.dateCreated} > ${timeAgo.toISOString()}`
       )
     )
     .orderBy(desc(tweetInfo.dateCreated))
