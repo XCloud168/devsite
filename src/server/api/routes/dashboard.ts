@@ -302,9 +302,27 @@ async function getDailyWinRate(userId: string, days: number) {
 }
 
 /**
- * 获取项目表现数据
+ * 获取项目表现数据（按涨幅排序，每个项目只返回涨幅最高的那条推文）
  */
 async function getProjectsPerformance(userId: string, timeAgo: Date) {
+  // 先获取每个项目的最高涨幅推文ID
+  const subQuery = db
+    .select({
+      projectId: tweetInfo.projectId,
+      maxHighRate: sql`MAX(${tweetInfo.highRate24H})`.as("maxHighRate"),
+    })
+    .from(tweetInfo)
+    .where(
+      and(
+        eq(tweetInfo.tweetUserId, userId),
+        isNotNull(tweetInfo.projectId),
+        sql`${tweetInfo.dateCreated} > ${timeAgo.toISOString()}`
+      )
+    )
+    .groupBy(tweetInfo.projectId)
+    .as('subquery');
+
+  // 主查询：获取每个项目涨幅最高的推文详情
   return await db
     .select({
       id: tweetInfo.id,
@@ -318,14 +336,17 @@ async function getProjectsPerformance(userId: string, timeAgo: Date) {
     })
     .from(tweetInfo)
     .leftJoin(projects, eq(tweetInfo.projectId, projects.id))
+    .leftJoin(subQuery, eq(tweetInfo.projectId, subQuery.projectId))
     .where(
       and(
         eq(tweetInfo.tweetUserId, userId),
         isNotNull(tweetInfo.projectId),
-        sql`${tweetInfo.dateCreated} > ${timeAgo.toISOString()}`
+        sql`${tweetInfo.dateCreated} > ${timeAgo.toISOString()}`,
+        sql`${tweetInfo.highRate24H} = ${subQuery.maxHighRate}`  // 只选择每个项目涨幅最高的推文
       )
     )
-    .orderBy(desc(tweetInfo.dateCreated))
+    .orderBy(desc(tweetInfo.highRate24H))  // 按涨幅降序排序
+    .limit(20)  // 最多返回20条记录
     .execute();
 }
 
