@@ -7,38 +7,37 @@ import { withServerResult } from "@/lib/server-result";
 import { type USER_TYPE } from "@/types/constants";
 
 /**
- * 获取Twitter用户24小时涨幅排行榜
+ * 获取Twitter用户涨幅排行榜
  * 
- * @param period 统计周期，默认为24小时，可选7天或30天
+ * @param period 统计周期，默认为"24h"，可选"7d"或"30d"
  * @returns Twitter用户涨幅统计
  */
-export async function getTwitterUserGains(period: number = 24) {
+export async function getTwitterUserGains(period: string = "24h") {
   return withServerResult(async () => {
     // 确定要使用的时间周期和对应的字段
     const timeAgo = new Date();
-    timeAgo.setHours(timeAgo.getHours() - period);
     
-    // 根据period选择不同的字段
+    // 根据period选择不同的字段和时间范围
     let highRateField, lowRateField;
-    let dateRangeCondition = and(
-      isNotNull(tweetInfo.projectId),
-      gt(tweetInfo.dateCreated, timeAgo)
-    );
     
-    if (period <= 24) {
+    if (period === "24h") {
       // 24小时内的数据
+      timeAgo.setHours(timeAgo.getHours() - 24);
       highRateField = tweetInfo.highRate24H;
       lowRateField = tweetInfo.lowRate24H;
-    } else if (period <= 7 * 24) {
+    } else if (period === "7d") {
       // 7天内的数据
-      //highRateField = tweetInfo.highRate7D;
-      //lowRateField = tweetInfo.lowRate7D;
-      highRateField = tweetInfo.highRate24H;
+      timeAgo.setDate(timeAgo.getDate() - 7);
+      highRateField = tweetInfo.highRate24H; // 仍使用24h的数据
+      lowRateField = tweetInfo.lowRate24H;
+    } else if (period === "30d") {
+      // 30天内的数据
+      timeAgo.setDate(timeAgo.getDate() - 30);
+      highRateField = tweetInfo.highRate24H; // 仍使用24h的数据
       lowRateField = tweetInfo.lowRate24H;
     } else {
-      // 30天内的数据
-      //highRateField = tweetInfo.highRate30D;
-      // lowRateField = tweetInfo.lowRate30D;
+      // 默认使用24小时
+      timeAgo.setHours(timeAgo.getHours() - 24);
       highRateField = tweetInfo.highRate24H;
       lowRateField = tweetInfo.lowRate24H;
     }
