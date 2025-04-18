@@ -114,7 +114,48 @@ type ProjectStats = {
 };
 
 /**
- * 获取单个Twitter用户的详细统计数据
+ * 计算分析时间范围
+ * @param period 统计周期，默认为"7d"，可选"30d"
+ * @returns {timeAgo: Date, days: number} 开始时间和天数
+ */
+function calculateTimeRange(period: string = "7d") {
+  const timeAgo = new Date();
+  const days = period === "30d" ? 30 : 7; // 默认7天
+  timeAgo.setDate(timeAgo.getDate() - days);
+  return { timeAgo, days };
+}
+
+/**
+ * 1. 获取用户基本信息
+ * 
+ * @param userId Twitter用户ID
+ * @returns 用户基本信息
+ */
+export async function getTwitterUserBasicInfo(userId: string) {
+  return withServerResult(async () => {
+    // 获取用户基本信息
+    const user = await db.query.tweetUsers.findFirst({
+      columns: {
+        id: true,
+        name: true,
+        screenName: true,
+        avatar: true,
+        followersCount: true,
+        description: true,
+      },
+      where: eq(tweetUsers.id, userId)
+    });
+    
+    if (!user) {
+      throw new Error("用户不存在");
+    }
+    
+    return user;
+  });
+}
+
+/**
+ * 2. 获取用户统计数据
  * 
  * @param userId Twitter用户ID
  * @param period 统计周期，默认为"7d"，可选"30d"
@@ -122,13 +163,174 @@ type ProjectStats = {
  */
 export async function getTwitterUserStats(userId: string, period: string = "7d") {
   return withServerResult(async () => {
-    // 确定要使用的时间周期
-    const timeAgo = new Date();
-    const days = period === "30d" ? 30 : 7; // 默认7天
-    timeAgo.setDate(timeAgo.getDate() - days);
+    const { timeAgo } = calculateTimeRange(period);
+    
+    // 用户基本统计数据
+    const userStats = await db
+      .select({
+        // 统计数据
+        tweetsCount: count(tweetInfo.id),
+        
+        // 周期内涨幅大于0的胜率
+        positiveRatePercentage: sql`ROUND(
+          COUNT(CASE WHEN ${tweetInfo.highRate24H}::numeric > 0 THEN 1 ELSE NULL END) * 100.0 / 
+          NULLIF(COUNT(CASE WHEN ${tweetInfo.highRate24H} IS NOT NULL THEN 1 ELSE NULL END), 0),
+          2
+        )`,
+        
+        // 最高涨幅及对应项目
+        maxHighRate: sql`MAX(${tweetInfo.highRate24H})`,
+        maxHighRateProject: sql`(
+          SELECT jsonb_build_object(
+            'symbol', p.symbol,
+            'logo', p.logo,
+            'id', p.id
+          )
+          FROM ${projects} p
+          WHERE p.id = (
+            SELECT ti.project_id
+            FROM ${tweetInfo} ti
+            WHERE ti.tweet_user_id = ${tweetUsers.id}
+            AND ti.date_created > ${timeAgo.toISOString()}
+            AND ti.project_id IS NOT NULL
+            ORDER BY ti.high_rate_24h DESC
+            LIMIT 1
+          )
+        )`,
+        
+        // 最大跌幅及对应项目
+        maxLowRate: sql`MIN(${tweetInfo.lowRate24H})`,
+        maxLowRateProject: sql`(
+          SELECT jsonb_build_object(
+            'symbol', p.symbol,
+            'logo', p.logo,
+            'id', p.id
+          )
+          FROM ${tweetInfo} ti
+          JOIN ${projects} p ON ti.project_id = p.id
+          WHERE ti.low_rate_24h = (
+            SELECT MIN(ti2.low_rate_24h)
+            FROM ${tweetInfo} ti2
+            WHERE ti2.tweet_user_id = ${tweetUsers.id}
+            AND ti2.date_created > ${timeAgo.toISOString()}
+            AND ti2.project_id IS NOT NULL
+          )
+          LIMIT 1
+        )`,
+        
+        // 周期内的代币总数
+        projectsCount: sql`COUNT(DISTINCT ${tweetInfo.projectId})`,
+      })
+      .from(tweetInfo)
+      .where(
+        and(
+          eq(tweetInfo.tweetUserId, userId),
+          isNotNull(tweetInfo.projectId),
+          sql`${tweetInfo.dateCreated} > ${timeAgo.toISOString()}`
+        )
+      )
+      .execute()
+      .then(rows => rows[0]);
+      
+    return userStats;
+  });
+}
+
+/**
+ * 3. 获取用户每日胜率趋势数据
+ * 
+ * @param userId Twitter用户ID
+ * @param period 统计周期，默认为"7d"，可选"30d"
+ * @returns 每日胜率趋势数据
+ */
+export async function getTwitterUserDailyWinRate(userId: string, period: string = "7d") {
+  return withServerResult(async () => {
+    const { days } = calculateTimeRange(period);
+    
+    // 胜率趋势数据（每日胜率）
+    const dailyWinRate = await getDailyWinRate(userId, days);
+    
+    return dailyWinRate;
+  });
+}
+
+/**
+ * 4. 获取用户项目表现数据
+ * 
+ * @param userId Twitter用户ID
+ * @param period 统计周期，默认为"7d"，可选"30d"
+ * @returns 项目表现数据
+ */
+export async function getTwitterUserProjectsPerformance(userId: string, period: string = "7d") {
+  return withServerResult(async () => {
+    const { timeAgo } = calculateTimeRange(period);
+    
+    // 获取周期内推文对应的所有项目的涨跌幅数据
+    const projectsPerformance = await getProjectsPerformance(userId, timeAgo);
+    
+    return projectsPerformance;
+  });
+}
+
+/**
+ * 5. 获取用户代币维度统计
+ * 
+ * @param userId Twitter用户ID
+ * @param period 统计周期，默认为"7d"，可选"30d"
+ * @returns 代币维度统计
+ */
+export async function getTwitterUserProjectStats(userId: string, period: string = "7d") {
+  return withServerResult(async () => {
+    const { timeAgo } = calculateTimeRange(period);
+    
+    // 代币维度统计 - 按提及次数统计，包含代币符号、logo、提及次数、首次提及价格、最高点价格、最高收益率
+    const projectStats = await getProjectStats(userId, timeAgo);
+    
+    return projectStats;
+  });
+}
+
+/**
+ * 6. 获取用户所有推文（带分页功能）
+ * 
+ * @param userId Twitter用户ID
+ * @param period 统计周期，默认为"7d"，可选"30d"
+ * @param page 页码，默认为1
+ * @param pageSize 每页数量，默认为10
+ * @returns 用户推文及分页信息
+ */
+export async function getTwitterUserTweets(userId: string, period: string = "7d", page: number = 1, pageSize: number = 10) {
+  return withServerResult(async () => {
+    const { timeAgo } = calculateTimeRange(period);
+    
+    // 获取用户的所有推文（周期内的）
+    const tweetsWithPagination = await getAllTweets(userId, timeAgo, page, pageSize);
+    
+    return tweetsWithPagination;
+  });
+}
+
+/**
+ * 整合所有数据的原始函数（保留但不推荐使用，因为可能会导致加载时间长）
+ * 
+ * @param userId Twitter用户ID
+ * @param period 统计周期，默认为"7d"，可选"30d"
+ * @returns 完整用户数据
+ */
+export async function getTwitterUserAllData(userId: string, period: string = "7d") {
+  return withServerResult(async () => {
+    const { timeAgo, days } = calculateTimeRange(period);
     
     // 获取用户基本信息
     const user = await db.query.tweetUsers.findFirst({
+      columns: {
+        id: true,
+        name: true,
+        screenName: true,
+        avatar: true,
+        followersCount: true,
+        description: true,
+      },
       where: eq(tweetUsers.id, userId)
     });
     
@@ -379,10 +581,36 @@ async function getProjectStats(userId: string, timeAgo: Date) {
 }
 
 /**
- * 获取所有推文
+ * 获取所有推文（带分页功能）
+ * 
+ * @param userId Twitter用户ID
+ * @param timeAgo 起始时间
+ * @param page 页码，默认为1
+ * @param pageSize 每页数量，默认为10
+ * @returns 用户推文及分页信息
  */
-async function getAllTweets(userId: string, timeAgo: Date) {
-  return await db
+async function getAllTweets(userId: string, timeAgo: Date, page: number = 1, pageSize: number = 10) {
+  // 计算分页偏移量
+  const offset = (page - 1) * pageSize;
+  
+  // 查询推文总数
+  const countResult = await db
+    .select({
+      count: sql`COUNT(*)`,
+    })
+    .from(tweetInfo)
+    .where(
+      and(
+        eq(tweetInfo.tweetUserId, userId),
+        isNotNull(tweetInfo.projectId),
+        sql`${tweetInfo.dateCreated} > ${timeAgo.toISOString()}`
+      )
+    )
+    .execute()
+    .then(rows => Number(rows[0]?.count || 0));
+  
+  // 查询分页数据
+  const tweets = await db
     .select({
       id: tweetInfo.id,
       content: tweetInfo.content,
@@ -409,9 +637,131 @@ async function getAllTweets(userId: string, timeAgo: Date) {
     .where(
       and(
         eq(tweetInfo.tweetUserId, userId),
+        isNotNull(tweetInfo.projectId),
         sql`${tweetInfo.dateCreated} > ${timeAgo.toISOString()}`
       )
     )
     .orderBy(desc(tweetInfo.dateCreated))
+    .limit(pageSize)
+    .offset(offset)
     .execute();
+  
+  // 计算总页数
+  const totalPages = Math.ceil(countResult / pageSize);
+  
+  // 返回分页数据和分页信息
+  return {
+    data: tweets,
+    pagination: {
+      currentPage: page,
+      pageSize,
+      totalItems: countResult,
+      totalPages
+    }
+  };
+}
+
+/**
+ * 获取最近24小时涨幅最高的5条推文及相关信息
+ * 
+ * @returns 涨幅最高的推文信息、用户信息、项目信息及提及统计
+ */
+export async function getTop24hGainTweets() {
+  return withServerResult(async () => {
+    // 设置24小时前的时间点
+    const timeAgo = new Date();
+    timeAgo.setHours(timeAgo.getHours() - 24);
+    
+    // 设置7天前的时间点（用于查找提及的用户）
+    const sevenDaysAgo = new Date();
+    sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+    
+    // 查询涨幅最高的5条推文
+    const topTweets = await db
+      .select({
+        // 推文信息
+        id: tweetInfo.id,
+        content: tweetInfo.content,
+        tweetCreatedAt: tweetInfo.tweetCreatedAt,
+        tweetUrl: tweetInfo.tweetUrl,
+        highRate24H: tweetInfo.highRate24H,
+        signalPrice: tweetInfo.signalPrice,
+        
+        // 用户信息
+        userId: tweetUsers.id,
+        userName: tweetUsers.name,
+        userScreenName: tweetUsers.screenName,
+        userAvatar: tweetUsers.avatar,
+        
+        // 项目信息
+        projectId: projects.id,
+        projectSymbol: projects.symbol,
+        projectLogo: projects.logo,
+        
+        // 统计7天内提及该项目的用户数量（排除当前用户）
+        mentionUserCount: sql`(
+          SELECT COUNT(DISTINCT ti.tweet_user_id)
+          FROM ${tweetInfo} ti
+          WHERE ti.project_id = ${tweetInfo.projectId}
+          AND ti.tweet_created_at BETWEEN ${sevenDaysAgo.toISOString()} AND NOW()
+          AND ti.tweet_user_id != ${tweetInfo.tweetUserId}
+        )`.as("mentionUserCount"),
+        
+        // 7天内提及该项目的用户信息（头像和ID）（排除当前用户）
+        mentionUsers: sql`(
+          SELECT jsonb_agg(DISTINCT jsonb_build_object(
+            'id', tu.id,
+            'avatar', tu.avatar
+          ))
+          FROM ${tweetInfo} ti
+          JOIN ${tweetUsers} tu ON ti.tweet_user_id = tu.id
+          WHERE ti.project_id = ${tweetInfo.projectId}
+          AND ti.tweet_created_at BETWEEN ${sevenDaysAgo.toISOString()} AND NOW()
+          AND ti.tweet_user_id != ${tweetInfo.tweetUserId}
+        )`.as("mentionUsers"),
+      })
+      .from(tweetInfo)
+      .leftJoin(tweetUsers, eq(tweetInfo.tweetUserId, tweetUsers.id))
+      .leftJoin(projects, eq(tweetInfo.projectId, projects.id))
+      .where(
+        and(
+          isNotNull(tweetInfo.projectId),
+          sql`${tweetInfo.dateCreated} > ${timeAgo.toISOString()}`,
+          // 确保涨幅为正数
+          sql`${tweetInfo.highRate24H}::numeric > 0`
+        )
+      )
+      .orderBy(desc(tweetInfo.highRate24H)) // 按涨幅降序排序
+      .limit(5) // 只获取前5条
+      .execute();
+
+    // 处理结果，将用户信息和项目信息格式化为更易于前端使用的结构
+    const formattedResults = topTweets.map(tweet => ({
+      tweet: {
+        id: tweet.id,
+        content: tweet.content,
+        createdAt: tweet.tweetCreatedAt,
+        url: tweet.tweetUrl,
+        highRate24H: tweet.highRate24H,
+        signalPrice: tweet.signalPrice
+      },
+      user: {
+        id: tweet.userId,
+        name: tweet.userName,
+        screenName: tweet.userScreenName,
+        avatar: tweet.userAvatar
+      },
+      project: {
+        id: tweet.projectId,
+        symbol: tweet.projectSymbol,
+        logo: tweet.projectLogo
+      },
+      mentions: {
+        count: tweet.mentionUserCount,
+        users: tweet.mentionUsers || []
+      }
+    }));
+
+    return formattedResults;
+  });
 }
