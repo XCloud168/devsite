@@ -165,60 +165,27 @@ export async function getTwitterUserStats(userId: string, period: string = "7d")
   return withServerResult(async () => {
     const { timeAgo } = calculateTimeRange(period);
     
-    // 用户基本统计数据
-    const userStats = await db
+    // 定义明确的类型
+    interface UserStats {
+      tweetsCount: number;
+      positiveRatePercentage: string | number | null;
+      maxHighRate: string | number | null;
+      maxHighRateProject?: any;
+      maxLowRate?: string | number | null;
+      maxLowRateProject?: any;
+      projectsCount?: number;
+    }
+    
+    // 首先查询基本统计数据和项目数量
+    const basicStats = await db
       .select({
-        // 统计数据
         tweetsCount: count(tweetInfo.id),
-        
-        // 周期内涨幅大于0的胜率
         positiveRatePercentage: sql`ROUND(
           COUNT(CASE WHEN ${tweetInfo.highRate24H}::numeric > 0 THEN 1 ELSE NULL END) * 100.0 / 
           NULLIF(COUNT(CASE WHEN ${tweetInfo.highRate24H} IS NOT NULL THEN 1 ELSE NULL END), 0),
           2
         )`,
-        
-        // 最高涨幅及对应项目
         maxHighRate: sql`MAX(${tweetInfo.highRate24H})`,
-        maxHighRateProject: sql`(
-          SELECT jsonb_build_object(
-            'symbol', p.symbol,
-            'logo', p.logo,
-            'id', p.id
-          )
-          FROM ${projects} p
-          WHERE p.id = (
-            SELECT ti.project_id
-            FROM ${tweetInfo} ti
-            WHERE ti.tweet_user_id = ${tweetUsers.id}
-            AND ti.date_created > ${timeAgo.toISOString()}
-            AND ti.project_id IS NOT NULL
-            ORDER BY ti.high_rate_24h DESC
-            LIMIT 1
-          )
-        )`,
-        
-        // 最大跌幅及对应项目
-        maxLowRate: sql`MIN(${tweetInfo.lowRate24H})`,
-        maxLowRateProject: sql`(
-          SELECT jsonb_build_object(
-            'symbol', p.symbol,
-            'logo', p.logo,
-            'id', p.id
-          )
-          FROM ${tweetInfo} ti
-          JOIN ${projects} p ON ti.project_id = p.id
-          WHERE ti.low_rate_24h = (
-            SELECT MIN(ti2.low_rate_24h)
-            FROM ${tweetInfo} ti2
-            WHERE ti2.tweet_user_id = ${tweetUsers.id}
-            AND ti2.date_created > ${timeAgo.toISOString()}
-            AND ti2.project_id IS NOT NULL
-          )
-          LIMIT 1
-        )`,
-        
-        // 周期内的代币总数
         projectsCount: sql`COUNT(DISTINCT ${tweetInfo.projectId})`,
       })
       .from(tweetInfo)
@@ -231,6 +198,105 @@ export async function getTwitterUserStats(userId: string, period: string = "7d")
       )
       .execute()
       .then(rows => rows[0]);
+    
+    // 创建用户统计对象，确保包含所有需要的属性
+    const userStats: UserStats = {
+      tweetsCount: (basicStats?.tweetsCount as number) ?? 0,
+      positiveRatePercentage: (basicStats?.positiveRatePercentage as string | number | null) ?? 0,
+      maxHighRate: (basicStats?.maxHighRate as string | number | null) ?? 0,
+      projectsCount: (basicStats?.projectsCount as number) ?? 0
+    };
+    
+    // 如果有统计数据，查询最高涨幅对应的项目
+    if (userStats.maxHighRate && Number(userStats.maxHighRate) !== 0) {
+      // 查询最高涨幅对应的项目
+      const highRateTweet = await db
+        .select({
+          projectId: tweetInfo.projectId,
+        })
+        .from(tweetInfo)
+        .where(
+          and(
+            eq(tweetInfo.tweetUserId, userId),
+            isNotNull(tweetInfo.projectId),
+            sql`${tweetInfo.dateCreated} > ${timeAgo.toISOString()}`,
+            sql`${tweetInfo.highRate24H} = ${userStats.maxHighRate}`
+          )
+        )
+        .limit(1)
+        .execute()
+        .then(rows => rows[0]?.projectId);
+      
+      if (highRateTweet) {
+        const projectInfo = await db
+          .select({
+            symbol: projects.symbol,
+            logo: projects.logo,
+            id: projects.id,
+          })
+          .from(projects)
+          .where(eq(projects.id, highRateTweet))
+          .limit(1)
+          .execute()
+          .then(rows => rows[0]);
+        
+        userStats.maxHighRateProject = projectInfo;
+      }
+      
+      // 查询最低涨幅
+      const lowRate = await db
+        .select({
+          minRate: sql`MIN(${tweetInfo.lowRate24H})`,
+        })
+        .from(tweetInfo)
+        .where(
+          and(
+            eq(tweetInfo.tweetUserId, userId),
+            isNotNull(tweetInfo.projectId),
+            sql`${tweetInfo.dateCreated} > ${timeAgo.toISOString()}`
+          )
+        )
+        .execute()
+        .then(rows => (rows[0]?.minRate as string | number | null) ?? null);
+      
+      userStats.maxLowRate = lowRate;
+      
+      // 查询最低涨幅对应的项目
+      if (lowRate && Number(lowRate) !== 0) {
+        const lowRateTweet = await db
+          .select({
+            projectId: tweetInfo.projectId,
+          })
+          .from(tweetInfo)
+          .where(
+            and(
+              eq(tweetInfo.tweetUserId, userId),
+              isNotNull(tweetInfo.projectId),
+              sql`${tweetInfo.dateCreated} > ${timeAgo.toISOString()}`,
+              sql`${tweetInfo.lowRate24H} = ${lowRate}`
+            )
+          )
+          .limit(1)
+          .execute()
+          .then(rows => rows[0]?.projectId);
+        
+        if (lowRateTweet) {
+          const projectInfo = await db
+            .select({
+              symbol: projects.symbol,
+              logo: projects.logo,
+              id: projects.id,
+            })
+            .from(projects)
+            .where(eq(projects.id, lowRateTweet))
+            .limit(1)
+            .execute()
+            .then(rows => rows[0]);
+          
+          userStats.maxLowRateProject = projectInfo;
+        }
+      }
+    }
       
     return userStats;
   });
@@ -504,28 +570,16 @@ async function getDailyWinRate(userId: string, days: number) {
 }
 
 /**
- * 获取项目表现数据（按涨幅排序，每个项目只返回涨幅最高的那条推文）
+ * 获取项目表现数据
+ * 针对用户在指定时间段内提到的每个项目，只返回涨幅最高的那条推文
+ * 
+ * @param userId Twitter用户ID
+ * @param timeAgo 起始时间
+ * @returns 按项目分组后每个项目涨幅最高的推文，最多20条
  */
 async function getProjectsPerformance(userId: string, timeAgo: Date) {
-  // 先获取每个项目的最高涨幅推文ID
-  const subQuery = db
-    .select({
-      projectId: tweetInfo.projectId,
-      maxHighRate: sql`MAX(${tweetInfo.highRate24H})`.as("maxHighRate"),
-    })
-    .from(tweetInfo)
-    .where(
-      and(
-        eq(tweetInfo.tweetUserId, userId),
-        isNotNull(tweetInfo.projectId),
-        sql`${tweetInfo.dateCreated} > ${timeAgo.toISOString()}`
-      )
-    )
-    .groupBy(tweetInfo.projectId)
-    .as('subquery');
-
-  // 主查询：获取每个项目涨幅最高的推文详情
-  return await db
+  // 查询用户在时间周期内的所有含项目ID的推文
+  const allTweets = await db
     .select({
       id: tweetInfo.id,
       tweetCreatedAt: tweetInfo.tweetCreatedAt,
@@ -538,18 +592,36 @@ async function getProjectsPerformance(userId: string, timeAgo: Date) {
     })
     .from(tweetInfo)
     .leftJoin(projects, eq(tweetInfo.projectId, projects.id))
-    .leftJoin(subQuery, eq(tweetInfo.projectId, subQuery.projectId))
     .where(
       and(
         eq(tweetInfo.tweetUserId, userId),
         isNotNull(tweetInfo.projectId),
-        sql`${tweetInfo.dateCreated} > ${timeAgo.toISOString()}`,
-        sql`${tweetInfo.highRate24H} = ${subQuery.maxHighRate}`  // 只选择每个项目涨幅最高的推文
+        sql`${tweetInfo.dateCreated} > ${timeAgo.toISOString()}`
       )
     )
-    .orderBy(desc(tweetInfo.highRate24H))  // 按涨幅降序排序
-    .limit(20)  // 最多返回20条记录
+    .orderBy(desc(tweetInfo.highRate24H)) // 按涨幅降序排序
     .execute();
+
+  // 在内存中对数据进行处理
+  // 用Map保存每个项目ID对应的最高涨幅推文
+  const projectMap = new Map();
+  
+  for (const tweet of allTweets) {
+    const projectId = tweet.projectId;
+    
+    // 如果这个项目还没有被处理过，或者当前推文的涨幅高于已有的
+    if (!projectMap.has(projectId) || 
+        parseFloat(String(tweet.highRate24H)) > parseFloat(String(projectMap.get(projectId).highRate24H))) {
+      projectMap.set(projectId, tweet);
+    }
+  }
+  
+  // 将Map中的值转换成数组并按涨幅排序
+  const result = Array.from(projectMap.values())
+    .sort((a, b) => parseFloat(String(b.highRate24H)) - parseFloat(String(a.highRate24H)))
+    .slice(0, 20); // 只取前20条
+  
+  return result;
 }
 
 /**
