@@ -197,7 +197,7 @@ export async function getTwitterUserStats(userId: string, period = "7d") {
     
     // 创建用户统计对象，确保包含所有需要的属性
     const userStats: UserStats = {
-      tweetsCount: (basicStats?.tweetsCount as number) ?? 0,
+      tweetsCount: basicStats?.tweetsCount ?? 0,
       positiveRatePercentage: (basicStats?.positiveRatePercentage as string | number | null) ?? 0,
       maxHighRate: (basicStats?.maxHighRate as string | number | null) ?? 0,
       projectsCount: (basicStats?.projectsCount as number) ?? 0
@@ -549,7 +549,7 @@ async function getDailyWinRate(userId: string, days: number) {
       .groupBy(sql`TO_CHAR(${tweetInfo.dateCreated}, 'YYYY-MM-DD')`)
       .execute()
       .then(rows => rows[0] || {
-        date: dayStart.toISOString().split('T')[0] as string,
+        date: dayStart.toISOString().split('T')[0],
         winRate: Number(0),
         tweetsCount: Number(0)
       });
