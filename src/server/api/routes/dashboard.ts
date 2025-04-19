@@ -533,8 +533,8 @@ async function getDailyWinRate(userId: string, days: number) {
     
     const dayResult = await db
       .select({
-        date: sql`TO_CHAR(${tweetInfo.dateCreated}, 'YYYY-MM-DD')`,
-        winRate: sql`ROUND(
+        date: sql<string>`TO_CHAR(${tweetInfo.dateCreated}, 'YYYY-MM-DD')`,
+        winRate: sql<number>`ROUND(
           COUNT(CASE WHEN ${tweetInfo.highRate24H}::numeric > 0 THEN 1 ELSE NULL END) * 100.0 / 
           NULLIF(COUNT(CASE WHEN ${tweetInfo.highRate24H} IS NOT NULL THEN 1 ELSE NULL END), 0),
           2
@@ -553,9 +553,9 @@ async function getDailyWinRate(userId: string, days: number) {
       .groupBy(sql`TO_CHAR(${tweetInfo.dateCreated}, 'YYYY-MM-DD')`)
       .execute()
       .then(rows => rows[0] || {
-        date: dayStart.toISOString().split('T')[0],
-        winRate: 0,
-        tweetsCount: 0
+        date: <string>dayStart.toISOString().split('T')[0],
+        winRate: Number(0),
+        tweetsCount: Number(0)
       });
       
     results.push(dayResult);
