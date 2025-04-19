@@ -27,9 +27,8 @@ export function LoginContainer({ inviteCode }: { inviteCode?: string }) {
             <Image
               src="/images/logo.svg"
               alt="Logo"
-              width={48}
-              height={48}
-              className="mx-auto h-12 w-12"
+              width={200}
+              height={40}
               priority
             />
           </Link>
