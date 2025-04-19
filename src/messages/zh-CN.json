@@ -367,5 +367,36 @@
             "negative": "利空",
             "suspectedToken": "由于内容未包含合约地址，系统将基于流动性、市值、交易量等参数自动匹配，可能存在误差，请悉知。"
         }
+    },
+    "dashboard": {
+        "kolDashboard": "KOL 仪表盘",
+        "leaderboard": "KOL胜率排行榜",
+        "winRanking": {
+            "ranking": "排名",
+            "username": "用户名",
+            "followers": "粉丝数",
+            "winRate": "胜率",
+            "record": "最佳战绩 ",
+            "details": "详情分析"
+        },
+        "signalBoard": "24hKOL信号榜单",
+        "riseRanking": {
+            "gainRanking": "24 小时 KOL 信号涨幅排行榜",
+            "kolMentions": "KOl提及"
+        },
+        "details": {
+            "kolDetails": "KOL 详情",
+            "drawDown": "最大回撤",
+            "tokensSignaled": "喊单代币总数",
+            "trend": "胜率趋势",
+            "analysis": "喊单盈亏分析",
+            "gainDetails": "喊单涨幅详情",
+            "tokenMentions": "7/30D提及代币的推文",
+            "token": "代币",
+            "totalMentions": "提及总次数",
+            "firstMentionPrice": "首次提及价格",
+            "highestPrice": "最高点价格",
+            "maxPNL": "最大收益率"
+        }
     }
 }

@@ -367,5 +367,36 @@
             "negative": "negative",
             "suspectedToken": "No contract address detected. Matching is based on liquidity, market cap, and volume, and may contain inaccuracies."
         }
+    },
+    "dashboard": {
+        "kolDashboard": "KOL Dashboard",
+        "leaderboard": "KOL Win-Rate Leaderboard ",
+        "winRanking": {
+            "ranking": "Ranking",
+            "username": "Username",
+            "followers": "Followers",
+            "winRate": "Win-Rate",
+            "record": "Top Record ",
+            "details": "View Details"
+        },
+        "signalBoard": "24h KOL Signal Board",
+        "riseRanking": {
+            "gainRanking": "24h KOL Signal Gain Ranking",
+            "kolMentions": "KOl Mentions"
+        },
+        "details": {
+            "kolDetails": "KOL Details",
+            "drawDown": "Max Drawdown",
+            "tokensSignaled": "Total Tokens Signaled",
+            "trend": "Win-Rate Trend",
+            "analysis": "PnL% Analysis of Signals",
+            "gainDetails": "Signal Gain Details",
+            "tokenMentions": "Token Mentions (7D/30D)",
+            "token": "Token",
+            "totalMentions": "Total Mentions",
+            "firstMentionPrice": "First Mention Price",
+            "highestPrice": "Highest Price",
+            "maxPNL": "Max PNL%"
+        }
     }
 }

@@ -36,7 +36,7 @@ type Props = {
   showShare?: boolean;
   tokenItemWidth?: "w-fit" | "w-auto";
 };
-interface SignalItems extends Signals {
+export interface SignalItems extends Signals {
   source: TweetInfo & {
     isAccurate: boolean;
     imagesUrls: string[];
