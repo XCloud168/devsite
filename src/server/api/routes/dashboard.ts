@@ -2,7 +2,7 @@
 
 import { db } from "@/server/db";
 import { tweetInfo, tweetUsers } from "@/server/db/schemas/tweet";
-import { and, count, desc, eq, gt, inArray, isNotNull, sql } from "drizzle-orm";
+import { and, count, desc, eq, inArray, isNotNull, sql } from "drizzle-orm";
 import { withServerResult } from "@/lib/server-result";
 import { type USER_TYPE } from "@/types/constants";
 import { projects } from "@/server/db/schemas/signal";
@@ -13,7 +13,7 @@ import { projects } from "@/server/db/schemas/signal";
  * @param period 统计周期，默认为"24h"，可选"7d"或"30d"
  * @returns Twitter用户涨幅统计
  */
-export async function getTwitterUserGains(period: string = "24h") {
+export async function getTwitterUserGains(period = "24h") {
   return withServerResult(async () => {
     // 确定要使用的时间周期和对应的字段
     const timeAgo = new Date();
@@ -118,7 +118,7 @@ type ProjectStats = {
  * @param period 统计周期，默认为"7d"，可选"30d"
  * @returns {timeAgo: Date, days: number} 开始时间和天数
  */
-function calculateTimeRange(period: string = "7d") {
+function calculateTimeRange(period = "7d") {
   const timeAgo = new Date();
   const days = period === "30d" ? 30 : 7; // 默认7天
   timeAgo.setDate(timeAgo.getDate() - days);
@@ -161,7 +161,7 @@ export async function getTwitterUserBasicInfo(userId: string) {
  * @param period 统计周期，默认为"7d"，可选"30d"
  * @returns 用户统计数据
  */
-export async function getTwitterUserStats(userId: string, period: string = "7d") {
+export async function getTwitterUserStats(userId: string, period = "7d") {
   return withServerResult(async () => {
     const { timeAgo } = calculateTimeRange(period);
     
@@ -309,7 +309,7 @@ export async function getTwitterUserStats(userId: string, period: string = "7d")
  * @param period 统计周期，默认为"7d"，可选"30d"
  * @returns 每日胜率趋势数据
  */
-export async function getTwitterUserDailyWinRate(userId: string, period: string = "7d") {
+export async function getTwitterUserDailyWinRate(userId: string, period = "7d") {
   return withServerResult(async () => {
     const { days } = calculateTimeRange(period);
     
@@ -327,7 +327,7 @@ export async function getTwitterUserDailyWinRate(userId: string, period: string 
  * @param period 统计周期，默认为"7d"，可选"30d"
  * @returns 项目表现数据
  */
-export async function getTwitterUserProjectsPerformance(userId: string, period: string = "7d") {
+export async function getTwitterUserProjectsPerformance(userId: string, period = "7d") {
   return withServerResult(async () => {
     const { timeAgo } = calculateTimeRange(period);
     
@@ -345,7 +345,7 @@ export async function getTwitterUserProjectsPerformance(userId: string, period: 
  * @param period 统计周期，默认为"7d"，可选"30d"
  * @returns 代币维度统计
  */
-export async function getTwitterUserProjectStats(userId: string, period: string = "7d") {
+export async function getTwitterUserProjectStats(userId: string, period = "7d") {
   return withServerResult(async () => {
     const { timeAgo } = calculateTimeRange(period);
     
@@ -365,7 +365,7 @@ export async function getTwitterUserProjectStats(userId: string, period: string 
  * @param pageSize 每页数量，默认为10
  * @returns 用户推文及分页信息
  */
-export async function getTwitterUserTweets(userId: string, period: string = "7d", page: number = 1, pageSize: number = 10) {
+export async function getTwitterUserTweets(userId: string, period = "7d", page = 1, pageSize = 10) {
   return withServerResult(async () => {
     const { timeAgo } = calculateTimeRange(period);
     
@@ -383,7 +383,7 @@ export async function getTwitterUserTweets(userId: string, period: string = "7d"
  * @param period 统计周期，默认为"7d"，可选"30d"
  * @returns 完整用户数据
  */
-export async function getTwitterUserAllData(userId: string, period: string = "7d") {
+export async function getTwitterUserAllData(userId: string, period = "7d") {
   return withServerResult(async () => {
     const { timeAgo, days } = calculateTimeRange(period);
     
@@ -516,8 +516,8 @@ export async function getTwitterUserAllData(userId: string, period: string = "7d
 async function getDailyWinRate(userId: string, days: number) {
   // 定义返回结果的类型
   interface DailyWinRateResult {
-    date: string | unknown;
-    winRate: number | unknown;
+    date: string;
+    winRate: number;
     tweetsCount: number;
   }
   
@@ -661,7 +661,7 @@ async function getProjectStats(userId: string, timeAgo: Date) {
  * @param pageSize 每页数量，默认为10
  * @returns 用户推文及分页信息
  */
-async function getAllTweets(userId: string, timeAgo: Date, page: number = 1, pageSize: number = 10) {
+async function getAllTweets(userId: string, timeAgo: Date, page = 1, pageSize = 10) {
   // 计算分页偏移量
   const offset = (page - 1) * pageSize;
   
@@ -775,7 +775,7 @@ export async function getTop24hGainTweets() {
           SELECT COUNT(DISTINCT ti.tweet_user_id)
           FROM ${tweetInfo} ti
           WHERE ti.project_id = ${tweetInfo.projectId}
-          AND ti.tweet_created_at BETWEEN ${sevenDaysAgo.toISOString()} AND NOW()
+          AND ti.tweet_created_at BETWEEN ${timeAgo.toISOString()} AND NOW()
           AND ti.tweet_user_id != ${tweetInfo.tweetUserId}
         )`.as("mentionUserCount"),
         
@@ -788,7 +788,7 @@ export async function getTop24hGainTweets() {
           FROM ${tweetInfo} ti
           JOIN ${tweetUsers} tu ON ti.tweet_user_id = tu.id
           WHERE ti.project_id = ${tweetInfo.projectId}
-          AND ti.tweet_created_at BETWEEN ${sevenDaysAgo.toISOString()} AND NOW()
+          AND ti.tweet_created_at BETWEEN ${timeAgo.toISOString()} AND NOW()
           AND ti.tweet_user_id != ${tweetInfo.tweetUserId}
         )`.as("mentionUsers"),
       })
