@@ -382,7 +382,7 @@
         "signalBoard": "24hKOL信号榜单",
         "riseRanking": {
             "gainRanking": "24 小时 KOL 信号涨幅排行榜",
-            "kolMentions": "KOl提及"
+            "kolMentions": "提及的KOL"
         },
         "details": {
             "kolDetails": "KOL 详情",
