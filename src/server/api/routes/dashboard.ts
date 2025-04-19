@@ -19,28 +19,24 @@ export async function getTwitterUserGains(period = "24h") {
     const timeAgo = new Date();
     
     // 根据period选择不同的字段和时间范围
-    let highRateField, lowRateField;
+    let highRateField;
     
     if (period === "24h") {
       // 24小时内的数据
       timeAgo.setHours(timeAgo.getHours() - 24);
       highRateField = tweetInfo.highRate24H;
-      lowRateField = tweetInfo.lowRate24H;
     } else if (period === "7d") {
       // 7天内的数据
       timeAgo.setDate(timeAgo.getDate() - 7);
       highRateField = tweetInfo.highRate24H; // 仍使用24h的数据
-      lowRateField = tweetInfo.lowRate24H;
     } else if (period === "30d") {
       // 30天内的数据
       timeAgo.setDate(timeAgo.getDate() - 30);
       highRateField = tweetInfo.highRate24H; // 仍使用24h的数据
-      lowRateField = tweetInfo.lowRate24H;
     } else {
       // 默认使用24小时
       timeAgo.setHours(timeAgo.getHours() - 24);
       highRateField = tweetInfo.highRate24H;
-      lowRateField = tweetInfo.lowRate24H;
     }
 
     // 只查询指定类型的用户
@@ -553,7 +549,7 @@ async function getDailyWinRate(userId: string, days: number) {
       .groupBy(sql`TO_CHAR(${tweetInfo.dateCreated}, 'YYYY-MM-DD')`)
       .execute()
       .then(rows => rows[0] || {
-        date: <string>dayStart.toISOString().split('T')[0],
+        date: dayStart.toISOString().split('T')[0] as string,
         winRate: Number(0),
         tweetsCount: Number(0)
       });
