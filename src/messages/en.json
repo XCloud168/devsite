@@ -13,7 +13,7 @@
         "swap": "Swap",
         "about": "About",
         "buySlogan": "Subscribe to VIP for exclusive signals",
-        "dashboard": "KOL Dashboard"
+        "dashboard": "Ranking"
     },
     "theme": {
         "toggle": "Toggle theme",
@@ -376,7 +376,7 @@
             "username": "Username",
             "followers": "Followers",
             "winRate": "Win-Rate",
-            "record": "Top Record ",
+            "record": "Top Record(24h)",
             "details": "View Details"
         },
         "signalBoard": "24h KOL Signal Board",
@@ -386,7 +386,7 @@
         },
         "details": {
             "kolDetails": "KOL Details",
-            "drawDown": "Max Drawdown",
+            "drawDown": "Max Drawdown(24h)",
             "tokensSignaled": "Total Tokens Signaled",
             "trend": "Win-Rate Trend",
             "analysis": "PnL% Analysis of Signals",
@@ -395,8 +395,8 @@
             "token": "Token",
             "totalMentions": "Total Mentions",
             "firstMentionPrice": "First Mention Price",
-            "highestPrice": "Highest Price",
-            "maxPNL": "Max PNL%"
+            "highestPrice": "Highest Price(24h)",
+            "maxPNL": "Max PNL%(24h)"
         }
     }
 }

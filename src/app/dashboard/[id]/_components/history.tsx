@@ -32,7 +32,7 @@ export function History({ projectStats }: Props) {
         <TableRow>
           <TableHead>{t("dashboard.details.token")}</TableHead>
           <TableHead>{t("dashboard.details.totalMentions")}</TableHead>
-          <TableHead>{t("dashboard.details.totalMentions")}</TableHead>
+          <TableHead>{t("dashboard.details.firstMentionPrice")}</TableHead>
           <TableHead>{t("dashboard.details.highestPrice")}</TableHead>
           <TableHead>{t("dashboard.details.maxPNL")}</TableHead>
         </TableRow>

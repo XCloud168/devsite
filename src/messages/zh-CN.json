@@ -13,7 +13,7 @@
         "swap": "快捷交易",
         "about": "关于",
         "buySlogan": "订阅 VIP 解锁精选信号",
-        "dashboard": "KOL 仪表盘"
+        "dashboard": "排行榜"
     },
     "theme": {
         "toggle": "切换主题",
@@ -376,7 +376,7 @@
             "username": "用户名",
             "followers": "粉丝数",
             "winRate": "胜率",
-            "record": "最佳战绩 ",
+            "record": "最佳战绩(24h)",
             "details": "详情分析"
         },
         "signalBoard": "24hKOL信号榜单",
@@ -386,7 +386,7 @@
         },
         "details": {
             "kolDetails": "KOL 详情",
-            "drawDown": "最大回撤",
+            "drawDown": "最大回撤(24h)",
             "tokensSignaled": "喊单代币总数",
             "trend": "胜率趋势",
             "analysis": "喊单盈亏分析",
@@ -395,8 +395,8 @@
             "token": "代币",
             "totalMentions": "提及总次数",
             "firstMentionPrice": "首次提及价格",
-            "highestPrice": "最高点价格",
-            "maxPNL": "最大收益率"
+            "highestPrice": "最高点价格(24h)",
+            "maxPNL": "最大收益率(24h)"
         }
     }
 }

@@ -11,6 +11,10 @@ import { History } from "@/app/dashboard/[id]/_components/history";
 import { type ServerResult } from "@/lib/server-result";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useTranslations } from "next-intl";
+import TranslationComponent from "@/components/translation-component";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import dayjs from "dayjs";
+import { LoadingMoreBtn } from "@/app/signal-catcher/_components/loading-more-btn";
 interface DetailComponentProps {
   id: string;
   getUserStatsAction: (userId: string, period: string) => Promise<ServerResult>;
@@ -34,53 +38,7 @@ interface DetailComponentProps {
     pageSize: number,
   ) => Promise<ServerResult>;
 }
-// interface UserInfo {
-//   dailyWinRate: {
-//     date: string;
-//     tweetsCount: number;
-//     winRate: string;
-//   }[]; //柱状图
-//   projectStats: {
-//     firstPrice: string;
-//     highestPrice: string;
-//     highestRate: string;
-//     logo: string;
-//     mentionCount: number;
-//     projectId: string;
-//     symbol: string;
-//   }[];
-//   projectsPerformance: {
-//     content: string;
-//     highRate24H: string;
-//     id: string;
-//     lowRate24H: string;
-//     projectId: string;
-//     projectLogo: string;
-//     projectSymbol: string;
-//     tweetCreatedAt: Date;
-//   }[];
-//   tweets: SignalItems[];
-//   userInfo: {
-//     name: string;
-//     avatar: string;
-//     description: string;
-//     followersCount: string;
-//     screenName: string;
-//     maxHighRate: string;
-//     maxHighRateProject: {
-//       id: string;
-//       logo: string;
-//       symbol: string;
-//     };
-//     maxLowRate: string;
-//     maxLowRateProject: {
-//       id: string;
-//       logo: string;
-//       symbol: string;
-//     };
-//     projectsCount: string;
-//   };
-// }
+
 interface UserInfo {
   avatar: string;
   description: string;
@@ -129,6 +87,20 @@ interface ProjectStats {
   projectId: string;
   symbol: string;
 }
+interface TweetItem {
+  content: string;
+  contentSummary: string;
+  highRate24H: string;
+  id: string;
+  likes: number;
+  lowRate24H: string;
+  projectInfo: { id: string; logo: string; symbol: string };
+  replies: number;
+  retweets: number;
+  signalPrice: string;
+  tweetCreatedAt: Date;
+  tweetUrl: string;
+}
 export function DetailComponent({
   id,
   getUserInfoAction,
@@ -136,6 +108,7 @@ export function DetailComponent({
   getUserProjectsPerformanceAction,
   getUserDailyWinRateAction,
   getUserProjectStatsAction,
+  getUserUserTweetsAction,
 }: DetailComponentProps) {
   const t = useTranslations();
   const [selectedRange, setSelectedRange] = useState("7d");
@@ -203,6 +176,35 @@ export function DetailComponent({
     fetchData();
   }, [getUserProjectsPerformanceAction, id, selectedRange]);
 
+  const [userUserTweetLoading, setUserUserTweetLoading] = useState(false);
+  const [userUserTweet, setUserUserTweet] = useState<TweetItem[]>([]);
+  const [page, setPage] = useState(1);
+  const [hasNext, setHasNext] = useState(false);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      setUserUserTweetLoading(true);
+      const response = await getUserUserTweetsAction(
+        id,
+        selectedRange,
+        page,
+        5,
+      );
+      setUserUserTweet(response.data.data);
+      console.log();
+      setHasNext(page !== response.data.pagination.totalPage);
+      setPage(response.data.pagination.currentPage);
+      setUserUserTweetLoading(false);
+    };
+    fetchData();
+  }, [
+    getUserProjectsPerformanceAction,
+    getUserUserTweetsAction,
+    id,
+    page,
+    selectedRange,
+  ]);
+
   return (
     <div className="">
       <Link
@@ -263,26 +265,53 @@ export function DetailComponent({
               <Skeleton className="h-40 w-full bg-secondary" />
             )}
           </div>
-          {/*</div>*/}
-          {/*<div className="w-2/5 p-5">*/}
-          {/*  {pageLoading && userInfo ? (*/}
-          {/*    <div className="space-y-5 px-5">*/}
-          {/*      {[1, 2].map((item) => (*/}
-          {/*        <div className="flex w-full gap-3" key={item}>*/}
-          {/*          <Skeleton className="h-9 w-9 min-w-9 rounded-full bg-secondary" />*/}
-          {/*          <div className="w-full space-y-2">*/}
-          {/*            <Skeleton className="h-4 w-1/5 bg-secondary" />*/}
-          {/*            <Skeleton className="h-4 w-2/5 bg-secondary" />*/}
-          {/*            <Skeleton className="h-20 w-full bg-secondary" />*/}
-          {/*          </div>*/}
-          {/*        </div>*/}
-          {/*      ))}*/}
-          {/*    </div>*/}
-          {/*  ) : (*/}
-          {/*    userInfo?.tweets.map((signal) => (*/}
-          {/*      <FeaturedCard signal={signal} key={signal.id} />*/}
-          {/*    ))*/}
-          {/*  )}*/}
+        </div>
+        <div className="w-2/5 p-5">
+          <div className="space-y-5 px-5">
+            {!userUserTweetLoading && userUserTweet
+              ? userUserTweet.map((tweet) => (
+                  <div key={tweet.id} className="space-y-2">
+                    <div className="flex items-center gap-2">
+                      <Avatar className="h-8 w-8">
+                        <AvatarImage src={tweet.projectInfo.logo ?? ""} />
+                        <AvatarFallback></AvatarFallback>
+                      </Avatar>
+                      <p>{tweet.projectInfo.symbol}</p>
+                      <p className="text-xs text-black/60">
+                        {dayjs(tweet.tweetCreatedAt).format(
+                          "YYYY-MM-DD HH:mm:ss",
+                        )}
+                      </p>
+                    </div>
+                    <div className="rounded-lg bg-[#4949493a] p-3">
+                      <TranslationComponent content={tweet.content ?? ""} />
+                    </div>
+                  </div>
+                ))
+              : [1, 2].map((item) => (
+                  <div className="flex w-full gap-3" key={item}>
+                    <Skeleton className="h-9 w-9 min-w-9 rounded-full bg-secondary" />
+                    <div className="w-full space-y-2">
+                      <Skeleton className="h-4 w-1/5 bg-secondary" />
+                      <Skeleton className="h-4 w-2/5 bg-secondary" />
+                      <Skeleton className="h-20 w-full bg-secondary" />
+                    </div>
+                  </div>
+                ))}
+          </div>
+          <LoadingMoreBtn
+            pageLoading={userUserTweetLoading}
+            hasNext={hasNext}
+            onNextAction={() => {
+              getUserUserTweetsAction(id, selectedRange, page, 5).then(
+                (res) => {
+                  setUserUserTweet((prev) => prev.concat(res.data.data));
+                  setHasNext(page !== res.data.pagination.currentPage);
+                  setPage(res.data.pagination.currentPage);
+                },
+              );
+            }}
+          />
         </div>
       </div>
     </div>
