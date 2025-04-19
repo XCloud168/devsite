@@ -38,8 +38,8 @@ export function History({ projectStats }: Props) {
         </TableRow>
       </TableHeader>
       <TableBody>
-        {projectStats.map((data) => (
-          <TableRow key={data.symbol}>
+        {projectStats.map((data, index) => (
+          <TableRow key={data.symbol + index}>
             <TableCell className="flex items-center gap-2">
               <Avatar className="h-5 w-5">
                 <AvatarImage src={data.logo ?? ""} />

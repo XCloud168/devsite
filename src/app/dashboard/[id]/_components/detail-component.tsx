@@ -12,7 +12,6 @@ import { type ServerResult } from "@/lib/server-result";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useTranslations } from "next-intl";
 import TranslationComponent from "@/components/translation-component";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import dayjs from "dayjs";
 import { LoadingMoreBtn } from "@/app/signal-catcher/_components/loading-more-btn";
 interface DetailComponentProps {
@@ -267,17 +266,16 @@ export function DetailComponent({
           </div>
         </div>
         <div className="w-2/5 p-5">
+          <p className="pb-4 text-center">
+            {userInfo?.name}&nbsp;
+            {t("dashboard.details.tokenMentions")}
+          </p>
           <div className="space-y-5 px-5">
             {!userUserTweetLoading && userUserTweet
               ? userUserTweet.map((tweet) => (
                   <div key={tweet.id} className="space-y-2">
                     <div className="flex items-center gap-2">
-                      <Avatar className="h-8 w-8">
-                        <AvatarImage src={tweet.projectInfo.logo ?? ""} />
-                        <AvatarFallback></AvatarFallback>
-                      </Avatar>
-                      <p>{tweet.projectInfo.symbol}</p>
-                      <p className="text-xs text-black/60">
+                      <p className="text-[#FFFFA7]">
                         {dayjs(tweet.tweetCreatedAt).format(
                           "YYYY-MM-DD HH:mm:ss",
                         )}
