@@ -100,7 +100,7 @@ export function WinComponent({ getWinRankingListAction }: Props) {
                       {t("dashboard.winRanking.winRate")}
                     </p>
                     <p className="text-[#FFFFA7]">
-                      {tableData[1]?.maxHighRate}%
+                      {tableData[1]?.positiveRatePercentage}%
                     </p>
                   </div>
                   <div>
@@ -112,7 +112,7 @@ export function WinComponent({ getWinRankingListAction }: Props) {
                         {tableData[1]?.maxHighRateProject.symbol}
                       </p>
                       <p className="text-primary">
-                        +{tableData[1]?.positiveRatePercentage}%
+                        +{tableData[1]?.maxHighRate}%
                       </p>
                     </div>
                   </div>
@@ -146,7 +146,7 @@ export function WinComponent({ getWinRankingListAction }: Props) {
                       {t("dashboard.winRanking.winRate")}
                     </p>
                     <p className="text-[#FFFFA7]">
-                      {tableData[0]?.maxHighRate}%
+                      {tableData[0]?.positiveRatePercentage}%
                     </p>
                   </div>
                   <div>
@@ -158,7 +158,7 @@ export function WinComponent({ getWinRankingListAction }: Props) {
                         {tableData[0]?.maxHighRateProject.symbol}
                       </p>
                       <p className="text-primary">
-                        +{tableData[0]?.positiveRatePercentage}%
+                        +{tableData[0]?.maxHighRate}%
                       </p>
                     </div>
                   </div>
@@ -192,7 +192,7 @@ export function WinComponent({ getWinRankingListAction }: Props) {
                       {t("dashboard.winRanking.winRate")}
                     </p>
                     <p className="text-[#FFFFA7]">
-                      {tableData[2]?.maxHighRate}%
+                      {tableData[2]?.positiveRatePercentage}%
                     </p>
                   </div>
                   <div>
@@ -204,7 +204,7 @@ export function WinComponent({ getWinRankingListAction }: Props) {
                         {tableData[2]?.maxHighRateProject.symbol}
                       </p>
                       <p className="text-primary">
-                        +{tableData[2]?.positiveRatePercentage}%
+                        +{tableData[2]?.maxHighRate}%
                       </p>
                     </div>
                   </div>
@@ -259,7 +259,7 @@ export function WinComponent({ getWinRankingListAction }: Props) {
                     </TableCell>
                     <TableCell>{formatNumber(data.followersCount)}</TableCell>
                     <TableCell className="text-[#FFFFA7]">
-                      +{data.maxHighRate}%
+                      +{data.positiveRatePercentage}%
                     </TableCell>
                     <TableCell className="flex items-center gap-2">
                       <Avatar className="h-5 w-5">
@@ -268,7 +268,7 @@ export function WinComponent({ getWinRankingListAction }: Props) {
                       </Avatar>
                       <p>{data.maxHighRateProject.symbol}</p>
                       <p className="h-9 truncate leading-9 text-primary">
-                        +{data.positiveRatePercentage}%
+                        +{data.maxHighRate}%
                       </p>
                     </TableCell>
 
