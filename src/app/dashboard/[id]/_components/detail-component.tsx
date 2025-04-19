@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { ChevronLeft } from "lucide-react";
 import Link from "next/link";
 import { KolInfo } from "@/app/dashboard/[id]/_components/kol-info";
@@ -10,10 +10,6 @@ import { BubbleChat } from "@/app/dashboard/[id]/_components/bubble-chat";
 import { History } from "@/app/dashboard/[id]/_components/history";
 import { type ServerResult } from "@/lib/server-result";
 import { Skeleton } from "@/components/ui/skeleton";
-import {
-  FeaturedCard,
-  type SignalItems,
-} from "@/app/signal-catcher/_components/featured-card";
 import { useTranslations } from "next-intl";
 interface DetailComponentProps {
   id: string;

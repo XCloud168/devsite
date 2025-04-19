@@ -1,6 +1,5 @@
 "use client";
 
-import { QRCode } from "@/components/qrcode";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -10,21 +9,13 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
+
 import { Input } from "@/components/ui/input";
 import { toPng } from "html-to-image";
-import { Check, Copy, Download, Share2 } from "lucide-react";
+import { Check, Copy } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
-import Poster from "@/components/poster/poster";
 import SharePoster from "@/components/poster/share-poster";
 import Image from "next/image";
 interface InviteCodeProps {

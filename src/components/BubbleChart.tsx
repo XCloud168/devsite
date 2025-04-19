@@ -167,7 +167,12 @@ const BubbleChart: React.FC<BubbleChartProps> = ({
         const col = Math.floor(d.x / gridSize);
         const row = Math.floor(d.y / gridSize);
         if (col >= 0 && col < gridCols && row >= 0 && row < gridRows) {
-          // @ts-ignore
+          if (!grid[row]) {
+            grid[row] = [];
+          }
+          if (!grid[row][col]) {
+            grid[row][col] = [];
+          }
           grid[row][col].push(d);
         }
       });
@@ -175,8 +180,9 @@ const BubbleChart: React.FC<BubbleChartProps> = ({
       // 检查相邻网格的碰撞
       for (let row = 0; row < gridRows; row++) {
         for (let col = 0; col < gridCols; col++) {
-          // @ts-ignore
-          const currentGrid = grid[row][col];
+          const currentGrid = grid[row]?.[col]; // 使用可选链操作符
+          if (!currentGrid) continue; // 如果当前网格不存在则跳过
+
           for (let dr = -1; dr <= 1; dr++) {
             for (let dc = -1; dc <= 1; dc++) {
               const nRow = row + dr;
@@ -187,11 +193,10 @@ const BubbleChart: React.FC<BubbleChartProps> = ({
                 nCol >= 0 &&
                 nCol < gridCols
               ) {
-                // @ts-ignore
-                const neighborGrid = grid[nRow][nCol];
-                // @ts-ignore
+                const neighborGrid = grid[nRow]?.[nCol]; // 使用可选链操作符
+                if (!neighborGrid) continue; // 如果邻居网格不存在则跳过
+
                 currentGrid.forEach((d1) => {
-                  // @ts-ignore
                   neighborGrid.forEach((d2) => {
                     if (d1 !== d2) {
                       const dx = d2.x - d1.x;
