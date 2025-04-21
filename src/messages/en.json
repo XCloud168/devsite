@@ -378,7 +378,8 @@
             "winRate": "Win-Rate",
             "record": "Top Record(24h)",
             "details": "View Details",
-            "winTip": "A signal is successful if the token rises post-publication."
+            "winTip": "A signal is successful if the token rises post-publication.",
+            "analysis": "Analysis"
         },
         "signalBoard": "24h KOL Signal Board",
         "riseRanking": {

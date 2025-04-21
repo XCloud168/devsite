@@ -378,7 +378,8 @@
             "winRate": "胜率",
             "record": "最佳战绩(24h)",
             "details": "详情分析",
-            "winTip": "当喊单发布后，若代币涨幅 > 0，即判定该次喊单为成功。"
+            "winTip": "当喊单发布后，若代币涨幅 > 0，即判定该次喊单为成功。",
+            "analysis": "分析"
         },
         "signalBoard": "24hKOL信号榜单",
         "riseRanking": {

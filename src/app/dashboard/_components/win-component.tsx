@@ -225,12 +225,12 @@ export function WinComponent({ getWinRankingListAction }: Props) {
             <Skeleton className="mt-6 h-[170px] w-[280px] bg-secondary" />
           </div>
         )}
-        <div className="mt-20 flex items-center gap-5">
+        <div className="mt-24 flex items-center gap-5">
           <div className="h-[1px] w-5 bg-white"></div>
           <p>TOP 50</p>
           <div className="h-[1px] w-5 bg-white"></div>
         </div>
-        <div className="mt-10 w-full">
+        <div className="mt-10 h-[calc(100vh-560px)] w-full overflow-y-scroll pr-3 scrollbar-thin scrollbar-track-transparent scrollbar-thumb-secondary">
           {!pageLoading && tableData ? (
             <Table>
               {/*<TableCaption>A list of your recent invoices.</TableCaption>*/}
@@ -256,9 +256,7 @@ export function WinComponent({ getWinRankingListAction }: Props) {
                     </Popover>
                   </TableHead>
                   <TableHead>{t("dashboard.winRanking.record")}</TableHead>
-                  <TableHead className="text-right">
-                    {t("common.more")}
-                  </TableHead>
+                  <TableHead>{t("dashboard.winRanking.analysis")}</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -293,7 +291,7 @@ export function WinComponent({ getWinRankingListAction }: Props) {
                       </p>
                     </TableCell>
 
-                    <TableCell className="text-right">
+                    <TableCell>
                       <Button
                         variant="secondary"
                         className="justify-start gap-2"
