@@ -15,9 +15,9 @@ import { useTranslations } from "next-intl";
 
 interface Props {
   projectStats: {
-    firstPrice: string;
-    highestPrice: string;
-    highestRate: string;
+    signalPrice: string;
+    highPrice: string;
+    highRate: string;
     logo: string;
     mentionCount: number;
     projectId: string;
@@ -40,17 +40,17 @@ export function History({ projectStats }: Props) {
       <TableBody>
         {projectStats.map((data, index) => (
           <TableRow key={data.symbol + index}>
-            <TableCell className="flex items-center gap-2">
+            <TableCell className="flex items-center gap-2 py-3">
               <Avatar className="h-5 w-5">
                 <AvatarImage src={data.logo ?? ""} />
                 <AvatarFallback></AvatarFallback>
               </Avatar>
               <p>{data.symbol}</p>
             </TableCell>
-            <TableCell>{data.mentionCount}</TableCell>
-            <TableCell> {data.firstPrice}</TableCell>
-            <TableCell>{data.highestPrice}</TableCell>
-            <TableCell>{data.highestRate}%</TableCell>
+            <TableCell className="py-3">{data.mentionCount}</TableCell>
+            <TableCell className="py-3"> {data.signalPrice}</TableCell>
+            <TableCell className="py-3">{data.highPrice}</TableCell>
+            <TableCell className="py-3">{data.highRate}%</TableCell>
           </TableRow>
         ))}
       </TableBody>

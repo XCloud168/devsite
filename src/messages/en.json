@@ -376,7 +376,7 @@
             "username": "Username",
             "followers": "Followers",
             "winRate": "Win-Rate",
-            "record": "Top Record(24h)",
+            "record": "Top Record",
             "details": "View Details",
             "winTip": "A signal is successful if the token rises post-publication.",
             "analysis": "Analysis"
@@ -388,7 +388,7 @@
         },
         "details": {
             "kolDetails": "KOL Details",
-            "drawDown": "Max Drawdown(24h)",
+            "drawDown": "Max Drawdown",
             "tokensSignaled": "Total Tokens Signaled",
             "trend": "Win-Rate Trend",
             "analysis": "PnL% Analysis of Signals",

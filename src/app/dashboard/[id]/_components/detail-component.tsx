@@ -63,9 +63,9 @@ interface UserState {
 }
 interface ProjectsPerformance {
   content: string;
-  highRate24H: string;
+  highRate: string;
   id: string;
-  lowRate24H: string;
+  lowRate: string;
   projectId: string;
   projectLogo: string;
   projectSymbol: string;

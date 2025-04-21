@@ -376,7 +376,7 @@
             "username": "用户名",
             "followers": "粉丝数",
             "winRate": "胜率",
-            "record": "最佳战绩(24h)",
+            "record": "最佳战绩",
             "details": "详情分析",
             "winTip": "当喊单发布后，若代币涨幅 > 0，即判定该次喊单为成功。",
             "analysis": "分析"
@@ -388,7 +388,7 @@
         },
         "details": {
             "kolDetails": "KOL 详情",
-            "drawDown": "最大回撤(24h)",
+            "drawDown": "最大回撤",
             "tokensSignaled": "喊单代币总数",
             "trend": "胜率趋势",
             "analysis": "喊单盈亏分析",

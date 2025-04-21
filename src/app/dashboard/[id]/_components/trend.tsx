@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useMemo } from "react";
-import { Bar, BarChart, LineChart, Line, XAxis, YAxis } from "recharts";
+import { LineChart, Line, YAxis } from "recharts";
 import { type ChartConfig, ChartContainer } from "@/components/ui/chart";
 
 const chartConfig = {

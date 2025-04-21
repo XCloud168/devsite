@@ -5,9 +5,9 @@ import BubbleChart from "@/components/BubbleChart";
 interface Props {
   chartData: {
     content: string;
-    highRate24H: string;
+    highRate: string;
     id: string;
-    lowRate24H: string;
+    lowRate: string;
     projectId: string;
     projectLogo: string;
     projectSymbol: string;
@@ -26,8 +26,8 @@ export function BubbleChat({ chartData }: Props) {
       vy: 0,
       imageUrl: item.projectLogo,
       label1: item.projectSymbol,
-      label2: item.highRate24H,
-      label3: item.lowRate24H,
+      label2: item.highRate + "%",
+      label3: item.lowRate + "%",
       labelColor2: "#00ff88",
       labelColor3: "#ff5151",
     }));

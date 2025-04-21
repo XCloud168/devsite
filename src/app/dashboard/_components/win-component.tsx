@@ -109,7 +109,7 @@ export function WinComponent({ getWinRankingListAction }: Props) {
                       {tableData[1]?.positiveRatePercentage}%
                     </p>
                   </div>
-                  <div>
+                  <div className="space-y-1">
                     <p className="text-xs">
                       {t("dashboard.winRanking.record")}
                     </p>
@@ -131,7 +131,7 @@ export function WinComponent({ getWinRankingListAction }: Props) {
                 </div>
               </div>
             </div>
-            <div className="relative mb-6 w-[300px] overflow-hidden rounded-xl border border-[#D7D7D780]">
+            <div className="relative mb-6 w-[300px] overflow-hidden rounded-xl border border-[#FFFFA780]">
               <div className="absolute right-4 top-0 h-[49px] w-[44px] bg-[url(/images/dashboard/no1.png)] bg-contain bg-no-repeat"></div>
               <div className="h-5 w-1/3 bg-gradient-to-r from-[#FFFFA780] to-[#99996400] pl-3 text-xs leading-5">
                 Top 1
@@ -161,7 +161,7 @@ export function WinComponent({ getWinRankingListAction }: Props) {
                       {tableData[0]?.positiveRatePercentage}%
                     </p>
                   </div>
-                  <div>
+                  <div className="space-y-1">
                     <p className="text-xs">
                       {t("dashboard.winRanking.record")}
                     </p>
@@ -248,11 +248,11 @@ export function WinComponent({ getWinRankingListAction }: Props) {
           <p>TOP 50</p>
           <div className="h-[1px] w-5 bg-white"></div>
         </div>
-        <div className="mt-10 h-[calc(100vh-560px)] w-full overflow-y-scroll pr-3 scrollbar-thin scrollbar-track-transparent scrollbar-thumb-secondary">
+        <div className="relative mt-10 h-[calc(100vh-560px)] w-full overflow-y-scroll pr-3 scrollbar-thin scrollbar-track-transparent scrollbar-thumb-secondary">
           {!pageLoading && tableData ? (
             <Table>
               {/*<TableCaption>A list of your recent invoices.</TableCaption>*/}
-              <TableHeader>
+              <TableHeader className="sticky top-0 z-10 bg-background">
                 <TableRow>
                   <TableHead>{t("dashboard.winRanking.ranking")}</TableHead>
                   <TableHead>{t("dashboard.winRanking.username")}</TableHead>
@@ -268,7 +268,7 @@ export function WinComponent({ getWinRankingListAction }: Props) {
                           />
                         </div>
                       </PopoverTrigger>
-                      <PopoverContent className="w-96 rounded-lg border bg-background p-2">
+                      <PopoverContent className="w-fit rounded-lg border bg-background p-2 text-xs text-white/90">
                         {t("dashboard.winRanking.winTip")}
                       </PopoverContent>
                     </Popover>
