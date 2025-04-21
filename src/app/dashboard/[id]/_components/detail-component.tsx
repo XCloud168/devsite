@@ -78,9 +78,9 @@ interface DailyWinRate {
   winRate: string;
 } //柱状图
 interface ProjectStats {
-  firstPrice: string;
-  highestPrice: string;
-  highestRate: string;
+  signalPrice: string;
+  highPrice: string;
+  highRate: string;
   logo: string;
   mentionCount: number;
   projectId: string;
