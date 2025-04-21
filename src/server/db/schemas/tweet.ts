@@ -141,7 +141,8 @@ export const tweetInfo = pgTable(
     lowPriceTime30D: timestamp("low_price_time_30d", { withTimezone: true }),
     highPriceTime30D: timestamp("high_price_time_30d", { withTimezone: true }),
     isAccurate: boolean("is_accurate").default(false),
-    accuracy_rate: numeric("accuracy_rate", { precision: 5, scale: 2 })
+    accuracy_rate: numeric("accuracy_rate", { precision: 5, scale: 2 }),
+    priceSource: varchar("price_source", { length: 255 })
   },
   (table) => [index("tweet_id_idx").on(table.tweetId)],
 ).enableRLS();
