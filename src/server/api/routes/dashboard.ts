@@ -2,7 +2,7 @@
 
 import { db } from "@/server/db";
 import { tweetInfo, tweetUsers } from "@/server/db/schemas/tweet";
-import { and, count, desc, eq, inArray, isNotNull, sql } from "drizzle-orm";
+import { and, count, desc, eq, inArray, isNotNull, sql, asc } from "drizzle-orm";
 import { withServerResult } from "@/lib/server-result";
 import { type USER_TYPE } from "@/types/constants";
 import { projects } from "@/server/db/schemas/signal";
@@ -28,11 +28,11 @@ export async function getTwitterUserGains(period = "24h") {
     } else if (period === "7d") {
       // 7天内的数据
       timeAgo.setDate(timeAgo.getDate() - 7);
-      highRateField = tweetInfo.highRate24H; // 仍使用24h的数据
+      highRateField = tweetInfo.highRate7D; // 仍使用24h的数据
     } else if (period === "30d") {
       // 30天内的数据
       timeAgo.setDate(timeAgo.getDate() - 30);
-      highRateField = tweetInfo.highRate24H; // 仍使用24h的数据
+      highRateField = tweetInfo.highRate30D; // 仍使用24h的数据
     } else {
       // 默认使用24小时
       timeAgo.setHours(timeAgo.getHours() - 24);
@@ -71,7 +71,7 @@ export async function getTwitterUserGains(period = "24h") {
             WHERE ti.tweet_user_id = ${tweetUsers.id}
             AND ti.date_created > ${timeAgo.toISOString()}
             AND ti.project_id IS NOT NULL
-            ORDER BY ti.high_rate_24h DESC
+            ORDER BY ${highRateField} DESC
             LIMIT 1
           )
         )`,
@@ -344,10 +344,9 @@ export async function getTwitterUserProjectsPerformance(
   period = "7d",
 ) {
   return withServerResult(async () => {
-    const { timeAgo } = calculateTimeRange(period);
 
     // 获取周期内推文对应的所有项目的涨跌幅数据
-    const projectsPerformance = await getProjectsPerformance(userId, timeAgo);
+    const projectsPerformance = await getProjectsPerformance(userId, period);
 
     return projectsPerformance;
   });
@@ -365,10 +364,10 @@ export async function getTwitterUserProjectStats(
   period = "7d",
 ) {
   return withServerResult(async () => {
-    const { timeAgo } = calculateTimeRange(period);
+    // const { timeAgo } = calculateTimeRange(period);
 
     // 代币维度统计 - 按提及次数统计，包含代币符号、logo、提及次数、首次提及价格、最高点价格、最高收益率
-    const projectStats = await getProjectStats(userId, timeAgo);
+    const projectStats = await getProjectStats(userId, period);
 
     return projectStats;
   });
@@ -520,10 +519,10 @@ export async function getTwitterUserAllData(userId: string, period = "7d") {
     const dailyWinRate = await getDailyWinRate(userId, days);
 
     // 3. 获取周期内推文对应的所有项目的涨跌幅数据
-    const projectsPerformance = await getProjectsPerformance(userId, timeAgo);
+    const projectsPerformance = await getProjectsPerformance(userId, period);
 
     // 4. 代币维度统计 - 按提及次数统计，包含代币符号、logo、提及次数、首次提及价格、最高点价格、最高收益率
-    const projectStats = await getProjectStats(userId, timeAgo);
+    const projectStats = await getProjectStats(userId, period);
 
     // 5. 获取用户的所有推文（周期内的）
     const tweets = await getAllTweets(userId, timeAgo);
@@ -605,18 +604,35 @@ async function getDailyWinRate(userId: string, days: number) {
  * 针对用户在指定时间段内提到的每个项目，只返回涨幅最高的那条推文
  *
  * @param userId Twitter用户ID
- * @param timeAgo 起始时间
+ * @param period 统计周期，默认为"7d"，可选"30d"
  * @returns 按项目分组后每个项目涨幅最高的推文，最多20条
  */
-async function getProjectsPerformance(userId: string, timeAgo: Date) {
+async function getProjectsPerformance(userId: string, period: string = '7d') {
+  // 根据period计算timeAgo和选择涨幅、跌幅字段
+  const now = new Date();
+  let timeAgo: Date;
+  let highRateField: any;
+  let lowRateField: any;
+
+  if (period === '7d') {
+    timeAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000); // 7天前
+    highRateField = tweetInfo.highRate7D;
+    lowRateField = tweetInfo.lowRate7D;
+  } else if (period === '30d') {
+    timeAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000); // 30天前
+    highRateField = tweetInfo.highRate30D;
+    lowRateField = tweetInfo.lowRate30D;
+  } else {
+    throw new Error('Invalid period specified');
+  }
+
   // 查询用户在时间周期内的所有含项目ID的推文
   const allTweets = await db
     .select({
       id: tweetInfo.id,
       tweetCreatedAt: tweetInfo.tweetCreatedAt,
-      content: tweetInfo.content,
-      highRate24H: tweetInfo.highRate24H,
-      lowRate24H: tweetInfo.lowRate24H,
+      highRate: highRateField,
+      lowRate: lowRateField,
       projectId: projects.id,
       projectSymbol: projects.symbol,
       projectLogo: projects.logo,
@@ -630,7 +646,7 @@ async function getProjectsPerformance(userId: string, timeAgo: Date) {
         sql`${tweetInfo.dateCreated} > ${timeAgo.toISOString()}`,
       ),
     )
-    .orderBy(desc(tweetInfo.highRate24H)) // 按涨幅降序排序
+    .orderBy(desc(highRateField)) // 按涨幅降序排序
     .execute();
 
   // 在内存中对数据进行处理
@@ -643,8 +659,8 @@ async function getProjectsPerformance(userId: string, timeAgo: Date) {
     // 如果这个项目还没有被处理过，或者当前推文的涨幅高于已有的
     if (
       !projectMap.has(projectId) ||
-      parseFloat(String(tweet.highRate24H)) >
-        parseFloat(String(projectMap.get(projectId).highRate24H))
+      parseFloat(String(tweet.highRate)) >
+        parseFloat(String(projectMap.get(projectId).highRate))
     ) {
       projectMap.set(projectId, tweet);
     }
@@ -654,7 +670,7 @@ async function getProjectsPerformance(userId: string, timeAgo: Date) {
   const result = Array.from(projectMap.values())
     .sort(
       (a, b) =>
-        parseFloat(String(b.highRate24H)) - parseFloat(String(a.highRate24H)),
+        parseFloat(String(b.highRate)) - parseFloat(String(a.highRate)),
     )
     .slice(0, 20); // 只取前20条
 
@@ -664,16 +680,35 @@ async function getProjectsPerformance(userId: string, timeAgo: Date) {
 /**
  * 获取项目统计数据
  */
-async function getProjectStats(userId: string, timeAgo: Date) {
-  return await db
+async function getProjectStats(userId: string, period: string = '7d') {
+  // 根据period计算timeAgo
+  const now = new Date();
+  let timeAgo: Date;
+  let highPriceField: any;
+  let highRateField: any;
+
+  if (period === '7d') {
+    timeAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000); // 7天前
+    highPriceField = tweetInfo.highPrice7D;
+    highRateField = tweetInfo.highRate7D;
+  } else if (period === '30d') {
+    timeAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000); // 30天前
+    highPriceField = tweetInfo.highPrice30D;
+    highRateField = tweetInfo.highRate30D;
+  } else {
+    throw new Error('Invalid period specified');
+  }
+
+  // 从数据库中按时间正序查询所有符合条件的数据
+  const tweetInfos = await db
     .select({
-      projectId: projects.id,
+      projectId: tweetInfo.projectId,
       symbol: projects.symbol,
       logo: projects.logo,
-      mentionCount: count(tweetInfo.id),
-      firstPrice: sql`MIN(${tweetInfo.signalPrice})`,
-      highestPrice: sql`MAX(${tweetInfo.highPrice24H})`,
-      highestRate: sql`MAX(${tweetInfo.highRate24H})`,
+      signalPrice: tweetInfo.signalPrice,
+      highPrice: highPriceField,
+      highRate: highRateField,
+      dateCreated: tweetInfo.dateCreated,
     })
     .from(tweetInfo)
     .leftJoin(projects, eq(tweetInfo.projectId, projects.id))
@@ -684,9 +719,27 @@ async function getProjectStats(userId: string, timeAgo: Date) {
         sql`${tweetInfo.dateCreated} > ${timeAgo.toISOString()}`,
       ),
     )
-    .groupBy(projects.id, projects.symbol, projects.logo)
-    .orderBy(desc(sql`COUNT(${tweetInfo.id})`))
+    .orderBy(asc(tweetInfo.dateCreated))
     .execute();
+
+  // 在内存中去重，只保留每个project_id的第一个tweet_info
+  const uniqueProjectStats = new Map<string, any>();
+
+  for (const info of tweetInfos) {
+    if (!uniqueProjectStats.has(info.projectId??'')) {
+      uniqueProjectStats.set(info.projectId??'', {
+        projectId: info.projectId,
+        symbol: info.symbol,
+        logo: info.logo,
+        firstPrice: info.signalPrice,
+        highestPrice: info.highPrice,
+        highestRate: info.highRate,
+      });
+    }
+  }
+
+  // 将Map转换为数组返回
+  return Array.from(uniqueProjectStats.values());
 }
 
 /**
@@ -795,7 +848,6 @@ export async function getTop24hGainTweets() {
       .select({
         // 推文信息
         id: tweetInfo.id,
-        content: tweetInfo.content,
         tweetCreatedAt: tweetInfo.tweetCreatedAt,
         tweetUrl: tweetInfo.tweetUrl,
         highRate24H: tweetInfo.highRate24H,
@@ -872,7 +924,6 @@ export async function getTop24hGainTweets() {
     const formattedResults = uniqueTweets.map((tweet) => ({
       tweet: {
         id: tweet.id,
-        content: tweet.content,
         createdAt: tweet.tweetCreatedAt,
         url: tweet.tweetUrl,
         highRate24H: tweet.highRate24H,
