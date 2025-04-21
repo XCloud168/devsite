@@ -722,19 +722,25 @@ async function getProjectStats(userId: string, period: string = '7d') {
     .orderBy(asc(tweetInfo.dateCreated))
     .execute();
 
-  // 在内存中去重，只保留每个project_id的第一个tweet_info
+  // 在内存中去重，只保留每个project_id的第一个tweet_info，并计算mentionCount
   const uniqueProjectStats = new Map<string, any>();
 
   for (const info of tweetInfos) {
-    if (!uniqueProjectStats.has(info.projectId??'')) {
-      uniqueProjectStats.set(info.projectId??'', {
+    const projectId = info.projectId ?? '';
+    if (!uniqueProjectStats.has(projectId)) {
+      uniqueProjectStats.set(projectId, {
         projectId: info.projectId,
         symbol: info.symbol,
         logo: info.logo,
         firstPrice: info.signalPrice,
         highestPrice: info.highPrice,
         highestRate: info.highRate,
+        mentionCount: 1, // 初始化mentionCount为1
       });
+    } else {
+      // 如果项目已经存在，增加mentionCount
+      const projectStat = uniqueProjectStats.get(projectId);
+      projectStat.mentionCount += 1;
     }
   }
 
