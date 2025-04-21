@@ -100,7 +100,14 @@ export async function getTwitterUserGains(period = "24h") {
       .orderBy(sql`MAX(${highRateField})::numeric DESC`)
       .limit(50);
 
-    return stats;
+    // 按照胜率排序
+    const sortedStats = stats.sort((a, b) => {
+      const winRateA = parseFloat(a.positiveRatePercentage as string);
+      const winRateB = parseFloat(b.positiveRatePercentage as string);
+      return winRateB - winRateA;
+    });
+
+    return sortedStats;
   });
 }
 
@@ -783,8 +790,8 @@ export async function getTop24hGainTweets() {
     const sevenDaysAgo = new Date();
     sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
 
-    // 查询涨幅最高的5条推文
-    const topTweets = await db
+    // 查询涨幅最高的推文，获取多于5条以确保去重后仍有5条
+    const allTweets = await db
       .select({
         // 推文信息
         id: tweetInfo.id,
@@ -835,15 +842,34 @@ export async function getTop24hGainTweets() {
           isNotNull(tweetInfo.projectId),
           sql`${tweetInfo.dateCreated} > ${timeAgo.toISOString()}`,
           // 确保涨幅为正数
-          sql`${tweetInfo.highRate24H}::numeric > 0`,
-        ),
+          sql`${tweetInfo.highRate24H}::numeric > 0`
+        )
       )
       .orderBy(desc(tweetInfo.highRate24H)) // 按涨幅降序排序
-      .limit(5) // 只获取前5条
+      .limit(15) // 获取多于5条以确保去重后仍有5条
       .execute();
 
+    // 在内存中对数据进行去重处理
+    const tweetMap = new Map();
+
+    for (const tweet of allTweets) {
+      const key = `${tweet.userId}-${tweet.projectId}`; // 使用用户ID和项目ID组合作为键
+
+      // 如果这个组合还没有被处理过，或者当前推文的涨幅高于已有的
+      if (
+        !tweetMap.has(key) ||
+        parseFloat(String(tweet.highRate24H)) >
+          parseFloat(String(tweetMap.get(key).highRate24H))
+      ) {
+        tweetMap.set(key, tweet);
+      }
+    }
+
+    // 将Map中的值转换成数组并截取前5条
+    const uniqueTweets = Array.from(tweetMap.values()).slice(0, 5);
+
     // 处理结果，将用户信息和项目信息格式化为更易于前端使用的结构
-    const formattedResults = topTweets.map((tweet) => ({
+    const formattedResults = uniqueTweets.map((tweet) => ({
       tweet: {
         id: tweet.id,
         content: tweet.content,
