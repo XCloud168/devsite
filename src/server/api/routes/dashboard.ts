@@ -15,31 +15,23 @@ import { projects } from "@/server/db/schemas/signal";
  */
 export async function getTwitterUserGains(period = "24h") {
   return withServerResult(async () => {
-    // 确定要使用的时间周期和对应的字段
     const timeAgo = new Date();
+    let highRateFieldName: string;
 
     // 根据period选择不同的字段和时间范围
-    let highRateField;
-
     if (period === "24h") {
-      // 24小时内的数据
       timeAgo.setHours(timeAgo.getHours() - 24);
-      highRateField = tweetInfo.highRate24H;
+      highRateFieldName = "high_rate_24h";
     } else if (period === "7d") {
-      // 7天内的数据
       timeAgo.setDate(timeAgo.getDate() - 7);
-      highRateField = tweetInfo.highRate7D; // 仍使用24h的数据
+      highRateFieldName = "high_rate_7d";
     } else if (period === "30d") {
-      // 30天内的数据
       timeAgo.setDate(timeAgo.getDate() - 30);
-      highRateField = tweetInfo.highRate30D; // 仍使用24h的数据
+      highRateFieldName = "high_rate_30d";
     } else {
-      // 默认使用24小时
-      timeAgo.setHours(timeAgo.getHours() - 24);
-      highRateField = tweetInfo.highRate24H;
+      throw new Error("Invalid period specified");
     }
 
-    // 只查询指定类型的用户
     const allowedUserTypes = [
       "user_follow",
       "kol_opinions",
@@ -55,9 +47,8 @@ export async function getTwitterUserGains(period = "24h") {
         screenName: tweetUsers.screenName,
         avatar: tweetUsers.avatar,
         followersCount: tweetUsers.followersCount,
-        // 统计数据
         signalsCount: count(tweetInfo.id),
-        maxHighRate: sql`MAX(${highRateField})`,
+        maxHighRate: sql`MAX(${sql.raw(highRateFieldName)})`,
         maxHighRateProject: sql`(
           SELECT jsonb_build_object(
             'symbol', p.symbol,
@@ -71,18 +62,19 @@ export async function getTwitterUserGains(period = "24h") {
             WHERE ti.tweet_user_id = ${tweetUsers.id}
             AND ti.date_created > ${timeAgo.toISOString()}
             AND ti.project_id IS NOT NULL
-            ORDER BY ${highRateField} DESC
+            ORDER BY ${sql.raw(highRateFieldName)} DESC
             LIMIT 1
           )
         )`,
         positiveRatePercentage: sql`ROUND(
-          COUNT(CASE WHEN ${highRateField}::numeric > 0 THEN 1 ELSE NULL END) * 100.0 / 
-          NULLIF(COUNT(CASE WHEN ${highRateField} IS NOT NULL THEN 1 ELSE NULL END), 0),
+          COUNT(CASE WHEN ${sql.raw(highRateFieldName)}::numeric > 0 THEN 1 ELSE NULL END) * 100.0 / 
+          NULLIF(COUNT(CASE WHEN ${sql.raw(highRateFieldName)} IS NOT NULL THEN 1 ELSE NULL END), 0),
           2
         )`,
       })
-      .from(tweetUsers)
-      .leftJoin(tweetInfo, eq(tweetUsers.id, tweetInfo.tweetUserId))
+      .from(tweetInfo)
+      .leftJoin(tweetUsers, eq(tweetInfo.tweetUserId, tweetUsers.id))
+      .leftJoin(projects, eq(tweetInfo.projectId, projects.id))
       .where(
         and(
           inArray(tweetUsers.userType, allowedUserTypes),
@@ -97,17 +89,17 @@ export async function getTwitterUserGains(period = "24h") {
         tweetUsers.avatar,
         tweetUsers.followersCount,
       )
-      .orderBy(sql`MAX(${highRateField})::numeric DESC`)
-      .limit(50);
-
-    // 按照胜率排序
+      .orderBy(sql`MAX(${sql.raw(highRateFieldName)})::numeric DESC`)
+      .limit(50)
+      .execute();
+       // 按照胜率排序
     const sortedStats = stats.sort((a, b) => {
       const winRateA = parseFloat(a.positiveRatePercentage as string);
       const winRateB = parseFloat(b.positiveRatePercentage as string);
       return winRateB - winRateA;
     });
 
-    return sortedStats;
+    return stats;
   });
 }
 
