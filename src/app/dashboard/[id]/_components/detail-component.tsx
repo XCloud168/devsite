@@ -13,6 +13,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { useTranslations } from "next-intl";
 import { LoadingMoreBtn } from "@/app/signal-catcher/_components/loading-more-btn";
 import { TweetList } from "@/app/dashboard/[id]/_components/tweet-list";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 interface DetailComponentProps {
   id: string;
   getUserStatsAction: (userId: string, period: string) => Promise<ServerResult>;
@@ -253,7 +254,15 @@ export function DetailComponent({
             )}
           </div>
         </div>
-        <div className="h-[calc(100vh-132px)] w-2/5 space-y-5 overflow-y-scroll border-r p-5 scrollbar-thin scrollbar-track-transparent scrollbar-thumb-secondary">
+        <div className="h-[calc(100vh-132px)] w-2/5 space-y-3 overflow-y-scroll border-r p-5 scrollbar-thin scrollbar-track-transparent scrollbar-thumb-secondary">
+          {userInfo && (
+            <div className="flex justify-center">
+              <Avatar className="h-8 w-8">
+                <AvatarImage src={userInfo.avatar ?? ""} />
+                <AvatarFallback></AvatarFallback>
+              </Avatar>
+            </div>
+          )}
           <p className="text-center">
             {userInfo?.name}&nbsp;
             {t("dashboard.details.tokenMentions")}

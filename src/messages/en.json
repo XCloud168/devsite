@@ -393,12 +393,12 @@
             "trend": "Win-Rate Trend",
             "analysis": "PnL% Analysis of Signals",
             "gainDetails": "Signal Gain Details",
-            "tokenMentions": "Token Insight",
+            "tokenMentions": "Token Related Tweets",
             "token": "Token",
             "totalMentions": "Total Mentions",
             "firstMentionPrice": "First Mention Price",
-            "highestPrice": "Highest Price(24h)",
-            "maxPNL": "Max PNL%(24h)"
+            "highestPrice": "Highest Price",
+            "maxPNL": "Max PNL%"
         },
         "share": {
             "slogan": "24h KOL Signal Backtest Records.",

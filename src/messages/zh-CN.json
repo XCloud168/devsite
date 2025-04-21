@@ -393,12 +393,12 @@
             "trend": "胜率趋势",
             "analysis": "喊单盈亏分析",
             "gainDetails": "喊单涨幅详情",
-            "tokenMentions": "代币相关",
+            "tokenMentions": "代币相关的推文",
             "token": "代币",
             "totalMentions": "提及总次数",
             "firstMentionPrice": "首次提及价格",
-            "highestPrice": "最高点价格(24h)",
-            "maxPNL": "最大收益率(24h)"
+            "highestPrice": "最高点价格",
+            "maxPNL": "最大收益率"
         },
         "share": {
             "slogan": "24h KOL优质信号回测记录",
