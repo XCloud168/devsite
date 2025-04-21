@@ -111,15 +111,15 @@ export async function getTwitterUserGains(period = "24h") {
   });
 }
 
-type ProjectStats = {
-  projectId: string;
-  symbol: string;
-  logo: string;
-  mentionCount: number;
-  firstPrice: number;
-  highestPrice: number;
-  highestRate: number;
-};
+// type ProjectStats = {
+//   projectId: string;
+//   symbol: string;
+//   logo: string;
+//   mentionCount: number;
+//   firstPrice: number;
+//   highestPrice: number;
+//   highestRate: number;
+// };
 
 /**
  * 计算分析时间范围
@@ -607,7 +607,7 @@ async function getDailyWinRate(userId: string, days: number) {
  * @param period 统计周期，默认为"7d"，可选"30d"
  * @returns 按项目分组后每个项目涨幅最高的推文，最多20条
  */
-async function getProjectsPerformance(userId: string, period: string = '7d') {
+async function getProjectsPerformance(userId: string, period = '7d') {
   // 根据period计算timeAgo和选择涨幅、跌幅字段
   const now = new Date();
   let timeAgo: Date;
@@ -680,7 +680,7 @@ async function getProjectsPerformance(userId: string, period: string = '7d') {
 /**
  * 获取项目统计数据
  */
-async function getProjectStats(userId: string, period: string = '7d') {
+async function getProjectStats(userId: string, period = '7d') {
   // 根据period计算timeAgo
   const now = new Date();
   let timeAgo: Date;
