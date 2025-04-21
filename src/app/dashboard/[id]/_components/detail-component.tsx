@@ -11,9 +11,8 @@ import { History } from "@/app/dashboard/[id]/_components/history";
 import { type ServerResult } from "@/lib/server-result";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useTranslations } from "next-intl";
-import TranslationComponent from "@/components/translation-component";
-import dayjs from "dayjs";
 import { LoadingMoreBtn } from "@/app/signal-catcher/_components/loading-more-btn";
+import { TweetList } from "@/app/dashboard/[id]/_components/tweet-list";
 interface DetailComponentProps {
   id: string;
   getUserStatsAction: (userId: string, period: string) => Promise<ServerResult>;
@@ -86,7 +85,7 @@ interface ProjectStats {
   projectId: string;
   symbol: string;
 }
-interface TweetItem {
+export interface TweetItem {
   content: string;
   contentSummary: string;
   highRate24H: string;
@@ -175,25 +174,19 @@ export function DetailComponent({
     fetchData();
   }, [getUserProjectsPerformanceAction, id, selectedRange]);
 
-  const [userUserTweetLoading, setUserUserTweetLoading] = useState(false);
-  const [userUserTweet, setUserUserTweet] = useState<TweetItem[]>([]);
+  const [userTweetLoading, setUserTweetLoading] = useState(false);
+  const [userTweet, setUserTweet] = useState<TweetItem[]>([]);
   const [page, setPage] = useState(1);
   const [hasNext, setHasNext] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
-      setUserUserTweetLoading(true);
-      const response = await getUserUserTweetsAction(
-        id,
-        selectedRange,
-        page,
-        5,
-      );
-      setUserUserTweet(response.data.data);
-      console.log();
+      setUserTweetLoading(true);
+      const response = await getUserUserTweetsAction(id, "30d", page, 5);
+      setUserTweet(response.data.data);
       setHasNext(page !== response.data.pagination.totalPage);
       setPage(response.data.pagination.currentPage);
-      setUserUserTweetLoading(false);
+      setUserTweetLoading(false);
     };
     fetchData();
   }, [
@@ -207,15 +200,15 @@ export function DetailComponent({
   return (
     <div className="">
       <Link
-        className="flex cursor-pointer items-center gap-1 p-5"
+        className="sticky top-14 z-50 flex cursor-pointer items-center gap-1 border-b bg-background p-5"
         href={"/dashboard"}
       >
         <ChevronLeft size={20} />
         <p>{t("dashboard.details.kolDetails")}</p>
       </Link>
-      <div className="h-[1px] w-full bg-border"></div>
+
       <div className="flex w-full">
-        <div className="w-3/5 border-r p-5">
+        <div className="h-[calc(100vh-132px)] w-3/5 overflow-y-scroll border-r p-5 scrollbar-thin scrollbar-track-transparent scrollbar-thumb-secondary">
           {!userInfoLoading && !userStateLoading && userInfo && userState ? (
             <KolInfo userInfo={userInfo} userState={userState} />
           ) : (
@@ -227,21 +220,16 @@ export function DetailComponent({
               className="w-fit"
               onValueChange={(e) => {
                 setSelectedRange(e);
-                // setPageLoading(true);
-                // getTwitterUserInfoAction(id, e).then((res) => {
-                //   setUserInfo(res.data);
-                //   setPageLoading(false);
-                // });
               }}
             >
-              <TabsList className="grid w-full grid-cols-2">
+              <TabsList className="grid w-full grid-cols-2 px-1">
                 <TabsTrigger value="7d">7D</TabsTrigger>
                 <TabsTrigger value="30d">30D</TabsTrigger>
               </TabsList>
             </Tabs>
           </div>
           <div className="">
-            <p className="text-xs">{t("dashboard.details.trend")}</p>
+            <p className="">{t("dashboard.details.trend")}</p>
             {!userDailyLoading && userDaily ? (
               <Trend dailyWinRate={userDaily} />
             ) : (
@@ -249,7 +237,7 @@ export function DetailComponent({
             )}
           </div>
           <div className="mt-3">
-            <p className="text-xs">{t("dashboard.details.analysis")}</p>
+            <p className="">{t("dashboard.details.analysis")}</p>
             {!userPerformanceLoading && userPerformance ? (
               <BubbleChat chartData={userPerformance} />
             ) : (
@@ -257,7 +245,7 @@ export function DetailComponent({
             )}
           </div>
           <div className="mt-3">
-            <p className="text-xs">{t("dashboard.details.gainDetails")}</p>
+            <p className="">{t("dashboard.details.gainDetails")}</p>
             {!userProjectStatsLoading && userProjectStats ? (
               <History projectStats={userProjectStats} />
             ) : (
@@ -265,49 +253,34 @@ export function DetailComponent({
             )}
           </div>
         </div>
-        <div className="w-2/5 p-5">
-          <p className="pb-4 text-center">
+        <div className="h-[calc(100vh-132px)] w-2/5 space-y-5 overflow-y-scroll border-r p-5 scrollbar-thin scrollbar-track-transparent scrollbar-thumb-secondary">
+          <p className="text-center">
             {userInfo?.name}&nbsp;
             {t("dashboard.details.tokenMentions")}
           </p>
           <div className="space-y-5 px-5">
-            {!userUserTweetLoading && userUserTweet
-              ? userUserTweet.map((tweet) => (
-                  <div key={tweet.id} className="space-y-2">
-                    <div className="flex items-center gap-2">
-                      <p className="text-[#FFFFA7]">
-                        {dayjs(tweet.tweetCreatedAt).format(
-                          "YYYY-MM-DD HH:mm:ss",
-                        )}
-                      </p>
-                    </div>
-                    <div className="rounded-lg bg-[#4949493a] p-3">
-                      <TranslationComponent content={tweet.content ?? ""} />
-                    </div>
+            {!userTweetLoading && userTweet ? (
+              <TweetList userTweet={userTweet} />
+            ) : (
+              [1, 2, 3, 4].map((item) => (
+                <div className="flex w-full gap-3" key={item}>
+                  <div className="w-full space-y-2">
+                    <Skeleton className="h-5 w-3/5 bg-secondary" />
+                    <Skeleton className="h-20 w-full bg-secondary" />
                   </div>
-                ))
-              : [1, 2].map((item) => (
-                  <div className="flex w-full gap-3" key={item}>
-                    <Skeleton className="h-9 w-9 min-w-9 rounded-full bg-secondary" />
-                    <div className="w-full space-y-2">
-                      <Skeleton className="h-4 w-1/5 bg-secondary" />
-                      <Skeleton className="h-4 w-2/5 bg-secondary" />
-                      <Skeleton className="h-20 w-full bg-secondary" />
-                    </div>
-                  </div>
-                ))}
+                </div>
+              ))
+            )}
           </div>
           <LoadingMoreBtn
-            pageLoading={userUserTweetLoading}
+            pageLoading={userTweetLoading}
             hasNext={hasNext}
             onNextAction={() => {
-              getUserUserTweetsAction(id, selectedRange, page, 5).then(
-                (res) => {
-                  setUserUserTweet((prev) => prev.concat(res.data.data));
-                  setHasNext(page !== res.data.pagination.currentPage);
-                  setPage(res.data.pagination.currentPage);
-                },
-              );
+              getUserUserTweetsAction(id, "30d", page, 5).then((res) => {
+                setUserTweet((prev) => prev.concat(res.data.data));
+                setHasNext(page !== res.data.pagination.currentPage);
+                setPage(res.data.pagination.currentPage);
+              });
             }}
           />
         </div>

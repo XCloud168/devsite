@@ -18,6 +18,12 @@ import { formatNumber } from "@/components/formatNumber";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { CircleAlert } from "lucide-react";
 interface Props {
   getWinRankingListAction: (period: string) => Promise<ServerResult>;
 }
@@ -52,11 +58,11 @@ export function WinComponent({ getWinRankingListAction }: Props) {
   }, [getWinRankingListAction]);
   return (
     <div className="relative mt-5 flex justify-center">
-      <div className="absolute z-0 h-[332px] w-full bg-[url(/images/dashboard/bg.png)] bg-contain bg-center bg-no-repeat"></div>
+      <div className="absolute z-0 h-[332px] w-full border-b bg-[url(/images/dashboard/bg.png)] bg-contain bg-center bg-no-repeat"></div>
       <div className="z-[2] flex flex-col items-center justify-center">
         <Tabs
           defaultValue="7d"
-          className="w-fit"
+          className="w-32"
           onValueChange={(e) => {
             setPageLoading(true);
             getWinRankingListAction(e).then((res) => {
@@ -65,7 +71,7 @@ export function WinComponent({ getWinRankingListAction }: Props) {
             });
           }}
         >
-          <TabsList className="grid w-full grid-cols-2">
+          <TabsList className="grid w-full grid-cols-2 px-1">
             <TabsTrigger value="7d">7D</TabsTrigger>
             <TabsTrigger value="30d">30D</TabsTrigger>
           </TabsList>
@@ -233,7 +239,22 @@ export function WinComponent({ getWinRankingListAction }: Props) {
                   <TableHead>{t("dashboard.winRanking.ranking")}</TableHead>
                   <TableHead>{t("dashboard.winRanking.username")}</TableHead>
                   <TableHead>{t("dashboard.winRanking.followers")}</TableHead>
-                  <TableHead>{t("dashboard.winRanking.winRate")}</TableHead>
+                  <TableHead className="flex items-center">
+                    {t("dashboard.winRanking.winRate")}
+                    <Popover>
+                      <PopoverTrigger asChild className="pl-1">
+                        <div className="min-h-3 min-w-3">
+                          <CircleAlert
+                            size={12}
+                            className="text-accent-foreground/80"
+                          />
+                        </div>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-96 rounded-lg border bg-background p-2">
+                        {t("dashboard.winRanking.winTip")}
+                      </PopoverContent>
+                    </Popover>
+                  </TableHead>
                   <TableHead>{t("dashboard.winRanking.record")}</TableHead>
                   <TableHead className="text-right">
                     {t("common.more")}

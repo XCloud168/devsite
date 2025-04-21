@@ -377,7 +377,8 @@
             "followers": "Followers",
             "winRate": "Win-Rate",
             "record": "Top Record(24h)",
-            "details": "View Details"
+            "details": "View Details",
+            "winTip": "A signal is successful if the token rises post-publication."
         },
         "signalBoard": "24h KOL Signal Board",
         "riseRanking": {
@@ -391,12 +392,17 @@
             "trend": "Win-Rate Trend",
             "analysis": "PnL% Analysis of Signals",
             "gainDetails": "Signal Gain Details",
-            "tokenMentions": "Token Mentions (7D/30D)",
+            "tokenMentions": "Token Insight",
             "token": "Token",
             "totalMentions": "Total Mentions",
             "firstMentionPrice": "First Mention Price",
             "highestPrice": "Highest Price(24h)",
             "maxPNL": "Max PNL%(24h)"
+        },
+        "share": {
+            "slogan": "24h KOL Signal Backtest Records.",
+            "KolRecords": "KOL Records",
+            "footer": "Web3 Major Investment Signal Catcher!"
         }
     }
 }

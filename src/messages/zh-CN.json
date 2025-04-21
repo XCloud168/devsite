@@ -377,7 +377,8 @@
             "followers": "粉丝数",
             "winRate": "胜率",
             "record": "最佳战绩(24h)",
-            "details": "详情分析"
+            "details": "详情分析",
+            "winTip": "当喊单发布后，若代币涨幅 > 0，即判定该次喊单为成功。"
         },
         "signalBoard": "24hKOL信号榜单",
         "riseRanking": {
@@ -391,12 +392,17 @@
             "trend": "胜率趋势",
             "analysis": "喊单盈亏分析",
             "gainDetails": "喊单涨幅详情",
-            "tokenMentions": "7/30D提及代币的推文",
+            "tokenMentions": "代币相关",
             "token": "代币",
             "totalMentions": "提及总次数",
             "firstMentionPrice": "首次提及价格",
             "highestPrice": "最高点价格(24h)",
             "maxPNL": "最大收益率(24h)"
+        },
+        "share": {
+            "slogan": "24h KOL优质信号回测记录",
+            "KolRecords": "KOL表现",
+            "footer": "Web3重大投资信号捕获器！"
         }
     }
 }
