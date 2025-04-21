@@ -144,7 +144,7 @@ export function RiseComponent({ get24hRankingListAction }: Props) {
                   <div className="flex cursor-pointer items-center justify-center">
                     <RankingSharePoster>
                       <div className="items-center py-5">
-                        <p className="w-72 text-4xl font-bold">
+                        <p className="w-80 text-4xl font-bold">
                           {t("dashboard.share.slogan")}
                         </p>
                       </div>
