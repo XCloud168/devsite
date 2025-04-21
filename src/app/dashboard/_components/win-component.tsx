@@ -79,12 +79,12 @@ export function WinComponent({ getWinRankingListAction }: Props) {
 
         {!pageLoading && tableData ? (
           <div className="mt-8 grid grid-cols-3 gap-10">
-            <div className="relative mt-6 w-[280px] overflow-hidden rounded-xl border border-[#D7D7D780]">
+            <div className="relative mt-6 w-[300px] overflow-hidden rounded-xl border border-[#D7D7D780]">
               <div className="absolute right-4 top-0 h-[49px] w-[44px] bg-[url(/images/dashboard/no2.png)] bg-contain bg-no-repeat"></div>
               <div className="h-5 w-1/3 bg-gradient-to-r from-[#D7D7D780] to-[#3D3D3D00] pl-3 text-xs leading-5">
                 Top 2
               </div>
-              <div className="p-5">
+              <div className="px-5 pb-3 pt-5">
                 <div className="flex items-center gap-2">
                   <div className="flex h-8 w-8 items-center justify-center rounded-full ring-1">
                     <Avatar className="h-8 w-8">
@@ -93,14 +93,14 @@ export function WinComponent({ getWinRankingListAction }: Props) {
                     </Avatar>
                   </div>
                   <div>
-                    <p>{tableData[1]?.name}</p>
-                    <p>
+                    <p className="font-semibold">{tableData[1]?.name}</p>
+                    <p className="text-sm text-white/60">
                       {formatNumber(tableData[1]?.followersCount)}{" "}
                       {t("dashboard.winRanking.followers")}
                     </p>
                   </div>
                 </div>
-                <div className="mt-5 flex justify-between">
+                <div className="mt-7 flex justify-between">
                   <div>
                     <p className="text-xs">
                       {t("dashboard.winRanking.winRate")}
@@ -113,7 +113,13 @@ export function WinComponent({ getWinRankingListAction }: Props) {
                     <p className="text-xs">
                       {t("dashboard.winRanking.record")}
                     </p>
-                    <div className="flex gap-2">
+                    <div className="flex items-center gap-2">
+                      <Avatar className="h-5 w-5">
+                        <AvatarImage
+                          src={tableData[1]?.maxHighRateProject.logo ?? ""}
+                        />
+                        <AvatarFallback></AvatarFallback>
+                      </Avatar>
                       <p className="">
                         {tableData[1]?.maxHighRateProject.symbol}
                       </p>
@@ -125,12 +131,12 @@ export function WinComponent({ getWinRankingListAction }: Props) {
                 </div>
               </div>
             </div>
-            <div className="relative mb-6 w-[280px] overflow-hidden rounded-xl border border-[#D7D7D780]">
+            <div className="relative mb-6 w-[300px] overflow-hidden rounded-xl border border-[#D7D7D780]">
               <div className="absolute right-4 top-0 h-[49px] w-[44px] bg-[url(/images/dashboard/no1.png)] bg-contain bg-no-repeat"></div>
               <div className="h-5 w-1/3 bg-gradient-to-r from-[#FFFFA780] to-[#99996400] pl-3 text-xs leading-5">
                 Top 1
               </div>
-              <div className="p-5">
+              <div className="px-5 pb-3 pt-5">
                 <div className="flex items-center gap-2">
                   <div className="flex h-8 w-8 items-center justify-center rounded-full ring-1">
                     <Avatar className="h-8 w-8">
@@ -139,14 +145,14 @@ export function WinComponent({ getWinRankingListAction }: Props) {
                     </Avatar>
                   </div>
                   <div>
-                    <p>{tableData[0]?.name}</p>
-                    <p>
+                    <p className="font-semibold">{tableData[0]?.name}</p>
+                    <p className="text-sm text-white/60">
                       {formatNumber(tableData[0]?.followersCount)}{" "}
                       {t("dashboard.winRanking.followers")}
                     </p>
                   </div>
                 </div>
-                <div className="mt-5 flex justify-between">
+                <div className="mt-7 flex justify-between">
                   <div>
                     <p className="text-xs">
                       {t("dashboard.winRanking.winRate")}
@@ -159,7 +165,13 @@ export function WinComponent({ getWinRankingListAction }: Props) {
                     <p className="text-xs">
                       {t("dashboard.winRanking.record")}
                     </p>
-                    <div className="flex gap-2">
+                    <div className="flex items-center gap-2">
+                      <Avatar className="h-5 w-5">
+                        <AvatarImage
+                          src={tableData[0]?.maxHighRateProject.logo ?? ""}
+                        />
+                        <AvatarFallback></AvatarFallback>
+                      </Avatar>
                       <p className="">
                         {tableData[0]?.maxHighRateProject.symbol}
                       </p>
@@ -171,12 +183,12 @@ export function WinComponent({ getWinRankingListAction }: Props) {
                 </div>
               </div>
             </div>
-            <div className="relative mt-6 w-[280px] overflow-hidden rounded-xl border border-[#A06C4D80]">
+            <div className="relative mt-6 w-[300px] overflow-hidden rounded-xl border border-[#A06C4D80]">
               <div className="absolute right-4 top-0 h-[49px] w-[44px] bg-[url(/images/dashboard/no3.png)] bg-contain bg-no-repeat"></div>
               <div className="h-5 w-1/3 bg-gradient-to-r from-[#A06C4D80] to-[#3D3D3D00] pl-3 text-xs leading-5">
                 Top 3
               </div>
-              <div className="p-5">
+              <div className="px-5 pb-3 pt-5">
                 <div className="flex items-center gap-2">
                   <div className="flex h-8 w-8 items-center justify-center rounded-full ring-1">
                     <Avatar className="h-8 w-8">
@@ -185,14 +197,14 @@ export function WinComponent({ getWinRankingListAction }: Props) {
                     </Avatar>
                   </div>
                   <div>
-                    <p>{tableData[2]?.name}</p>
-                    <p>
-                      {formatNumber(tableData[2]?.followersCount)}{" "}
+                    <p className="font-semibold">{tableData[2]?.name}</p>
+                    <p className="text-sm text-white/60">
+                      {formatNumber(tableData[2]?.followersCount)}
                       {t("dashboard.winRanking.followers")}
                     </p>
                   </div>
                 </div>
-                <div className="mt-5 flex justify-between">
+                <div className="mt-7 flex justify-between">
                   <div>
                     <p className="text-xs">
                       {t("dashboard.winRanking.winRate")}
@@ -201,11 +213,17 @@ export function WinComponent({ getWinRankingListAction }: Props) {
                       {tableData[2]?.positiveRatePercentage}%
                     </p>
                   </div>
-                  <div>
+                  <div className="space-y-1">
                     <p className="text-xs">
                       {t("dashboard.winRanking.record")}
                     </p>
-                    <div className="flex gap-2">
+                    <div className="flex items-center gap-2">
+                      <Avatar className="h-5 w-5">
+                        <AvatarImage
+                          src={tableData[2]?.maxHighRateProject.logo ?? ""}
+                        />
+                        <AvatarFallback></AvatarFallback>
+                      </Avatar>
                       <p className="">
                         {tableData[2]?.maxHighRateProject.symbol}
                       </p>
@@ -220,9 +238,9 @@ export function WinComponent({ getWinRankingListAction }: Props) {
           </div>
         ) : (
           <div className="mt-8 grid grid-cols-3 gap-10">
-            <Skeleton className="mt-6 h-[170px] w-[280px] bg-secondary" />
-            <Skeleton className="mb-6 h-[170px] w-[280px] bg-secondary" />
-            <Skeleton className="mt-6 h-[170px] w-[280px] bg-secondary" />
+            <Skeleton className="mt-6 h-[170px] w-[300px] bg-secondary" />
+            <Skeleton className="mb-6 h-[170px] w-[300px] bg-secondary" />
+            <Skeleton className="w-[30 0px] mt-6 h-[170px] bg-secondary" />
           </div>
         )}
         <div className="mt-24 flex items-center gap-5">

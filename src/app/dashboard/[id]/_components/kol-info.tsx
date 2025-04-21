@@ -44,7 +44,7 @@ export function KolInfo({ userInfo, userState }: Props) {
         </div>
         <div>
           <p className="text-xl font-semibold">{userInfo.name}</p>
-          <p className="text-sm">
+          <p className="text-sm text-white/60">
             @{userInfo.screenName} {formatNumber(userInfo.followersCount)}{" "}
             {t("dashboard.winRanking.followers")}
           </p>

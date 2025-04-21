@@ -41,9 +41,9 @@ export default function RankingSharePoster({
   const shareToX = useCallback(() => {
     let url: string;
     if (locale === "zh") {
-      url = `https://x.com/share?text=${encodeURIComponent("邀请好友一起加入，解锁更多投资机会！精准信号，分钟级推送，胜率回测，助您信号获取快人一步！")}&url=${window.location.href}`;
+      url = `https://x.com/share?text=${encodeURIComponent("用 Masbate，更快发现高质量的 Web3 投资信号!")}&url=${window.location.href}`;
     } else {
-      url = `https://x.com/share?text=${encodeURIComponent("Invite friends and unlock more investment opportunities!Precision signals, real-time alerts, and win-rate backtesting to keep you ahead!")}&url=${window.location.href}`;
+      url = `https://x.com/share?text=${encodeURIComponent("Discover top Web3 signals faster with Masbate!")}&url=${window.location.href}`;
     }
     window.open(url);
   }, [locale]);

@@ -28,6 +28,8 @@ export function BubbleChat({ chartData }: Props) {
       label1: item.projectSymbol,
       label2: item.highRate24H,
       label3: item.lowRate24H,
+      labelColor2: "#00ff88",
+      labelColor3: "#ff5151",
     }));
   }, [chartData]);
   return (

@@ -16,7 +16,9 @@ interface BubbleData {
   label1?: string;
   label2?: string;
   label3?: string;
-  labelColor?: string;
+  labelColor1?: string;
+  labelColor2?: string;
+  labelColor3?: string;
 }
 
 interface BubbleChartProps {
@@ -90,7 +92,7 @@ const BubbleChart: React.FC<BubbleChartProps> = ({
       .append("circle")
       .attr("r", (d) => d.radius)
       .attr("fill", (d) => d.color || "rgba(0, 123, 255, 0.6)")
-      .attr("stroke", "#fff")
+      .attr("stroke", "#00ff88")
       .attr("stroke-width", 1);
 
     // 添加图片（内嵌在气泡中，应用 clipPath）
@@ -130,7 +132,7 @@ const BubbleChart: React.FC<BubbleChartProps> = ({
     bubbles
       .append("text")
       .attr("text-anchor", "middle")
-      .attr("fill", (d) => d.labelColor || "#fff")
+      .attr("fill", (d) => d.labelColor1 || "#fff")
       .attr("font-size", "10px")
       .attr("y", 12)
       .text((d) => d.label1 || "");
@@ -138,7 +140,7 @@ const BubbleChart: React.FC<BubbleChartProps> = ({
     bubbles
       .append("text")
       .attr("text-anchor", "middle")
-      .attr("fill", (d) => d.labelColor || "#fff")
+      .attr("fill", (d) => d.labelColor2 || "#fff")
       .attr("font-size", "10px")
       .attr("y", 24)
       .text((d) => d.label2 || "");
@@ -146,7 +148,7 @@ const BubbleChart: React.FC<BubbleChartProps> = ({
     bubbles
       .append("text")
       .attr("text-anchor", "middle")
-      .attr("fill", (d) => d.labelColor || "#fff")
+      .attr("fill", (d) => d.labelColor3 || "#fff")
       .attr("font-size", "10px")
       .attr("y", 36)
       .text((d) => d.label3 || "");
