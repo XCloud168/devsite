@@ -330,7 +330,7 @@ export function WinComponent({ getWinRankingListAction, isMobile }: Props) {
           <p>TOP 50</p>
           <div className="h-[1px] w-5 bg-white"></div>
         </div>
-        <div className="relative mt-10 h-[calc(100vh-420px)] w-screen overflow-y-scroll pr-0 scrollbar-thin scrollbar-track-transparent scrollbar-thumb-secondary md:h-[calc(100vh-560px)] md:w-full md:pr-3">
+        <div className="relative mt-10 h-full w-screen overflow-y-scroll pr-0 scrollbar-thin scrollbar-track-transparent scrollbar-thumb-secondary md:h-[calc(100vh-560px)] md:w-full md:pr-3">
           {!pageLoading && tableData ? (
             <Table>
               {/*<TableCaption>A list of your recent invoices.</TableCaption>*/}
