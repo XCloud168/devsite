@@ -116,6 +116,7 @@ export function DetailComponent({
   const [selectedRange, setSelectedRange] = useState("7d");
   const [userInfoLoading, setUserInfoLoading] = useState(false);
   const [userInfo, setUserInfo] = useState<UserInfo>();
+  const [buttonLoading, setButtonLoading] = useState(false);
   useEffect(() => {
     const fetchData = async () => {
       setUserInfoLoading(true);
@@ -194,13 +195,7 @@ export function DetailComponent({
       setUserTweetLoading(false);
     };
     fetchData();
-  }, [
-    getUserProjectsPerformanceAction,
-    getUserUserTweetsAction,
-    id,
-    page,
-    selectedRange,
-  ]);
+  }, []);
   const [selectedType, setSelectedType] = useState("kolDetails");
   const Left = (
     <div className="h-full w-full overflow-y-scroll border-r p-3 scrollbar-thin scrollbar-track-transparent scrollbar-thumb-secondary md:h-[calc(100vh-132px)] md:w-3/5 md:p-5">
@@ -231,15 +226,17 @@ export function DetailComponent({
           <Skeleton className="mt-3 h-48 w-full bg-secondary" />
         )}
       </div>
-      <div className="mt-3">
-        <p className="">{t("dashboard.details.analysis")}</p>
-        {!userPerformanceLoading && userPerformance ? (
-          <BubbleChat chartData={userPerformance} />
-        ) : (
-          <Skeleton className="mt-3 h-96 w-full bg-secondary" />
-        )}
+      <div className="mt-3 w-[96vw] overflow-x-scroll md:w-full md:overflow-x-hidden">
+        <div className="w-[800px] md:w-full">
+          <p className="">{t("dashboard.details.analysis")}</p>
+          {!userPerformanceLoading && userPerformance ? (
+            <BubbleChat chartData={userPerformance} />
+          ) : (
+            <Skeleton className="mt-3 h-96 w-full bg-secondary" />
+          )}
+        </div>
       </div>
-      <div className="mt-3 w-[96vw] overflow-x-scroll">
+      <div className="mt-3 w-[96vw] overflow-x-scroll md:w-full md:overflow-x-hidden">
         <p className="">{t("dashboard.details.gainDetails")}</p>
         {!userProjectStatsLoading && userProjectStats ? (
           <History projectStats={userProjectStats} />
@@ -250,7 +247,7 @@ export function DetailComponent({
     </div>
   );
   const Right = (
-    <div className="h-full w-full space-y-3 overflow-y-scroll border-r p-3 scrollbar-thin scrollbar-track-transparent scrollbar-thumb-secondary md:h-[calc(100vh-132px)] md:w-2/5 md:p-5">
+    <div className="mt-2 h-full w-full space-y-3 overflow-y-scroll border-r p-3 scrollbar-thin scrollbar-track-transparent scrollbar-thumb-secondary md:mt-0 md:h-[calc(100vh-132px)] md:w-2/5 md:p-5">
       {userInfo && (
         <div className="flex justify-center">
           <Avatar className="h-8 w-8">
@@ -278,13 +275,15 @@ export function DetailComponent({
         )}
       </div>
       <LoadingMoreBtn
-        pageLoading={userTweetLoading}
+        pageLoading={buttonLoading}
         hasNext={hasNext}
         onNextAction={() => {
-          getUserUserTweetsAction(id, "30d", page, 5).then((res) => {
+          setButtonLoading(true);
+          getUserUserTweetsAction(id, "30d", page + 1, 5).then((res) => {
             setUserTweet((prev) => prev.concat(res.data.data));
             setHasNext(page !== res.data.pagination.currentPage);
-            setPage(res.data.pagination.currentPage);
+            setPage(res.data.pagination.currentPage + 1);
+            setButtonLoading(false);
           });
         }}
       />

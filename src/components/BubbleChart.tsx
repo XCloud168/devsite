@@ -41,7 +41,7 @@ const BubbleChart: React.FC<BubbleChartProps> = ({
   useEffect(() => {
     if (!data || data.length === 0) return;
 
-    console.log("BubbleChart useEffect triggered", { data });
+    // console.log("BubbleChart useEffect triggered", { data });
 
     // 清空 SVG
     const svg = d3.select(svgRef.current);
@@ -99,7 +99,7 @@ const BubbleChart: React.FC<BubbleChartProps> = ({
     bubbles
       .append("image")
       .attr("xlink:href", (d) => {
-        console.log(`Loading image: ${d.imageUrl}`);
+        // console.log(`Loading image: ${d.imageUrl}`);
         return d.imageUrl;
       })
       .attr("width", (d) => d.radius * 2)
@@ -109,9 +109,9 @@ const BubbleChart: React.FC<BubbleChartProps> = ({
       .attr("clip-path", (d, i) => `url(#clip-${i})`)
       .attr("preserveAspectRatio", "xMidYMid slice")
       .on("error", function () {
-        console.warn(
-          `Image failed to load: ${d3.select(this).attr("xlink:href")}`,
-        );
+        // console.warn(
+        //   `Image failed to load: ${d3.select(this).attr("xlink:href")}`,
+        // );
         d3.select(this).remove();
       });
 
@@ -289,7 +289,7 @@ const BubbleChart: React.FC<BubbleChartProps> = ({
 
     // 清理副作用
     return () => {
-      console.log("Cleaning up animation");
+      // console.log("Cleaning up animation");
       if (animationFrameRef.current) {
         cancelAnimationFrame(animationFrameRef.current);
       }

@@ -62,16 +62,15 @@ export function WinComponent({ getWinRankingListAction, isMobile }: Props) {
   const ellipseRadiusX = 250;
   const ellipseRadiusZ = 150;
   const planetRefs = useRef<(HTMLDivElement | null)[]>([]);
-
+  const angleRef = useRef(0);
   useEffect(() => {
     const planets = [1, 2, 3];
-    let angle = 0;
     const speed = 0.002;
     let animationFrameId: number | null = null;
-
     const animate = () => {
       planets.forEach((_, index) => {
-        const planetAngle = angle + (index * (2 * Math.PI)) / planets.length;
+        const planetAngle =
+          angleRef.current + (index * (2 * Math.PI)) / planets.length;
         const x = Math.sin(planetAngle) * ellipseRadiusX;
         const z = Math.cos(planetAngle) * ellipseRadiusZ;
         const planet = planetRefs.current[index];
@@ -82,7 +81,7 @@ export function WinComponent({ getWinRankingListAction, isMobile }: Props) {
           planet.style.scale = `${scale}`;
         }
       });
-      angle += speed;
+      angleRef.current += speed; // 旋转速度
       animationFrameId = requestAnimationFrame(animate);
     };
     animationFrameId = requestAnimationFrame(animate);
@@ -321,8 +320,8 @@ export function WinComponent({ getWinRankingListAction, isMobile }: Props) {
         ) : (
           <div className="mt-8 grid grid-cols-1 gap-10 md:grid-cols-3">
             <Skeleton className="mt-6 h-[170px] w-[300px] bg-secondary" />
-            <Skeleton className="md:bolck mb-6 hidden h-[170px] w-[300px] bg-secondary" />
-            <Skeleton className="w-[30 0px] md:bolck mt-6 hidden h-[170px] bg-secondary" />
+            <Skeleton className="mb-6 hidden h-[170px] w-[300px] bg-secondary md:block" />
+            <Skeleton className="mt-6 hidden h-[170px] w-[300px] bg-secondary md:block" />
           </div>
         )}
         <div className="mt-24 flex items-center gap-5">
