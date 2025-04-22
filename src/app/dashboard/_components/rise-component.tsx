@@ -143,7 +143,7 @@ export function RiseComponent({ get24hRankingListAction, isMobile }: Props) {
                     </p>
                   </div>
                   <div className="absolute right-4 top-4 cursor-pointer items-center justify-center md:relative md:right-0 md:top-0 md:flex">
-                    <RankingSharePoster scale={isMobile ? 65 : 100}>
+                    <RankingSharePoster isMobile={isMobile}>
                       <div className="items-center py-5">
                         <p className="w-80 text-4xl font-bold">
                           {t("dashboard.share.slogan")}

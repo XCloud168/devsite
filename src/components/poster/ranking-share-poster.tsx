@@ -14,10 +14,10 @@ import Image from "next/image";
 import { Share2 } from "lucide-react";
 export default function RankingSharePoster({
   children,
-  scale,
+  isMobile,
 }: {
   children: ReactNode;
-  scale: number;
+  isMobile?: boolean;
 }) {
   const t = useTranslations();
   const locale = useLocale();
@@ -55,7 +55,7 @@ export default function RankingSharePoster({
         <Share2 size={20} className="text-[#949C9E]" />
       </DialogTrigger>
       <DialogContent
-        className={`w-[600px] border-none bg-transparent scale-[${scale}%]`}
+        className={`w-[600px] border-none bg-transparent ${isMobile ? "scale-[65%]" : "scale-100"}`}
       >
         <DialogHeader className="hidden">
           <DialogTitle></DialogTitle>
