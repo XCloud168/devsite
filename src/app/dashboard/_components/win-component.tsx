@@ -70,7 +70,9 @@ export function WinComponent({ getWinRankingListAction, isMobile }: Props) {
     const animate = () => {
       planets.forEach((_, index) => {
         const planetAngle =
-          angleRef.current + (index * (2 * Math.PI)) / planets.length;
+          angleRef.current +
+          (index * (2 * Math.PI)) / planets.length +
+          Math.PI / 2;
         const x = Math.sin(planetAngle) * ellipseRadiusX;
         const z = Math.cos(planetAngle) * ellipseRadiusZ;
         const planet = planetRefs.current[index];
@@ -79,6 +81,9 @@ export function WinComponent({ getWinRankingListAction, isMobile }: Props) {
           const scale =
             0.8 + ((z + ellipseRadiusZ) / (ellipseRadiusZ * 2)) * 0.4;
           planet.style.scale = `${scale}`;
+          planet.style.zIndex = Math.floor(
+            (z + ellipseRadiusZ) * 100,
+          ).toString();
         }
       });
       angleRef.current += speed; // 旋转速度
