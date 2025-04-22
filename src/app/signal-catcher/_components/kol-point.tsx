@@ -181,17 +181,17 @@ export function KolPoint({
           </div>
         </div>
       )}
-      {/*<div className="ml-2 mt-2 flex h-14 w-[240px] items-center justify-between border px-6">*/}
-      {/*  <p>{t("signals.kol.withToken")}</p>*/}
-      {/*  <div>*/}
-      {/*    <Switch*/}
-      {/*      id="airplane-mode"*/}
-      {/*      checked={hasContractAddress}*/}
-      {/*      onCheckedChange={changeHasContractAddress}*/}
-      {/*      disabled={pageLoading}*/}
-      {/*    />*/}
-      {/*  </div>*/}
-      {/*</div>*/}
+      <div className="ml-2 mt-2 flex h-14 w-[240px] items-center justify-between border px-6">
+        <p>{t("signals.kol.withToken")}</p>
+        <div>
+          <Switch
+            id="airplane-mode"
+            checked={hasContractAddress}
+            onCheckedChange={changeHasContractAddress}
+            disabled={pageLoading}
+          />
+        </div>
+      </div>
       {pageLoading && tweetList.length === 0 ? (
         <div className="space-y-5 px-5 pt-5">
           {[1, 2, 3, 4, 5].map((item) => (

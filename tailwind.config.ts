@@ -62,7 +62,17 @@ const config = {
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
       },
+      perspective: {
+        "1000": "1000px",
+      },
+      transformStyle: {
+        "3d": "preserve-3d",
+      },
       keyframes: {
+        rotateY: {
+          "0%": { transform: "rotateY(0deg)" },
+          "100%": { transform: "rotateY(360deg)" },
+        },
         bell: {
           "0%": { transform: "rotate(0deg)" },
           "15%": { transform: "rotate(15deg)" },
@@ -106,6 +116,7 @@ const config = {
         "slide-out-to-left": "slide-out-to-left 0.3s ease-in",
         "loading-bar": "loadingBar 1.5s ease-in-out infinite",
         bell: "bell 0.8s ease-in-out infinite",
+        rotateY: "rotateY 10s linear infinite",
       },
     },
   },

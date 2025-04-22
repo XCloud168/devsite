@@ -9,7 +9,7 @@
         "signal-catcher": "Signal Catcher",
         "home": "Home",
         "blog": "Blog",
-        "pricing": "Pricing",
+        "pricing": "Subscribe",
         "swap": "Swap",
         "about": "About",
         "buySlogan": "Subscribe to VIP for exclusive signals",
@@ -398,7 +398,8 @@
             "totalMentions": "Total Mentions",
             "firstMentionPrice": "First Mention Price",
             "highestPrice": "Highest Price",
-            "maxPNL": "Max PNL%"
+            "maxPNL": "Max PNL%",
+            "tweet": "Related Tweets"
         },
         "share": {
             "slogan": "24h KOL Signal Backtest Records.",

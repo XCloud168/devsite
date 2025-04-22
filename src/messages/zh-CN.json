@@ -398,7 +398,8 @@
             "totalMentions": "提及总次数",
             "firstMentionPrice": "首次提及价格",
             "highestPrice": "最高点价格",
-            "maxPNL": "最大收益率"
+            "maxPNL": "最大收益率",
+            "tweet": "相关推文"
         },
         "share": {
             "slogan": "24h KOL优质信号回测记录",

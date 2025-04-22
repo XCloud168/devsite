@@ -11,6 +11,7 @@ import { useRouter } from "next/navigation";
 import dayjs from "dayjs";
 interface Props {
   get24hRankingListAction: () => Promise<ServerResult>;
+  isMobile?: boolean;
 }
 interface Item {
   mentions: {
@@ -40,7 +41,7 @@ interface Item {
     url: string;
   };
 }
-export function RiseComponent({ get24hRankingListAction }: Props) {
+export function RiseComponent({ get24hRankingListAction, isMobile }: Props) {
   const router = useRouter();
   const t = useTranslations();
   const [pageLoading, setPageLoading] = useState(false);
@@ -61,7 +62,7 @@ export function RiseComponent({ get24hRankingListAction }: Props) {
       <div className="mt-10 flex flex-col items-center justify-center">
         <div className="mb-5 flex items-center">
           <div className="h-16 w-16 bg-[url(/images/dashboard/ranking-icon.png)] bg-contain"></div>
-          <p className="text-2xl font-semibold">
+          <p className="text-xl font-semibold md:text-2xl">
             {t("dashboard.riseRanking.gainRanking")}
           </p>
         </div>
@@ -70,14 +71,14 @@ export function RiseComponent({ get24hRankingListAction }: Props) {
           {pageLoading
             ? [1, 2, 3, 4, 5].map((item) => (
                 <Skeleton
-                  className="h-[116px] w-full min-w-[776px] bg-secondary"
+                  className="mx-auto h-[116px] w-full min-w-[90vw] bg-secondary md:min-w-[776px]"
                   key={item}
                 />
               ))
             : itemList.map((item, index) => (
                 <div
                   key={`24ranking_${index}`}
-                  className="relative grid grid-cols-[repeat(4,_1fr)_40px] items-center gap-10 overflow-hidden rounded-lg bg-[#18191A] px-5 pb-6 pt-10"
+                  className="relative mx-auto grid w-[96%] grid-cols-2 items-center gap-4 overflow-hidden rounded-lg bg-[#18191A] px-4 pb-3 pt-10 md:w-full md:grid-cols-[repeat(4,_1fr)_40px] md:gap-10 md:px-5 md:pb-6"
                 >
                   <div className="absolute left-0 top-0 h-6 w-20 rounded-br-lg bg-gradient-to-r from-[#4DFFC4] to-[#F2DA18] text-center text-sm font-semibold leading-6 text-black">
                     Top{index + 1}
@@ -141,8 +142,8 @@ export function RiseComponent({ get24hRankingListAction }: Props) {
                       {item.tweet.highRate24H}%
                     </p>
                   </div>
-                  <div className="flex cursor-pointer items-center justify-center">
-                    <RankingSharePoster>
+                  <div className="absolute right-4 top-4 cursor-pointer items-center justify-center md:relative md:right-0 md:top-0 md:flex">
+                    <RankingSharePoster scale={isMobile ? 65 : 100}>
                       <div className="items-center py-5">
                         <p className="w-80 text-4xl font-bold">
                           {t("dashboard.share.slogan")}

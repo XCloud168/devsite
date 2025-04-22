@@ -11,12 +11,13 @@ import React, { type ReactNode, useCallback, useRef } from "react";
 import { toPng } from "html-to-image";
 import { useLocale, useTranslations } from "next-intl";
 import Image from "next/image";
-import { QRCode } from "@/components/qrcode";
 import { Share2 } from "lucide-react";
 export default function RankingSharePoster({
   children,
+  scale,
 }: {
   children: ReactNode;
+  scale: number;
 }) {
   const t = useTranslations();
   const locale = useLocale();
@@ -53,7 +54,9 @@ export default function RankingSharePoster({
       <DialogTrigger className="w-full">
         <Share2 size={20} className="text-[#949C9E]" />
       </DialogTrigger>
-      <DialogContent className="w-[600px] border-none bg-transparent">
+      <DialogContent
+        className={`w-[600px] border-none bg-transparent scale-[${scale}%]`}
+      >
         <DialogHeader className="hidden">
           <DialogTitle></DialogTitle>
           <DialogDescription></DialogDescription>

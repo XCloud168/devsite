@@ -15,6 +15,7 @@ interface Props {
     screenName: string;
   };
   userState: {
+    positiveRatePercentage: string;
     maxHighRate: string;
     maxHighRateProject: {
       id: string;
@@ -34,7 +35,7 @@ interface Props {
 export function KolInfo({ userInfo, userState }: Props) {
   const t = useTranslations();
   return (
-    <div className="rounded-xl bg-[#4949493a] p-6">
+    <div className="mt-3 rounded-xl bg-[#4949493a] p-3">
       <div className="flex items-center gap-2">
         <div className="h-16 w-16 rounded-full ring-1">
           <Avatar className="h-16 w-16">
@@ -51,16 +52,10 @@ export function KolInfo({ userInfo, userState }: Props) {
         </div>
       </div>
       <p className="mt-5 text-xs">{userInfo.description}</p>
-      {/*<div className="mt-2 flex gap-1">*/}
-      {/*  <Badge variant="destructive">Tag</Badge>*/}
-      {/*  <Badge variant="destructive">Tag</Badge>*/}
-      {/*  <Badge variant="destructive">Tag</Badge>*/}
-      {/*  <Badge variant="destructive">Tag</Badge>*/}
-      {/*</div>*/}
-      <div className="mt-5 grid grid-cols-4">
+      <div className="mt-5 grid grid-cols-2 gap-y-3 md:grid-cols-4 md:gap-y-0">
         <div className="flex flex-col justify-center">
           <p className="text-xs">{t("dashboard.winRanking.winRate")}</p>
-          <p>{userState.maxHighRate}%</p>
+          <p>{userState.positiveRatePercentage}%</p>
         </div>
         <div className="flex flex-col justify-center">
           <p className="text-xs">{t("dashboard.winRanking.record")}</p>

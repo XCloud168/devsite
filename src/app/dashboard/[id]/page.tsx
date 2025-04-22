@@ -7,6 +7,8 @@ import {
   getTwitterUserStats,
   getTwitterUserTweets,
 } from "@/server/api/routes/dashboard";
+import { headers } from "next/headers";
+import { UAParser } from "ua-parser-js";
 
 type Params = Promise<{ id: string }>;
 const getUserStats = async (userid: string, period: string) => {
@@ -44,6 +46,11 @@ const getUserUserTweets = async (
 };
 
 export default async function UserPage(props: { params: Params }) {
+  const headersList = await headers();
+  const userAgent = headersList.get("user-agent") || "";
+  const { device } = UAParser(userAgent);
+  // 判断是否是移动设备
+  const isMobile = device.type === "mobile" || device.type === "tablet";
   const params = await props.params;
   return (
     <DetailComponent
@@ -54,6 +61,7 @@ export default async function UserPage(props: { params: Params }) {
       getUserProjectsPerformanceAction={getUserProjectsPerformance}
       getUserProjectStatsAction={getUserProjectStats}
       getUserUserTweetsAction={getUserUserTweets}
+      isMobile={isMobile}
     />
   );
 }

@@ -15,8 +15,8 @@ export function Header() {
   const navigation = [
     { name: t("signal-catcher"), href: "/signal-catcher" },
     // { name: t("swap"), href: "/swap" },
-    { name: t("pricing"), href: "/pricing" },
     { name: t("dashboard"), href: "/dashboard" },
+    { name: t("pricing"), href: "/pricing" },
   ];
 
   return (

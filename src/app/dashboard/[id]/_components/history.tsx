@@ -27,14 +27,24 @@ interface Props {
 export function History({ projectStats }: Props) {
   const t = useTranslations();
   return (
-    <Table>
+    <Table className="mx-auto">
       <TableHeader>
         <TableRow>
-          <TableHead>{t("dashboard.details.token")}</TableHead>
-          <TableHead>{t("dashboard.details.totalMentions")}</TableHead>
-          <TableHead>{t("dashboard.details.firstMentionPrice")}</TableHead>
-          <TableHead>{t("dashboard.details.highestPrice")}</TableHead>
-          <TableHead>{t("dashboard.details.maxPNL")}</TableHead>
+          <TableHead className="whitespace-nowrap">
+            {t("dashboard.details.token")}
+          </TableHead>
+          <TableHead className="whitespace-nowrap">
+            {t("dashboard.details.totalMentions")}
+          </TableHead>
+          <TableHead className="whitespace-nowrap">
+            {t("dashboard.details.firstMentionPrice")}
+          </TableHead>
+          <TableHead className="whitespace-nowrap">
+            {t("dashboard.details.highestPrice")}
+          </TableHead>
+          <TableHead className="whitespace-nowrap">
+            {t("dashboard.details.maxPNL")}
+          </TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>

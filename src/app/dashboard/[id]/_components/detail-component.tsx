@@ -36,6 +36,7 @@ interface DetailComponentProps {
     page: number,
     pageSize: number,
   ) => Promise<ServerResult>;
+  isMobile?: boolean;
 }
 
 interface UserInfo {
@@ -60,6 +61,7 @@ interface UserState {
     symbol: string;
   };
   projectsCount: string;
+  positiveRatePercentage: string;
 }
 interface ProjectsPerformance {
   content: string;
@@ -108,6 +110,7 @@ export function DetailComponent({
   getUserDailyWinRateAction,
   getUserProjectStatsAction,
   getUserUserTweetsAction,
+  isMobile,
 }: DetailComponentProps) {
   const t = useTranslations();
   const [selectedRange, setSelectedRange] = useState("7d");
@@ -142,6 +145,7 @@ export function DetailComponent({
       setUserProjectStatsLoading(true);
       const response = await getUserProjectStatsAction(id, selectedRange);
       setUserProjectStats(response.data);
+
       setUserProjectStatsLoading(false);
     };
     fetchData();
@@ -197,102 +201,152 @@ export function DetailComponent({
     page,
     selectedRange,
   ]);
-
+  const [selectedType, setSelectedType] = useState("kolDetails");
+  const Left = (
+    <div className="h-full w-full overflow-y-scroll border-r p-3 scrollbar-thin scrollbar-track-transparent scrollbar-thumb-secondary md:h-[calc(100vh-132px)] md:w-3/5 md:p-5">
+      {!userInfoLoading && !userStateLoading && userInfo && userState ? (
+        <KolInfo userInfo={userInfo} userState={userState} />
+      ) : (
+        <Skeleton className="mt-3 h-56 w-full bg-secondary md:h-40" />
+      )}
+      <div className="my-3 flex w-full items-center justify-center">
+        <Tabs
+          defaultValue="7d"
+          className="w-fit"
+          onValueChange={(e) => {
+            setSelectedRange(e);
+          }}
+        >
+          <TabsList className="grid w-full grid-cols-2 px-1">
+            <TabsTrigger value="7d">7D</TabsTrigger>
+            <TabsTrigger value="30d">30D</TabsTrigger>
+          </TabsList>
+        </Tabs>
+      </div>
+      <div className="">
+        <p className="">{t("dashboard.details.trend")}</p>
+        {!userDailyLoading && userDaily ? (
+          <Trend dailyWinRate={userDaily} />
+        ) : (
+          <Skeleton className="mt-3 h-48 w-full bg-secondary" />
+        )}
+      </div>
+      <div className="mt-3">
+        <p className="">{t("dashboard.details.analysis")}</p>
+        {!userPerformanceLoading && userPerformance ? (
+          <BubbleChat chartData={userPerformance} />
+        ) : (
+          <Skeleton className="mt-3 h-96 w-full bg-secondary" />
+        )}
+      </div>
+      <div className="mt-3 w-[96vw] overflow-x-scroll">
+        <p className="">{t("dashboard.details.gainDetails")}</p>
+        {!userProjectStatsLoading && userProjectStats ? (
+          <History projectStats={userProjectStats} />
+        ) : (
+          <Skeleton className="h-40 w-full bg-secondary" />
+        )}
+      </div>
+    </div>
+  );
+  const Right = (
+    <div className="h-full w-full space-y-3 overflow-y-scroll border-r p-3 scrollbar-thin scrollbar-track-transparent scrollbar-thumb-secondary md:h-[calc(100vh-132px)] md:w-2/5 md:p-5">
+      {userInfo && (
+        <div className="flex justify-center">
+          <Avatar className="h-8 w-8">
+            <AvatarImage src={userInfo.avatar ?? ""} />
+            <AvatarFallback></AvatarFallback>
+          </Avatar>
+        </div>
+      )}
+      <p className="text-center">
+        {userInfo?.name}&nbsp;
+        {t("dashboard.details.tokenMentions")}
+      </p>
+      <div className="space-y-5 px-5">
+        {!userTweetLoading && userTweet ? (
+          <TweetList userTweet={userTweet} />
+        ) : (
+          [1, 2, 3, 4].map((item) => (
+            <div className="flex w-full gap-3" key={item}>
+              <div className="w-full space-y-2">
+                <Skeleton className="h-5 w-3/5 bg-secondary" />
+                <Skeleton className="h-20 w-full bg-secondary" />
+              </div>
+            </div>
+          ))
+        )}
+      </div>
+      <LoadingMoreBtn
+        pageLoading={userTweetLoading}
+        hasNext={hasNext}
+        onNextAction={() => {
+          getUserUserTweetsAction(id, "30d", page, 5).then((res) => {
+            setUserTweet((prev) => prev.concat(res.data.data));
+            setHasNext(page !== res.data.pagination.currentPage);
+            setPage(res.data.pagination.currentPage);
+          });
+        }}
+      />
+    </div>
+  );
+  if (isMobile) {
+    return (
+      <div className="">
+        <div className="cursor-pointe sticky top-0 z-50 border-b bg-background p-3 md:top-14 md:p-5">
+          <Link className="sticky flex items-center gap-1" href={"/dashboard"}>
+            <ChevronLeft size={20} />
+            <p>{t("dashboard.details.kolDetails")}</p>
+          </Link>
+          <div className="mt-3 flex justify-center gap-3 md:hidden">
+            {["kolDetails", "tweet"].map((item) => (
+              <div
+                key={item}
+                onClick={() => setSelectedType(item)}
+                className={`relative ${
+                  selectedType === item
+                    ? "font-bold text-primary after:absolute after:-bottom-3 after:left-1 after:right-1 after:h-[2px] after:bg-primary after:content-['']"
+                    : "font-normal text-black dark:text-foreground/80"
+                }`}
+              >
+                {t("dashboard.details." + item)}
+              </div>
+            ))}
+          </div>
+        </div>
+        <div className="flex w-full">
+          {selectedType === "kolDetails" && Left}
+          {selectedType === "tweet" && Right}
+        </div>
+      </div>
+    );
+  }
   return (
     <div className="">
-      <Link
-        className="sticky top-14 z-50 flex cursor-pointer items-center gap-1 border-b bg-background p-5"
-        href={"/dashboard"}
-      >
-        <ChevronLeft size={20} />
-        <p>{t("dashboard.details.kolDetails")}</p>
-      </Link>
-
-      <div className="flex w-full">
-        <div className="h-[calc(100vh-132px)] w-3/5 overflow-y-scroll border-r p-5 scrollbar-thin scrollbar-track-transparent scrollbar-thumb-secondary">
-          {!userInfoLoading && !userStateLoading && userInfo && userState ? (
-            <KolInfo userInfo={userInfo} userState={userState} />
-          ) : (
-            <Skeleton className="mt-6 h-40 w-full bg-secondary" />
-          )}
-          <div className="my-3 flex w-full items-center justify-center">
-            <Tabs
-              defaultValue="7d"
-              className="w-fit"
-              onValueChange={(e) => {
-                setSelectedRange(e);
-              }}
+      <div className="cursor-pointe sticky top-0 z-50 border-b bg-background p-3 md:top-14 md:p-5">
+        <Link className="sticky flex items-center gap-1" href={"/dashboard"}>
+          <ChevronLeft size={20} />
+          <p>{t("dashboard.details.kolDetails")}</p>
+        </Link>
+        <div className="mt-3 flex gap-3 md:hidden">
+          {["detail", "tweet"].map((item) => (
+            <div
+              key={item}
+              onClick={() => setSelectedType(item)}
+              className={`relative ${
+                selectedType === item
+                  ? "font-bold text-primary after:absolute after:-bottom-3 after:left-1 after:right-1 after:h-[2px] after:bg-primary after:content-['']"
+                  : "font-normal text-black dark:text-foreground/80"
+              }`}
             >
-              <TabsList className="grid w-full grid-cols-2 px-1">
-                <TabsTrigger value="7d">7D</TabsTrigger>
-                <TabsTrigger value="30d">30D</TabsTrigger>
-              </TabsList>
-            </Tabs>
-          </div>
-          <div className="">
-            <p className="">{t("dashboard.details.trend")}</p>
-            {!userDailyLoading && userDaily ? (
-              <Trend dailyWinRate={userDaily} />
-            ) : (
-              <Skeleton className="mt-3 h-48 w-full bg-secondary" />
-            )}
-          </div>
-          <div className="mt-3">
-            <p className="">{t("dashboard.details.analysis")}</p>
-            {!userPerformanceLoading && userPerformance ? (
-              <BubbleChat chartData={userPerformance} />
-            ) : (
-              <Skeleton className="mt-3 h-96 w-full bg-secondary" />
-            )}
-          </div>
-          <div className="mt-3">
-            <p className="">{t("dashboard.details.gainDetails")}</p>
-            {!userProjectStatsLoading && userProjectStats ? (
-              <History projectStats={userProjectStats} />
-            ) : (
-              <Skeleton className="h-40 w-full bg-secondary" />
-            )}
-          </div>
-        </div>
-        <div className="h-[calc(100vh-132px)] w-2/5 space-y-3 overflow-y-scroll border-r p-5 scrollbar-thin scrollbar-track-transparent scrollbar-thumb-secondary">
-          {userInfo && (
-            <div className="flex justify-center">
-              <Avatar className="h-8 w-8">
-                <AvatarImage src={userInfo.avatar ?? ""} />
-                <AvatarFallback></AvatarFallback>
-              </Avatar>
+              {item}
             </div>
-          )}
-          <p className="text-center">
-            {userInfo?.name}&nbsp;
-            {t("dashboard.details.tokenMentions")}
-          </p>
-          <div className="space-y-5 px-5">
-            {!userTweetLoading && userTweet ? (
-              <TweetList userTweet={userTweet} />
-            ) : (
-              [1, 2, 3, 4].map((item) => (
-                <div className="flex w-full gap-3" key={item}>
-                  <div className="w-full space-y-2">
-                    <Skeleton className="h-5 w-3/5 bg-secondary" />
-                    <Skeleton className="h-20 w-full bg-secondary" />
-                  </div>
-                </div>
-              ))
-            )}
-          </div>
-          <LoadingMoreBtn
-            pageLoading={userTweetLoading}
-            hasNext={hasNext}
-            onNextAction={() => {
-              getUserUserTweetsAction(id, "30d", page, 5).then((res) => {
-                setUserTweet((prev) => prev.concat(res.data.data));
-                setHasNext(page !== res.data.pagination.currentPage);
-                setPage(res.data.pagination.currentPage);
-              });
-            }}
-          />
+          ))}
         </div>
+      </div>
+      <div className="flex w-full">
+        {Left}
+        {Right}
       </div>
     </div>
   );
