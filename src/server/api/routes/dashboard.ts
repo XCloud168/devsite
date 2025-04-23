@@ -724,9 +724,9 @@ async function getProjectStats(userId: string, period = '7d') {
         projectId: info.projectId,
         symbol: info.symbol,
         logo: info.logo,
-        signalPrice: info.signalPrice,
-        highPrice: info.highPrice,
-        highRate: info.highRate,
+        signalPrice: parseFloat(info.signalPrice ?? '0'),
+        highPrice: parseFloat(info.highPrice ?? '0'),
+        highRate: parseFloat(info.highRate ?? '0'),
         mentionCount: 1, // 初始化mentionCount为1
       });
     } else {
