@@ -55,7 +55,7 @@ export function KolInfo({ userInfo, userState }: Props) {
       <div className="mt-5 grid grid-cols-2 gap-y-3 md:grid-cols-4 md:gap-y-0">
         <div className="flex flex-col justify-center">
           <p className="text-xs">{t("dashboard.winRanking.winRate")}</p>
-          <p>{userState.positiveRatePercentage}%</p>
+          <p className="text-[#FFFFA7]">{userState.positiveRatePercentage}%</p>
         </div>
         <div className="flex flex-col justify-center">
           <p className="text-xs">{t("dashboard.winRanking.record")}</p>
@@ -74,7 +74,6 @@ export function KolInfo({ userInfo, userState }: Props) {
         </div>
         <div className="flex flex-col justify-center">
           <p className="text-xs">{t("dashboard.details.drawDown")}</p>
-
           {userState.maxLowRateProject ? (
             <div className="flex items-center gap-2">
               <Avatar className="h-5 w-5">
