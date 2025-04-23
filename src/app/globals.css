@@ -75,6 +75,13 @@ body {
   }
 }
 
+@layer utilities {
+  .bg-clip-text {
+    background-clip: text;
+    -webkit-background-clip: text; /* 添加这个 */
+  }
+}
+
 .border-spin-image {
   position: relative;
 }
