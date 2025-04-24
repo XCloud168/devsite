@@ -21,7 +21,6 @@ import {
 import { FeaturedComponent } from "@/app/signal-catcher/_components/featured-component";
 import { type SIGNAL_PROVIDER_TYPE } from "@/lib/constants";
 import React from "react";
-import RealtimeSignal from "@/components/signals/realtime-signal";
 import { headers } from "next/headers";
 import { UAParser } from "ua-parser-js";
 import { getUserProfile } from "@/server/api/routes/auth";
@@ -154,7 +153,6 @@ export default async function SignalPage() {
           </div>
         </ResizablePanel>
       </ResizablePanelGroup>
-      <RealtimeSignal />
     </>
   );
 }

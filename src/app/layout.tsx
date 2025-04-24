@@ -6,6 +6,9 @@ import { getLocale, getMessages, getTranslations } from "next-intl/server";
 import { Geist, Geist_Mono } from "next/font/google";
 import { headers } from "next/headers";
 import "./globals.css";
+import RealtimeSignal from "@/components/signals/realtime-signal";
+import React from "react";
+import { UAParser } from "ua-parser-js";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -87,7 +90,11 @@ export default async function RootLayout({
   // Providing all messages to the client
   // side is the easiest way to get started
   const messages = await getMessages();
-
+  const headersList = await headers();
+  const userAgent = headersList.get("user-agent") || "";
+  const { device } = UAParser(userAgent);
+  // 判断是否是移动设备
+  const isMobile = device.type === "mobile" || device.type === "tablet";
   return (
     <html suppressHydrationWarning lang={locale}>
       <head>
@@ -108,6 +115,7 @@ export default async function RootLayout({
               <div className="relative flex min-h-screen flex-col">
                 <main className="flex-1">{children}</main>
                 <Toaster richColors position="bottom-right" />
+                {!isMobile && <RealtimeSignal />}
               </div>
             </QueryProvider>
           </ThemeProvider>
