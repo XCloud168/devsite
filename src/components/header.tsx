@@ -7,8 +7,6 @@ import Image from "next/image";
 import Link from "next/link";
 import { AuthButton } from "./auth-button";
 import { usePathname } from "next/navigation";
-import { useSessionStorageState } from "@/components/SessionStorageWatcher";
-
 export function Header() {
   const t = useTranslations("navigation");
   const siteName = useTranslations("metadata").raw("siteName");
