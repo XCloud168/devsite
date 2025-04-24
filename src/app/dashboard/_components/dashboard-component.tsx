@@ -14,11 +14,13 @@ interface Props {
   getWinRankingListAction: (period: string) => Promise<ServerResult>;
   get24hRankingListAction: () => Promise<ServerResult>;
   isMobile?: boolean;
+  isMember?: boolean | null;
 }
 export function DashboardComponent({
   getWinRankingListAction,
   get24hRankingListAction,
   isMobile,
+  isMember,
 }: Props) {
   const t = useTranslations();
   const menu: Menu[] = [
@@ -37,6 +39,7 @@ export function DashboardComponent({
         <WinComponent
           getWinRankingListAction={getWinRankingListAction}
           isMobile={isMobile}
+          isMember={isMember}
         />
       );
     } else if (selectedMenu.value === "riseRanking") {

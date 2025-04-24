@@ -6,8 +6,12 @@ import {
 } from "@/server/api/routes/dashboard";
 import { UAParser } from "ua-parser-js";
 import { headers } from "next/headers";
+import { getUserProfile } from "@/server/api/routes/auth";
 
 export default async function DashboardPage() {
+  const headersList = await headers();
+  const userAgent = headersList.get("user-agent") || "";
+  const { device } = UAParser(userAgent);
   const getWinRankingList = async (period: string) => {
     "use server";
     return await getTwitterUserGains(period);
@@ -16,17 +20,20 @@ export default async function DashboardPage() {
     "use server";
     return await getTop24hGainTweets();
   };
-  const headersList = await headers();
-  const userAgent = headersList.get("user-agent") || "";
-  const { device } = UAParser(userAgent);
+
   // 判断是否是移动设备
   const isMobile = device.type === "mobile" || device.type === "tablet";
+  const user = await getUserProfile();
+  const isMember =
+    user?.membershipExpiredAt &&
+    new Date(user?.membershipExpiredAt) > new Date();
   return (
     <>
       <DashboardComponent
         getWinRankingListAction={getWinRankingList}
         get24hRankingListAction={get24hRankingList}
         isMobile={isMobile}
+        isMember={isMember}
       />
     </>
   );

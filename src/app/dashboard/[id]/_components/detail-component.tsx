@@ -14,6 +14,7 @@ import { useTranslations } from "next-intl";
 import { LoadingMoreBtn } from "@/app/signal-catcher/_components/loading-more-btn";
 import { TweetList } from "@/app/dashboard/[id]/_components/tweet-list";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { toast } from "sonner";
 interface DetailComponentProps {
   id: string;
   getUserStatsAction: (userId: string, period: string) => Promise<ServerResult>;
@@ -37,6 +38,7 @@ interface DetailComponentProps {
     pageSize: number,
   ) => Promise<ServerResult>;
   isMobile?: boolean;
+  isMember?: boolean | null;
 }
 
 interface UserInfo {
@@ -111,6 +113,7 @@ export function DetailComponent({
   getUserProjectStatsAction,
   getUserUserTweetsAction,
   isMobile,
+  isMember,
 }: DetailComponentProps) {
   const t = useTranslations();
   const [selectedRange, setSelectedRange] = useState("7d");
@@ -206,9 +209,13 @@ export function DetailComponent({
       )}
       <div className="my-3 flex w-full items-center justify-center">
         <Tabs
-          defaultValue="7d"
+          value={selectedRange}
           className="w-fit"
           onValueChange={(e) => {
+            if (!isMember) {
+              toast.info(t("signals.kol.notVip"));
+              return;
+            }
             setSelectedRange(e);
           }}
         >

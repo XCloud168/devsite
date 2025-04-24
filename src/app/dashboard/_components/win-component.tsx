@@ -24,9 +24,11 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { CircleAlert } from "lucide-react";
+import { toast } from "sonner";
 interface Props {
   getWinRankingListAction: (period: string) => Promise<ServerResult>;
   isMobile?: boolean;
+  isMember?: boolean | null;
 }
 interface rankingItem {
   followersCount: number;
@@ -43,7 +45,11 @@ interface rankingItem {
     symbol: string;
   };
 }
-export function WinComponent({ getWinRankingListAction, isMobile }: Props) {
+export function WinComponent({
+  getWinRankingListAction,
+  isMobile,
+  isMember,
+}: Props) {
   const t = useTranslations();
   const router = useRouter();
   const [tableData, setTableData] = useState<rankingItem[]>([]);
@@ -298,15 +304,20 @@ export function WinComponent({ getWinRankingListAction, isMobile }: Props) {
       </div>
     );
   }, [isMobile, t, tableData]);
-
+  const [selectedTab, setSelectedTab] = useState("7d");
   return (
     <div className="relative mt-5 flex justify-center overflow-hidden">
       <div className="absolute z-0 h-[332px] w-full border-b bg-[url(/images/dashboard/bg.png)] bg-contain bg-center bg-no-repeat"></div>
       <div className="z-[2] flex flex-col items-center justify-center">
         <Tabs
-          defaultValue="7d"
+          value={selectedTab}
           className="w-32"
           onValueChange={(e) => {
+            if (!isMember) {
+              toast.info(t("signals.kol.notVip"));
+              return;
+            }
+            setSelectedTab(e);
             setPageLoading(true);
             getWinRankingListAction(e).then((res) => {
               setTableData(res.data);

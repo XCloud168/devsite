@@ -9,6 +9,7 @@ import {
 } from "@/server/api/routes/dashboard";
 import { headers } from "next/headers";
 import { UAParser } from "ua-parser-js";
+import { getUserProfile } from "@/server/api/routes/auth";
 
 type Params = Promise<{ id: string }>;
 const getUserStats = async (userid: string, period: string) => {
@@ -52,6 +53,10 @@ export default async function UserPage(props: { params: Params }) {
   // 判断是否是移动设备
   const isMobile = device.type === "mobile" || device.type === "tablet";
   const params = await props.params;
+  const user = await getUserProfile();
+  const isMember =
+    user?.membershipExpiredAt &&
+    new Date(user?.membershipExpiredAt) > new Date();
   return (
     <DetailComponent
       id={params.id}
@@ -62,6 +67,7 @@ export default async function UserPage(props: { params: Params }) {
       getUserProjectStatsAction={getUserProjectStats}
       getUserUserTweetsAction={getUserUserTweets}
       isMobile={isMobile}
+      isMember={isMember}
     />
   );
 }
