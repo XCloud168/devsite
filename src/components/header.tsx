@@ -7,6 +7,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { AuthButton } from "./auth-button";
 import { usePathname } from "next/navigation";
+import { useSessionStorageState } from "@/components/SessionStorageWatcher";
 
 export function Header() {
   const t = useTranslations("navigation");
@@ -18,7 +19,6 @@ export function Header() {
     { name: t("dashboard"), href: "/dashboard" },
     { name: t("pricing"), href: "/pricing" },
   ];
-
   return (
     <header className="sticky top-0 z-50 hidden w-full border-b backdrop-blur supports-[backdrop-filter]:bg-background/60 md:block">
       <div className="flex h-14 items-center px-5">

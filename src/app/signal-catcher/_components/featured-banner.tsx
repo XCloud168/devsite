@@ -15,6 +15,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { useSessionStorageState } from "@/components/SessionStorageWatcher";
 interface Tag {
   id: string;
   name: string;
@@ -241,6 +242,17 @@ export function FeaturedBanner({
     );
   };
 
+  const [newSignal, setNewSignal] = useSessionStorageState<string>(
+    "newSignal",
+    "",
+  );
+  const newSignalList = useMemo(() => {
+    if (newSignal && newSignal !== "") {
+      return Array.from(new Set(newSignal.split(",")));
+    }
+    return [];
+  }, [newSignal]);
+
   return (
     <div className="sticky top-0 z-10">
       {!isMobile && (
@@ -257,7 +269,7 @@ export function FeaturedBanner({
           {signalCategory.map((category) => (
             <div
               key={category.id}
-              className={`${selectedCategoryId === category.id ? "border-[#1F72E5] bg-gradient-to-r from-primary to-primary bg-clip-text font-bold text-primary dark:border-[#F2DA18] dark:from-[#F2DA18] dark:to-[#4DFFC4] dark:text-transparent" : "border-transparent"} min-w-max cursor-pointer border-b-2 pb-2 pt-3 text-center`}
+              className={`relative ${selectedCategoryId === category.id ? "border-[#1F72E5] bg-gradient-to-r from-primary to-primary bg-clip-text font-bold text-primary dark:border-[#F2DA18] dark:from-[#F2DA18] dark:to-[#4DFFC4] dark:text-transparent" : "border-transparent"} min-w-max cursor-pointer border-b-2 pb-2 pt-3 text-center`}
               onClick={() => {
                 setTagLoading(true);
                 setSelectedCategoryId(category.id);
@@ -266,9 +278,19 @@ export function FeaturedBanner({
                 onMenuChangeAction({
                   categoryId: category.id,
                 });
+                setNewSignal(
+                  newSignalList
+                    .filter((item) => item !== category.id)
+                    .join(","),
+                );
+                window.dispatchEvent(new Event("session-storage-update"));
               }}
             >
               {t("signals.signal." + category.code)}
+              {selectedCategoryId !== category.id &&
+                newSignalList.includes(category.id) && (
+                  <div className="absolute -right-1 top-3 h-2 w-2 rounded-full bg-red-500"></div>
+                )}
             </div>
           ))}
         </div>

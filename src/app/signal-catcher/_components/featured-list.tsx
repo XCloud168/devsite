@@ -97,6 +97,7 @@ export function FeaturedList({
       setSignalList((prev) =>
         refresh ? response.data.items : prev.concat(response.data.items),
       );
+      console.log(response.data.items);
       setHasNext(response.data.pagination.hasNextPage);
       setCurrentPage(response.data.pagination.currentPage);
       if (showPageLoading) setPageLoading(false);

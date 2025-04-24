@@ -21,6 +21,7 @@ import { type Projects, type Signals } from "@/server/db/schemas/signal";
 import type { TweetInfo } from "@/server/db/schemas/tweet";
 import { createClient } from "@/utils/supabase/client";
 import { getUserProfile } from "@/server/api/routes/auth";
+import { useSessionStorageState } from "@/components/SessionStorageWatcher";
 
 interface SignalItems extends Signals {
   source: TweetInfo & {
@@ -74,7 +75,7 @@ export default function RealtimeSignal() {
   const [audio, setAudio] = useState<Howl | null>(null);
   const { isMember, isLoading, isExpired } = useMembership();
   const t = useTranslations("signals");
-
+  const [, setNewSignal] = useSessionStorageState<string>("newSignal", "");
   // 处理音频授权
   const handleEnableAudio = () => {
     if (!audio && notificationEnabled) {
@@ -147,6 +148,14 @@ export default function RealtimeSignal() {
         newSignal.data?.items?.[0] as SignalItems,
         ...prev,
       ]);
+
+      if (newSignal?.data?.items) {
+        setNewSignal(
+          newSignal.data.items.map((item) => item.categoryId).join(","),
+        );
+        window.dispatchEvent(new Event("session-storage-update"));
+      }
+
       setShowDialog(true); // 显示弹窗
 
       if (audioEnabled && audio) {
