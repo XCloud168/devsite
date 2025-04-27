@@ -125,7 +125,7 @@ export function WinComponent({
         <div className="mt-7 flex justify-between">
           <div>
             <p className="text-xs">{t("dashboard.winRanking.winRate")}</p>
-            <p className="text-[#FFFFA7]">
+            <p className="text-[#FFB41D] dark:text-[#FFFFA7]">
               {tableData[1]?.positiveRatePercentage}%
             </p>
           </div>
@@ -165,7 +165,7 @@ export function WinComponent({
         <div className="mt-7 flex justify-between">
           <div>
             <p className="text-xs">{t("dashboard.winRanking.winRate")}</p>
-            <p className="text-[#FFFFA7]">
+            <p className="text-[#FFB41D] dark:text-[#FFFFA7]">
               {tableData[0]?.positiveRatePercentage}%
             </p>
           </div>
@@ -205,7 +205,7 @@ export function WinComponent({
         <div className="mt-7 flex justify-between">
           <div>
             <p className="text-xs">{t("dashboard.winRanking.winRate")}</p>
-            <p className="text-[#FFFFA7]">
+            <p className="text-[#FFB41D] dark:text-[#FFFFA7]">
               {tableData[2]?.positiveRatePercentage}%
             </p>
           </div>
@@ -287,14 +287,14 @@ export function WinComponent({
           </div>
           {Card1}
         </div>
-        <div className="relative mb-6 w-[300px] overflow-hidden rounded-xl border border-[#D7D7D780]">
+        <div className="relative mb-6 w-[300px] overflow-hidden rounded-xl border border-[#FFFFA780]">
           <div className="absolute right-4 top-0 h-[49px] w-[44px] bg-[url(/images/dashboard/no1.png)] bg-contain bg-no-repeat"></div>
           <div className="h-5 w-1/3 bg-gradient-to-r from-[#FFFFA780] to-[#99996400] pl-3 text-xs leading-5">
             Top 1
           </div>
           {Card2}
         </div>
-        <div className="relative mt-6 w-[300px] overflow-hidden rounded-xl border border-[#D7D7D780]">
+        <div className="border-[#A06C4D80 ] relative mt-6 w-[300px] overflow-hidden rounded-xl border">
           <div className="absolute right-4 top-0 h-[49px] w-[44px] bg-[url(/images/dashboard/no3.png)] bg-contain bg-no-repeat"></div>
           <div className="h-5 w-1/3 bg-gradient-to-r from-[#A06C4D80] to-[#3D3D3D00] pl-3 text-xs leading-5">
             Top 3
@@ -392,7 +392,7 @@ export function WinComponent({
                       </p>
                     </TableCell>
                     <TableCell>{formatNumber(data.followersCount)}</TableCell>
-                    <TableCell className="text-[#FFFFA7]">
+                    <TableCell className="text-[#FFB41D] dark:text-[#FFFFA7]">
                       +{data.positiveRatePercentage}%
                     </TableCell>
                     <TableCell className="flex items-center gap-2">

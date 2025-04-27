@@ -23,7 +23,8 @@ export default function Clock() {
     second: time.format("ss"),
   };
 
-  const labelStyle = "py-1 px-2 bg-[#18191A] rounded-lg text-white";
+  const labelStyle =
+    "py-1 px-2 bg-black/20 dark:bg-[#18191A] rounded-lg dark:text-white text-black";
 
   return (
     <div className="flex items-center justify-center gap-1 text-center font-mono">

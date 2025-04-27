@@ -78,7 +78,7 @@ export function RiseComponent({ get24hRankingListAction, isMobile }: Props) {
             : itemList.map((item, index) => (
                 <div
                   key={`24ranking_${index}`}
-                  className="relative mx-auto grid w-[96%] grid-cols-2 items-center gap-4 overflow-hidden rounded-lg bg-[#18191A] px-4 pb-3 pt-10 md:w-full md:grid-cols-[repeat(4,_1fr)_40px] md:gap-10 md:px-5 md:pb-6"
+                  className="relative mx-auto grid w-[96%] grid-cols-2 items-center gap-4 overflow-hidden rounded-lg border bg-white px-4 pb-3 pt-10 dark:border-none dark:bg-[#18191A] md:w-full md:grid-cols-[repeat(4,_1fr)_40px] md:gap-10 md:px-5 md:pb-6"
                 >
                   <div className="absolute left-0 top-0 h-6 w-20 rounded-br-lg bg-gradient-to-r from-[#4DFFC4] to-[#F2DA18] text-center text-sm font-semibold leading-6 text-black">
                     Top{index + 1}
@@ -101,7 +101,9 @@ export function RiseComponent({ get24hRankingListAction, isMobile }: Props) {
                       >
                         {item.user.name}
                       </p>
-                      <p className="text-white/60">@{item.user.screenName}</p>
+                      <p className="text-black/40 dark:text-white/60">
+                        @{item.user.screenName}
+                      </p>
                     </div>
                   </div>
                   <div>

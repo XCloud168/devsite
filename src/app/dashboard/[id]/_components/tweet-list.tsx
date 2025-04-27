@@ -9,7 +9,7 @@ export function TweetList({ userTweet }: Props) {
   return userTweet.map((tweet) => (
     <div key={tweet.id} className="space-y-2">
       <div className="flex items-center gap-2">
-        <p className="text-[#FFFFA7]">
+        <p className="text-[#FFB41D] dark:text-[#FFFFA7]">
           {dayjs(tweet.tweetCreatedAt).format("YYYY-MM-DD HH:mm:ss")}
         </p>
       </div>

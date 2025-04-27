@@ -55,7 +55,9 @@ export function KolInfo({ userInfo, userState }: Props) {
       <div className="mt-5 grid grid-cols-2 gap-y-3 md:grid-cols-4 md:gap-y-0">
         <div className="flex flex-col justify-center">
           <p className="text-xs">{t("dashboard.winRanking.winRate")}</p>
-          <p className="text-[#FFFFA7]">{userState.positiveRatePercentage}%</p>
+          <p className="text-[#FFB41D] dark:text-[#FFFFA7]">
+            {userState.positiveRatePercentage}%
+          </p>
         </div>
         <div className="flex flex-col justify-center">
           <p className="text-xs">{t("dashboard.winRanking.record")}</p>
