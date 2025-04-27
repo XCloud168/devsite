@@ -116,7 +116,7 @@ export function WinComponent({
           </div>
           <div>
             <p className="font-semibold">{tableData[1]?.name}</p>
-            <p className="text-sm text-white/60">
+            <p className="text-sm text-black/40 dark:text-white/60">
               {formatNumber(tableData[1]?.followersCount)}{" "}
               {t("dashboard.winRanking.followers")}
             </p>
@@ -156,7 +156,7 @@ export function WinComponent({
           </div>
           <div>
             <p className="font-semibold">{tableData[0]?.name}</p>
-            <p className="text-sm text-white/60">
+            <p className="text-sm text-black/40 dark:text-white/60">
               {formatNumber(tableData[0]?.followersCount)}{" "}
               {t("dashboard.winRanking.followers")}
             </p>
@@ -196,7 +196,7 @@ export function WinComponent({
           </div>
           <div>
             <p className="font-semibold">{tableData[2]?.name}</p>
-            <p className="text-sm text-white/60">
+            <p className="text-sm text-black/40 dark:text-white/60">
               {formatNumber(tableData[2]?.followersCount)}
               {t("dashboard.winRanking.followers")}
             </p>
@@ -251,10 +251,10 @@ export function WinComponent({
               style={{
                 transform: "translate(-50%, -50%)",
               }}
-              className="absolute left-1/2 w-[300px] overflow-hidden rounded-xl border border-[#FFFFA780] bg-background"
+              className="absolute left-1/2 w-[300px] overflow-hidden rounded-xl border border-[#ffb41d] bg-background"
             >
               <div className="absolute right-4 top-0 h-[49px] w-[44px] bg-[url(/images/dashboard/no1.png)] bg-contain bg-no-repeat"></div>
-              <div className="h-5 w-1/3 bg-gradient-to-r from-[#FFFFA780] to-[#99996400] pl-3 text-xs leading-5">
+              <div className="h-5 w-1/3 bg-gradient-to-r from-[#ffb41d80] to-[#99996400] pl-3 text-xs leading-5">
                 Top 1
               </div>
               {Card2}
@@ -280,21 +280,21 @@ export function WinComponent({
     }
     return (
       <div className="mt-8 grid grid-cols-3 gap-10">
-        <div className="relative mt-6 w-[300px] overflow-hidden rounded-xl border border-[#D7D7D780]">
+        <div className="relative mt-6 w-[300px] overflow-hidden rounded-xl border border-[#D7D7D780] bg-background">
           <div className="absolute right-4 top-0 h-[49px] w-[44px] bg-[url(/images/dashboard/no2.png)] bg-contain bg-no-repeat"></div>
           <div className="h-5 w-1/3 bg-gradient-to-r from-[#D7D7D780] to-[#3D3D3D00] pl-3 text-xs leading-5">
             Top 2
           </div>
           {Card1}
         </div>
-        <div className="relative mb-6 w-[300px] overflow-hidden rounded-xl border border-[#FFFFA780]">
+        <div className="relative mb-6 w-[300px] overflow-hidden rounded-xl border border-[#ffb41d] bg-background dark:border-[#FFFFA780]">
           <div className="absolute right-4 top-0 h-[49px] w-[44px] bg-[url(/images/dashboard/no1.png)] bg-contain bg-no-repeat"></div>
-          <div className="h-5 w-1/3 bg-gradient-to-r from-[#FFFFA780] to-[#99996400] pl-3 text-xs leading-5">
+          <div className="h-5 w-1/3 bg-gradient-to-r from-[#ffb41d80] to-[#99996400] pl-3 text-xs leading-5">
             Top 1
           </div>
           {Card2}
         </div>
-        <div className="border-[#A06C4D80 ] relative mt-6 w-[300px] overflow-hidden rounded-xl border">
+        <div className="relative mt-6 w-[300px] overflow-hidden rounded-xl border border-[#A06C4D80] bg-background">
           <div className="absolute right-4 top-0 h-[49px] w-[44px] bg-[url(/images/dashboard/no3.png)] bg-contain bg-no-repeat"></div>
           <div className="h-5 w-1/3 bg-gradient-to-r from-[#A06C4D80] to-[#3D3D3D00] pl-3 text-xs leading-5">
             Top 3
