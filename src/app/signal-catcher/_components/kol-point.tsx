@@ -226,7 +226,7 @@ export function KolPoint({
               }}
             />
             {tweet.replyTweet ? (
-              <div className="ml-12 rounded-lg border dark:bg-[#121517]">
+              <div className="mb-8 ml-12 rounded-lg border dark:bg-[#121517]">
                 <KolCard
                   tweet={tweet.replyTweet}
                   isMember={isMember}

@@ -75,7 +75,7 @@ export function KolCard({
 
       return text.replace(
         regex,
-        (match) => `<span style="color: #00ff88;">${match}</span>`,
+        (match) => `<span style="color: #f4b31c;">${match}</span>`,
       );
     }
 
