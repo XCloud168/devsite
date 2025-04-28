@@ -94,10 +94,10 @@ export function KolCard({
         highlightKeywordsToHTML(
           tweet.content,
           tweet.contractAddress,
-          "#00ff88",
+          "#f4b31c",
         ),
         tweet.symbols.map((symbol: string) => `$${symbol}`),
-        "#f4b31c",
+        "#00ff88",
       );
     return "";
   }, []);
