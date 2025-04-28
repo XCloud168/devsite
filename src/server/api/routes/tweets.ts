@@ -131,6 +131,21 @@ export async function addTweetFollowed(tweetUid: string) {
       throw createError.forbidden("Please upgrade your membership");
     }
 
+    // 获取推特用户信息
+    const tweetUser = await db.query.tweetUsers.findFirst({
+      where: eq(tweetUsers.id, tweetUid),
+    });
+    
+    // 只有在 user_type 为 null 或未设置时才更新为 user_follow
+    if (!tweetUser?.userType) {
+      await db
+        .update(tweetUsers)
+        .set({
+          userType: "user_follow"
+        })
+        .where(eq(tweetUsers.id, tweetUid));
+    }
+
     const [result] = await db
       .insert(watchlist)
       .values({
@@ -162,6 +177,7 @@ export async function deleteTweetFollowed(tweetUid: string) {
     if (!user) {
       throw createError.unauthorized("Please login first");
     }
+    
     const [result] = await db
       .delete(watchlist)
       .where(
@@ -171,6 +187,30 @@ export async function deleteTweetFollowed(tweetUid: string) {
         ),
       )
       .returning();
+      
+    // 获取推特用户信息
+    const tweetUser = await db.query.tweetUsers.findFirst({
+      where: eq(tweetUsers.id, tweetUid),
+    });
+  
+    // 只有当 user_type 为 user_follow 时才进行后续处理
+    if (tweetUser?.userType === "user_follow") {
+      // 检查是否还有其他用户关注这个推特用户
+      const remainingFollows = await db
+        .select({ count: count() })
+        .from(watchlist)
+        .where(eq(watchlist.tweetUser, tweetUid));
+        
+      // 如果没有其他人关注，将 user_type 设置为 NULL
+      if (remainingFollows[0]?.count === 0) {
+        await db
+          .update(tweetUsers)
+          .set({
+            userType: null
+          })
+          .where(eq(tweetUsers.id, tweetUid));
+      }
+    } 
     return result;
   });
 }
