@@ -34,6 +34,8 @@ interface TweetItem extends Omit<TweetInfo, "tweetUser"> {
   imagesUrls: [];
   videoUrls: [];
   replyTweet: TweetItem;
+  symbols: [];
+  contractAddress: [];
 }
 
 export function KolPoint({

@@ -60,6 +60,8 @@ interface TweetItem extends Omit<TweetInfo, "tweetUser"> {
   replyTweet: TweetItem;
   imagesUrls: [];
   videoUrls: [];
+  symbols: [];
+  contractAddress: [];
 }
 export function MyFollowed({
   getTweetListAction,
