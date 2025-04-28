@@ -57,7 +57,7 @@ interface TweetItem extends Omit<TweetInfo, "tweetUser"> {
   tweetUser: TweetUsers & {
     isFollowed: boolean;
   };
-  replyTweet: TweetInfo;
+  replyTweet: TweetItem;
   imagesUrls: [];
   videoUrls: [];
 }
@@ -249,11 +249,30 @@ export function MyFollowed({
             tweetList.map((tweet) => (
               <div key={tweet.id} className="border-b">
                 <KolCard
+                  isLogged={isLogged}
+                  isMember={isMember}
                   tweet={tweet}
                   showShare
-                  isMember={isMember}
-                  isLogged={isLogged}
+                  onFollowCallback={(id) => {
+                    setTweetList((prev) => {
+                      const list = [...prev];
+                      const index = list.findIndex(
+                        (tweet) => tweet.tweetUser.id === id,
+                      );
+                      if (list[index]) list[index].tweetUser.isFollowed = true;
+                      return list;
+                    });
+                  }}
                 />
+                {tweet.replyTweet ? (
+                  <div className="ml-12 rounded-lg border dark:bg-[#121517]">
+                    <KolCard
+                      tweet={tweet.replyTweet}
+                      isMember={isMember}
+                      isLogged={isLogged}
+                    />
+                  </div>
+                ) : null}
               </div>
             ))
           )}

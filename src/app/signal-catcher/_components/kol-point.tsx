@@ -12,7 +12,7 @@ import { LoadingMoreBtn } from "@/app/signal-catcher/_components/loading-more-bt
 import { Skeleton } from "@/components/ui/skeleton";
 import { Switch } from "@/components/ui/switch";
 import { useTranslations } from "next-intl";
-import { BellRing, ChevronUp } from "lucide-react";
+import { BellRing } from "lucide-react";
 import { TopLoadingBar } from "@/components/TopLoadingBar";
 type Props = {
   addFollowAction: (tweetUid: string) => Promise<ServerResult>;
@@ -226,7 +226,7 @@ export function KolPoint({
               }}
             />
             {tweet.replyTweet ? (
-              <div className="mx-4 mb-4 rounded-lg border">
+              <div className="ml-12 rounded-lg border dark:bg-[#121517]">
                 <KolCard
                   tweet={tweet.replyTweet}
                   isMember={isMember}

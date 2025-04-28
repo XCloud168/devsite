@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { type TweetInfo, type TweetUsers } from "@/server/db/schemas/tweet";
 import dayjs from "dayjs";
 import Link from "next/link";
-import React, { useState } from "react";
+import React, { JSX, useCallback, useEffect, useMemo, useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { toast } from "sonner";
 import TranslationComponent from "@/components/translation-component";
@@ -64,6 +64,32 @@ export function KolCard({
     fetchData();
   };
 
+  const highlightTweet = useCallback((tweet: TweetItem) => {
+    function highlightKeywordsToHTML(text: string, keywords: string[]): string {
+      if (!keywords.length) return text;
+
+      const regex = new RegExp(
+        `(${keywords.map((k) => escapeRegExp(k)).join("|")})`,
+        "gi",
+      );
+
+      return text.replace(
+        regex,
+        (match) => `<span style="color: #00ff88;">${match}</span>`,
+      );
+    }
+
+    function escapeRegExp(string: string) {
+      return string.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    }
+
+    if (tweet.content && tweet.contractAddress)
+      return highlightKeywordsToHTML(
+        tweet.content,
+        tweet.contractAddress as string[],
+      );
+    return "";
+  }, []);
   return (
     <div className="p-3 md:p-5" key={tweet.id}>
       <p className="relative pl-2 before:absolute before:left-0 before:top-1/2 before:h-[4px] before:w-[4px] before:-translate-y-1/2 before:rounded-full before:bg-white before:content-['']">
@@ -127,7 +153,7 @@ export function KolCard({
         <div className="">
           <TranslationComponent
             lang={tweet.lang}
-            content={tweet.content ?? ""}
+            content={highlightTweet(tweet) ?? ""}
             onTranslateSuccess={(content: string) => {
               setTranslatedContent(content);
             }}
