@@ -33,6 +33,8 @@ interface TweetItem extends Omit<TweetInfo, "tweetUser"> {
   imagesUrls: [];
   videoUrls: [];
   replyTweet: TweetInfo;
+  symbols: [];
+  contractAddress: [];
 }
 
 export function KolCard({
@@ -65,7 +67,11 @@ export function KolCard({
   };
 
   const highlightTweet = useCallback((tweet: TweetItem) => {
-    function highlightKeywordsToHTML(text: string, keywords: string[]): string {
+    function highlightKeywordsToHTML(
+      text: string,
+      keywords: string[],
+      color: string,
+    ): string {
       if (!keywords.length) return text;
 
       const regex = new RegExp(
@@ -75,7 +81,7 @@ export function KolCard({
 
       return text.replace(
         regex,
-        (match) => `<span style="color: #f4b31c;">${match}</span>`,
+        (match) => `<span style="color: ${color};">${match}</span>`,
       );
     }
 
@@ -83,10 +89,15 @@ export function KolCard({
       return string.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
     }
 
-    if (tweet.content && tweet.contractAddress)
+    if (tweet.content && tweet.contractAddress && tweet.symbols)
       return highlightKeywordsToHTML(
-        tweet.content,
-        tweet.contractAddress as string[],
+        highlightKeywordsToHTML(
+          tweet.content,
+          tweet.contractAddress,
+          "#00ff88",
+        ),
+        tweet.symbols.map((symbol: string) => `$${symbol}`),
+        "#f4b31c",
       );
     return "";
   }, []);
