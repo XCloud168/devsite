@@ -126,7 +126,7 @@ export default function SwapWidget({
 
       const userLocale = await getUserLocale();
       const params: IWidgetParams = {
-        width: 450,
+        width: 375,
         theme: theme === "dark" ? THEME.DARK : THEME.LIGHT,
         lang: LOCALE_LANG_MAP[userLocale] || "en_us",
         providerType,
