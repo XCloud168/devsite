@@ -79,7 +79,7 @@ export function FeaturedCard({
   const [translatedContent, setTranslatedContent] = useState<string | null>(
     null,
   );
-  const [showSwapModal, setShowSwapModal] = useState(false);
+
   const getAvatarSrc = () => {
     if (signal.providerType === "twitter")
       return signal?.source?.tweetUser?.avatar || "";
@@ -339,7 +339,12 @@ export function FeaturedCard({
               {contractAddresses && contractAddresses.length > 0 ? (
                 <div className="">
                   <p className="mb-2 text-xs opacity-0">&nbsp;</p>
-                  <SwapModal toToken={contractAddresses[0]?.address ?? ""} />
+                  <SwapModal
+                    fromToken={contractAddresses[0]?.chain ?? ""}
+                    fromChain={contractAddresses[0]?.chain ?? ""}
+                    toChain={contractAddresses[0]?.chain ?? ""}
+                    toToken={contractAddresses[0]?.address ?? ""}
+                  />
                 </div>
               ) : null}
             </div>
