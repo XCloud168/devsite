@@ -133,22 +133,27 @@ export function FeaturedCard({
         {
           chain: "ETH",
           address: signal.project.ethContract,
+          chainId: "1",
         },
         {
           chain: "BSC",
           address: signal.project.bscContract,
+          chainId: "56",
         },
         {
           chain: "Tron",
           address: signal.project.tronContract,
+          chainId: null,
         },
         {
           chain: "BASE",
           address: signal.project.baseContract,
+          chainId: "8453",
         },
         {
           chain: "Blast",
           address: signal.project.blastContract,
+          chainId: "81457",
         },
       ].filter((contract) => contract.address && contract.address.trim() !== "")
     : [];
@@ -341,8 +346,8 @@ export function FeaturedCard({
                   <p className="mb-2 text-xs opacity-0">&nbsp;</p>
                   <SwapModal
                     // fromToken={contractAddresses[0]?.address ?? ""}
-                    // fromChain={contractAddresses[0]?.address ?? ""}
-                    // toChain={contractAddresses[0]?.address ?? ""}
+                    fromChain={contractAddresses[0]?.chainId ?? ""}
+                    toChain={contractAddresses[0]?.chainId ?? ""}
                     toToken={contractAddresses[0]?.address ?? ""}
                   />
                 </div>
