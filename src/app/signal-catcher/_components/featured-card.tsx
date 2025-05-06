@@ -10,7 +10,7 @@ import { type TweetInfo } from "@/server/db/schemas/tweet";
 import dayjs from "dayjs";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import TranslationComponent from "@/components/translation-component";
-import { NegativeIcon, PositiveIcon } from "@/components/ui/icon";
+import { NegativeIcon, PositiveIcon, SwapIcon } from "@/components/ui/icon";
 import Poster from "@/components/poster/poster";
 import Gallery from "@/components/Gallery";
 import {
@@ -30,6 +30,7 @@ import {
 } from "@/components/ui/tooltip";
 import { Button } from "@/components/ui/button";
 import type { SUPPORTED_CHAIN } from "@/types/constants";
+import SwapModal from "@/components/swap/modal";
 
 type Props = {
   signal: SignalItems;
@@ -78,6 +79,7 @@ export function FeaturedCard({
   const [translatedContent, setTranslatedContent] = useState<string | null>(
     null,
   );
+  const [showSwapModal, setShowSwapModal] = useState(false);
   const getAvatarSrc = () => {
     if (signal.providerType === "twitter")
       return signal?.source?.tweetUser?.avatar || "";
@@ -334,18 +336,12 @@ export function FeaturedCard({
                   </div>
                 </div>
               ) : null}
-              {/* <div className="">
-                <p className="mb-2 text-xs opacity-0">&nbsp;</p>
-                <div className="flex cursor-pointer items-center gap-1 hover:scale-105">
-                  <div className="h-4 w-4">
-                    <SwapIcon className="fill-[#1F72E5] dark:fill-[#FFFFA7]" />
-                  </div>
-                  <p className="text-[#1F72E5] dark:text-[#FFFFA7]">
-                    {" "}
-                    {t("signals.signal.quickSwap")}
-                  </p>
+              {contractAddresses && contractAddresses.length > 0 ? (
+                <div className="">
+                  <p className="mb-2 text-xs opacity-0">&nbsp;</p>
+                  <SwapModal toToken={contractAddresses[0]?.address ?? ""} />
                 </div>
-              </div> */}
+              ) : null}
             </div>
             {signal.hitKOLs &&
               signal.hitKOLs.length > 0 &&
