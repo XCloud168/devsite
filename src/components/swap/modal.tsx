@@ -5,7 +5,6 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { X } from "lucide-react";
 import { useTranslations } from "next-intl";
 import SwapWidget from "./widget";
 import { SwapIcon } from "@/components/ui/icon";
@@ -20,8 +19,6 @@ interface SwapModalProps {
 }
 
 export default function SwapModal({
-  isOpen,
-  onClose,
   fromChain,
   toChain,
   fromToken,
@@ -58,7 +55,12 @@ export default function SwapModal({
             {t("Swap.title")}
           </DialogTitle>
         </DialogHeader>
-        <SwapWidget fromToken={fromToken} toToken={toToken} />
+        <SwapWidget
+          fromToken={fromToken}
+          toToken={toToken}
+          fromChain={fromChain}
+          toChain={toChain}
+        />
       </DialogContent>
     </Dialog>
   );
