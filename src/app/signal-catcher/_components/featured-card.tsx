@@ -152,7 +152,7 @@ export function FeaturedCard({
         },
       ].filter((contract) => contract.address && contract.address.trim() !== "")
     : [];
-
+  console.log(signal);
   return (
     <div
       className="grid grid-cols-1 gap-1 overflow-hidden px-5"
@@ -340,10 +340,10 @@ export function FeaturedCard({
                 <div className="">
                   <p className="mb-2 text-xs opacity-0">&nbsp;</p>
                   <SwapModal
-                  // fromToken={contractAddresses[0]?.chain ?? ""}
-                  // fromChain={contractAddresses[0]?.chain ?? ""}
-                  // toChain={contractAddresses[0]?.chain ?? ""}
-                  // toToken={contractAddresses[0]?.address ?? ""}
+                    // fromToken={contractAddresses[0]?.address ?? ""}
+                    // fromChain={contractAddresses[0]?.address ?? ""}
+                    // toChain={contractAddresses[0]?.address ?? ""}
+                    toToken={contractAddresses[0]?.address ?? ""}
                   />
                 </div>
               ) : null}
