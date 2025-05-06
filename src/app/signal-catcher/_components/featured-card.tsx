@@ -340,10 +340,10 @@ export function FeaturedCard({
                 <div className="">
                   <p className="mb-2 text-xs opacity-0">&nbsp;</p>
                   <SwapModal
-                    fromToken={contractAddresses[0]?.chain ?? ""}
-                    fromChain={contractAddresses[0]?.chain ?? ""}
-                    toChain={contractAddresses[0]?.chain ?? ""}
-                    toToken={contractAddresses[0]?.address ?? ""}
+                  // fromToken={contractAddresses[0]?.chain ?? ""}
+                  // fromChain={contractAddresses[0]?.chain ?? ""}
+                  // toChain={contractAddresses[0]?.chain ?? ""}
+                  // toToken={contractAddresses[0]?.address ?? ""}
                   />
                 </div>
               ) : null}
