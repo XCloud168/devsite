@@ -51,7 +51,7 @@ export default function SwapModal({
           {/*    <span className="sr-only">Close</span>*/}
           {/*  </button>*/}
           {/*</div>*/}
-          <DialogTitle className="text-center text-2xl">
+          <DialogTitle className="mt-4 text-center text-2xl">
             {t("Swap.title")}
           </DialogTitle>
         </DialogHeader>
