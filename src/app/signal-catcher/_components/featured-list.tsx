@@ -229,6 +229,7 @@ export function FeaturedList({
       {swapConfig && (
         <SwapModal
           isOpen={swapOpen}
+          onClose={() => setSwapOpen(false)}
           fromChain={swapConfig.chainId ?? ""}
           toChain={swapConfig.chainId ?? ""}
           toToken={swapConfig.address ?? ""}

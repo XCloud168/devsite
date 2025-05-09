@@ -13,24 +13,10 @@ import TranslationComponent from "@/components/translation-component";
 import { NegativeIcon, PositiveIcon, SwapIcon } from "@/components/ui/icon";
 import Poster from "@/components/poster/poster";
 import Gallery from "@/components/Gallery";
-import {
-  CircleAlert,
-  Link as Link2,
-  Share2,
-  TriangleAlert,
-} from "lucide-react";
+import { CircleAlert, Link as Link2, Share2 } from "lucide-react";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
 import { useState } from "react";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
-import { Button } from "@/components/ui/button";
-import type { SUPPORTED_CHAIN } from "@/types/constants";
-import SwapModal from "@/components/swap/modal";
 
 type Props = {
   signal: SignalItems;
