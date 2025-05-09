@@ -23,22 +23,23 @@ export default function SwapModal({
   toChain,
   fromToken,
   toToken,
+  isOpen,
 }: SwapModalProps) {
   const t = useTranslations();
 
   return (
-    <Dialog>
-      <DialogTrigger>
-        <div className="flex cursor-pointer items-center gap-1 hover:scale-105">
-          <div className="h-4 w-4">
-            <SwapIcon className="fill-[#1F72E5] dark:fill-[#FFFFA7]" />
-          </div>
-          <p className="text-[#1F72E5] dark:text-[#FFFFA7]">
-            {" "}
-            {t("signals.signal.quickSwap")}
-          </p>
-        </div>
-      </DialogTrigger>
+    <Dialog open={isOpen}>
+      {/*<DialogTrigger>*/}
+      {/*  <div className="flex cursor-pointer items-center gap-1 hover:scale-105">*/}
+      {/*    <div className="h-4 w-4">*/}
+      {/*      <SwapIcon className="fill-[#1F72E5] dark:fill-[#FFFFA7]" />*/}
+      {/*    </div>*/}
+      {/*    <p className="text-[#1F72E5] dark:text-[#FFFFA7]">*/}
+      {/*      {" "}*/}
+      {/*      {t("signals.signal.quickSwap")}*/}
+      {/*    </p>*/}
+      {/*  </div>*/}
+      {/*</DialogTrigger>*/}
       <DialogContent className="min-h-[500px] sm:max-w-[500px]">
         <DialogHeader>
           {/*<div className="absolute right-4 top-4">*/}

@@ -36,6 +36,14 @@ type Props = {
   signal: SignalItems;
   showShare?: boolean;
   tokenItemWidth?: "w-fit" | "w-auto";
+  onSwap?: (
+    open: boolean,
+    payload?: {
+      chain: string;
+      address: string | null;
+      chainId?: string | null;
+    },
+  ) => void;
 };
 export interface SignalItems extends Signals {
   source: TweetInfo & {
@@ -74,6 +82,7 @@ export function FeaturedCard({
   signal,
   showShare = true,
   tokenItemWidth = "w-auto",
+  onSwap,
 }: Props) {
   const t = useTranslations();
   const [translatedContent, setTranslatedContent] = useState<string | null>(
@@ -157,7 +166,6 @@ export function FeaturedCard({
         },
       ].filter((contract) => contract.address && contract.address.trim() !== "")
     : [];
-  console.log(signal);
   return (
     <div
       className="grid grid-cols-1 gap-1 overflow-hidden px-5"
@@ -344,12 +352,18 @@ export function FeaturedCard({
               {contractAddresses && contractAddresses.length > 0 ? (
                 <div className="">
                   <p className="mb-2 text-xs opacity-0">&nbsp;</p>
-                  <SwapModal
-                    // fromToken={contractAddresses[0]?.address ?? ""}
-                    fromChain={contractAddresses[0]?.chainId ?? ""}
-                    toChain={contractAddresses[0]?.chainId ?? ""}
-                    toToken={contractAddresses[0]?.address ?? ""}
-                  />
+                  <div
+                    className="flex cursor-pointer items-center gap-1 hover:scale-105"
+                    onClick={() => onSwap && onSwap(true, contractAddresses[0])}
+                  >
+                    <div className="h-4 w-4">
+                      <SwapIcon className="fill-[#1F72E5] dark:fill-[#FFFFA7]" />
+                    </div>
+                    <p className="text-[#1F72E5] dark:text-[#FFFFA7]">
+                      {" "}
+                      {t("signals.signal.quickSwap")}
+                    </p>
+                  </div>
                 </div>
               ) : null}
             </div>

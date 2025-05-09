@@ -10,6 +10,7 @@ import { LoadingMoreBtn } from "@/app/signal-catcher/_components/loading-more-bt
 import { type SIGNAL_PROVIDER_TYPE } from "@/lib/constants";
 import { FeaturedCard } from "@/app/signal-catcher/_components/featured-card";
 import { Skeleton } from "@/components/ui/skeleton";
+import SwapModal from "@/components/swap/modal";
 
 type Props = {
   getSignalListAction?: (
@@ -181,6 +182,19 @@ export function FeaturedList({
     if (menuInfo.entityId) return 330;
     return 260;
   }, [isMobile, menuInfo.entityId]);
+  const [swapOpen, setSwapOpen] = useState(false);
+  const [swapConfig, setSwapConfig] = useState<
+    | {
+        chain: string;
+        address: string | null;
+        chainId?: string | null;
+      }
+    | undefined
+  >({
+    chain: "",
+    address: "",
+    chainId: "",
+  });
   return (
     <div
       ref={scrollRef}
@@ -202,8 +216,23 @@ export function FeaturedList({
         </div>
       ) : (
         signalList.map((signal) => (
-          <FeaturedCard signal={signal} key={signal.id} />
+          <FeaturedCard
+            signal={signal}
+            key={signal.id}
+            onSwap={(open, payload) => {
+              setSwapOpen(open);
+              setSwapConfig(payload);
+            }}
+          />
         ))
+      )}
+      {swapConfig && (
+        <SwapModal
+          isOpen={swapOpen}
+          fromChain={swapConfig.chainId ?? ""}
+          toChain={swapConfig.chainId ?? ""}
+          toToken={swapConfig.address ?? ""}
+        />
       )}
       <LoadingMoreBtn
         pageLoading={pageLoading}
