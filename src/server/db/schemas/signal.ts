@@ -70,6 +70,7 @@ export const signals = pgTable(
       .references((): any => signalsCategory.id)
       .notNull(),
     mediaUrls: json("media_urls"),
+    tags: json("tags"), // "exchange_name": "Binance", "category": "spot/futures/Alpha/pre-market", "first_listing": True/False
     providerId: uuid("provider_id").notNull(), // tweet_info.id announcement.id
     entityId: uuid("entity_id").notNull(), // 实体id 如twitter用户id exchange id
     isAccurate: boolean("is_accurate"),
