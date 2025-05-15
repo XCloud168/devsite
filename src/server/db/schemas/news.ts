@@ -72,6 +72,7 @@ export const news = pgTable(
     lowPriceTime30D: timestamp("low_price_time_30d", { withTimezone: true }),
     highPriceTime30D: timestamp("high_price_time_30d", { withTimezone: true }),
 
+    priceSource: varchar("price_source", { length: 255 }),
     dateCreated: timestamp("date_created", { withTimezone: true }).defaultNow(),
     dateUpdated: timestamp("date_updated", { withTimezone: true }),
     isAccurate: boolean("is_accurate").default(false),
