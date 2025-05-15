@@ -177,7 +177,7 @@ export function FeaturedCard({
               </p>
             )}
             <p className="font-bold leading-5">
-              {dayjs(signal.signalTime).format("YYYY/MM/DD HH:mm:ss")}
+              {dayjs(signal.dateCreated).format("YYYY/MM/DD HH:mm:ss")}
             </p>
           </div>
         </div>
