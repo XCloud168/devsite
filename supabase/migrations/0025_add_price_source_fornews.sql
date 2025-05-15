@@ -1,0 +1,1 @@
+ALTER TABLE "site_news" ADD COLUMN "price_source" varchar(255);
