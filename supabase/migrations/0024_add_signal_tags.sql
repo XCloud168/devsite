@@ -1,0 +1,1 @@
+ALTER TABLE "site_signals" ADD COLUMN "tags" json;
