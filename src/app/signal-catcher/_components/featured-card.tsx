@@ -74,7 +74,13 @@ export function FeaturedCard({
   const [translatedContent, setTranslatedContent] = useState<string | null>(
     null,
   );
-
+  const stripHtml = (html: string): string => {
+    // Remove HTML tags, preserving content
+    return html
+      .replace(/<[^>]+>/g, "") // Matches and removes any <tag> or </tag>
+      .replace(/\s+/g, " ") // Normalize multiple spaces to single space
+      .trim(); // Remove leading/trailing spaces
+  };
   const getAvatarSrc = () => {
     if (signal.providerType === "twitter")
       return signal?.source?.tweetUser?.avatar || "";
@@ -423,12 +429,9 @@ export function FeaturedCard({
                   </div>
                 ) : null}
                 {translatedContent ? (
-                  <p
-                    className="mt-3 break-all text-white"
-                    dangerouslySetInnerHTML={{
-                      __html: translatedContent || "",
-                    }}
-                  ></p>
+                  <p className="mt-3 break-all text-white">
+                    {stripHtml(translatedContent)}
+                  </p>
                 ) : null}
                 {signal.project ? (
                   <div className="relative mt-3 block w-full items-center gap-3 rounded-xl border bg-white/80 p-4 dark:bg-[#161C25]">
