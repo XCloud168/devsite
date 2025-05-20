@@ -423,9 +423,12 @@ export function FeaturedCard({
                   </div>
                 ) : null}
                 {translatedContent ? (
-                  <div className="mt-3 break-all text-sm text-white">
-                    {translatedContent}
-                  </div>
+                  <p
+                    className="mt-3 break-all text-white"
+                    dangerouslySetInnerHTML={{
+                      __html: translatedContent || "",
+                    }}
+                  ></p>
                 ) : null}
                 {signal.project ? (
                   <div className="relative mt-3 block w-full items-center gap-3 rounded-xl border bg-white/80 p-4 dark:bg-[#161C25]">
