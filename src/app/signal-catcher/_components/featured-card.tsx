@@ -64,6 +64,13 @@ export const getMediaList = (mediaList?: string[]): string[] => {
   }
   return mediaList;
 };
+export const stripHtml = (html: string): string => {
+  // Remove HTML tags, preserving content
+  return html
+    .replace(/<[^>]+>/g, "") // Matches and removes any <tag> or </tag>
+    .replace(/\s+/g, " ") // Normalize multiple spaces to single space
+    .trim(); // Remove leading/trailing spaces
+};
 export function FeaturedCard({
   signal,
   showShare = true,
@@ -74,13 +81,7 @@ export function FeaturedCard({
   const [translatedContent, setTranslatedContent] = useState<string | null>(
     null,
   );
-  const stripHtml = (html: string): string => {
-    // Remove HTML tags, preserving content
-    return html
-      .replace(/<[^>]+>/g, "") // Matches and removes any <tag> or </tag>
-      .replace(/\s+/g, " ") // Normalize multiple spaces to single space
-      .trim(); // Remove leading/trailing spaces
-  };
+
   const getAvatarSrc = () => {
     if (signal.providerType === "twitter")
       return signal?.source?.tweetUser?.avatar || "";

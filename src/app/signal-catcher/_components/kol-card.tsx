@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { type TweetInfo, type TweetUsers } from "@/server/db/schemas/tweet";
 import dayjs from "dayjs";
 import Link from "next/link";
-import React, { JSX, useCallback, useEffect, useMemo, useState } from "react";
+import React, { useCallback, useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { toast } from "sonner";
 import TranslationComponent from "@/components/translation-component";
@@ -12,11 +12,13 @@ import type { ServerResult } from "@/lib/server-result";
 import { useTranslations } from "next-intl";
 import Poster from "@/components/poster/poster";
 import { formatNumber } from "@/components/formatNumber";
-import { getMediaList } from "@/app/signal-catcher/_components/featured-card";
+import {
+  getMediaList,
+  stripHtml,
+} from "@/app/signal-catcher/_components/featured-card";
 import Gallery from "@/components/Gallery";
 import { useRouter } from "next/navigation";
 import { BellPlus, BellRing, Share2, Link as Link2 } from "lucide-react";
-import { useMembership } from "@/hooks/use-membership";
 
 type Props = {
   tweet: TweetItem;
@@ -248,7 +250,7 @@ export function KolCard({
                   ) : null}
                   {translatedContent ? (
                     <div className="mt-3 break-all text-sm text-white">
-                      {translatedContent}
+                      {stripHtml(translatedContent)}
                     </div>
                   ) : null}
                 </div>
