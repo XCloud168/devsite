@@ -43,19 +43,19 @@ interface Props {
     entityId?: string;
   }) => void;
   getTagListAction?: (id: string) => Promise<ServerResult>;
-  getSignalCategoryAction?: () => Promise<ServerResult>;
   getTagDataAction?: (
     providerType: SIGNAL_PROVIDER_TYPE,
     entityId: string,
   ) => Promise<ServerResult>;
   isMember?: boolean | null;
   isMobile?: boolean;
+  signalCategory: SignalsCategory[];
 }
 
 export function FeaturedBanner({
+  signalCategory,
   onMenuChangeAction,
   getTagListAction,
-  getSignalCategoryAction,
   getTagDataAction,
   isMember,
   isMobile,
@@ -64,7 +64,7 @@ export function FeaturedBanner({
 
   const [selectedTagId, setSelectedTagId] = useState<string>("");
   const [tagLoading, setTagLoading] = useState<boolean>(true);
-  const [signalCategory, setSignalCategory] = useState<SignalsCategory[]>([]);
+  // const [signalCategory, setSignalCategory] = useState<SignalsCategory[]>([]);
   const [selectedCategoryId, setSelectedCategoryId] = useState<string>("");
   const [tagData, setTagData] = useState<Tag>();
   const [tabDataLoading, setTabDataLoading] = useState<boolean>(false);
@@ -86,19 +86,11 @@ export function FeaturedBanner({
   };
 
   useEffect(() => {
-    const fetchData = async () => {
-      if (getSignalCategoryAction) {
-        const response = await getSignalCategoryAction();
-        setSignalCategory(response.data);
-        setSelectedCategoryId(response.data[0].id);
-        handleChangeCategory(response.data[0].id);
-        onMenuChangeAction({
-          categoryId: response.data[0].id,
-        });
-      }
-    };
-    fetchData();
-  }, [getSignalCategoryAction]);
+    if (signalCategory?.[0]) {
+      setSelectedCategoryId(signalCategory[0].id);
+      handleChangeCategory(signalCategory[0].id);
+    }
+  }, [signalCategory]);
 
   const handleGetTagData = (entityId: string) => {
     const current = currentTagList.find((tag) => tag.id === entityId);
@@ -124,14 +116,10 @@ export function FeaturedBanner({
     }
     return "--";
   }, [tagData]);
-
   const [showDetail, setShowDetail] = useState(false);
-
   const scrollRef = useRef<HTMLDivElement>(null);
-
   const [showLeft, setShowLeft] = useState(false);
   const [showRight, setShowRight] = useState(false);
-
   useEffect(() => {
     const el = scrollRef.current;
     if (!el) return;
@@ -148,11 +136,9 @@ export function FeaturedBanner({
       window.removeEventListener("resize", checkScroll);
     };
   }, [selectedCategoryId, tagLoading]);
-
   const scrollBy = (offset: number) => {
     scrollRef.current?.scrollBy({ left: offset, behavior: "smooth" });
   };
-
   const DetailDialog = () => {
     return (
       <Dialog
@@ -241,7 +227,6 @@ export function FeaturedBanner({
       </Dialog>
     );
   };
-
   const [newSignal, setNewSignal] = useSessionStorageState<string>(
     "newSignal",
     "",
