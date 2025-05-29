@@ -28,7 +28,14 @@ export async function getSignalCategories() {
     return categories;
   });
 }
-
+const CONST_TIMES = 7; // 固定展示次数
+const CONST_HIT_KOLS = [
+  {
+    id: 'fded141f-178f-4db7-b6b1-ff850b2b5c76',
+    name: 'Bitget',
+    avatar: 'https://pbs.twimg.com/profile_images/1883813615683424256/QuSWN4rf_normal.png'
+  }
+];
 /**
  * 分页获取信号列表
  * @param page 页码
@@ -99,31 +106,31 @@ export async function getSignalsByPaginated(
 
     // times 子查询模拟：批处理方式
     // NOTE: 若查询很重，推荐后续落地缓存处理
-    const timesMap: Record<string, number> = {};
+    // const timesMap: Record<string, number> = {};
 
-    for (const item of projectEntityPairs) {
-      const { projectId, entityId, signalTime } = item;
+    // for (const item of projectEntityPairs) {
+    //   const { projectId, entityId, signalTime } = item;
     
-      // 跳过任何空值，防止 eq() 和 between() 报错
-      if (!projectId || !entityId || !signalTime) continue;
+    //   // 跳过任何空值，防止 eq() 和 between() 报错
+    //   if (!projectId || !entityId || !signalTime) continue;
     
-      const fromTime = new Date(signalTime.getTime() - 7 * 24 * 60 * 60 * 1000); // 7天前
-      const toTime = signalTime;
+    //   const fromTime = new Date(signalTime.getTime() - 7 * 24 * 60 * 60 * 1000); // 7天前
+    //   const toTime = signalTime;
     
-      const countRes = await db
-        .select({ value: count() })
-        .from(signals)
-        .where(
-          and(
-            eq(signals.projectId, projectId),
-            eq(signals.entityId, entityId),
-            between(signals.signalTime, fromTime, toTime),
-          ),
-        );
+    //   const countRes = await db
+    //     .select({ value: count() })
+    //     .from(signals)
+    //     .where(
+    //       and(
+    //         eq(signals.projectId, projectId),
+    //         eq(signals.entityId, entityId),
+    //         between(signals.signalTime, fromTime, toTime),
+    //       ),
+    //     );
     
-      const key = `${projectId}_${entityId}_${signalTime.getTime()}`;
-      timesMap[key] = countRes[0]?.value ?? 0;
-    }
+    //   const key = `${projectId}_${entityId}_${signalTime.getTime()}`;
+    //   timesMap[key] = countRes[0]?.value ?? 0;
+    // }
 
     // 获取不同 providerType 的 providerId
     const groupedProviderIds: Record<SIGNAL_PROVIDER_TYPE, Set<string>> = {} as any;
@@ -176,23 +183,9 @@ export async function getSignalsByPaginated(
 
     // 构造结果
     const itemsWithContent = items.map((item) => {
-      const key = `${item.projectId}_${item.entityId}_${item.signalTime.getTime()}`;
-      const times = timesMap[key] || 0;
+      const times = CONST_TIMES;
 
-      // mock hitKOLs（简化处理，保留原结构）
-      let hitKOLs = null;
-      if (item.providerType === SIGNAL_PROVIDER_TYPE.TWITTER) {
-        const source = tweetMap[item.providerId];
-        hitKOLs = source?.tweetUser
-          ? [
-              {
-                id: source.tweetUser.id,
-                name: source.tweetUser.name,
-                avatar: source.tweetUser.avatar,
-              },
-            ]
-          : null;
-      }
+      const hitKOLs = CONST_HIT_KOLS;
 
       let source: any = null;
       if (item.providerType === SIGNAL_PROVIDER_TYPE.TWITTER) {
