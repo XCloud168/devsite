@@ -40,11 +40,29 @@ export function FeaturedComponent({
     categoryId: "99a07285-aacc-42df-8a44-89dae751a6fd",
   });
   const [signalCategory, setSignalCategory] = useState<SignalsCategory[]>([]);
+
+  const [currentTagList, setCurrentTagList] = useState<
+    {
+      id: string;
+      logo: string;
+      name: string;
+      providerType: SIGNAL_PROVIDER_TYPE;
+    }[]
+  >([]);
+  const [tagLoading, setTagLoading] = useState<boolean>(true);
   useEffect(() => {
+    const handleChangeCategory = async (id: string) => {
+      if (getTagListAction) {
+        const response = await getTagListAction(id);
+        setCurrentTagList(response.data);
+        setTagLoading(false);
+      }
+    };
     const fetchData = async () => {
       if (getSignalCategoryAction) {
         const response = await getSignalCategoryAction();
         setSignalCategory(response.data);
+        handleChangeCategory(response.data[0].id);
       }
     };
     fetchData();
@@ -58,13 +76,28 @@ export function FeaturedComponent({
           categoryId: string;
           providerType?: SIGNAL_PROVIDER_TYPE;
           entityId?: string;
-        }) => setMenuInfo(info)}
-        getTagListAction={getTagListAction}
+        }) => {
+          console.log("change");
+          setMenuInfo(info);
+        }}
+        onTagChangeAction={(flag: boolean) => {
+          setTagLoading(flag);
+        }}
+        tagLoading={tagLoading}
+        currentTagList={currentTagList}
         getTagDataAction={getTagDataAction}
         isMember={isMember}
         isMobile={isMobile}
       />
       <FeaturedList
+        onFinishFetchAction={() => {
+          if (getTagListAction) {
+            getTagListAction(menuInfo.categoryId).then((response) => {
+              setCurrentTagList(response.data);
+              setTagLoading(false);
+            });
+          }
+        }}
         menuInfo={menuInfo}
         getSignalListAction={getSignalListAction}
         isMobile={isMobile}

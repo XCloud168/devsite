@@ -27,6 +27,7 @@ type Props = {
     entityId?: string;
   };
   isMobile?: boolean;
+  onFinishFetchAction: () => void;
 };
 interface SignalItems extends Signals {
   source: TweetInfo & {
@@ -69,6 +70,7 @@ export function FeaturedList({
   getSignalListAction,
   menuInfo,
   isMobile,
+  onFinishFetchAction,
 }: Props) {
   const [signalList, setSignalList] = useState<SignalItems[]>([]);
   const [hasNext, setHasNext] = useState<boolean>(true);
@@ -86,10 +88,13 @@ export function FeaturedList({
     getSignalListAction?: FetchSignalListAction,
     providerType?: SIGNAL_PROVIDER_TYPE,
     entityId?: string,
+    onFinish?: () => void,
     showPageLoading = true,
   ) => {
     if (categoryId === "") return;
     if (showPageLoading) setPageLoading(true);
+    console.log("start");
+    const start = new Date().getTime();
     if (getSignalListAction) {
       const response = await getSignalListAction(page, {
         categoryId,
@@ -102,6 +107,10 @@ export function FeaturedList({
       setHasNext(response.data.pagination.hasNextPage);
       setCurrentPage(response.data.pagination.currentPage);
       if (showPageLoading) setPageLoading(false);
+      const end = new Date().getTime();
+      console.log("end");
+      console.log(end - start);
+      if (refresh && onFinish) onFinish();
     }
   };
 
@@ -119,6 +128,7 @@ export function FeaturedList({
       getSignalListAction,
       menuInfo.providerType,
       menuInfo.entityId,
+      onFinishFetchAction,
     );
   }, [menuInfo]);
 
@@ -135,6 +145,7 @@ export function FeaturedList({
         getSignalListAction,
         menuInfo.providerType,
         menuInfo.entityId,
+        onFinishFetchAction,
       );
     }
   };

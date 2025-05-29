@@ -42,7 +42,7 @@ interface Props {
     providerType?: SIGNAL_PROVIDER_TYPE;
     entityId?: string;
   }) => void;
-  getTagListAction?: (id: string) => Promise<ServerResult>;
+
   getTagDataAction?: (
     providerType: SIGNAL_PROVIDER_TYPE,
     entityId: string,
@@ -50,45 +50,34 @@ interface Props {
   isMember?: boolean | null;
   isMobile?: boolean;
   signalCategory: SignalsCategory[];
+  tagLoading: boolean;
+  currentTagList: {
+    id: string;
+    logo: string;
+    name: string;
+    providerType: SIGNAL_PROVIDER_TYPE;
+  }[];
+  onTagChangeAction: (flag: boolean) => void;
 }
 
 export function FeaturedBanner({
   signalCategory,
   onMenuChangeAction,
-  getTagListAction,
+  tagLoading,
+  currentTagList,
   getTagDataAction,
   isMember,
   isMobile,
+  onTagChangeAction,
 }: Props) {
   const t = useTranslations();
-
   const [selectedTagId, setSelectedTagId] = useState<string>("");
-  const [tagLoading, setTagLoading] = useState<boolean>(true);
-  // const [signalCategory, setSignalCategory] = useState<SignalsCategory[]>([]);
   const [selectedCategoryId, setSelectedCategoryId] = useState<string>("");
   const [tagData, setTagData] = useState<Tag>();
   const [tabDataLoading, setTabDataLoading] = useState<boolean>(false);
-  const [currentTagList, setCurrentTagList] = useState<
-    {
-      id: string;
-      logo: string;
-      name: string;
-      providerType: SIGNAL_PROVIDER_TYPE;
-    }[]
-  >([]);
-
-  const handleChangeCategory = async (id: string) => {
-    if (getTagListAction) {
-      const response = await getTagListAction(id);
-      setCurrentTagList(response.data);
-      setTagLoading(false);
-    }
-  };
-
   useEffect(() => {
     if (signalCategory?.[0]) {
       setSelectedCategoryId(signalCategory[0].id);
-      handleChangeCategory(signalCategory[0].id);
     }
   }, [signalCategory]);
 
@@ -256,13 +245,14 @@ export function FeaturedBanner({
               key={category.id}
               className={`relative ${selectedCategoryId === category.id ? "border-primary bg-gradient-to-r from-primary to-primary bg-clip-text font-bold text-primary dark:border-[#F2DA18] dark:from-[#F2DA18] dark:to-[#4DFFC4] dark:text-transparent" : "border-transparent"} min-w-max cursor-pointer border-b-2 pb-2 pt-3 text-center`}
               onClick={() => {
-                setTagLoading(true);
-                setSelectedCategoryId(category.id);
-                setSelectedTagId("");
-                handleChangeCategory(category.id);
+                onTagChangeAction(true);
                 onMenuChangeAction({
                   categoryId: category.id,
                 });
+                setSelectedCategoryId(category.id);
+                setSelectedTagId("");
+                // handleChangeCategory(category.id);
+
                 setNewSignal(
                   newSignalList
                     .filter((item) => item !== category.id)
@@ -314,13 +304,13 @@ export function FeaturedBanner({
                   onClick={() => {
                     setSelectedTagId(tag.id);
                     handleGetTagData(tag.id);
-                    onMenuChangeAction({
-                      categoryId: selectedCategoryId,
-                      providerType:
-                        currentTagList.find((item) => tag.id === item.id)
-                          ?.providerType ?? undefined,
-                      entityId: tag.id,
-                    });
+                    // onMenuChangeAction({
+                    //   categoryId: selectedCategoryId,
+                    //   providerType:
+                    //     currentTagList.find((item) => tag.id === item.id)
+                    //       ?.providerType ?? undefined,
+                    //   entityId: tag.id,
+                    // });
                   }}
                 >
                   <Avatar className="h-6 w-6 rounded-full">
