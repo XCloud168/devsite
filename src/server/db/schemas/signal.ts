@@ -84,6 +84,7 @@ export const signals = pgTable(
     index("signals_project_id_idx").on(table.projectId),
     index("signals_category_id_idx").on(table.categoryId),
     index("signals_entity_id_idx").on(table.entityId),
+    index("signals_provider_type_idx").on(table.providerType),
     index("category_and_provider_type_and_entity_id_idx").on(
       table.categoryId,
       table.providerType,

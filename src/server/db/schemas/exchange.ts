@@ -103,6 +103,7 @@ export const announcement = pgTable(
     index("announcement_title_idx").on(table.title),
     index("announcement_exchange_id_idx").on(table.exchangeId),
     index("announcement_project_id_idx").on(table.projectId),
+    index("deal_status_idx").on(table.dealStatus),
   ],
 ).enableRLS();
 

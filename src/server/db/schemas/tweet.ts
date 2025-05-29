@@ -152,6 +152,7 @@ export const tweetInfo = pgTable(
     index("tweet_info_retweet_tweet_id_idx").on(table.retweetTweetId),
     index("quoted_tweet_idx").on(table.quotedTweet),
     index("project_and_signal_time_idx").on(table.projectId, table.signalTime),
+    index("shilling_idx").on(table.shilling),
   ],
 ).enableRLS();
 
