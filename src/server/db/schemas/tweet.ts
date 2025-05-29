@@ -142,9 +142,12 @@ export const tweetInfo = pgTable(
     highPriceTime30D: timestamp("high_price_time_30d", { withTimezone: true }),
     isAccurate: boolean("is_accurate").default(false),
     accuracy_rate: numeric("accuracy_rate", { precision: 5, scale: 2 }),
-    priceSource: varchar("price_source", { length: 255 })
+    priceSource: varchar("price_source", { length: 255 }),
   },
-  (table) => [index("tweet_id_idx").on(table.tweetId)],
+  (table) => [
+    index("tweet_id_idx").on(table.tweetId),
+    index("project_and_signal_time_idx").on(table.projectId, table.signalTime),
+  ],
 ).enableRLS();
 
 export const watchlist = pgTable(

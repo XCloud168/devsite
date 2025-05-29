@@ -13,7 +13,7 @@ import {
   tweetInfo,
   tweetUsers,
 } from "@/server/db/schema";
-import { and, count, eq, inArray, isNotNull, lte, sql } from "drizzle-orm";
+import { and, count, eq, inArray, lte, sql } from "drizzle-orm";
 import { getUserProfile } from "./auth";
 
 /**
@@ -53,7 +53,10 @@ export async function getSignalsByPaginated(
     let filterTimestamp;
     const user = await getUserProfile();
     // 检查三种情况：未登录、非会员、会员过期
-    if (!user?.membershipExpiredAt || new Date(user?.membershipExpiredAt) < new Date()) {
+    if (
+      !user?.membershipExpiredAt ||
+      new Date(user?.membershipExpiredAt) < new Date()
+    ) {
       // 未登录用户、非会员用户或会员过期用户返回24h前的信号
       filterTimestamp = new Date().getTime() - 24 * 60 * 60 * 1000;
     }
@@ -95,39 +98,95 @@ export async function getSignalsByPaginated(
 
     // 并行执行分页查询和计数查询
     const offset = (page - 1) * ITEMS_PER_PAGE;
+
+    // 明确列出所有字段，避免类型问题
+    const pagedSignals = db.$with("paged_signals").as(
+      db
+        .select({
+          id: signals.id,
+          status: signals.status,
+          dateCreated: signals.dateCreated,
+          notifyContent: signals.notifyContent,
+          aiSummary: signals.aiSummary,
+          signalTime: signals.signalTime,
+          projectId: signals.projectId,
+          categoryId: signals.categoryId,
+          mediaUrls: signals.mediaUrls,
+          tags: signals.tags,
+          providerId: signals.providerId,
+          entityId: signals.entityId,
+          isAccurate: signals.isAccurate,
+          accuracy_rate: signals.accuracy_rate,
+          providerType: signals.providerType,
+        })
+        .from(signals)
+        .where(whereClause)
+        .orderBy(sql`signal_time DESC`)
+        .limit(ITEMS_PER_PAGE)
+        .offset(offset),
+    );
+
+    // 查询 project、category 详情
     const [items, countResult] = await Promise.all([
-      // 获取分页数据
-      db.query.signals.findMany({
-        where: whereClause,
-        with: {
-          project: true,
-          category: true,
-        },
-        extras: {
-          times: sql<number>`(SELECT COUNT(*)
+      db
+        .with(pagedSignals)
+        .select({
+          id: pagedSignals.id,
+          status: pagedSignals.status,
+          dateCreated: pagedSignals.dateCreated,
+          notifyContent: pagedSignals.notifyContent,
+          aiSummary: pagedSignals.aiSummary,
+          signalTime: pagedSignals.signalTime,
+          projectId: pagedSignals.projectId,
+          categoryId: pagedSignals.categoryId,
+          mediaUrls: pagedSignals.mediaUrls,
+          tags: pagedSignals.tags,
+          providerId: pagedSignals.providerId,
+          entityId: pagedSignals.entityId,
+          isAccurate: pagedSignals.isAccurate,
+          accuracy_rate: pagedSignals.accuracy_rate,
+          providerType: pagedSignals.providerType,
+          times: sql<number>`(
+            SELECT COUNT(*)
             FROM ${signals} si
-            WHERE si.project_id = signals.project_id
-            AND si.entity_id = signals.entity_id
-            AND si.signal_time BETWEEN signals.signal_time - INTERVAL '7 days' AND signals.signal_time)`.as(
-            "times",
-          ),
-          hitKOLs: sql<any[]>`(SELECT jsonb_agg(DISTINCT jsonb_build_object(
-              'id', tu.id,
-              'name', tu.name,
-              'avatar', tu.avatar
+            WHERE si.project_id = paged_signals.project_id
+              AND si.entity_id = paged_signals.entity_id
+              AND si.signal_time BETWEEN paged_signals.signal_time - INTERVAL '7 days' AND paged_signals.signal_time
+          )`,
+          hitKOLs: sql<any[]>`(
+            SELECT jsonb_agg(DISTINCT jsonb_build_object(
+              'id', tu.id, 'name', tu.name, 'avatar', tu.avatar
             ))
             FROM ${tweetInfo} ti
             JOIN ${tweetUsers} tu ON ti.tweet_user_id = tu.id
-            WHERE ti.project_id = signals.project_id
-            AND ti.signal_time BETWEEN signals.signal_time - INTERVAL '7 days' AND signals.signal_time)`.as(
-            "hitKOLs",
-          ),
-        },
-        orderBy: (signals, { desc }) => [desc(signals.signalTime)],
-        limit: ITEMS_PER_PAGE,
-        offset,
-      }),
-      // 使用 count() 直接获取总数
+            WHERE ti.project_id = paged_signals.project_id
+              AND ti.signal_time BETWEEN paged_signals.signal_time - INTERVAL '7 days' AND paged_signals.signal_time
+          )`,
+          project: sql<any>`(
+            SELECT json_build_object(
+              'id', id,
+              'name', name,
+              'symbol', symbol,
+              'logo', logo
+            )
+            FROM site_projects
+            WHERE id = paged_signals.project_id
+            LIMIT 1
+          )`,
+          category: sql<any>`(
+            SELECT json_build_object(
+              'id', id,
+              'name', name,
+              'code', code,
+              'sort', sort
+            )
+            FROM site_signals_category
+            WHERE id = paged_signals.category_id
+            LIMIT 1
+          )`,
+        })
+        .from(pagedSignals)
+        .execute(),
       db.select({ value: count() }).from(signals).where(whereClause),
     ]);
 
@@ -369,9 +428,12 @@ export async function getTagStatistics(
         if (filter.entityId) {
           conditions.push(eq(signals.entityId, filter.entityId));
         }
-        conditions.push(eq(signals.providerType, SIGNAL_PROVIDER_TYPE.ANNOUNCEMENT));
+        conditions.push(
+          eq(signals.providerType, SIGNAL_PROVIDER_TYPE.ANNOUNCEMENT),
+        );
 
-        const whereClause = conditions.length > 0 ? and(...conditions) : undefined;
+        const whereClause =
+          conditions.length > 0 ? and(...conditions) : undefined;
 
         tags = await db
           .select({
@@ -404,7 +466,8 @@ export async function getTagStatistics(
         }
         conditions.push(eq(signals.providerType, SIGNAL_PROVIDER_TYPE.NEWS));
 
-        const newsWhereClause = conditions.length > 0 ? and(...conditions) : undefined;
+        const newsWhereClause =
+          conditions.length > 0 ? and(...conditions) : undefined;
 
         tags = await db
           .select({
@@ -438,7 +501,8 @@ export async function getTagStatistics(
         }
         conditions.push(eq(signals.providerType, SIGNAL_PROVIDER_TYPE.TWITTER));
 
-        const tweetWhereClause = conditions.length > 0 ? and(...conditions) : undefined;
+        const tweetWhereClause =
+          conditions.length > 0 ? and(...conditions) : undefined;
 
         tags = await db
           .select({

@@ -79,7 +79,18 @@ export const signals = pgTable(
       .default("twitter")
       .$type<SIGNAL_PROVIDER_TYPE>(),
   },
-  (table) => [index("provider_id_idx").on(table.providerId)],
+  (table) => [
+    index("provider_id_idx").on(table.providerId),
+    index("category_and_signal_time_idx").on(
+      table.categoryId,
+      table.signalTime,
+    ),
+    index("project_and_entity_and_signal_time_idx").on(
+      table.projectId,
+      table.entityId,
+      table.signalTime,
+    ),
+  ],
 ).enableRLS();
 
 export const signalsCategory = pgTable(
