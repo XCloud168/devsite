@@ -80,7 +80,20 @@ export const signals = pgTable(
       .$type<SIGNAL_PROVIDER_TYPE>(),
   },
   (table) => [
-    index("provider_id_idx").on(table.providerId),
+    index("signals_provider_id_idx").on(table.providerId),
+    index("signals_project_id_idx").on(table.projectId),
+    index("signals_category_id_idx").on(table.categoryId),
+    index("signals_entity_id_idx").on(table.entityId),
+    index("signals_provider_type_idx").on(table.providerType),
+    index("category_and_provider_type_and_entity_id_idx").on(
+      table.categoryId,
+      table.providerType,
+      table.entityId,
+    ),
+    index("category_and_provider_type_idx").on(
+      table.categoryId,
+      table.providerType,
+    ),
     index("category_and_signal_time_idx").on(
       table.categoryId,
       table.signalTime,

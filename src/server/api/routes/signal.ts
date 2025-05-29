@@ -8,6 +8,7 @@ import {
   exchange,
   news,
   newsEntity,
+  projects,
   signals,
   signalsCategory,
   tweetInfo,
@@ -204,104 +205,267 @@ export async function getSignalsByPaginated(
       {} as Record<SIGNAL_PROVIDER_TYPE, string[]>,
     );
 
-    const itemsWithContent = [];
+    // 定义每种类型需要查询的字段
+    const contentQueries = [];
 
-    // 组装信号内容
-    if (groupedByProviderType.twitter) {
-      const tweetDetails = await db.query.tweetInfo.findMany({
-        where: inArray(tweetInfo.id, groupedByProviderType.twitter),
-        with: {
-          project: true,
-          tweetUser: true,
-          replyTweet: {
-            with: {
-              tweetUser: true,
-            },
-          },
-          quotedTweet: {
-            with: {
-              tweetUser: true,
-            },
-          },
-          retweetTweet: {
-            with: {
-              tweetUser: true,
-            },
-          },
-        },
-      });
-      const tweetDetailsMap = tweetDetails.reduce(
-        (acc, detail) => {
-          acc[detail.id] = detail;
-          return acc;
-        },
-        {} as Record<string, any>,
-      );
-
-      itemsWithContent.push(
-        ...items
-          .filter((item) => item.providerType === SIGNAL_PROVIDER_TYPE.TWITTER)
-          .map((item) => ({
-            ...item,
-            source: tweetDetailsMap[item.providerId],
+    if (groupedByProviderType.twitter?.length) {
+      contentQueries.push(
+        db
+          .select({
+            id: tweetInfo.id,
+            content: tweetInfo.content,
+            contentSummary: tweetInfo.contentSummary,
+            signalTime: tweetInfo.signalTime,
+            projectId: tweetInfo.projectId,
+            tweetUserId: tweetInfo.tweetUserId,
+            tweetUrl: tweetInfo.tweetUrl,
+            sentiment: tweetInfo.sentiment,
+            imagesUrls: tweetInfo.imagesUrls,
+            videoUrls: tweetInfo.videoUrls,
+            highRate24H: tweetInfo.highRate24H,
+            lowRate24H: tweetInfo.lowRate24H,
+            highRate7D: tweetInfo.highRate7D,
+            lowRate7D: tweetInfo.lowRate7D,
+            highRate30D: tweetInfo.highRate30D,
+            lowRate30D: tweetInfo.lowRate30D,
+            isAccurate: tweetInfo.isAccurate,
+            accuracy_rate: tweetInfo.accuracy_rate,
+            project: sql<any>`json_build_object(
+              'id', ${projects.id},
+              'name', ${projects.name},
+              'symbol', ${projects.symbol},
+              'logo', ${projects.logo}
+            )`,
+            tweetUser: sql<any>`json_build_object(
+              'id', ${tweetUsers.id},
+              'name', ${tweetUsers.name},
+              'avatar', ${tweetUsers.avatar}
+            )`,
+            replyTweet: sql<any>`(
+              SELECT json_build_object(
+                'id', rt.id,
+                'content', rt.content,
+                'tweetUser', json_build_object(
+                  'id', rtu.id,
+                  'name', rtu.name,
+                  'avatar', rtu.avatar
+                )
+              )
+              FROM ${tweetInfo} rt
+              JOIN ${tweetUsers} rtu ON rt.tweet_user_id = rtu.id
+              WHERE rt.id = ${tweetInfo.replyTweetId}
+              LIMIT 1
+            )`,
+            quotedTweet: sql<any>`(
+              SELECT json_build_object(
+                'id', qt.id,
+                'content', qt.content,
+                'tweetUser', json_build_object(
+                  'id', qtu.id,
+                  'name', qtu.name,
+                  'avatar', qtu.avatar
+                )
+              )
+              FROM ${tweetInfo} qt
+              JOIN ${tweetUsers} qtu ON qt.tweet_user_id = qtu.id
+              WHERE qt.id = ${tweetInfo.quotedTweet}
+              LIMIT 1
+            )`,
+            retweetTweet: sql<any>`(
+              SELECT json_build_object(
+                'id', rtt.id,
+                'content', rtt.content,
+                'tweetUser', json_build_object(
+                  'id', rttu.id,
+                  'name', rttu.name,
+                  'avatar', rttu.avatar
+                )
+              )
+              FROM ${tweetInfo} rtt
+              JOIN ${tweetUsers} rttu ON rtt.tweet_user_id = rttu.id
+              WHERE rtt.id = ${tweetInfo.retweetTweetId}
+              LIMIT 1
+            )`,
+          })
+          .from(tweetInfo)
+          .leftJoin(tweetUsers, eq(tweetInfo.tweetUserId, tweetUsers.id))
+          .leftJoin(projects, eq(tweetInfo.projectId, projects.id))
+          .where(inArray(tweetInfo.id, groupedByProviderType.twitter))
+          .then((results) => ({
+            type: SIGNAL_PROVIDER_TYPE.TWITTER,
+            details: results.reduce(
+              (acc, detail) => {
+                acc[detail.id] = {
+                  ...detail,
+                  id: detail.id,
+                  projectId: detail.projectId,
+                  tweetUserId: detail.tweetUserId,
+                  tweetUrl: detail.tweetUrl || "/",
+                  project: detail.project || null,
+                  tweetUser: detail.tweetUser || null,
+                  replyTweet: detail.replyTweet || null,
+                  quotedTweet: detail.quotedTweet || null,
+                  retweetTweet: detail.retweetTweet || null,
+                };
+                return acc;
+              },
+              {} as Record<string, any>,
+            ),
           })),
       );
     }
 
-    // 如果有其他 providerType，比如 announcement
-    if (groupedByProviderType.announcement) {
-      const announcementDetails = await db.query.announcement.findMany({
-        where: inArray(announcement.id, groupedByProviderType.announcement),
-        with: {
-          project: true,
-          exchange: true,
-        },
-      });
-      const announcementDetailsMap = announcementDetails.reduce(
-        (acc, detail) => {
-          acc[detail.id] = detail;
-          return acc;
-        },
-        {} as Record<string, any>,
-      );
-
-      itemsWithContent.push(
-        ...items
-          .filter(
-            (item) => item.providerType === SIGNAL_PROVIDER_TYPE.ANNOUNCEMENT,
-          )
-          .map((item) => ({
-            ...item,
-            source: announcementDetailsMap[item.providerId],
+    if (groupedByProviderType.announcement?.length) {
+      contentQueries.push(
+        db
+          .select({
+            id: announcement.id,
+            content: announcement.content,
+            contentSummary: announcement.contentSummary,
+            signalTime: announcement.signalTime,
+            projectId: announcement.projectId,
+            exchangeId: announcement.exchangeId,
+            source: announcement.source,
+            highRate24H: announcement.highRate24H,
+            lowRate24H: announcement.lowRate24H,
+            highRate7D: announcement.highRate7D,
+            lowRate7D: announcement.lowRate7D,
+            highRate30D: announcement.highRate30D,
+            lowRate30D: announcement.lowRate30D,
+            isAccurate: announcement.isAccurate,
+            accuracy_rate: announcement.accuracy_rate,
+            project: sql<any>`json_build_object(
+              'id', ${projects.id},
+              'name', ${projects.name},
+              'symbol', ${projects.symbol},
+              'logo', ${projects.logo}
+            )`,
+            exchange: sql<any>`json_build_object(
+              'id', ${exchange.id},
+              'name', ${exchange.name},
+              'logo', ${exchange.logo}
+            )`,
+          })
+          .from(announcement)
+          .leftJoin(projects, eq(announcement.projectId, projects.id))
+          .leftJoin(exchange, eq(announcement.exchangeId, exchange.id))
+          .where(inArray(announcement.id, groupedByProviderType.announcement))
+          .then((results) => ({
+            type: SIGNAL_PROVIDER_TYPE.ANNOUNCEMENT,
+            details: results.reduce(
+              (acc, detail) => {
+                acc[detail.id] = {
+                  ...detail,
+                  id: detail.id,
+                  projectId: detail.projectId,
+                  exchangeId: detail.exchangeId,
+                  source: detail.source || "/",
+                  project: detail.project || null,
+                  exchange: detail.exchange || null,
+                };
+                return acc;
+              },
+              {} as Record<string, any>,
+            ),
           })),
       );
     }
 
-    if (groupedByProviderType.news) {
-      const newsDetails = await db.query.news.findMany({
-        where: inArray(news.id, groupedByProviderType.news),
-        with: {
-          project: true,
-          newsEntity: true,
-        },
-      });
-      const newsDetailsMap = newsDetails.reduce(
-        (acc, detail) => {
-          acc[detail.id] = detail;
-          return acc;
-        },
-        {} as Record<string, any>,
-      );
-
-      itemsWithContent.push(
-        ...items
-          .filter((item) => item.providerType === SIGNAL_PROVIDER_TYPE.NEWS)
-          .map((item) => ({
-            ...item,
-            source: newsDetailsMap[item.providerId],
+    if (groupedByProviderType.news?.length) {
+      contentQueries.push(
+        db
+          .select({
+            id: news.id,
+            content: news.content,
+            contentSummary: news.contentSummary,
+            signalTime: news.signalTime,
+            projectId: news.projectId,
+            newsEntityId: news.newsEntityId,
+            source: news.source,
+            highRate24H: news.highRate24H,
+            lowRate24H: news.lowRate24H,
+            highRate7D: news.highRate7D,
+            lowRate7D: news.lowRate7D,
+            highRate30D: news.highRate30D,
+            lowRate30D: news.lowRate30D,
+            isAccurate: news.isAccurate,
+            accuracy_rate: news.accuracy_rate,
+            project: sql<any>`json_build_object(
+              'id', ${projects.id},
+              'name', ${projects.name},
+              'symbol', ${projects.symbol},
+              'logo', ${projects.logo}
+            )`,
+            newsEntity: sql<any>`json_build_object(
+              'id', ${newsEntity.id},
+              'name', ${newsEntity.name},
+              'logo', ${newsEntity.logo}
+            )`,
+          })
+          .from(news)
+          .leftJoin(projects, eq(news.projectId, projects.id))
+          .leftJoin(newsEntity, eq(news.newsEntityId, newsEntity.id))
+          .where(inArray(news.id, groupedByProviderType.news))
+          .then((results) => ({
+            type: SIGNAL_PROVIDER_TYPE.NEWS,
+            details: results.reduce(
+              (acc, detail) => {
+                acc[detail.id] = {
+                  ...detail,
+                  id: detail.id,
+                  projectId: detail.projectId,
+                  newsEntityId: detail.newsEntityId,
+                  source: detail.source || "/",
+                  project: detail.project || null,
+                  newsEntity: detail.newsEntity || null,
+                };
+                return acc;
+              },
+              {} as Record<string, any>,
+            ),
           })),
       );
     }
+
+    // 并行执行所有查询
+    const contentResults = await Promise.all(contentQueries);
+
+    // 创建内容映射
+    const contentMap = contentResults.reduce(
+      (acc, result) => {
+        acc[result.type] = result.details;
+        return acc;
+      },
+      {} as Record<SIGNAL_PROVIDER_TYPE, Record<string, any>>,
+    );
+
+    // 一次性组装所有内容
+    const itemsWithContent = items.map((item) => {
+      const source =
+        item.providerType && item.providerId
+          ? contentMap[item.providerType]?.[item.providerId]
+          : undefined;
+      // 保证关联字段结构完整
+      return {
+        ...item,
+        source: {
+          ...source,
+          // project 结构兜底
+          project: source?.project ?? {
+            id: "",
+            name: "",
+            symbol: "",
+            logo: "",
+          },
+          // tweetUser 结构兜底
+          tweetUser: source?.tweetUser ?? { id: "", name: "", avatar: "" },
+          // exchange 结构兜底
+          exchange: source?.exchange ?? { id: "", name: "", logo: "" },
+          // newsEntity 结构兜底
+          newsEntity: source?.newsEntity ?? { id: "", name: "", logo: "" },
+        },
+      };
+    });
 
     const totalCount = countResult[0]?.value ?? 0;
     const totalPages = Math.ceil(totalCount / ITEMS_PER_PAGE);
