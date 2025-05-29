@@ -13,7 +13,7 @@ import {
   tweetInfo,
   tweetUsers,
 } from "@/server/db/schema";
-import { and, count, eq, inArray, isNotNull, lte, sql } from "drizzle-orm";
+import { and, count, eq, inArray, isNotNull, lte, sql, between } from "drizzle-orm";
 import { getUserProfile } from "./auth";
 
 /**
@@ -50,202 +50,166 @@ export async function getSignalsByPaginated(
   },
 ) {
   return withServerResult(async () => {
-    let filterTimestamp;
     const user = await getUserProfile();
-    // 检查三种情况：未登录、非会员、会员过期
+
+    // 过滤时间戳：非会员或过期只能看24h前的数据
+    let filterTimestamp: number | undefined;
     if (!user?.membershipExpiredAt || new Date(user?.membershipExpiredAt) < new Date()) {
-      // 未登录用户、非会员用户或会员过期用户返回24h前的信号
-      filterTimestamp = new Date().getTime() - 24 * 60 * 60 * 1000;
+      filterTimestamp = Date.now() - 24 * 60 * 60 * 1000;
     }
 
-    // 构建查询条件
+    // 构建 where 条件
     const conditions = [];
 
-    // 类别ID条件
-    if (filter.categoryId) {
-      conditions.push(eq(signals.categoryId, filter.categoryId));
-    }
-
-    // 时间戳条件
-    if (filterTimestamp) {
-      conditions.push(lte(signals.signalTime, new Date(filterTimestamp)));
-    }
-
-    // 提供者类型条件
-    if (filter.providerType) {
-      conditions.push(eq(signals.providerType, filter.providerType));
-    }
-
-    // 提供者ID条件
-    if (filter.providerId) {
-      conditions.push(eq(signals.providerId, filter.providerId));
-    }
-
-    // 信号ID条件
-    if (filter.signalId) {
-      conditions.push(eq(signals.id, filter.signalId));
-    }
-
-    // 实体ID条件
-    if (filter.entityId) {
-      conditions.push(eq(signals.entityId, filter.entityId));
-    }
+    if (filter.categoryId) conditions.push(eq(signals.categoryId, filter.categoryId));
+    if (filterTimestamp) conditions.push(lte(signals.signalTime, new Date(filterTimestamp)));
+    if (filter.providerType) conditions.push(eq(signals.providerType, filter.providerType));
+    if (filter.providerId) conditions.push(eq(signals.providerId, filter.providerId));
+    if (filter.signalId) conditions.push(eq(signals.id, filter.signalId));
+    if (filter.entityId) conditions.push(eq(signals.entityId, filter.entityId));
 
     const whereClause = conditions.length > 0 ? and(...conditions) : undefined;
 
-    // 并行执行分页查询和计数查询
     const offset = (page - 1) * ITEMS_PER_PAGE;
+
+    // 主查询：分页获取信号列表
     const [items, countResult] = await Promise.all([
-      // 获取分页数据
       db.query.signals.findMany({
         where: whereClause,
+        orderBy: (signals, { desc }) => [desc(signals.signalTime)],
+        limit: ITEMS_PER_PAGE,
+        offset,
         with: {
           project: true,
           category: true,
         },
-        extras: {
-          times: sql<number>`(SELECT COUNT(*)
-            FROM ${signals} si
-            WHERE si.project_id = signals.project_id
-            AND si.entity_id = signals.entity_id
-            AND si.signal_time BETWEEN signals.signal_time - INTERVAL '7 days' AND signals.signal_time)`.as(
-            "times",
-          ),
-          hitKOLs: sql<any[]>`(SELECT jsonb_agg(DISTINCT jsonb_build_object(
-              'id', tu.id,
-              'name', tu.name,
-              'avatar', tu.avatar
-            ))
-            FROM ${tweetInfo} ti
-            JOIN ${tweetUsers} tu ON ti.tweet_user_id = tu.id
-            WHERE ti.project_id = signals.project_id
-            AND ti.signal_time BETWEEN signals.signal_time - INTERVAL '7 days' AND signals.signal_time)`.as(
-            "hitKOLs",
-          ),
-        },
-        orderBy: (signals, { desc }) => [desc(signals.signalTime)],
-        limit: ITEMS_PER_PAGE,
-        offset,
       }),
-      // 使用 count() 直接获取总数
       db.select({ value: count() }).from(signals).where(whereClause),
     ]);
 
-    // 分组信号
-    const groupedByProviderType = items.reduce(
-      (acc, signal) => {
-        if (signal.providerType && signal.providerId) {
-          if (!acc[signal.providerType]) {
-            acc[signal.providerType] = [];
-          }
-          acc[signal.providerType].push(signal.providerId);
-        }
-        return acc;
-      },
-      {} as Record<SIGNAL_PROVIDER_TYPE, string[]>,
-    );
-
-    const itemsWithContent = [];
-
-    // 组装信号内容
-    if (groupedByProviderType.twitter) {
-      const tweetDetails = await db.query.tweetInfo.findMany({
-        where: inArray(tweetInfo.id, groupedByProviderType.twitter),
-        with: {
-          project: true,
-          tweetUser: true,
-          replyTweet: {
-            with: {
-              tweetUser: true,
-            },
-          },
-          quotedTweet: {
-            with: {
-              tweetUser: true,
-            },
-          },
-          retweetTweet: {
-            with: {
-              tweetUser: true,
-            },
-          },
-        },
-      });
-      const tweetDetailsMap = tweetDetails.reduce(
-        (acc, detail) => {
-          acc[detail.id] = detail;
-          return acc;
-        },
-        {} as Record<string, any>,
-      );
-
-      itemsWithContent.push(
-        ...items
-          .filter((item) => item.providerType === SIGNAL_PROVIDER_TYPE.TWITTER)
-          .map((item) => ({
-            ...item,
-            source: tweetDetailsMap[item.providerId],
-          })),
-      );
-    }
-
-    // 如果有其他 providerType，比如 announcement
-    if (groupedByProviderType.announcement) {
-      const announcementDetails = await db.query.announcement.findMany({
-        where: inArray(announcement.id, groupedByProviderType.announcement),
-        with: {
-          project: true,
-          exchange: true,
-        },
-      });
-      const announcementDetailsMap = announcementDetails.reduce(
-        (acc, detail) => {
-          acc[detail.id] = detail;
-          return acc;
-        },
-        {} as Record<string, any>,
-      );
-
-      itemsWithContent.push(
-        ...items
-          .filter(
-            (item) => item.providerType === SIGNAL_PROVIDER_TYPE.ANNOUNCEMENT,
-          )
-          .map((item) => ({
-            ...item,
-            source: announcementDetailsMap[item.providerId],
-          })),
-      );
-    }
-
-    if (groupedByProviderType.news) {
-      const newsDetails = await db.query.news.findMany({
-        where: inArray(news.id, groupedByProviderType.news),
-        with: {
-          project: true,
-          newsEntity: true,
-        },
-      });
-      const newsDetailsMap = newsDetails.reduce(
-        (acc, detail) => {
-          acc[detail.id] = detail;
-          return acc;
-        },
-        {} as Record<string, any>,
-      );
-
-      itemsWithContent.push(
-        ...items
-          .filter((item) => item.providerType === SIGNAL_PROVIDER_TYPE.NEWS)
-          .map((item) => ({
-            ...item,
-            source: newsDetailsMap[item.providerId],
-          })),
-      );
-    }
-
     const totalCount = countResult[0]?.value ?? 0;
     const totalPages = Math.ceil(totalCount / ITEMS_PER_PAGE);
+
+    // 统计 hits/times 的逻辑批处理
+    const projectEntityPairs = items.map((i) => ({
+      projectId: i.projectId,
+      entityId: i.entityId,
+      signalTime: i.signalTime,
+    }));
+
+    // times 子查询模拟：批处理方式
+    // NOTE: 若查询很重，推荐后续落地缓存处理
+    const timesMap: Record<string, number> = {};
+
+    for (const item of projectEntityPairs) {
+      const { projectId, entityId, signalTime } = item;
+    
+      // 跳过任何空值，防止 eq() 和 between() 报错
+      if (!projectId || !entityId || !signalTime) continue;
+    
+      const fromTime = new Date(signalTime.getTime() - 7 * 24 * 60 * 60 * 1000); // 7天前
+      const toTime = signalTime;
+    
+      const countRes = await db
+        .select({ value: count() })
+        .from(signals)
+        .where(
+          and(
+            eq(signals.projectId, projectId),
+            eq(signals.entityId, entityId),
+            between(signals.signalTime, fromTime, toTime),
+          ),
+        );
+    
+      const key = `${projectId}_${entityId}_${signalTime.getTime()}`;
+      timesMap[key] = countRes[0]?.value ?? 0;
+    }
+
+    // 获取不同 providerType 的 providerId
+    const groupedProviderIds: Record<SIGNAL_PROVIDER_TYPE, Set<string>> = {} as any;
+    for (const item of items) {
+      if (item.providerType && item.providerId) {
+        if (!groupedProviderIds[item.providerType]) {
+          groupedProviderIds[item.providerType] = new Set();
+        }
+        groupedProviderIds[item.providerType].add(item.providerId);
+      }
+    }
+
+    // 批量查详情
+    const [tweets, announcements, newsList] = await Promise.all([
+      groupedProviderIds.twitter
+        ? db.query.tweetInfo.findMany({
+            where: inArray(tweetInfo.id, Array.from(groupedProviderIds.twitter)),
+            with: {
+              project: true,
+              tweetUser: true,
+              replyTweet: { with: { tweetUser: true } },
+              quotedTweet: { with: { tweetUser: true } },
+              retweetTweet: { with: { tweetUser: true } },
+            },
+          })
+        : [],
+      groupedProviderIds.announcement
+        ? db.query.announcement.findMany({
+            where: inArray(announcement.id, Array.from(groupedProviderIds.announcement)),
+            with: {
+              project: true,
+              exchange: true,
+            },
+          })
+        : [],
+      groupedProviderIds.news
+        ? db.query.news.findMany({
+            where: inArray(news.id, Array.from(groupedProviderIds.news)),
+            with: {
+              project: true,
+              newsEntity: true,
+            },
+          })
+        : [],
+    ]);
+
+    const tweetMap = Object.fromEntries(tweets.map((t) => [t.id, t]));
+    const announcementMap = Object.fromEntries(announcements.map((a) => [a.id, a]));
+    const newsMap = Object.fromEntries(newsList.map((n) => [n.id, n]));
+
+    // 构造结果
+    const itemsWithContent = items.map((item) => {
+      const key = `${item.projectId}_${item.entityId}_${item.signalTime.getTime()}`;
+      const times = timesMap[key] || 0;
+
+      // mock hitKOLs（简化处理，保留原结构）
+      let hitKOLs = null;
+      if (item.providerType === SIGNAL_PROVIDER_TYPE.TWITTER) {
+        const source = tweetMap[item.providerId];
+        hitKOLs = source?.tweetUser
+          ? [
+              {
+                id: source.tweetUser.id,
+                name: source.tweetUser.name,
+                avatar: source.tweetUser.avatar,
+              },
+            ]
+          : null;
+      }
+
+      let source: any = null;
+      if (item.providerType === SIGNAL_PROVIDER_TYPE.TWITTER) {
+        source = tweetMap[item.providerId];
+      } else if (item.providerType === SIGNAL_PROVIDER_TYPE.ANNOUNCEMENT) {
+        source = announcementMap[item.providerId];
+      } else if (item.providerType === SIGNAL_PROVIDER_TYPE.NEWS) {
+        source = newsMap[item.providerId];
+      }
+
+      return {
+        ...item,
+        times,
+        hitKOLs,
+        source,
+      };
+    });
 
     return {
       items: itemsWithContent,
@@ -259,6 +223,227 @@ export async function getSignalsByPaginated(
     };
   });
 }
+
+// export async function getSignalsByPaginated(
+//   page = 1,
+//   filter: {
+//     categoryId: string;
+//     providerType?: SIGNAL_PROVIDER_TYPE;
+//     entityId?: string;
+//     providerId?: string;
+//     signalId?: string;
+//   },
+// ) {
+//   return withServerResult(async () => {
+//     let filterTimestamp;
+//     const user = await getUserProfile();
+//     // 检查三种情况：未登录、非会员、会员过期
+//     if (!user?.membershipExpiredAt || new Date(user?.membershipExpiredAt) < new Date()) {
+//       // 未登录用户、非会员用户或会员过期用户返回24h前的信号
+//       filterTimestamp = new Date().getTime() - 24 * 60 * 60 * 1000;
+//     }
+
+//     // 构建查询条件
+//     const conditions = [];
+
+//     // 类别ID条件
+//     if (filter.categoryId) {
+//       conditions.push(eq(signals.categoryId, filter.categoryId));
+//     }
+
+//     // 时间戳条件
+//     if (filterTimestamp) {
+//       conditions.push(lte(signals.signalTime, new Date(filterTimestamp)));
+//     }
+
+//     // 提供者类型条件
+//     if (filter.providerType) {
+//       conditions.push(eq(signals.providerType, filter.providerType));
+//     }
+
+//     // 提供者ID条件
+//     if (filter.providerId) {
+//       conditions.push(eq(signals.providerId, filter.providerId));
+//     }
+
+//     // 信号ID条件
+//     if (filter.signalId) {
+//       conditions.push(eq(signals.id, filter.signalId));
+//     }
+
+//     // 实体ID条件
+//     if (filter.entityId) {
+//       conditions.push(eq(signals.entityId, filter.entityId));
+//     }
+
+//     const whereClause = conditions.length > 0 ? and(...conditions) : undefined;
+
+//     // 并行执行分页查询和计数查询
+//     const offset = (page - 1) * ITEMS_PER_PAGE;
+//     const [items, countResult] = await Promise.all([
+//       // 获取分页数据
+//       db.query.signals.findMany({
+//         where: whereClause,
+//         with: {
+//           project: true,
+//           category: true,
+//         },
+//         extras: {
+//           times: sql<number>`(SELECT COUNT(*)
+//             FROM ${signals} si
+//             WHERE si.project_id = signals.project_id
+//             AND si.entity_id = signals.entity_id
+//             AND si.signal_time BETWEEN signals.signal_time - INTERVAL '7 days' AND signals.signal_time)`.as(
+//             "times",
+//           ),
+//           hitKOLs: sql<any[]>`(SELECT jsonb_agg(DISTINCT jsonb_build_object(
+//               'id', tu.id,
+//               'name', tu.name,
+//               'avatar', tu.avatar
+//             ))
+//             FROM ${tweetInfo} ti
+//             JOIN ${tweetUsers} tu ON ti.tweet_user_id = tu.id
+//             WHERE ti.project_id = signals.project_id
+//             AND ti.signal_time BETWEEN signals.signal_time - INTERVAL '7 days' AND signals.signal_time)`.as(
+//             "hitKOLs",
+//           ),
+//         },
+//         orderBy: (signals, { desc }) => [desc(signals.signalTime)],
+//         limit: ITEMS_PER_PAGE,
+//         offset,
+//       }),
+//       // 使用 count() 直接获取总数
+//       db.select({ value: count() }).from(signals).where(whereClause),
+//     ]);
+
+//     // 分组信号
+//     const groupedByProviderType = items.reduce(
+//       (acc, signal) => {
+//         if (signal.providerType && signal.providerId) {
+//           if (!acc[signal.providerType]) {
+//             acc[signal.providerType] = [];
+//           }
+//           acc[signal.providerType].push(signal.providerId);
+//         }
+//         return acc;
+//       },
+//       {} as Record<SIGNAL_PROVIDER_TYPE, string[]>,
+//     );
+
+//     const itemsWithContent = [];
+
+//     // 组装信号内容
+//     if (groupedByProviderType.twitter) {
+//       const tweetDetails = await db.query.tweetInfo.findMany({
+//         where: inArray(tweetInfo.id, groupedByProviderType.twitter),
+//         with: {
+//           project: true,
+//           tweetUser: true,
+//           replyTweet: {
+//             with: {
+//               tweetUser: true,
+//             },
+//           },
+//           quotedTweet: {
+//             with: {
+//               tweetUser: true,
+//             },
+//           },
+//           retweetTweet: {
+//             with: {
+//               tweetUser: true,
+//             },
+//           },
+//         },
+//       });
+//       const tweetDetailsMap = tweetDetails.reduce(
+//         (acc, detail) => {
+//           acc[detail.id] = detail;
+//           return acc;
+//         },
+//         {} as Record<string, any>,
+//       );
+
+//       itemsWithContent.push(
+//         ...items
+//           .filter((item) => item.providerType === SIGNAL_PROVIDER_TYPE.TWITTER)
+//           .map((item) => ({
+//             ...item,
+//             source: tweetDetailsMap[item.providerId],
+//           })),
+//       );
+//     }
+
+//     // 如果有其他 providerType，比如 announcement
+//     if (groupedByProviderType.announcement) {
+//       const announcementDetails = await db.query.announcement.findMany({
+//         where: inArray(announcement.id, groupedByProviderType.announcement),
+//         with: {
+//           project: true,
+//           exchange: true,
+//         },
+//       });
+//       const announcementDetailsMap = announcementDetails.reduce(
+//         (acc, detail) => {
+//           acc[detail.id] = detail;
+//           return acc;
+//         },
+//         {} as Record<string, any>,
+//       );
+
+//       itemsWithContent.push(
+//         ...items
+//           .filter(
+//             (item) => item.providerType === SIGNAL_PROVIDER_TYPE.ANNOUNCEMENT,
+//           )
+//           .map((item) => ({
+//             ...item,
+//             source: announcementDetailsMap[item.providerId],
+//           })),
+//       );
+//     }
+
+//     if (groupedByProviderType.news) {
+//       const newsDetails = await db.query.news.findMany({
+//         where: inArray(news.id, groupedByProviderType.news),
+//         with: {
+//           project: true,
+//           newsEntity: true,
+//         },
+//       });
+//       const newsDetailsMap = newsDetails.reduce(
+//         (acc, detail) => {
+//           acc[detail.id] = detail;
+//           return acc;
+//         },
+//         {} as Record<string, any>,
+//       );
+
+//       itemsWithContent.push(
+//         ...items
+//           .filter((item) => item.providerType === SIGNAL_PROVIDER_TYPE.NEWS)
+//           .map((item) => ({
+//             ...item,
+//             source: newsDetailsMap[item.providerId],
+//           })),
+//       );
+//     }
+
+//     const totalCount = countResult[0]?.value ?? 0;
+//     const totalPages = Math.ceil(totalCount / ITEMS_PER_PAGE);
+
+//     return {
+//       items: itemsWithContent,
+//       pagination: {
+//         currentPage: page,
+//         totalPages,
+//         totalCount,
+//         hasNextPage: page < totalPages,
+//         hasPrevPage: page > 1,
+//       },
+//     };
+//   });
+// }
 
 /**
  * 根据信号类别获取信号实体
