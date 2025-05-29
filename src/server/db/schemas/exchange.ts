@@ -52,9 +52,10 @@ export const announcement = pgTable(
     lowRate24H: numeric("low_rate_24h", { precision: 10, scale: 2 }).default(
       sql`'0'`,
     ),
-    highPrice24H: numeric("high_price_24h", { precision: 24, scale: 12 }).default(
-      sql`'0'`,
-    ),
+    highPrice24H: numeric("high_price_24h", {
+      precision: 24,
+      scale: 12,
+    }).default(sql`'0'`),
     lowPrice24H: numeric("low_price_24h", { precision: 24, scale: 12 }).default(
       sql`'0'`,
     ),
@@ -84,9 +85,10 @@ export const announcement = pgTable(
     lowRate30D: numeric("low_rate_30d", { precision: 10, scale: 2 }).default(
       sql`'0'`,
     ),
-    highPrice30D: numeric("high_price_30d", { precision: 24, scale: 12 }).default(
-      sql`'0'`,
-    ),
+    highPrice30D: numeric("high_price_30d", {
+      precision: 24,
+      scale: 12,
+    }).default(sql`'0'`),
     lowPrice30D: numeric("low_price_30d", { precision: 24, scale: 12 }).default(
       sql`'0'`,
     ),
@@ -95,11 +97,12 @@ export const announcement = pgTable(
     exchangeId: uuid("exchange_id").references(() => exchange.id),
     isAccurate: boolean("is_accurate").default(false),
     accuracy_rate: numeric("accuracy_rate", { precision: 5, scale: 2 }),
-    priceSource: varchar("price_source", { length: 255 })
+    priceSource: varchar("price_source", { length: 255 }),
   },
   (table) => [
     index("announcement_title_idx").on(table.title),
-    index("exchange_id_idx").on(table.exchangeId),
+    index("announcement_exchange_id_idx").on(table.exchangeId),
+    index("announcement_project_id_idx").on(table.projectId),
   ],
 ).enableRLS();
 

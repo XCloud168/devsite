@@ -146,6 +146,11 @@ export const tweetInfo = pgTable(
   },
   (table) => [
     index("tweet_id_idx").on(table.tweetId),
+    index("tweet_info_project_id_idx").on(table.projectId),
+    index("tweet_info_tweet_user_id_idx").on(table.tweetUserId),
+    index("tweet_info_reply_tweet_id_idx").on(table.replyTweetId),
+    index("tweet_info_retweet_tweet_id_idx").on(table.retweetTweetId),
+    index("quoted_tweet_idx").on(table.quotedTweet),
     index("project_and_signal_time_idx").on(table.projectId, table.signalTime),
   ],
 ).enableRLS();

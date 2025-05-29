@@ -53,6 +53,7 @@ export const profiles = pgTable(
   (table) => [
     index("invite_code_idx").on(table.inviteCode),
     index("inviter_id_idx").on(table.inviterId),
+    index("email_idx").on(table.email),
   ],
 ).enableRLS();
 
