@@ -62,11 +62,11 @@ export function FeaturedComponent({
       if (getSignalCategoryAction) {
         const response = await getSignalCategoryAction();
         setSignalCategory(response.data);
-        handleChangeCategory(response.data[0].id);
+        handleChangeCategory(response.data[0].id).then();
       }
     };
-    fetchData();
-  }, [getSignalCategoryAction]);
+    fetchData().then();
+  }, [getSignalCategoryAction, getTagListAction]);
 
   return (
     <div className="overflow-hidden">
@@ -77,7 +77,6 @@ export function FeaturedComponent({
           providerType?: SIGNAL_PROVIDER_TYPE;
           entityId?: string;
         }) => {
-          console.log("change");
           setMenuInfo(info);
         }}
         onTagChangeAction={(flag: boolean) => {

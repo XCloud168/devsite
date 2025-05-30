@@ -93,8 +93,6 @@ export function FeaturedList({
   ) => {
     if (categoryId === "") return;
     if (showPageLoading) setPageLoading(true);
-    console.log("start");
-    const start = new Date().getTime();
     if (getSignalListAction) {
       const response = await getSignalListAction(page, {
         categoryId,
@@ -107,9 +105,6 @@ export function FeaturedList({
       setHasNext(response.data.pagination.hasNextPage);
       setCurrentPage(response.data.pagination.currentPage);
       if (showPageLoading) setPageLoading(false);
-      const end = new Date().getTime();
-      console.log("end");
-      console.log(end - start);
       if (refresh && onFinish) onFinish();
     }
   };

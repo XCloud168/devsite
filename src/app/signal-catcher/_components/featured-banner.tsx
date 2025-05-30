@@ -27,11 +27,6 @@ interface Tag {
   avgFallRate: string;
   selected?: false;
 }
-export type FeaturedMenu = {
-  label: SIGNAL_PROVIDER_TYPE;
-  id: string;
-  tags?: Tag[];
-};
 interface Props {
   onMenuChangeAction: ({
     categoryId,
@@ -95,7 +90,7 @@ export function FeaturedBanner({
         setTagData(response.data[0]);
       }
     };
-    fetchData();
+    fetchData().then();
   };
   const riseRate = useMemo(() => {
     if (tagData?.riseCount && tagData?.signalsCount) {
@@ -251,8 +246,6 @@ export function FeaturedBanner({
                 });
                 setSelectedCategoryId(category.id);
                 setSelectedTagId("");
-                // handleChangeCategory(category.id);
-
                 setNewSignal(
                   newSignalList
                     .filter((item) => item !== category.id)
