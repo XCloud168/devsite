@@ -297,13 +297,13 @@ export function FeaturedBanner({
                   onClick={() => {
                     setSelectedTagId(tag.id);
                     handleGetTagData(tag.id);
-                    // onMenuChangeAction({
-                    //   categoryId: selectedCategoryId,
-                    //   providerType:
-                    //     currentTagList.find((item) => tag.id === item.id)
-                    //       ?.providerType ?? undefined,
-                    //   entityId: tag.id,
-                    // });
+                    onMenuChangeAction({
+                      categoryId: selectedCategoryId,
+                      providerType:
+                        currentTagList.find((item) => tag.id === item.id)
+                          ?.providerType ?? undefined,
+                      entityId: tag.id,
+                    });
                   }}
                 >
                   <Avatar className="h-6 w-6 rounded-full">
