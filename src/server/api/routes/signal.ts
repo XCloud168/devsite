@@ -507,52 +507,58 @@ export async function getSignalEntitiesByCategory(categoryId: string) {
       .from(signals)
       .where(eq(signals.categoryId, category.id));
 
-    let tags: any[] = [];
-
+    // 按类型分组收集 entityId
+    const announcementIds: string[] = [];
+    const newsIds: string[] = [];
+    const twitterIds: string[] = [];
     for (const provider of providers) {
-      switch (provider.providerType) {
-        case SIGNAL_PROVIDER_TYPE.ANNOUNCEMENT:
-          tags = tags.concat(
-            await db
-              .select({
-                id: exchange.id,
-                name: exchange.name,
-                logo: exchange.logo,
-                providerType: sql`${provider.providerType}`,
-              })
-              .from(exchange)
-              .where(eq(exchange.id, provider.entityId)),
-          );
-          break;
-        case SIGNAL_PROVIDER_TYPE.NEWS:
-          tags = tags.concat(
-            await db
-              .select({
-                id: newsEntity.id,
-                name: newsEntity.name,
-                logo: newsEntity.logo,
-                providerType: sql`${provider.providerType}`,
-              })
-              .from(newsEntity)
-              .where(eq(newsEntity.id, provider.entityId)),
-          );
-          break;
-        case SIGNAL_PROVIDER_TYPE.TWITTER:
-          tags = tags.concat(
-            await db
-              .select({
-                id: tweetUsers.id,
-                name: tweetUsers.name,
-                logo: tweetUsers.avatar,
-                providerType: sql`${provider.providerType}`,
-              })
-              .from(tweetUsers)
-              .where(eq(tweetUsers.id, provider.entityId)),
-          );
-          break;
+      if (provider.providerType === SIGNAL_PROVIDER_TYPE.ANNOUNCEMENT) {
+        announcementIds.push(provider.entityId);
+      } else if (provider.providerType === SIGNAL_PROVIDER_TYPE.NEWS) {
+        newsIds.push(provider.entityId);
+      } else if (provider.providerType === SIGNAL_PROVIDER_TYPE.TWITTER) {
+        twitterIds.push(provider.entityId);
       }
     }
-    tags = tags.sort((a, b) => a.name.localeCompare(b.name));
+
+    const [announcementTags, newsTags, twitterTags] = await Promise.all([
+      announcementIds.length
+        ? db
+            .select({
+              id: exchange.id,
+              name: exchange.name,
+              logo: exchange.logo,
+              providerType: sql`${SIGNAL_PROVIDER_TYPE.ANNOUNCEMENT}`,
+            })
+            .from(exchange)
+            .where(inArray(exchange.id, announcementIds))
+        : [],
+      newsIds.length
+        ? db
+            .select({
+              id: newsEntity.id,
+              name: newsEntity.name,
+              logo: newsEntity.logo,
+              providerType: sql`${SIGNAL_PROVIDER_TYPE.NEWS}`,
+            })
+            .from(newsEntity)
+            .where(inArray(newsEntity.id, newsIds))
+        : [],
+      twitterIds.length
+        ? db
+            .select({
+              id: tweetUsers.id,
+              name: tweetUsers.name,
+              logo: tweetUsers.avatar,
+              providerType: sql`${SIGNAL_PROVIDER_TYPE.TWITTER}`,
+            })
+            .from(tweetUsers)
+            .where(inArray(tweetUsers.id, twitterIds))
+        : [],
+    ]);
+
+    let tags = [...announcementTags, ...newsTags, ...twitterTags];
+    tags = tags.sort((a, b) => String(a.name).localeCompare(String(b.name)));
     return tags;
   });
 }
