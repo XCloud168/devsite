@@ -117,7 +117,7 @@ export async function getSignalsByPaginated(
           providerId: signals.providerId,
           entityId: signals.entityId,
           isAccurate: signals.isAccurate,
-          accuracy_rate: signals.accuracy_rate,
+          accuracyRate: signals.accuracyRate,
           providerType: signals.providerType,
         })
         .from(signals)
@@ -145,7 +145,7 @@ export async function getSignalsByPaginated(
           providerId: pagedSignals.providerId,
           entityId: pagedSignals.entityId,
           isAccurate: pagedSignals.isAccurate,
-          accuracy_rate: pagedSignals.accuracy_rate,
+          accuracyRate: pagedSignals.accuracyRate,
           providerType: pagedSignals.providerType,
           times: sql<number>`(
             SELECT COUNT(*)
@@ -229,7 +229,7 @@ export async function getSignalsByPaginated(
             highRate30D: tweetInfo.highRate30D,
             lowRate30D: tweetInfo.lowRate30D,
             isAccurate: tweetInfo.isAccurate,
-            accuracy_rate: tweetInfo.accuracy_rate,
+            accuracyRate: tweetInfo.accuracyRate,
             project: sql<any>`json_build_object(
               'id', ${projects.id},
               'name', ${projects.name},
@@ -333,7 +333,7 @@ export async function getSignalsByPaginated(
             highRate30D: announcement.highRate30D,
             lowRate30D: announcement.lowRate30D,
             isAccurate: announcement.isAccurate,
-            accuracy_rate: announcement.accuracy_rate,
+            accuracyRate: announcement.accuracyRate,
             project: sql<any>`json_build_object(
               'id', ${projects.id},
               'name', ${projects.name},
@@ -390,7 +390,7 @@ export async function getSignalsByPaginated(
             highRate30D: news.highRate30D,
             lowRate30D: news.lowRate30D,
             isAccurate: news.isAccurate,
-            accuracy_rate: news.accuracy_rate,
+            accuracyRate: news.accuracyRate,
             project: sql<any>`json_build_object(
               'id', ${projects.id},
               'name', ${projects.name},
