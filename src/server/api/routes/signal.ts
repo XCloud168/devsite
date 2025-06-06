@@ -381,6 +381,7 @@ export async function getSignalsByPaginated(
             signalTime: news.signalTime,
             projectId: news.projectId,
             newsEntityId: news.newsEntityId,
+            mediaUrls: news.mediaUrls,
             source: news.source,
             highRate24H: news.highRate24H,
             lowRate24H: news.lowRate24H,
