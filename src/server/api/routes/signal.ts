@@ -168,7 +168,14 @@ export async function getSignalsByPaginated(
               'id', id,
               'name', name,
               'symbol', symbol,
-              'logo', logo
+              'logo', logo,
+              'solContract', sol_contract,
+              'ethContract', eth_contract,
+              'bscContract', bsc_contract,
+              'tronContract', tron_contract,
+              'baseContract', base_contract,
+              'blastContract', blast_contract,
+              'otherContract', other_contract
             )
             FROM site_projects
             WHERE id = paged_signals.project_id
