@@ -104,7 +104,7 @@ export const news = pgTable(
     dateCreated: timestamp("date_created", { withTimezone: true }).defaultNow(),
     dateUpdated: timestamp("date_updated", { withTimezone: true }),
     isAccurate: boolean("is_accurate").default(false),
-    accuracy_rate: numeric("accuracy_rate", { precision: 5, scale: 2 }),
+    accuracyRate: numeric("accuracy_rate", { precision: 5, scale: 2 }),
   },
   (table) => [
     index("news_title_idx").on(table.title),

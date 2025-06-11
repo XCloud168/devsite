@@ -96,7 +96,7 @@ export const announcement = pgTable(
     highPriceTime30D: timestamp("high_price_time_30d", { withTimezone: true }),
     exchangeId: uuid("exchange_id").references(() => exchange.id),
     isAccurate: boolean("is_accurate").default(false),
-    accuracy_rate: numeric("accuracy_rate", { precision: 5, scale: 2 }),
+    accuracyRate: numeric("accuracy_rate", { precision: 5, scale: 2 }),
     priceSource: varchar("price_source", { length: 255 }),
   },
   (table) => [
