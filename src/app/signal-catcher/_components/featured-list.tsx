@@ -164,7 +164,7 @@ export function FeaturedList({
           (item: SignalItems) => !currentIds.includes(item.id),
         );
         if (differentItems.length > 0) {
-          if (scrollRef.current) {
+          if (scrollRef.current && scrollRef.current.scrollTop === 0) {
             scrollRef.current.scrollTo({ top: 0, behavior: "smooth" });
           }
         }
