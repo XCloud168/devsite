@@ -31,7 +31,8 @@ import {
 } from "lucide-react";
 
 type Props = {
-  getFollowedListAction: () => Promise<ServerResult>;
+  followedList: WatchItem[];
+  followedListLoading: boolean;
   removeFollowAction: (tweetUid: string) => Promise<ServerResult>;
   getTweetListAction: (
     page: number,
@@ -43,6 +44,7 @@ type Props = {
   ) => Promise<ServerResult>;
   isMember?: boolean | null;
   isLogged: boolean;
+  onRemoveSuccessAction: () => void;
 };
 
 export type FetchTweetListAction = (
@@ -50,7 +52,7 @@ export type FetchTweetListAction = (
   options: { followed: boolean; hasContractAddress: boolean },
 ) => Promise<ServerResult>;
 export type SetState<T> = React.Dispatch<React.SetStateAction<T>>;
-interface WatchItem extends Omit<Watchlist, "tweetUser"> {
+export interface WatchItem extends Omit<Watchlist, "tweetUser"> {
   tweetUser: TweetUsers;
 }
 interface TweetItem extends Omit<TweetInfo, "tweetUser"> {
@@ -65,10 +67,12 @@ interface TweetItem extends Omit<TweetInfo, "tweetUser"> {
 }
 export function MyFollowed({
   getTweetListAction,
-  getFollowedListAction,
+  followedList,
+  followedListLoading,
   removeFollowAction,
   isMember,
   isLogged,
+  onRemoveSuccessAction,
 }: Props) {
   const t = useTranslations();
   const [showTable, setShowTable] = useState(false);
@@ -77,8 +81,8 @@ export function MyFollowed({
   const [pageLoading, setPageLoading] = useState<boolean>(false);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [hasContractAddress, setHasContractAddress] = useState<boolean>(false);
-  const [tableData, setTableData] = useState<WatchItem[]>([]);
-  const [tableDataLoading, setTableDataLoading] = useState<boolean>(false);
+  // const [tableData, setTableData] = useState<WatchItem[]>([]);
+  // const [tableDataLoading, setTableDataLoading] = useState<boolean>(false);
   const fetchTweetList = async (
     page: number,
     hasContractAddress: boolean,
@@ -138,12 +142,12 @@ export function MyFollowed({
     }
   };
   useEffect(() => {
-    const fetchData = async () => {
-      const response = await getFollowedListAction();
-      setTableData(response.data);
-      setTableDataLoading(false);
-    };
-    fetchData();
+    // const fetchData = async () => {
+    //   const response = await getFollowedListAction();
+    //   setTableData(response.data);
+    //   setTableDataLoading(false);
+    // };
+    // fetchData();
     if (!showTable) {
       fetchTweetList(
         1,
@@ -157,18 +161,19 @@ export function MyFollowed({
     }
   }, [showTable]);
   const handleRemoveFollow = (id: string) => {
-    const getTableData = async () => {
-      const response = await getFollowedListAction();
-      setTableData(response.data);
-    };
+    // const getTableData = async () => {
+    //   const response = await getFollowedListAction();
+    //   setTableData(response.data);
+    // };
     const fetchData = async () => {
-      setTableDataLoading(true);
+      // setTableDataLoading(true);
       const response = await removeFollowAction(id);
       if (response.error) {
         toast.error("Error");
       } else {
         toast.success(t("common.success"));
-        if (showTable) getTableData();
+        onRemoveSuccessAction();
+        if (showTable) return;
         else {
           fetchTweetList(
             currentPage + 1,
@@ -218,13 +223,13 @@ export function MyFollowed({
             <div
               className="flex w-[240px] cursor-pointer items-center justify-between border px-6 py-4"
               onClick={() => {
-                setTableDataLoading(true);
+                // setTableDataLoading(true);
                 setShowTable(true);
               }}
             >
               <p>{t("signals.kol.myKol")}</p>
               <div className="flex -space-x-2">
-                {tableData.slice(0, 5).map((data) => (
+                {followedList.slice(0, 5).map((data) => (
                   <Avatar className="h-5 w-5" key={data.id}>
                     <AvatarImage src={data.tweetUser.avatar ?? ""} />
                     <AvatarFallback></AvatarFallback>
@@ -298,7 +303,7 @@ export function MyFollowed({
             <ChevronLeft />
             <p>{t("signals.kol.myKol")}</p>
           </div>
-          {tableDataLoading ? (
+          {followedListLoading ? (
             <div className="flex items-center justify-center py-2">
               <LoaderCircle className="animate-spin" />
             </div>
@@ -315,7 +320,7 @@ export function MyFollowed({
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {tableData.map((data) => (
+                {followedList.map((data) => (
                   <TableRow key={data.id}>
                     <TableCell className="flex h-full items-center gap-0.5">
                       <Avatar className="h-8 w-8">
@@ -334,7 +339,7 @@ export function MyFollowed({
                         variant="outline"
                         className="justify-start gap-2 rounded-xl"
                         onClick={() => handleRemoveFollow(data.tweetUser.id)}
-                        disabled={tableDataLoading}
+                        disabled={followedListLoading}
                       >
                         <BellMinus className="fill-text-accent" />
                         {t("signals.kol.removeKol")}

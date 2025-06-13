@@ -38,6 +38,7 @@ interface KolMenuProps {
   addFollowAction: (tweetUid: string) => Promise<ServerResult>;
   isMember?: boolean | null;
   isLogged: boolean;
+  onAddSuccessAction: () => void;
 }
 
 type UserInfo = {
@@ -54,6 +55,7 @@ export function KolBanner({
   addFollowAction,
   isMember,
   isLogged,
+  onAddSuccessAction,
 }: KolMenuProps) {
   const t = useTranslations();
   const router = useRouter();
@@ -157,6 +159,7 @@ export function KolBanner({
                         addFollowAction(tweetUser.id).then(() => {
                           toast.success(t("common.success"));
                           setDialogOpen(false);
+                          onAddSuccessAction();
                         });
                       } else {
                         toast.info(t("signals.kol.notVip"));

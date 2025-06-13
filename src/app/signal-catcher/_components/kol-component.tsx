@@ -2,9 +2,10 @@
 
 import { KolBanner, type KolMenu } from "./kol-banner";
 import { KolList } from "./kol-list";
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { type ServerResult } from "@/lib/server-result";
 import type { SIGNAL_PROVIDER_TYPE } from "@/lib/constants";
+import { WatchItem } from "@/app/signal-catcher/_components/my-followed";
 type Props = {
   getFollowedListAction: () => Promise<ServerResult>;
   addFollowAction: (tweetUid: string) => Promise<ServerResult>;
@@ -61,6 +62,20 @@ export function KolComponent({
           value: "2",
         },
   );
+  const [tableData, setTableData] = useState<WatchItem[]>([]);
+  const [tableDataLoading, setTableDataLoading] = useState<boolean>(false);
+  const getTableData = useCallback(() => {
+    const fetchData = async () => {
+      const response = await getFollowedListAction();
+      setTableData(response.data);
+      console.log(response.data);
+      setTableDataLoading(false);
+    };
+    fetchData();
+  }, [getFollowedListAction]);
+  useEffect(() => {
+    if (kolMenu.value === "2") getTableData();
+  }, [getTableData, kolMenu]);
   return (
     <div className="">
       <KolBanner
@@ -70,11 +85,13 @@ export function KolComponent({
         addFollowAction={addFollowAction}
         isMember={isMember}
         isLogged={isLogged}
+        onAddSuccessAction={() => getTableData()}
       />
       <KolList
         menu={kolMenu}
         getTweetListAction={getTweetListAction}
-        getFollowedListAction={getFollowedListAction}
+        followedList={tableData}
+        followedListLoading={tableDataLoading}
         addFollowAction={addFollowAction}
         removeFollowAction={removeFollowAction}
         getSignalListAction={getSignalListAction}
@@ -84,6 +101,8 @@ export function KolComponent({
         isMember={isMember}
         isLogged={isLogged}
         isMobile={isMobile}
+        onRemoveSuccessAction={() => getTableData()}
+        onAddSuccessAction={() => getTableData()}
       />
     </div>
   );

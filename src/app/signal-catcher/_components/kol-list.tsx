@@ -1,7 +1,10 @@
 "use client";
 
 import { type KolMenu } from "@/app/signal-catcher/_components/kol-banner";
-import { MyFollowed } from "@/app/signal-catcher/_components/my-followed";
+import {
+  MyFollowed,
+  type WatchItem,
+} from "@/app/signal-catcher/_components/my-followed";
 import { KolPoint } from "@/app/signal-catcher/_components/kol-point";
 import { type ServerResult } from "@/lib/server-result";
 import React, { type JSX } from "react";
@@ -9,7 +12,9 @@ import { FeaturedComponent } from "@/app/signal-catcher/_components/featured-com
 import type { SIGNAL_PROVIDER_TYPE } from "@/lib/constants";
 import { MobileBuyBar } from "@/app/signal-catcher/_components/mobile-buy-bar";
 type Props = {
-  getFollowedListAction: () => Promise<ServerResult>;
+  // getFollowedListAction: () => Promise<ServerResult>;
+  followedList: WatchItem[];
+  followedListLoading: boolean;
   addFollowAction: (tweetUid: string) => Promise<ServerResult>;
   removeFollowAction: (tweetUid: string) => Promise<ServerResult>;
   menu: KolMenu;
@@ -38,11 +43,14 @@ type Props = {
   isMember?: boolean | null;
   isLogged: boolean;
   isMobile?: boolean;
+  onRemoveSuccessAction: () => void;
+  onAddSuccessAction: () => void;
 };
 export function KolList({
   menu,
   getTweetListAction,
-  getFollowedListAction,
+  followedList,
+  followedListLoading,
   addFollowAction,
   removeFollowAction,
   getSignalListAction,
@@ -52,6 +60,8 @@ export function KolList({
   isMember,
   isLogged,
   isMobile,
+  onRemoveSuccessAction,
+  onAddSuccessAction,
 }: Props) {
   const componentsMap: Record<string, JSX.Element> = {
     "1": (
@@ -78,15 +88,18 @@ export function KolList({
         addFollowAction={addFollowAction}
         isMember={isMember}
         isLogged={isLogged}
+        onAddSuccessAction={onAddSuccessAction}
       />
     ),
     "3": (
       <MyFollowed
         getTweetListAction={getTweetListAction}
-        getFollowedListAction={getFollowedListAction}
+        followedList={followedList}
+        followedListLoading={followedListLoading}
         removeFollowAction={removeFollowAction}
         isMember={isMember}
         isLogged={isLogged}
+        onRemoveSuccessAction={onRemoveSuccessAction}
       />
     ),
   };

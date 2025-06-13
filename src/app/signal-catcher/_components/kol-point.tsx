@@ -26,6 +26,7 @@ type Props = {
   ) => Promise<ServerResult>;
   isMember?: boolean | null;
   isLogged: boolean;
+  onAddSuccessAction: () => void;
 };
 interface TweetItem extends Omit<TweetInfo, "tweetUser"> {
   tweetUser: TweetUsers & {
@@ -43,6 +44,7 @@ export function KolPoint({
   addFollowAction,
   isMember,
   isLogged,
+  onAddSuccessAction,
 }: Props) {
   const t = useTranslations();
   const [tweetList, setTweetList] = useState<TweetItem[]>([]);
@@ -217,6 +219,7 @@ export function KolPoint({
               addFollowAction={addFollowAction}
               showShare
               onFollowCallback={(id) => {
+                onAddSuccessAction();
                 setTweetList((prev) => {
                   const list = [...prev];
                   const index = list.findIndex(
