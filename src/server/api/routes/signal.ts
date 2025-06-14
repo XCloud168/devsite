@@ -31,17 +31,17 @@ export async function getSignalCategories() {
 }
 
 /**
- * 分页获取信号列表
- * @param page 页码
+ * 使用游标获取信号列表
  * @param filter 过滤条件
+ * @param filter.categoryId 类别ID
  * @param filter.providerType 提供者类型
  * @param filter.entityId 实体ID
  * @param filter.providerId 提供者ID
  * @param filter.signalId 信号ID
+ * @param cursor 游标（上一页最后一条信号的时间）
  * @returns 信号列表
  */
 export async function getSignalsByPaginated(
-  page = 1,
   filter: {
     categoryId: string;
     providerType?: SIGNAL_PROVIDER_TYPE;
@@ -49,6 +49,7 @@ export async function getSignalsByPaginated(
     providerId?: string;
     signalId?: string;
   },
+  cursor?: string,
 ) {
   return withServerResult(async () => {
     let filterTimestamp;
@@ -95,10 +96,12 @@ export async function getSignalsByPaginated(
       conditions.push(eq(signals.entityId, filter.entityId));
     }
 
-    const whereClause = conditions.length > 0 ? and(...conditions) : undefined;
+    // 添加游标条件
+    if (cursor) {
+      conditions.push(sql`${signals.dateCreated} < ${cursor}`);
+    }
 
-    // 并行执行分页查询和计数查询
-    const offset = (page - 1) * ITEMS_PER_PAGE;
+    const whereClause = conditions.length > 0 ? and(...conditions) : undefined;
 
     // 明确列出所有字段，避免类型问题
     const pagedSignals = db.$with("paged_signals").as(
@@ -123,8 +126,7 @@ export async function getSignalsByPaginated(
         .from(signals)
         .where(whereClause)
         .orderBy(sql`signal_time DESC`)
-        .limit(ITEMS_PER_PAGE)
-        .offset(offset),
+        .limit(ITEMS_PER_PAGE),
     );
 
     // 查询 project、category 详情
@@ -476,16 +478,16 @@ export async function getSignalsByPaginated(
     });
 
     const totalCount = countResult[0]?.value ?? 0;
-    const totalPages = Math.ceil(totalCount / ITEMS_PER_PAGE);
+
+    // 获取下一页的游标
+    const nextCursor = items.length > 0 ? items[items.length - 1]?.signalTime?.toISOString() ?? null : null;
 
     return {
       items: itemsWithContent,
       pagination: {
-        currentPage: page,
-        totalPages,
+        nextCursor,
         totalCount,
-        hasNextPage: page < totalPages,
-        hasPrevPage: page > 1,
+        hasNextPage: nextCursor !== null,
       },
     };
   });
