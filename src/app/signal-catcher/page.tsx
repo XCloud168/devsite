@@ -40,15 +40,15 @@ export default async function SignalPage() {
   };
   //获取信号列表
   const getSignalList = async (
-    page: number,
     filter: {
       categoryId: string;
       providerType?: SIGNAL_PROVIDER_TYPE;
       entityId?: string;
     },
+    cursor?: string,
   ) => {
     "use server";
-    return await getSignalsByPaginated(page, filter);
+    return await getSignalsByPaginated(filter, cursor);
   };
   //获取关注列表
   const getFollowedList = async () => {

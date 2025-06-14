@@ -14,12 +14,12 @@ import SwapModal from "@/components/swap/modal";
 
 type Props = {
   getSignalListAction?: (
-    page: number,
     filter: {
       categoryId: string;
       providerType?: SIGNAL_PROVIDER_TYPE;
       entityId?: string;
     },
+    cursor?: string,
   ) => Promise<ServerResult>;
   menuInfo: {
     categoryId: string;
@@ -58,12 +58,12 @@ interface SignalItems extends Signals {
 }
 
 export type FetchSignalListAction = (
-  page: number,
   options: {
     categoryId: string;
     providerType?: SIGNAL_PROVIDER_TYPE;
     entityId?: string;
   },
+  cursor?: string,
 ) => Promise<ServerResult>;
 
 export function FeaturedList({
@@ -73,17 +73,18 @@ export function FeaturedList({
   onFinishFetchAction,
 }: Props) {
   const [signalList, setSignalList] = useState<SignalItems[]>([]);
-  const [hasNext, setHasNext] = useState<boolean>(true);
+  // const [hasNext, setHasNext] = useState<boolean>(true);
   const [pageLoading, setPageLoading] = useState<boolean>(false);
+  const [nextCursor, setNextCursor] = useState<string | undefined>(undefined);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const scrollRef = useRef<HTMLDivElement>(null);
   const fetchSignalList = async (
     refresh: boolean,
-    page: number,
+    cursor: string | undefined,
     categoryId: string,
     setSignalList: SetState<SignalItems[]>,
-    setHasNext: SetState<boolean>,
-    setCurrentPage: SetState<number>,
+    setNextCursor: SetState<string | undefined>,
+    // setCurrentPage: SetState<number>,
     setPageLoading: SetState<boolean>,
     getSignalListAction?: FetchSignalListAction,
     providerType?: SIGNAL_PROVIDER_TYPE,
@@ -94,15 +95,18 @@ export function FeaturedList({
     if (categoryId === "") return;
     if (showPageLoading) setPageLoading(true);
     if (getSignalListAction) {
-      const response = await getSignalListAction(page, {
-        categoryId,
-        ...(providerType !== undefined && { providerType }),
-        ...(entityId !== undefined && { entityId }),
-      });
+      const response = await getSignalListAction(
+        {
+          categoryId,
+          ...(providerType !== undefined && { providerType }),
+          ...(entityId !== undefined && { entityId }),
+        },
+        cursor,
+      );
       setSignalList((prev) =>
         refresh ? response.data.items : prev.concat(response.data.items),
       );
-      setHasNext(response.data.pagination.hasNextPage);
+      setNextCursor(response.data.pagination.nextCursor);
       setCurrentPage(response.data.pagination.currentPage);
       if (showPageLoading) setPageLoading(false);
       if (refresh && onFinish) onFinish();
@@ -114,11 +118,11 @@ export function FeaturedList({
     setCurrentPage(1);
     fetchSignalList(
       true,
-      1,
+      undefined,
       menuInfo.categoryId,
       setSignalList,
-      setHasNext,
-      setCurrentPage,
+      setNextCursor,
+      // setCurrentPage,
       setPageLoading,
       getSignalListAction,
       menuInfo.providerType,
@@ -128,14 +132,14 @@ export function FeaturedList({
   }, [menuInfo]);
 
   const handleNextPage = () => {
-    if (hasNext) {
+    if (nextCursor !== undefined) {
       fetchSignalList(
         false,
-        currentPage + 1,
+        nextCursor,
         menuInfo.categoryId,
         setSignalList,
-        setHasNext,
-        setCurrentPage,
+        setNextCursor,
+        // setCurrentPage,
         setPageLoading,
         getSignalListAction,
         menuInfo.providerType,
@@ -149,7 +153,7 @@ export function FeaturedList({
     const interval = 60 * 1000;
     const checkNewSignals = async () => {
       if (getSignalListAction) {
-        const response = await getSignalListAction(1, {
+        const response = await getSignalListAction({
           categoryId: menuInfo.categoryId,
           ...(menuInfo.providerType !== undefined && {
             providerType: menuInfo.providerType,
@@ -243,7 +247,7 @@ export function FeaturedList({
       )}
       <LoadingMoreBtn
         pageLoading={pageLoading}
-        hasNext={hasNext}
+        hasNext={nextCursor !== undefined}
         onNextAction={handleNextPage}
       />
     </div>

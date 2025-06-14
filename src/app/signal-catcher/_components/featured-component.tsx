@@ -8,12 +8,12 @@ import { type SIGNAL_PROVIDER_TYPE } from "@/lib/constants";
 import { type SignalsCategory } from "@/server/db/schemas/signal";
 type Props = {
   getSignalListAction?: (
-    page: number,
     filter: {
       categoryId: string;
       providerType?: SIGNAL_PROVIDER_TYPE;
       entityId?: string;
     },
+    cursor?: string,
   ) => Promise<ServerResult>;
   getTagListAction?: (id: string) => Promise<ServerResult>;
   getSignalCategoryAction?: () => Promise<ServerResult>;
