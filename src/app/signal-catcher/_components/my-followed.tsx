@@ -123,15 +123,15 @@ export function MyFollowed({
   }, [getTweetListAction]);
   const changeHasContractAddress = (flag: boolean) => {
     setHasContractAddress(flag);
-    fetchTweetList(
-      undefined,
-      flag,
-      setTweetList,
-      setNextCursor,
-      // setCurrentPage,
-      setPageLoading,
-      getTweetListAction,
-    );
+    // fetchTweetList(
+    //   undefined,
+    //   flag,
+    //   setTweetList,
+    //   setNextCursor,
+    //   // setCurrentPage,
+    //   setPageLoading,
+    //   getTweetListAction,
+    // );
   };
   const handleNextPage = () => {
     if (nextCursor) {
@@ -195,6 +195,17 @@ export function MyFollowed({
     fetchData();
   };
   useEffect(() => {
+    console.log(123);
+    fetchTweetList(
+      undefined,
+      hasContractAddress,
+      setTweetList,
+      setNextCursor,
+      // setCurrentPage,
+      setPageLoading,
+      getTweetListAction,
+      false,
+    );
     const interval = 45 * 1000;
     const timer = setInterval(() => {
       fetchTweetList(
@@ -209,9 +220,9 @@ export function MyFollowed({
       );
     }, interval);
     return () => clearInterval(timer);
-  }, [getTweetListAction]);
+  }, [getTweetListAction, hasContractAddress]);
   return (
-    <>
+    <div className="relative h-[calc(100vh-136px)] overflow-y-scroll p-3 scrollbar-thin scrollbar-track-transparent scrollbar-thumb-secondary md:p-5">
       {!showTable ? (
         <div className="p-3 md:p-5">
           <div className="flex gap-3 p-3">
@@ -363,6 +374,6 @@ export function MyFollowed({
           )}
         </div>
       )}
-    </>
+    </div>
   );
 }
