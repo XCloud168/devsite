@@ -11,12 +11,12 @@ type Props = {
   addFollowAction: (tweetUid: string) => Promise<ServerResult>;
   removeFollowAction: (tweetUid: string) => Promise<ServerResult>;
   getTweetListAction: (
-    page: number,
     filter: {
       tweetUid?: string;
       followed?: boolean;
       hasContractAddress?: boolean;
     },
+    cursor?: string,
   ) => Promise<ServerResult>;
   getSignalListAction?: (
     page: number,

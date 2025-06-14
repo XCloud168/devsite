@@ -7,9 +7,9 @@ import { and, count, eq, inArray, isNotNull, sql } from "drizzle-orm";
 import { getUserProfile } from "./auth";
 
 /**
- * 分页获取推特信息
+ * 使用游标获取推特信息
  *
- * @param page 页码
+ * @param cursor 游标（上一页最后一条推文的创建时间）
  * @param filter 过滤条件
  * @param filter.tweetUid 推特uid 筛选某个kol的推文
  * @param filter.followed 是否关注 筛选关注用户的推文
@@ -17,12 +17,12 @@ import { getUserProfile } from "./auth";
  * @returns 推特信息
  */
 export async function getTweetsByPaginated(
-  page = 1,
   filter: {
     tweetUid?: string;
     followed?: boolean;
     hasContractAddress?: boolean;
   },
+  cursor?: string,
 ) {
   return withServerResult(async () => {
     // 构建查询条件
@@ -54,12 +54,16 @@ export async function getTweetsByPaginated(
       conditions.push(sql`json_array_length(${tweetInfo.contractAddress}) > 0`);
     }
 
+    // 添加游标条件
+    if (cursor) {
+      conditions.push(sql`${tweetInfo.tweetCreatedAt} < ${cursor}`);
+    }
+
     const whereClause = conditions.length > 0 ? and(...conditions) : undefined;
 
-    // 并行执行分页查询和计数查询
-    const offset = (page - 1) * ITEMS_PER_PAGE;
+    // 并行执行查询和计数查询
     const [items, countResult] = await Promise.all([
-      // 获取分页数据
+      // 获取数据
       db.query.tweetInfo.findMany({
         where: whereClause,
         with: {
@@ -92,7 +96,6 @@ export async function getTweetsByPaginated(
         },
         orderBy: (tweetInfo, { desc }) => [desc(tweetInfo.tweetCreatedAt)],
         limit: ITEMS_PER_PAGE,
-        offset,
       }),
       // 使用 count() 直接获取总数
       db.select({ value: count() }).from(tweetInfo).where(whereClause),
@@ -101,14 +104,15 @@ export async function getTweetsByPaginated(
     const totalCount = countResult[0]?.value ?? 0;
     const totalPages = Math.ceil(totalCount / ITEMS_PER_PAGE);
 
+    // 获取下一页的游标
+    const nextCursor = items.length > 0 ? items[items.length - 1]?.tweetCreatedAt?.toISOString() ?? null : null;
+
     return {
       items: items,
       pagination: {
-        currentPage: page,
-        totalPages,
+        nextCursor,
         totalCount,
-        hasNextPage: page < totalPages,
-        hasPrevPage: page > 1,
+        hasNextPage: nextCursor !== null,
       },
     };
   });
