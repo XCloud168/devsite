@@ -134,7 +134,7 @@ export default function RealtimeSignal() {
       .subscribe();
 
     const handleNewSignal = async (payload: any) => {
-      const newSignal = await getSignalsByPaginated(1, {
+      const newSignal = await getSignalsByPaginated({
         // @ts-ignore @ts-expect-error
         providerType: payload.new.provider_type,
         // @ts-ignore @ts-expect-error

@@ -19,12 +19,12 @@ type Props = {
     cursor?: string,
   ) => Promise<ServerResult>;
   getSignalListAction?: (
-    page: number,
     filter: {
       categoryId: string;
       providerType?: SIGNAL_PROVIDER_TYPE;
       entityId?: string;
     },
+    cursor?: string,
   ) => Promise<ServerResult>;
   getTagListAction?: (id: string) => Promise<ServerResult>;
   getSignalCategoryAction?: () => Promise<ServerResult>;
