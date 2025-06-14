@@ -211,6 +211,20 @@
       "when": 1748509414144,
       "tag": "0029_steady_iron_fist",
       "breakpoints": true
+    },
+    {
+      "idx": 30,
+      "version": "7",
+      "when": 1749885198804,
+      "tag": "0030_add_watchlist_index",
+      "breakpoints": true
+    },
+    {
+      "idx": 31,
+      "version": "7",
+      "when": 1749890119788,
+      "tag": "0031_add_tweet_info_index",
+      "breakpoints": true
     }
   ]
 }

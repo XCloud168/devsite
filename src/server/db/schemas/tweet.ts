@@ -153,6 +153,10 @@ export const tweetInfo = pgTable(
     index("quoted_tweet_idx").on(table.quotedTweet),
     index("project_and_signal_time_idx").on(table.projectId, table.signalTime),
     index("shilling_idx").on(table.shilling),
+    index("idx_tweet_info_created_at_contract").on(
+      table.tweetCreatedAt.desc(),
+      table.contractAddress
+    ),
   ],
 ).enableRLS();
 
@@ -175,6 +179,7 @@ export const watchlist = pgTable(
   },
   (table) => [
     uniqueIndex("uniq_profile_tweet").on(table.profilesId, table.tweetUser),
+    index("watchlist_tweet_user_idx").on(table.tweetUser),
   ],
 ).enableRLS();
 
