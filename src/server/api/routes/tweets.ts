@@ -68,6 +68,12 @@ export async function getTweetsByPaginated(
         where: whereClause,
         with: {
           tweetUser: {
+            columns: {
+              id: true,
+              screenName: true,
+              name: true,
+              avatar: true,
+            },
             extras: {
               isFollowed: sql<boolean>`EXISTS (
                 SELECT 1

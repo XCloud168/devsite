@@ -1,0 +1,1 @@
+CREATE INDEX "watchlist_tweet_user_idx" ON "site_watchlist" USING btree ("tweet_user");
