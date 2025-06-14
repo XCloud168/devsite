@@ -17,12 +17,12 @@ import { TopLoadingBar } from "@/components/TopLoadingBar";
 type Props = {
   addFollowAction: (tweetUid: string) => Promise<ServerResult>;
   getTweetListAction: (
-    page: number,
     filter: {
       tweetUid?: string;
       followed?: boolean;
       hasContractAddress?: boolean;
     },
+    cursor?: string,
   ) => Promise<ServerResult>;
   isMember?: boolean | null;
   isLogged: boolean;
@@ -48,9 +48,10 @@ export function KolPoint({
 }: Props) {
   const t = useTranslations();
   const [tweetList, setTweetList] = useState<TweetItem[]>([]);
-  const [hasNext, setHasNext] = useState<boolean>(true);
+  // const [hasNext, setHasNext] = useState<boolean>(true);
+  const [nextCursor, setNextCursor] = useState<string | undefined>(undefined);
   const [pageLoading, setPageLoading] = useState<boolean>(false);
-  const [currentPage, setCurrentPage] = useState<number>(1);
+  // const [currentPage, setCurrentPage] = useState<number>(1);
   const [hasContractAddress, setHasContractAddress] = useState<boolean>(false);
   const [newTweets, setNewTweets] = useState<TweetItem[]>([]); // 存储新消息
   const [showNewMessage, setShowNewMessage] = useState<boolean>(false); // 控制提示显示
@@ -66,22 +67,25 @@ export function KolPoint({
     return () => scrollContainer.removeEventListener("scroll", handleScroll);
   }, []);
   const fetchTweetList = async (
-    page: number,
+    cursor: string | undefined,
     hasContractAddress: boolean,
     setTweetList: SetState<TweetItem[]>,
-    setHasNext: SetState<boolean>,
-    setCurrentPage: SetState<number>,
+    setNextCursor: SetState<string | undefined>,
+    // setCurrentPage: SetState<number>,
     setPageLoading: SetState<boolean>,
     getTweetListAction: FetchTweetListAction,
     showPageLoading = true,
   ) => {
     if (showPageLoading) setPageLoading(true);
-    const response = await getTweetListAction(page, {
-      followed: false,
-      hasContractAddress,
-    });
+    const response = await getTweetListAction(
+      {
+        followed: false,
+        hasContractAddress,
+      },
+      cursor,
+    );
     setTweetList((prev) => {
-      if (page === 1) {
+      if (cursor === undefined) {
         return response.data.items;
       } else {
         const existingIds = new Set(prev.map((item) => item.id));
@@ -91,41 +95,41 @@ export function KolPoint({
         return prev.concat(filteredNewItems);
       }
     });
-    setHasNext(response.data.pagination.hasNextPage);
-    setCurrentPage(response.data.pagination.currentPage);
+    setNextCursor(response.data.pagination.nextCursor);
+    // setCurrentPage(response.data.pagination.currentPage);
     if (showPageLoading) setPageLoading(false);
   };
   const changeHasContractAddress = (flag: boolean) => {
     setHasContractAddress(flag);
     fetchTweetList(
-      1,
+      undefined,
       flag,
       setTweetList,
-      setHasNext,
-      setCurrentPage,
+      setNextCursor,
+      // setCurrentPage,
       setPageLoading,
       getTweetListAction,
     );
   };
   useEffect(() => {
     fetchTweetList(
-      1,
+      undefined,
       hasContractAddress,
       setTweetList,
-      setHasNext,
-      setCurrentPage,
+      setNextCursor,
+      // setCurrentPage,
       setPageLoading,
       getTweetListAction,
     );
   }, [getTweetListAction]);
   const handleNextPage = () => {
-    if (hasNext) {
+    if (nextCursor !== undefined) {
       fetchTweetList(
-        currentPage + 1,
+        nextCursor,
         hasContractAddress,
         setTweetList,
-        setHasNext,
-        setCurrentPage,
+        setNextCursor,
+        // setCurrentPage,
         setPageLoading,
         getTweetListAction,
       );
@@ -134,7 +138,7 @@ export function KolPoint({
   useEffect(() => {
     const interval = 45 * 1000;
     const checkNewTweets = async () => {
-      const response = await getTweetListAction(1, {
+      const response = await getTweetListAction({
         followed: false,
         hasContractAddress: hasContractAddress,
       });
@@ -244,7 +248,7 @@ export function KolPoint({
       )}
       <LoadingMoreBtn
         pageLoading={pageLoading}
-        hasNext={hasNext}
+        hasNext={nextCursor !== undefined}
         onNextAction={handleNextPage}
       />
     </div>

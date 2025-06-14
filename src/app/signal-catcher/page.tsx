@@ -28,15 +28,15 @@ import { getUserProfile } from "@/server/api/routes/auth";
 export default async function SignalPage() {
   //获取推特列表
   const getTweetList = async (
-    page: number,
     filter: {
       tweetUid?: string;
       followed?: boolean;
       hasContractAddress?: boolean;
     },
+    cursor?: string,
   ) => {
     "use server";
-    return await getTweetsByPaginated(page, filter);
+    return await getTweetsByPaginated(filter, cursor);
   };
   //获取信号列表
   const getSignalList = async (

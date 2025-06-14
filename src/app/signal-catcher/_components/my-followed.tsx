@@ -35,12 +35,12 @@ type Props = {
   followedListLoading: boolean;
   removeFollowAction: (tweetUid: string) => Promise<ServerResult>;
   getTweetListAction: (
-    page: number,
     filter: {
       tweetUid?: string;
       followed?: boolean;
       hasContractAddress?: boolean;
     },
+    cursor?: string,
   ) => Promise<ServerResult>;
   isMember?: boolean | null;
   isLogged: boolean;
@@ -48,8 +48,8 @@ type Props = {
 };
 
 export type FetchTweetListAction = (
-  page: number,
   options: { followed: boolean; hasContractAddress: boolean },
+  cursor?: string,
 ) => Promise<ServerResult>;
 export type SetState<T> = React.Dispatch<React.SetStateAction<T>>;
 export interface WatchItem extends Omit<Watchlist, "tweetUser"> {
@@ -77,41 +77,46 @@ export function MyFollowed({
   const t = useTranslations();
   const [showTable, setShowTable] = useState(false);
   const [tweetList, setTweetList] = useState<TweetItem[]>([]);
-  const [hasNext, setHasNext] = useState<boolean>(true);
+  const [nextCursor, setNextCursor] = useState<string | undefined>(undefined);
   const [pageLoading, setPageLoading] = useState<boolean>(false);
-  const [currentPage, setCurrentPage] = useState<number>(1);
+  // const [currentPage, setCurrentPage] = useState<number>(1);
   const [hasContractAddress, setHasContractAddress] = useState<boolean>(false);
   // const [tableData, setTableData] = useState<WatchItem[]>([]);
   // const [tableDataLoading, setTableDataLoading] = useState<boolean>(false);
   const fetchTweetList = async (
-    page: number,
+    cursor: string | undefined,
     hasContractAddress: boolean,
     setTweetList: SetState<TweetItem[]>,
-    setHasNext: SetState<boolean>,
-    setCurrentPage: SetState<number>,
+    setNextCursor: SetState<string | undefined>,
+    // setCurrentPage: SetState<number>,
     setPageLoading: SetState<boolean>,
     getTweetListAction: FetchTweetListAction,
     showPageLoading = true,
   ) => {
     if (showPageLoading) setPageLoading(true);
-    const response = await getTweetListAction(page, {
-      followed: true,
-      hasContractAddress,
-    });
-    setTweetList((prev) =>
-      page === 1 ? response.data.items : prev.concat(response.data.items),
+    const response = await getTweetListAction(
+      {
+        followed: true,
+        hasContractAddress,
+      },
+      cursor,
     );
-    setHasNext(response.data.pagination.hasNextPage);
-    setCurrentPage(response.data.pagination.currentPage);
+    setTweetList((prev) =>
+      cursor === undefined
+        ? response.data.items
+        : prev.concat(response.data.items),
+    );
+    setNextCursor(response.data.pagination.nextCursor);
+    // setCurrentPage(response.data.pagination.currentPage);
     if (showPageLoading) setPageLoading(false);
   };
   useEffect(() => {
     fetchTweetList(
-      1,
+      undefined,
       false,
       setTweetList,
-      setHasNext,
-      setCurrentPage,
+      setNextCursor,
+      // setCurrentPage,
       setPageLoading,
       getTweetListAction,
     );
@@ -119,23 +124,23 @@ export function MyFollowed({
   const changeHasContractAddress = (flag: boolean) => {
     setHasContractAddress(flag);
     fetchTweetList(
-      1,
+      undefined,
       flag,
       setTweetList,
-      setHasNext,
-      setCurrentPage,
+      setNextCursor,
+      // setCurrentPage,
       setPageLoading,
       getTweetListAction,
     );
   };
   const handleNextPage = () => {
-    if (hasNext) {
+    if (nextCursor) {
       fetchTweetList(
-        currentPage + 1,
+        nextCursor,
         hasContractAddress,
         setTweetList,
-        setHasNext,
-        setCurrentPage,
+        setNextCursor,
+        // setCurrentPage,
         setPageLoading,
         getTweetListAction,
       );
@@ -150,11 +155,11 @@ export function MyFollowed({
     // fetchData();
     if (!showTable) {
       fetchTweetList(
-        1,
+        undefined,
         hasContractAddress,
         setTweetList,
-        setHasNext,
-        setCurrentPage,
+        setNextCursor,
+        // setCurrentPage,
         setPageLoading,
         getTweetListAction,
       );
@@ -176,11 +181,11 @@ export function MyFollowed({
         if (showTable) return;
         else {
           fetchTweetList(
-            currentPage + 1,
+            nextCursor,
             hasContractAddress,
             setTweetList,
-            setHasNext,
-            setCurrentPage,
+            setNextCursor,
+            // setCurrentPage,
             setPageLoading,
             getTweetListAction,
           );
@@ -193,11 +198,11 @@ export function MyFollowed({
     const interval = 45 * 1000;
     const timer = setInterval(() => {
       fetchTweetList(
-        1,
+        undefined,
         hasContractAddress,
         setTweetList,
-        setHasNext,
-        setCurrentPage,
+        setNextCursor,
+        // setCurrentPage,
         setPageLoading,
         getTweetListAction,
         false,
@@ -290,7 +295,7 @@ export function MyFollowed({
           )}
           <LoadingMoreBtn
             pageLoading={pageLoading}
-            hasNext={hasNext}
+            hasNext={nextCursor !== undefined}
             onNextAction={handleNextPage}
           />
         </div>
