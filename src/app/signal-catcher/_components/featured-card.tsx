@@ -17,6 +17,7 @@ import { CircleAlert, Link as Link2, Share2 } from "lucide-react";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
 import { useState } from "react";
+import ProjectSearch from "@/components/poster/project-search-modal";
 
 type Props = {
   signal: SignalItems;
@@ -353,12 +354,15 @@ export function FeaturedCard({
                       <SwapIcon className="fill-[#1F72E5] dark:fill-[#FFFFA7]" />
                     </div>
                     <p className="text-[#1F72E5] dark:text-[#FFFFA7]">
-                      {" "}
                       {t("signals.signal.quickSwap")}
                     </p>
                   </div>
                 </div>
               ) : null}
+              <div>
+                <p className="mb-2 text-xs opacity-0">&nbsp;</p>
+                <ProjectSearch />
+              </div>
             </div>
             {signal.hitKOLs &&
               signal.hitKOLs.length > 0 &&
