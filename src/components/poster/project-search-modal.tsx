@@ -120,19 +120,28 @@ export default function ProjectSearch({
     //   </div>
     // );
   };
+
   function trimDecimal(value?: string): string {
     if (!value) return "0";
-    const match = /^(\d+)\.(\d+)$/.exec(value);
 
-    if (!match) return value;
+    const num = parseFloat(value);
+    if (isNaN(num)) return value;
 
-    const [, integerPart, decimalPart] = match;
+    const absNum = Math.abs(num);
 
-    if (!decimalPart) return value;
+    let formatted: string;
 
-    return decimalPart.length <= 5
-      ? value
-      : `${integerPart}.${decimalPart.slice(0, 5)}`;
+    if (absNum >= 1_000_000_000) {
+      formatted = (num / 1_000_000_000).toFixed(2).replace(/\.?0+$/, "") + "B";
+    } else if (absNum >= 1_000_000) {
+      formatted = (num / 1_000_000).toFixed(2).replace(/\.?0+$/, "") + "M";
+    } else if (absNum >= 1_000) {
+      formatted = (num / 1_000).toFixed(2).replace(/\.?0+$/, "") + "K";
+    } else {
+      formatted = num.toString();
+    }
+
+    return formatted;
   }
 
   const [isModalOpen, setIsModalOpen] = useState(false);
