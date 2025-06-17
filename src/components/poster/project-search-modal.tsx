@@ -33,7 +33,7 @@ interface ContractInfo {
   pool: string;
   holders: string;
   fdv: string;
-
+  logoUrl: string;
   volume24h: string;
   priceChange5m: string;
   priceChange1h: string;
@@ -50,13 +50,6 @@ export default function ProjectSearch({
   onOpen: () => Promise<ServerResult>;
 }) {
   const t = useTranslations();
-  const getAvatarSrc = () => {
-    if (signal.providerType === "twitter")
-      return signal?.source?.tweetUser?.avatar || "";
-    if (signal.providerType === "news")
-      return signal?.source?.newsEntity?.logo || "";
-    return signal?.source?.exchange?.logo || "";
-  };
   const contractAddresses = signal.project
     ? [
         {
@@ -101,21 +94,31 @@ export default function ProjectSearch({
       toast.error(t("common.failed"));
     }
   };
-  const YesNo = (flag: boolean, color: string) => {
-    if (!flag) {
-      return (
-        <div className="flex items-center gap-1">
-          <p className={`text-xs text-[${color}]`}>{t("common.no")}</p>
-          <CircleX size={14} color={color} />
-        </div>
-      );
-    }
+  const YesNo = (flag: boolean, safe: boolean) => {
     return (
       <div className="flex items-center gap-1">
-        <p className={`text-xs text-[${color}]`}>{t("common.yes")}</p>
-        <CircleCheck size={14} color={color} />
+        <p
+          className="text-xs"
+          style={{
+            color: safe ? "#02DE97E5" : "#FF4E30E5",
+          }}
+        >
+          {flag ? t("common.yes") : t("common.no")}
+        </p>
+        {safe ? (
+          <CircleCheck size={14} color="#02DE97E5" />
+        ) : (
+          <CircleX size={14} color="#FF4E30E5" />
+        )}
       </div>
     );
+
+    // return (
+    //   <div className="flex items-center gap-1">
+    //     <p className={`text-xs text-[${color}]`}>{t("common.yes")}</p>
+    //     <CircleCheck size={14} color={color} />
+    //   </div>
+    // );
   };
   function trimDecimal(value?: string): string {
     if (!value) return "0";
@@ -169,7 +172,7 @@ export default function ProjectSearch({
             </Avatar>
             <div className="absolute bottom-0 right-0 h-5 w-5 rounded-full ring-1 ring-blue-300">
               <Avatar className="h-5 w-5">
-                <AvatarImage src={getAvatarSrc()} />
+                <AvatarImage src={currentData?.logoUrl} />
                 <AvatarFallback></AvatarFallback>
               </Avatar>
             </div>
@@ -263,14 +266,19 @@ export default function ProjectSearch({
               <p className="text-xs text-white/60">
                 {t("signals.project.mention")}：
               </p>
-              {!pageLoading ? YesNo(signal.times === "1", "#02DE97E5") : null}
+              {!pageLoading
+                ? YesNo(signal.times === "1", signal.times === "1")
+                : null}
             </div>
             <div className="flex">
               <p className="text-xs text-white/60">
                 {t("signals.project.honeypot")}：
               </p>
               {!pageLoading
-                ? YesNo(currentData?.isHoneypot ?? false, "#02DE97E5")
+                ? YesNo(
+                    !currentData?.isHoneypot,
+                    currentData?.isHoneypot ?? false,
+                  )
                 : null}
             </div>
             <div className="flex">
@@ -281,7 +289,8 @@ export default function ProjectSearch({
                 ? YesNo(
                     Boolean(currentData?.priceChange24h) &&
                       parseFloat(currentData?.priceChange24h ?? "0") > 50,
-                    "#FF4E30E5",
+                    Boolean(currentData?.priceChange24h) &&
+                      parseFloat(currentData?.priceChange24h ?? "0") > 50,
                   )
                 : null}
               {Boolean(currentData?.priceChange24h) &&
