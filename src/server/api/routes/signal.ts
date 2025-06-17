@@ -712,3 +712,49 @@ export async function getTagStatistics(
     return tags;
   });
 }
+
+/**
+ * 获取合约信息
+ * @param contractAddress 合约地址
+ * @returns 合约详细信息
+ */
+export async function getContractInfo(contractAddress: string) {
+  return withServerResult(async () => {
+    const response = await fetch(
+      `https://backendapi.masbate.xyz/api/v1/token_info/${contractAddress}`,
+      {
+        headers: {
+          'x-access-token': '1bc825ec-bg5t6ygr6y-a22e6d07-bd1b9',
+          'Content-Type': 'application/json',
+        },
+        // 添加30秒超时
+        signal: AbortSignal.timeout(30000),
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error('获取合约信息失败');
+    }
+
+    const data = await response.json();
+    return {
+      symbol: data.symbol,
+      contractAddress: data.contract_address,
+      currentPrice: data.current_price,
+      marketCap: data.market_cap,
+      totalLiquidity: data.total_liquidity,
+      totalSupply: data.total_supply,
+      maxSupply: data.max_supply,
+      pool: data.pool,
+      holders: data.holders,
+      fdv: data.fdv,
+      volume24h: data.volume_24h,
+      priceChange5m: data.price_change_5m,
+      priceChange1h: data.price_change_1h,
+      priceChange6h: data.price_change_6h,
+      priceChange24h: data.price_change_24h,
+      isHoneypot: data.is_honeypot,
+      logoUrl: data.logo_url,
+    };
+  });
+}
