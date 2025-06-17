@@ -45,6 +45,7 @@ type Props = {
   isMobile?: boolean;
   onRemoveSuccessAction: () => void;
   onAddSuccessAction: () => void;
+  getContractInfoAction: (contractAddress: string) => Promise<ServerResult>;
 };
 export function KolList({
   menu,
@@ -62,6 +63,7 @@ export function KolList({
   isMobile,
   onRemoveSuccessAction,
   onAddSuccessAction,
+  getContractInfoAction,
 }: Props) {
   const componentsMap: Record<string, JSX.Element> = {
     "1": (
@@ -72,6 +74,7 @@ export function KolList({
           getSignalCategoryAction={getSignalCategoryAction}
           getTagDataAction={getTagDataAction}
           isMobile={isMobile}
+          getContractInfoAction={getContractInfoAction}
         />
         {(!isLogged || !isMember) && (
           <MobileBuyBar

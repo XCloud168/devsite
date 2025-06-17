@@ -117,6 +117,7 @@ export default async function SignalPage() {
           isMobile={isMobile}
           isMember={isMember}
           isLogged={!!user}
+          getContractInfoAction={getContractInfo}
         />
       </>
     );
@@ -134,6 +135,7 @@ export default async function SignalPage() {
               searchTweetUserAction={searchTweetUser}
               isMember={isMember}
               isLogged={!!user}
+              getContractInfoAction={getContractInfo}
             />
           </div>
         </ResizablePanel>
