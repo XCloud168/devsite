@@ -751,7 +751,7 @@ export async function getContractInfo(contractAddress: string) {
       volume24h: data.volume_24h,
       priceChange5m: data.price_change_5m,
       priceChange1h: data.price_change_1h,
-      priceChange6h: data.price_change_6h,
+      priceChange4h: data.price_change_4h,
       priceChange24h: data.price_change_24h,
       isHoneypot: data.is_honeypot,
       logoUrl: data.logo_url,
