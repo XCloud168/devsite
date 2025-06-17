@@ -755,6 +755,7 @@ export async function getContractInfo(contractAddress: string) {
       priceChange24h: data.price_change_24h,
       isHoneypot: data.is_honeypot,
       logoUrl: data.logo_url,
+      chainLogoUrl: data.chain_logo_url,
     };
   });
 }
