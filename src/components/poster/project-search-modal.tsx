@@ -33,13 +33,13 @@ interface ContractInfo {
   pool: string;
   holders: string;
   fdv: string;
-  logoUrl: string;
+  chainLogoUrl: string;
   volume24h: string;
-  priceChange5m: string;
-  priceChange1h: string;
-  priceChange4h: string;
-  priceChange24h: string;
-  isHoneypot: boolean;
+  priceChange5m: number;
+  priceChange1h: number;
+  priceChange4h: number;
+  priceChange24h: number;
+  isHoneypot: boolean | string;
 }
 
 export default function ProjectSearch({
@@ -181,7 +181,7 @@ export default function ProjectSearch({
             </Avatar>
             <div className="absolute bottom-0 right-0 h-5 w-5 rounded-full ring-1 ring-blue-300">
               <Avatar className="h-5 w-5">
-                <AvatarImage src={currentData?.logoUrl} />
+                <AvatarImage src={currentData?.chainLogoUrl} />
                 <AvatarFallback></AvatarFallback>
               </Avatar>
             </div>
@@ -209,35 +209,39 @@ export default function ProjectSearch({
           </div>
         </div>
         <div className="grid grid-cols-2 gap-2">
-          <div className="flex items-center justify-between rounded-lg bg-[#1E2128] p-2">
+          <div className="flex items-center justify-between rounded-xl bg-[#1E212899] p-2">
             <p className="text-xs text-white/60">{t("signals.project.cap")}</p>
-            <p>{pageLoading ? "--" : trimDecimal(currentData?.marketCap)}</p>
+            <p className="text-[#FFE030]">
+              {pageLoading ? "--" : trimDecimal(currentData?.marketCap)}
+            </p>
           </div>
-          <div className="flex items-center justify-between rounded-lg bg-[#1E2128] p-2">
+          <div className="flex items-center justify-between rounded-xl bg-[#1E212899] p-2">
             <p className="text-xs text-white/60">
               {t("signals.project.liquidity")}
             </p>
-            <p>
+            <p className="text-[#FFE030]">
               {pageLoading ? "--" : trimDecimal(currentData?.totalLiquidity)}
             </p>
           </div>
-          <div className="flex items-center justify-between rounded-lg bg-[#1E2128] p-2">
+          <div className="flex items-center justify-between rounded-xl bg-[#1E212899] p-2">
             <p className="text-xs text-white/60">
               {t("signals.project.supply")}
             </p>
             <p>{pageLoading ? "--" : trimDecimal(currentData?.totalSupply)}</p>
           </div>
-          <div className="flex items-center justify-between rounded-lg bg-[#1E2128] p-2">
+          <div className="flex items-center justify-between rounded-xl bg-[#1E212899] p-2">
             <p className="text-xs text-white/60">
               {t("signals.project.holders")}
             </p>
-            <p>{pageLoading ? "--" : trimDecimal(currentData?.holders)}</p>
+            <p className="text-[#FFE030]">
+              {pageLoading ? "--" : trimDecimal(currentData?.holders)}
+            </p>
           </div>
-          <div className="flex items-center justify-between rounded-lg bg-[#1E2128] p-2">
+          <div className="flex items-center justify-between rounded-xl bg-[#1E212899] p-2">
             <p className="text-xs text-white/60">FDV</p>
-            <p>{pageLoading ? "--" : currentData?.fdv}</p>
+            <p>{pageLoading ? "--" : trimDecimal(currentData?.fdv)}</p>
           </div>
-          <div className="flex items-center justify-between rounded-lg bg-[#1E2128] p-2">
+          <div className="flex items-center justify-between rounded-xl bg-[#1E212899] p-2">
             <p className="text-xs text-white/60">
               {t("signals.project.24hVol")}
             </p>
@@ -247,22 +251,62 @@ export default function ProjectSearch({
         <div className="grid grid-cols-4">
           <div className="flex flex-col">
             <p className="text-xs text-white/60">{t("signals.project.5min")}</p>
-            <p>{pageLoading ? "--" : currentData?.priceChange5m + "%"}</p>
+            <p
+              className={
+                currentData?.priceChange5m
+                  ? currentData?.priceChange5m > 0
+                    ? "text-[#02DE97]"
+                    : "text-[#FF4E30]"
+                  : "text-[#fff]"
+              }
+            >
+              {pageLoading ? "--" : currentData?.priceChange5m + "%"}
+            </p>
           </div>
           <div className="flex flex-col">
             <p className="text-xs text-white/60">{t("signals.project.1h")}</p>
-            <p>{pageLoading ? "--" : currentData?.priceChange1h + "%"}</p>
+            <p
+              className={
+                currentData?.priceChange1h
+                  ? currentData?.priceChange1h > 0
+                    ? "text-[#02DE97]"
+                    : "text-[#FF4E30]"
+                  : "text-[#fff]"
+              }
+            >
+              {pageLoading ? "--" : currentData?.priceChange1h + "%"}
+            </p>
           </div>
           <div className="flex flex-col">
             <p className="text-xs text-white/60">{t("signals.project.6h")}</p>
-            <p>{pageLoading ? "--" : currentData?.priceChange4h + "%"}</p>
+            <p
+              className={
+                currentData?.priceChange4h
+                  ? currentData?.priceChange4h > 0
+                    ? "text-[#02DE97]"
+                    : "text-[#FF4E30]"
+                  : "text-[#fff]"
+              }
+            >
+              {pageLoading ? "--" : currentData?.priceChange4h + "%"}
+            </p>
           </div>
           <div className="flex flex-col">
             <p className="text-xs text-white/60">{t("signals.project.24h")}</p>
-            <p>{pageLoading ? "--" : currentData?.priceChange24h + "%"}</p>
+            <p
+              className={
+                currentData?.priceChange24h
+                  ? currentData?.priceChange24h > 0
+                    ? "text-[#02DE97]"
+                    : "text-[#FF4E30]"
+                  : "text-[#fff]"
+              }
+            >
+              {pageLoading ? "--" : currentData?.priceChange24h + "%"}
+            </p>
           </div>
         </div>
-        <div className="space-y-1">
+        <div className="space-y-[1px]">
           <div className="flex w-full items-center gap-1 rounded-t-lg bg-[#1E2128] px-3 py-2">
             <TriangleAlert size={14} color="#FFE030" />
             <p className="text-xs text-[#FFE030]">
@@ -275,39 +319,71 @@ export default function ProjectSearch({
               <p className="text-xs text-white/60">
                 {t("signals.project.mention")}：
               </p>
-              {!pageLoading
-                ? YesNo(signal.times === "1", signal.times === "1")
-                : null}
+              {!pageLoading ? (
+                signal.times === "1" ? (
+                  <div className="flex items-center gap-1">
+                    <p className="text-xs text-[#FF4E30E5]">
+                      {t("common.yes")}
+                    </p>
+
+                    <CircleCheck size={14} color="#FF4E30E5" />
+                  </div>
+                ) : (
+                  <div className="flex items-center gap-1">
+                    <p className="text-xs text-[#02DE97E5]">{t("common.no")}</p>
+                    <CircleX size={14} color="#02DE97E5" />
+                  </div>
+                )
+              ) : null}
             </div>
             <div className="flex">
               <p className="text-xs text-white/60">
                 {t("signals.project.honeypot")}：
               </p>
-              {!pageLoading
-                ? YesNo(
-                    !currentData?.isHoneypot,
-                    currentData?.isHoneypot ?? false,
-                  )
-                : null}
+              {!pageLoading ? (
+                currentData?.isHoneypot && currentData?.isHoneypot === "?" ? (
+                  "?"
+                ) : currentData?.isHoneypot ? (
+                  <div className="flex items-center gap-1">
+                    <p className="text-xs text-[#FF4E30E5]">
+                      {t("common.yes")}
+                    </p>
+                    <CircleCheck size={14} color="#FF4E30E5" />
+                  </div>
+                ) : (
+                  <div className="flex items-center gap-1">
+                    <p className="text-xs text-[#02DE97E5]">{t("common.no")}</p>
+                    <CircleX size={14} color="#02DE97E5" />
+                  </div>
+                )
+              ) : null}
             </div>
             <div className="flex">
               <p className="text-xs text-white/60">
                 {t("signals.project.risk")}：
               </p>
-              {!pageLoading
-                ? YesNo(
-                    Boolean(currentData?.priceChange24h) &&
-                      parseFloat(currentData?.priceChange24h ?? "0") > 50,
-                    Boolean(currentData?.priceChange24h) &&
-                      parseFloat(currentData?.priceChange24h ?? "0") > 50,
-                  )
-                : null}
-              {Boolean(currentData?.priceChange24h) &&
-                parseFloat(currentData?.priceChange24h ?? "0") > 50 && (
-                  <p className="ml-2 text-xs text-[#FF4E30]">
-                    {t("signals.project.24h")}：{currentData?.priceChange24h}
-                  </p>
-                )}
+              {!pageLoading ? (
+                currentData?.priceChange24h !== undefined &&
+                currentData?.priceChange24h <= 50 ? (
+                  <div className="flex items-center gap-1">
+                    <p className="text-xs text-[#02DE97E5]">{t("common.no")}</p>
+                    <CircleCheck size={14} color="#02DE97E5" />
+                  </div>
+                ) : (
+                  <div className="flex items-center gap-1">
+                    <p className="text-xs text-[#FF4E30E5]">
+                      {t("common.yes")}
+                    </p>
+                    <CircleX size={14} color="#FF4E30E5" />
+                  </div>
+                )
+              ) : null}
+              {currentData?.priceChange24h &&
+              currentData?.priceChange24h > 50 ? (
+                <p className="ml-2 text-xs text-[#FF4E30]">
+                  {t("signals.project.24h")}：{currentData?.priceChange24h}123
+                </p>
+              ) : null}
             </div>
           </div>
         </div>
