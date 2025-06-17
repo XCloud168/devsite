@@ -37,7 +37,7 @@ interface ContractInfo {
   volume24h: string;
   priceChange5m: string;
   priceChange1h: string;
-  priceChange6h: string;
+  priceChange4h: string;
   priceChange24h: string;
   isHoneypot: boolean;
 }
@@ -246,7 +246,7 @@ export default function ProjectSearch({
           </div>
           <div className="flex flex-col">
             <p className="text-xs text-white/60">{t("signals.project.6h")}</p>
-            <p>{pageLoading ? "--" : currentData?.priceChange6h + "%"}</p>
+            <p>{pageLoading ? "--" : currentData?.priceChange4h + "%"}</p>
           </div>
           <div className="flex flex-col">
             <p className="text-xs text-white/60">{t("signals.project.24h")}</p>
