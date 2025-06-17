@@ -216,6 +216,7 @@ export default function RealtimeSignal() {
                 signal={currentSignal}
                 tokenItemWidth="w-fit"
                 showShare={false}
+                showSearch={false}
               />
             )}
           </div>

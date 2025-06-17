@@ -28,6 +28,7 @@ type Props = {
   };
   isMobile?: boolean;
   onFinishFetchAction: () => void;
+  getContractInfoAction: (contractAddress: string) => Promise<ServerResult>;
 };
 interface SignalItems extends Signals {
   source: TweetInfo & {
@@ -71,12 +72,13 @@ export function FeaturedList({
   menuInfo,
   isMobile,
   onFinishFetchAction,
+  getContractInfoAction,
 }: Props) {
   const [signalList, setSignalList] = useState<SignalItems[]>([]);
   // const [hasNext, setHasNext] = useState<boolean>(true);
   const [pageLoading, setPageLoading] = useState<boolean>(false);
   const [nextCursor, setNextCursor] = useState<string | undefined>(undefined);
-  const [currentPage, setCurrentPage] = useState<number>(1);
+  // const [currentPage, setCurrentPage] = useState<number>(1);
   const scrollRef = useRef<HTMLDivElement>(null);
   const fetchSignalList = async (
     refresh: boolean,
@@ -107,7 +109,7 @@ export function FeaturedList({
         refresh ? response.data.items : prev.concat(response.data.items),
       );
       setNextCursor(response.data.pagination.nextCursor);
-      setCurrentPage(response.data.pagination.currentPage);
+      // setCurrentPage(response.data.pagination.currentPage);
       if (showPageLoading) setPageLoading(false);
       if (refresh && onFinish) onFinish();
     }
@@ -115,7 +117,7 @@ export function FeaturedList({
 
   useEffect(() => {
     setSignalList([]);
-    setCurrentPage(1);
+    // setCurrentPage(1);
     fetchSignalList(
       true,
       undefined,
@@ -227,6 +229,7 @@ export function FeaturedList({
       ) : (
         signalList.map((signal) => (
           <FeaturedCard
+            getContractInfoAction={getContractInfoAction}
             signal={signal}
             key={signal.id}
             onSwap={(open, payload) => {

@@ -17,6 +17,8 @@ import { CircleAlert, Link as Link2, Share2 } from "lucide-react";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
 import { useState } from "react";
+import ProjectSearch from "@/components/poster/project-search-modal";
+import type { ServerResult } from "@/lib/server-result";
 
 type Props = {
   signal: SignalItems;
@@ -30,6 +32,8 @@ type Props = {
       chainId?: string | null;
     },
   ) => void;
+  getContractInfoAction?: (contractAddress: string) => Promise<ServerResult>;
+  showSearch?: boolean;
 };
 export interface SignalItems extends Signals {
   source: TweetInfo & {
@@ -76,6 +80,8 @@ export function FeaturedCard({
   showShare = true,
   tokenItemWidth = "w-auto",
   onSwap,
+  getContractInfoAction,
+  showSearch = true,
 }: Props) {
   const t = useTranslations();
   const [translatedContent, setTranslatedContent] = useState<string | null>(
@@ -261,13 +267,13 @@ export function FeaturedCard({
                 ) : (
                   <p className="font-bold">{signal.project.symbol}</p>
                 )}
-                {signal.times === "1" && (
-                  <div className="rounded-full bg-[#F4B31C] text-black">
-                    <p className="scale-75 text-xs">
-                      {t("signals.signal.firstMention")}
-                    </p>
-                  </div>
-                )}
+                {/*{signal.times === "1" && (*/}
+                {/*  <div className="rounded-full bg-[#F4B31C] text-black">*/}
+                {/*    <p className="scale-75 text-xs">*/}
+                {/*      {t("signals.signal.firstMention")}*/}
+                {/*    </p>*/}
+                {/*  </div>*/}
+                {/*)}*/}
                 {parseInt(signal.times) >= 3 && (
                   <div className="rounded-full bg-primary text-black">
                     <p className="scale-75 text-xs">
@@ -359,6 +365,25 @@ export function FeaturedCard({
                   </div>
                 </div>
               ) : null}
+              <div className="">
+                <p className="mb-2 text-xs opacity-0">&nbsp;</p>
+                {showSearch && (
+                  <ProjectSearch
+                    signal={signal}
+                    onOpen={() => {
+                      if (
+                        getContractInfoAction &&
+                        contractAddresses &&
+                        contractAddresses.length > 0
+                      )
+                        return getContractInfoAction(
+                          contractAddresses[0]?.address ?? "",
+                        );
+                      return new Promise<ServerResult>(() => null);
+                    }}
+                  />
+                )}
+              </div>
             </div>
             {signal.hitKOLs &&
               signal.hitKOLs.length > 0 &&
@@ -447,18 +472,16 @@ export function FeaturedCard({
                           </div>
                         </div>
                       </div>
-                      <div className="flex items-center gap-2">
-                        <p className="text-lg font-bold text-white">
-                          {signal.project.symbol}
-                        </p>
-                        {signal.times === "0" && (
-                          <div className="rounded-full bg-[#F4B31C] text-black">
-                            <p className="scale-75 text-xs">
-                              {t("signals.signal.firstMention")}
-                            </p>
-                          </div>
-                        )}
-                      </div>
+                      {/*<div className="flex items-center gap-2">*/}
+                      {/*  <p className="text-lg font-bold text-white"></p>*/}
+                      {/*  {signal.times === "1" && (*/}
+                      {/*    <div className="rounded-full bg-[#F4B31C] text-black">*/}
+                      {/*      <p className="scale-75 text-xs">*/}
+                      {/*        {t("signals.signal.firstMention")}*/}
+                      {/*      </p>*/}
+                      {/*    </div>*/}
+                      {/*  )}*/}
+                      {/*</div>*/}
                     </div>
 
                     <div className="mt-3 flex gap-10">

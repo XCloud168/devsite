@@ -23,6 +23,7 @@ type Props = {
   ) => Promise<ServerResult>;
   isMember?: boolean | null;
   isMobile?: boolean;
+  getContractInfoAction: (contractAddress: string) => Promise<ServerResult>;
 };
 export function FeaturedComponent({
   getSignalListAction,
@@ -31,6 +32,7 @@ export function FeaturedComponent({
   getTagDataAction,
   isMember,
   isMobile,
+  getContractInfoAction,
 }: Props) {
   const [menuInfo, setMenuInfo] = useState<{
     categoryId: string;
@@ -100,6 +102,7 @@ export function FeaturedComponent({
         menuInfo={menuInfo}
         getSignalListAction={getSignalListAction}
         isMobile={isMobile}
+        getContractInfoAction={getContractInfoAction}
       />
     </div>
   );
