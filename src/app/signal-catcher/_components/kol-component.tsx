@@ -36,6 +36,7 @@ type Props = {
   searchTweetUserAction: (name: string) => Promise<ServerResult>;
   isMember?: boolean | null;
   isLogged: boolean;
+  getContractInfoAction: (contractAddress: string) => Promise<ServerResult>;
 };
 export function KolComponent({
   getTweetListAction,
@@ -50,6 +51,7 @@ export function KolComponent({
   searchTweetUserAction,
   isMember,
   isLogged,
+  getContractInfoAction,
 }: Props) {
   const [kolMenu, setKolMenu] = useState<KolMenu>(
     isMobile
@@ -103,6 +105,7 @@ export function KolComponent({
         isMobile={isMobile}
         onRemoveSuccessAction={() => getTableData()}
         onAddSuccessAction={() => getTableData()}
+        getContractInfoAction={getContractInfoAction}
       />
     </div>
   );

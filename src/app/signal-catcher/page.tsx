@@ -16,6 +16,7 @@ import {
   getSignalsByPaginated,
   getSignalEntitiesByCategory,
   getTagStatistics,
+  getContractInfo as getContract,
 } from "@/server/api/routes/signal";
 
 import { FeaturedComponent } from "@/app/signal-catcher/_components/featured-component";
@@ -85,7 +86,11 @@ export default async function SignalPage() {
     "use server";
     return await getTweetUserByScreenName(name);
   };
-
+  //获取合约信息
+  const getContractInfo = async (contractAddress: string) => {
+    "use server";
+    return await getContract(contractAddress);
+  };
   const headersList = await headers();
   const userAgent = headersList.get("user-agent") || "";
   const { device } = UAParser(userAgent);
@@ -112,6 +117,7 @@ export default async function SignalPage() {
           isMobile={isMobile}
           isMember={isMember}
           isLogged={!!user}
+          getContractInfoAction={getContractInfo}
         />
       </>
     );
@@ -129,6 +135,7 @@ export default async function SignalPage() {
               searchTweetUserAction={searchTweetUser}
               isMember={isMember}
               isLogged={!!user}
+              getContractInfoAction={getContractInfo}
             />
           </div>
         </ResizablePanel>
@@ -148,6 +155,7 @@ export default async function SignalPage() {
               getTagDataAction={getTagData}
               isMember={isMember}
               isMobile={isMobile}
+              getContractInfoAction={getContractInfo}
             />
             <div className="fixed bottom-0 z-[1] h-[438px] w-full bg-[url(/images/signal/featured-bg.svg)] bg-contain bg-no-repeat"></div>
           </div>

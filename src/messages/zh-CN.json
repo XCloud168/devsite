@@ -40,7 +40,10 @@
         "saveImage": "保存图片",
         "search": "搜索",
         "more": "更多",
-        "detail": "详情"
+        "detail": "详情",
+        "yes": "是",
+        "no": "否",
+        "close": "关闭"
     },
     "Error": {
         "pageNotFound": "页面未找到",
@@ -314,6 +317,24 @@
         }
     },
     "signals": {
+        "project": {
+            "tokenIntel": "项目快查",
+            "ca": "合约地址",
+            "cap": "市值",
+            "liquidity": "流动性",
+            "holders": "持有人数",
+            "supply": "总供应量",
+            "24hVol": "24h成交额",
+            "5min": "5分钟涨幅",
+            "1h": "1小时涨幅",
+            "6h": "6小时涨幅",
+            "24h": "24小时涨幅",
+            "alert": "预警",
+            "mention": "首次提及",
+            "honeypot": "貔貅",
+            "risk": "高风险",
+            "24gains": "24h 涨幅已超过"
+        },
         "newSignalNotification": "新信号通知",
         "close": "关闭",
         "previous": "上一条",
