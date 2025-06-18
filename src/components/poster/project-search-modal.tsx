@@ -163,7 +163,7 @@ export default function ProjectSearch({
           <div className="">
             <div className="flex items-center gap-2">
               <p className="text-lg text-[#FFE030]">{signal.project.symbol}</p>
-              <p className="text-lg">{signal.project.priceSource}</p>
+              <p className="text-lg">{currentData?.currentPrice}</p>
             </div>
             <div className="flex items-center gap-2">
               <p className="text-sm">{t("signals.project.ca")}：</p>
