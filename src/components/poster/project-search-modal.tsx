@@ -94,32 +94,6 @@ export default function ProjectSearch({
       toast.error(t("common.failed"));
     }
   };
-  const YesNo = (flag: boolean, safe: boolean) => {
-    return (
-      <div className="flex items-center gap-1">
-        <p
-          className="text-xs"
-          style={{
-            color: safe ? "#02DE97E5" : "#FF4E30E5",
-          }}
-        >
-          {flag ? t("common.yes") : t("common.no")}
-        </p>
-        {safe ? (
-          <CircleCheck size={14} color="#02DE97E5" />
-        ) : (
-          <CircleX size={14} color="#FF4E30E5" />
-        )}
-      </div>
-    );
-
-    // return (
-    //   <div className="flex items-center gap-1">
-    //     <p className={`text-xs text-[${color}]`}>{t("common.yes")}</p>
-    //     <CircleCheck size={14} color={color} />
-    //   </div>
-    // );
-  };
 
   function trimDecimal(value?: string): string {
     if (!value) return "0";
@@ -342,7 +316,7 @@ export default function ProjectSearch({
               </p>
               {!pageLoading ? (
                 currentData?.isHoneypot && currentData?.isHoneypot === "?" ? (
-                  "?"
+                  <p className="text-xs">unknown ?</p>
                 ) : currentData?.isHoneypot ? (
                   <div className="flex items-center gap-1">
                     <p className="text-xs text-[#FF4E30E5]">

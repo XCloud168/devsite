@@ -70,7 +70,6 @@ export function KolComponent({
     const fetchData = async () => {
       const response = await getFollowedListAction();
       setTableData(response.data);
-      console.log(response.data);
       setTableDataLoading(false);
     };
     fetchData();
