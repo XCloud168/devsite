@@ -195,7 +195,6 @@ export function MyFollowed({
     fetchData();
   };
   useEffect(() => {
-    console.log(123);
     fetchTweetList(
       undefined,
       hasContractAddress,
