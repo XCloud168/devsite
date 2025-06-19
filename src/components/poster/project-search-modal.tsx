@@ -344,49 +344,55 @@ export default function ProjectSearch({
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-2 rounded-b-lg bg-[#1E2128] px-3 py-2">
-            <div className="flex">
-              <p className="text-xs text-white/60">
-                {t("signals.project.mention")}：
-              </p>
-              {!pageLoading ? (
-                signal.times === "1" ? (
-                  <div className="flex items-center gap-1">
-                    <p className="text-xs text-[#FF4E30E5]">
-                      {t("common.yes")}
-                    </p>
+          <div className="space-y-2 rounded-b-lg bg-[#1E2128] px-3 py-2">
+            <div className="grid grid-cols-2 gap-2">
+              <div className="flex">
+                <p className="text-xs text-white/60">
+                  {t("signals.project.mention")}：
+                </p>
+                {!pageLoading ? (
+                  signal.times === "1" ? (
+                    <div className="flex items-center gap-1">
+                      <p className="text-xs text-[#FF4E30E5]">
+                        {t("common.yes")}
+                      </p>
 
-                    <CircleCheck size={14} color="#FF4E30E5" />
-                  </div>
-                ) : (
-                  <div className="flex items-center gap-1">
-                    <p className="text-xs text-[#02DE97E5]">{t("common.no")}</p>
-                    <CircleX size={14} color="#02DE97E5" />
-                  </div>
-                )
-              ) : null}
-            </div>
-            <div className="flex">
-              <p className="text-xs text-white/60">
-                {t("signals.project.honeypot")}：
-              </p>
-              {!pageLoading ? (
-                currentData?.isHoneypot && currentData?.isHoneypot === "?" ? (
-                  <p className="text-xs">unknown ?</p>
-                ) : currentData?.isHoneypot ? (
-                  <div className="flex items-center gap-1">
-                    <p className="text-xs text-[#FF4E30E5]">
-                      {t("common.yes")}
-                    </p>
-                    <CircleCheck size={14} color="#FF4E30E5" />
-                  </div>
-                ) : (
-                  <div className="flex items-center gap-1">
-                    <p className="text-xs text-[#02DE97E5]">{t("common.no")}</p>
-                    <CircleX size={14} color="#02DE97E5" />
-                  </div>
-                )
-              ) : null}
+                      <CircleCheck size={14} color="#FF4E30E5" />
+                    </div>
+                  ) : (
+                    <div className="flex items-center gap-1">
+                      <p className="text-xs text-[#02DE97E5]">
+                        {t("common.no")}
+                      </p>
+                      <CircleX size={14} color="#02DE97E5" />
+                    </div>
+                  )
+                ) : null}
+              </div>
+              <div className="flex">
+                <p className="text-xs text-white/60">
+                  {t("signals.project.honeypot")}：
+                </p>
+                {!pageLoading ? (
+                  currentData?.isHoneypot && currentData?.isHoneypot === "?" ? (
+                    <p className="text-xs">unknown ?</p>
+                  ) : currentData?.isHoneypot ? (
+                    <div className="flex items-center gap-1">
+                      <p className="text-xs text-[#FF4E30E5]">
+                        {t("common.yes")}
+                      </p>
+                      <CircleCheck size={14} color="#FF4E30E5" />
+                    </div>
+                  ) : (
+                    <div className="flex items-center gap-1">
+                      <p className="text-xs text-[#02DE97E5]">
+                        {t("common.no")}
+                      </p>
+                      <CircleX size={14} color="#02DE97E5" />
+                    </div>
+                  )
+                ) : null}
+              </div>
             </div>
             <div className="flex">
               <p className="text-xs text-white/60">
