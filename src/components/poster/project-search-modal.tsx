@@ -411,7 +411,8 @@ export default function ProjectSearch({
               {currentData?.priceChange24h &&
               currentData?.priceChange24h > 50 ? (
                 <p className="ml-2 text-xs text-[#FF4E30]">
-                  {t("signals.project.24h")}：{currentData?.priceChange24h}%
+                  {t("signals.project.24hGains")}：{currentData?.priceChange24h}
+                  %
                 </p>
               ) : null}
             </div>

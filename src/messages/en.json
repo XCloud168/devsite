@@ -318,6 +318,7 @@
     },
     "signals": {
         "project": {
+            "24hGains": "24h gains hit",
             "launchDate": "Token Launch Date",
             "tokenIntel": "Token Intel",
             "ca": "CA",
