@@ -318,6 +318,7 @@
     },
     "signals": {
         "project": {
+            "launchDate": "Token Launch Date",
             "tokenIntel": "Token Intel",
             "ca": "CA",
             "cap": "Mkt Cap",

@@ -7,7 +7,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 
-import React, { useState } from "react";
+import React, { type ReactNode, useState } from "react";
 
 import { useTranslations } from "next-intl";
 import {
@@ -40,6 +40,7 @@ interface ContractInfo {
   priceChange4h: number;
   priceChange24h: number;
   isHoneypot: boolean | string;
+  days: number;
 }
 
 export default function ProjectSearch({
@@ -118,6 +119,45 @@ export default function ProjectSearch({
     return formatted;
   }
 
+  function formatSmartDecimal(input: number | string): ReactNode {
+    const str = typeof input === "number" ? input.toString() : input;
+
+    const leadingZeroMatch = /^0\.0*(\d+)/.exec(str);
+    const leadingZeros = /^0\.0*/.exec(str)?.[0].length ?? 2;
+
+    if (leadingZeroMatch?.[1]) {
+      const zeroCount = leadingZeros - 2;
+
+      if (zeroCount >= 4) {
+        const decimalDigits = leadingZeroMatch[1];
+        const display = `${zeroCount}${decimalDigits}`.slice(0, 7);
+
+        return (
+          <span>
+            0.
+            <span className="inline-block align-baseline text-xs text-gray-500">
+              {zeroCount}
+            </span>
+            {display.slice(zeroCount)}
+          </span>
+        );
+      }
+    }
+
+    // 非缩写情况
+    const parts = str.split(".");
+    const intPart = parts[0] ?? "0";
+    const decPart = parts[1] ?? "";
+    const remainLength = 8 - intPart.length;
+
+    if (remainLength <= 0) {
+      return <span>{intPart.slice(0, 8)}</span>;
+    }
+
+    const decTrimmed = decPart.slice(0, remainLength);
+    return <span>{`${intPart}.${decTrimmed}`}</span>;
+  }
+
   const [isModalOpen, setIsModalOpen] = useState(false);
   return (
     <Dialog
@@ -127,6 +167,7 @@ export default function ProjectSearch({
         if (open) {
           setPageLoading(true);
           onOpen().then((res) => {
+            console.log(res.data);
             setPageLoading(false);
             setCurrentData(res.data);
           });
@@ -164,7 +205,7 @@ export default function ProjectSearch({
             <div className="flex items-center gap-2">
               <p className="text-lg text-[#FFE030]">{signal.project.symbol}</p>
               <p className="text-lg font-bold text-[#02DE97]">
-                ${currentData?.currentPrice}
+                ${formatSmartDecimal(currentData?.currentPrice ?? 0)}
               </p>
             </div>
             <div className="flex items-center gap-2">
@@ -188,7 +229,7 @@ export default function ProjectSearch({
           <div className="flex items-center justify-between rounded-xl bg-[#1E212899] p-2">
             <p className="text-xs text-white/60">{t("signals.project.cap")}</p>
             <p className="text-[#FFE030]">
-              {pageLoading ? "--" : trimDecimal(currentData?.marketCap)}
+              {pageLoading ? "--" : "$" + trimDecimal(currentData?.marketCap)}
             </p>
           </div>
           <div className="flex items-center justify-between rounded-xl bg-[#1E212899] p-2">
@@ -196,14 +237,18 @@ export default function ProjectSearch({
               {t("signals.project.liquidity")}
             </p>
             <p className="text-[#FFE030]">
-              {pageLoading ? "--" : trimDecimal(currentData?.totalLiquidity)}
+              {pageLoading
+                ? "--"
+                : "$" + trimDecimal(currentData?.totalLiquidity)}
             </p>
           </div>
           <div className="flex items-center justify-between rounded-xl bg-[#1E212899] p-2">
             <p className="text-xs text-white/60">
               {t("signals.project.supply")}
             </p>
-            <p>{pageLoading ? "--" : trimDecimal(currentData?.totalSupply)}</p>
+            <p>
+              {pageLoading ? "--" : "$" + trimDecimal(currentData?.totalSupply)}
+            </p>
           </div>
           <div className="flex items-center justify-between rounded-xl bg-[#1E212899] p-2">
             <p className="text-xs text-white/60">
@@ -215,13 +260,15 @@ export default function ProjectSearch({
           </div>
           <div className="flex items-center justify-between rounded-xl bg-[#1E212899] p-2">
             <p className="text-xs text-white/60">FDV</p>
-            <p>{pageLoading ? "--" : trimDecimal(currentData?.fdv)}</p>
+            <p>{pageLoading ? "--" : "$" + trimDecimal(currentData?.fdv)}</p>
           </div>
           <div className="flex items-center justify-between rounded-xl bg-[#1E212899] p-2">
             <p className="text-xs text-white/60">
               {t("signals.project.24hVol")}
             </p>
-            <p>{pageLoading ? "--" : trimDecimal(currentData?.volume24h)}</p>
+            <p>
+              {pageLoading ? "--" : "$" + trimDecimal(currentData?.volume24h)}
+            </p>
           </div>
         </div>
         <div className="grid grid-cols-4">
@@ -288,6 +335,13 @@ export default function ProjectSearch({
             <p className="text-xs text-[#FFE030]">
               {t("signals.project.alert")}
             </p>
+
+            <div className="ml-auto flex items-center gap-0.5">
+              <p className="text-xs text-white/80">
+                {t("signals.project.launchDate")}：
+              </p>
+              <p className="text-xs text-white">{currentData?.days}D</p>
+            </div>
           </div>
 
           <div className="grid grid-cols-2 gap-2 rounded-b-lg bg-[#1E2128] px-3 py-2">
@@ -357,7 +411,7 @@ export default function ProjectSearch({
               {currentData?.priceChange24h &&
               currentData?.priceChange24h > 50 ? (
                 <p className="ml-2 text-xs text-[#FF4E30]">
-                  {t("signals.project.24h")}：{currentData?.priceChange24h}123
+                  {t("signals.project.24h")}：{currentData?.priceChange24h}%
                 </p>
               ) : null}
             </div>
