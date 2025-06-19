@@ -159,6 +159,10 @@ export default function ProjectSearch({
   }
 
   const [isModalOpen, setIsModalOpen] = useState(false);
+  function shortenString(str: string): string {
+    if (str.length <= 8) return str; // 不足 8 位的直接返回
+    return `${str.slice(0, 5)}...${str.slice(-3)}`;
+  }
   return (
     <Dialog
       open={isModalOpen}
@@ -212,7 +216,9 @@ export default function ProjectSearch({
               <p className="text-sm">{t("signals.project.ca")}：</p>
               <p className="max-w-60 truncate text-sm">
                 {contractAddresses && contractAddresses.length > 0
-                  ? contractAddresses.map((address) => address.address)
+                  ? contractAddresses.map((address) =>
+                      shortenString(address.address ?? ""),
+                    )
                   : "-"}
               </p>
               <Copy
