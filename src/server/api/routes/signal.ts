@@ -756,6 +756,7 @@ export async function getContractInfo(contractAddress: string) {
       isHoneypot: data.is_honeypot,
       logoUrl: data.logo_url,
       chainLogoUrl: data.chain_logo_url,
+      days: data.days,
     };
   });
 }
