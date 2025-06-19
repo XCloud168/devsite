@@ -318,6 +318,7 @@
     },
     "signals": {
         "project": {
+            "launchDate": "Token 上市时间",
             "tokenIntel": "项目快查",
             "ca": "合约地址",
             "cap": "市值",
