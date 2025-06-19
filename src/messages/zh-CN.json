@@ -318,6 +318,7 @@
     },
     "signals": {
         "project": {
+            "24hGains": "24h 涨幅已超过",
             "launchDate": "Token 上市时间",
             "tokenIntel": "项目快查",
             "ca": "合约地址",
