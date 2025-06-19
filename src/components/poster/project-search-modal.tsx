@@ -27,14 +27,14 @@ import { toast } from "sonner";
 
 interface ContractInfo {
   currentPrice: string;
-  marketCap: string;
-  totalLiquidity: string;
-  totalSupply: string;
+  marketCap: number;
+  totalLiquidity: number;
+  totalSupply: number;
   pool: string;
-  holders: string;
-  fdv: string;
+  holders: number;
+  fdv: number;
   chainLogoUrl: string;
-  volume24h: string;
+  volume24h: number;
   priceChange5m: number;
   priceChange1h: number;
   priceChange4h: number;
@@ -182,7 +182,7 @@ export default function ProjectSearch({
         <DialogTitle></DialogTitle>
         <DialogDescription></DialogDescription>
       </DialogHeader>
-      <DialogContent className="w-[94%] space-y-4 border-[#253237] bg-[#0B0D0E] p-5 md:w-[480px]">
+      <DialogContent className="w-[94%] space-y-2 border-[#253237] bg-[#0B0D0E] p-5 md:w-[440px]">
         {pageLoading && (
           <div className="absolute bottom-0 left-0 top-0 z-50 flex h-full w-full items-center justify-center bg-black/40 backdrop-blur-sm">
             <LoaderCircle className="animate-spin" size={40} />
@@ -210,7 +210,7 @@ export default function ProjectSearch({
             </div>
             <div className="flex items-center gap-2">
               <p className="text-sm">{t("signals.project.ca")}：</p>
-              <p className="max-w-64 truncate text-sm">
+              <p className="max-w-60 truncate text-sm">
                 {contractAddresses && contractAddresses.length > 0
                   ? contractAddresses.map((address) => address.address)
                   : "-"}
@@ -225,53 +225,181 @@ export default function ProjectSearch({
             </div>
           </div>
         </div>
+
+        <div className="space-y-[1px]">
+          <div className="flex w-full items-center gap-1 rounded-t-lg bg-[#1E2128] px-3 py-2">
+            <TriangleAlert size={14} color="#FFE030" />
+            <p className="text-xs text-[#FFE030]">
+              {t("signals.project.alert")}
+            </p>
+          </div>
+
+          <div className="grid grid-cols-3 gap-2 rounded-b-lg bg-[#1E2128] px-3 py-2">
+            <div className="space-y-1">
+              <p className="text-xs text-white/60">
+                {t("signals.project.mention")}
+              </p>
+              {!pageLoading ? (
+                signal.times === "1" ? (
+                  <div className="flex items-center gap-1">
+                    <p className="text-xs text-[#FF4E30E5]">
+                      {t("common.yes")}
+                    </p>
+
+                    <CircleCheck size={14} color="#FF4E30E5" />
+                  </div>
+                ) : (
+                  <div className="flex items-center gap-1">
+                    <p className="text-xs text-[#02DE97E5]">{t("common.no")}</p>
+                    <CircleX size={14} color="#02DE97E5" />
+                  </div>
+                )
+              ) : null}
+            </div>
+            <div className="space-y-1">
+              <p className="text-xs text-white/60">
+                {t("signals.project.honeypot")}
+              </p>
+              {!pageLoading ? (
+                currentData?.isHoneypot && currentData?.isHoneypot === "?" ? (
+                  <p className="text-xs">unknown ?</p>
+                ) : currentData?.isHoneypot ? (
+                  <div className="flex items-center gap-1">
+                    <p className="text-xs text-[#FF4E30E5]">
+                      {t("common.yes")}
+                    </p>
+                    <CircleCheck size={14} color="#FF4E30E5" />
+                  </div>
+                ) : (
+                  <div className="flex items-center gap-1">
+                    <p className="text-xs text-[#02DE97E5]">{t("common.no")}</p>
+                    <CircleX size={14} color="#02DE97E5" />
+                  </div>
+                )
+              ) : null}
+            </div>
+            <div className="space-y-1">
+              <p className="text-xs text-white/60">
+                {t("signals.project.launchDate")}
+              </p>
+              <p
+                className="text-xs"
+                style={{
+                  color:
+                    currentData?.days && currentData?.days > 60
+                      ? "#02DE97E5"
+                      : "#FF4E30E5",
+                }}
+              >
+                {currentData?.days}D
+              </p>
+            </div>
+          </div>
+        </div>
+
         <div className="grid grid-cols-2 gap-2">
           <div className="flex items-center justify-between rounded-xl bg-[#1E212899] p-2">
             <p className="text-xs text-white/60">{t("signals.project.cap")}</p>
-            <p className="text-[#FFE030]">
-              {pageLoading ? "--" : "$" + trimDecimal(currentData?.marketCap)}
+            <p
+              style={{
+                color:
+                  currentData?.marketCap && currentData?.marketCap < 1000000
+                    ? "#FF4E30"
+                    : "#fff",
+              }}
+            >
+              {pageLoading
+                ? "--"
+                : "$" + trimDecimal(currentData?.marketCap.toString())}
             </p>
           </div>
           <div className="flex items-center justify-between rounded-xl bg-[#1E212899] p-2">
             <p className="text-xs text-white/60">
               {t("signals.project.liquidity")}
             </p>
-            <p className="text-[#FFE030]">
+            <p
+              style={{
+                color:
+                  currentData?.totalLiquidity &&
+                  currentData?.totalLiquidity < 100000
+                    ? "#FF4E30"
+                    : "#fff",
+              }}
+            >
               {pageLoading
                 ? "--"
-                : "$" + trimDecimal(currentData?.totalLiquidity)}
+                : "$" + trimDecimal(currentData?.totalLiquidity.toString())}
             </p>
           </div>
           <div className="flex items-center justify-between rounded-xl bg-[#1E212899] p-2">
             <p className="text-xs text-white/60">
               {t("signals.project.supply")}
             </p>
-            <p>
-              {pageLoading ? "--" : "$" + trimDecimal(currentData?.totalSupply)}
+            <p
+              style={{
+                color:
+                  currentData?.totalSupply &&
+                  currentData?.totalSupply < 20000000
+                    ? "#FF4E30"
+                    : "#fff",
+              }}
+            >
+              {pageLoading
+                ? "--"
+                : "$" + trimDecimal(currentData?.totalSupply.toString())}
             </p>
           </div>
           <div className="flex items-center justify-between rounded-xl bg-[#1E212899] p-2">
             <p className="text-xs text-white/60">
               {t("signals.project.holders")}
             </p>
-            <p className="text-[#FFE030]">
-              {pageLoading ? "--" : trimDecimal(currentData?.holders)}
+            <p
+              style={{
+                color:
+                  currentData?.holders && currentData?.holders < 1000
+                    ? "#FF4E30"
+                    : "#fff",
+              }}
+            >
+              {pageLoading
+                ? "--"
+                : trimDecimal(currentData?.holders.toString())}
             </p>
           </div>
           <div className="flex items-center justify-between rounded-xl bg-[#1E212899] p-2">
             <p className="text-xs text-white/60">FDV</p>
-            <p>{pageLoading ? "--" : "$" + trimDecimal(currentData?.fdv)}</p>
+            <p
+              style={{
+                color:
+                  currentData?.fdv && currentData?.fdv < 2000000
+                    ? "#FF4E30"
+                    : "#fff",
+              }}
+            >
+              {pageLoading
+                ? "--"
+                : "$" + trimDecimal(currentData?.fdv.toString())}
+            </p>
           </div>
           <div className="flex items-center justify-between rounded-xl bg-[#1E212899] p-2">
             <p className="text-xs text-white/60">
               {t("signals.project.24hVol")}
             </p>
-            <p>
-              {pageLoading ? "--" : "$" + trimDecimal(currentData?.volume24h)}
+            <p
+              style={{
+                color:
+                  currentData?.volume24h && currentData?.volume24h < 300000
+                    ? "#FF4E30"
+                    : "#fff",
+              }}
+            >
+              {pageLoading
+                ? "--"
+                : "$" + trimDecimal(currentData?.volume24h.toString())}
             </p>
           </div>
         </div>
-        <div className="grid grid-cols-4">
+        <div className="grid grid-cols-4 px-2">
           <div className="flex flex-col">
             <p className="text-xs text-white/60">{t("signals.project.5min")}</p>
             <p
@@ -329,101 +457,7 @@ export default function ProjectSearch({
             </p>
           </div>
         </div>
-        <div className="space-y-[1px]">
-          <div className="flex w-full items-center gap-1 rounded-t-lg bg-[#1E2128] px-3 py-2">
-            <TriangleAlert size={14} color="#FFE030" />
-            <p className="text-xs text-[#FFE030]">
-              {t("signals.project.alert")}
-            </p>
 
-            <div className="ml-auto flex items-center gap-0.5">
-              <p className="text-xs text-white/80">
-                {t("signals.project.launchDate")}：
-              </p>
-              <p className="text-xs text-white">{currentData?.days}D</p>
-            </div>
-          </div>
-
-          <div className="space-y-2 rounded-b-lg bg-[#1E2128] px-3 py-2">
-            <div className="grid grid-cols-2 gap-2">
-              <div className="flex">
-                <p className="text-xs text-white/60">
-                  {t("signals.project.mention")}：
-                </p>
-                {!pageLoading ? (
-                  signal.times === "1" ? (
-                    <div className="flex items-center gap-1">
-                      <p className="text-xs text-[#FF4E30E5]">
-                        {t("common.yes")}
-                      </p>
-
-                      <CircleCheck size={14} color="#FF4E30E5" />
-                    </div>
-                  ) : (
-                    <div className="flex items-center gap-1">
-                      <p className="text-xs text-[#02DE97E5]">
-                        {t("common.no")}
-                      </p>
-                      <CircleX size={14} color="#02DE97E5" />
-                    </div>
-                  )
-                ) : null}
-              </div>
-              <div className="flex">
-                <p className="text-xs text-white/60">
-                  {t("signals.project.honeypot")}：
-                </p>
-                {!pageLoading ? (
-                  currentData?.isHoneypot && currentData?.isHoneypot === "?" ? (
-                    <p className="text-xs">unknown ?</p>
-                  ) : currentData?.isHoneypot ? (
-                    <div className="flex items-center gap-1">
-                      <p className="text-xs text-[#FF4E30E5]">
-                        {t("common.yes")}
-                      </p>
-                      <CircleCheck size={14} color="#FF4E30E5" />
-                    </div>
-                  ) : (
-                    <div className="flex items-center gap-1">
-                      <p className="text-xs text-[#02DE97E5]">
-                        {t("common.no")}
-                      </p>
-                      <CircleX size={14} color="#02DE97E5" />
-                    </div>
-                  )
-                ) : null}
-              </div>
-            </div>
-            <div className="flex">
-              <p className="text-xs text-white/60">
-                {t("signals.project.risk")}：
-              </p>
-              {!pageLoading ? (
-                currentData?.priceChange24h !== undefined &&
-                currentData?.priceChange24h <= 50 ? (
-                  <div className="flex items-center gap-1">
-                    <p className="text-xs text-[#02DE97E5]">{t("common.no")}</p>
-                    <CircleCheck size={14} color="#02DE97E5" />
-                  </div>
-                ) : (
-                  <div className="flex items-center gap-1">
-                    <p className="text-xs text-[#FF4E30E5]">
-                      {t("common.yes")}
-                    </p>
-                    <CircleX size={14} color="#FF4E30E5" />
-                  </div>
-                )
-              ) : null}
-              {currentData?.priceChange24h &&
-              currentData?.priceChange24h > 50 ? (
-                <p className="ml-2 text-xs text-[#FF4E30]">
-                  {t("signals.project.24hGains")}：{currentData?.priceChange24h}
-                  %
-                </p>
-              ) : null}
-            </div>
-          </div>
-        </div>
         <div className="flex w-full items-center justify-center gap-5">
           <Button
             variant="outline"
