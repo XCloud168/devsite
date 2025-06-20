@@ -86,7 +86,7 @@ export default function ProjectSearch({
     : [];
   const [pageLoading, setPageLoading] = useState(false);
   const [currentData, setCurrentData] = useState<ContractInfo>();
-
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const handleCopy = async (text: string) => {
     try {
       await navigator.clipboard.writeText(text);
@@ -97,15 +97,12 @@ export default function ProjectSearch({
   };
 
   function trimDecimal(value?: string): string {
-    if (!value) return "0";
-
+    if (!value) return "--";
+    if (value === "--") return "--";
     const num = parseFloat(value);
     if (isNaN(num)) return value;
-
     const absNum = Math.abs(num);
-
     let formatted: string;
-
     if (absNum >= 1_000_000_000) {
       formatted = (num / 1_000_000_000).toFixed(2).replace(/\.?0+$/, "") + "B";
     } else if (absNum >= 1_000_000) {
@@ -115,23 +112,18 @@ export default function ProjectSearch({
     } else {
       formatted = num.toString();
     }
-
-    return formatted;
+    return `$${formatted}`;
   }
 
   function formatSmartDecimal(input: number | string): ReactNode {
     const str = typeof input === "number" ? input.toString() : input;
-
     const leadingZeroMatch = /^0\.0*(\d+)/.exec(str);
     const leadingZeros = /^0\.0*/.exec(str)?.[0].length ?? 2;
-
     if (leadingZeroMatch?.[1]) {
       const zeroCount = leadingZeros - 2;
-
       if (zeroCount >= 4) {
         const decimalDigits = leadingZeroMatch[1];
         const display = `${zeroCount}${decimalDigits}`.slice(0, 7);
-
         return (
           <span>
             0.
@@ -144,25 +136,28 @@ export default function ProjectSearch({
       }
     }
 
-    // 非缩写情况
     const parts = str.split(".");
     const intPart = parts[0] ?? "0";
     const decPart = parts[1] ?? "";
     const remainLength = 8 - intPart.length;
-
     if (remainLength <= 0) {
       return <span>{intPart.slice(0, 8)}</span>;
     }
-
     const decTrimmed = decPart.slice(0, remainLength);
     return <span>{`${intPart}.${decTrimmed}`}</span>;
   }
 
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  function checkPercent(input?: number | string) {
+    if (!input) return "--";
+    if (input === "--") return "--";
+    return `${input}%`;
+  }
+
   function shortenString(str: string): string {
     if (str.length <= 8) return str; // 不足 8 位的直接返回
     return `${str.slice(0, 5)}...${str.slice(-3)}`;
   }
+
   return (
     <Dialog
       open={isModalOpen}
@@ -171,7 +166,6 @@ export default function ProjectSearch({
         if (open) {
           setPageLoading(true);
           onOpen().then((res) => {
-            console.log(res.data);
             setPageLoading(false);
             setCurrentData(res.data);
           });
@@ -316,7 +310,7 @@ export default function ProjectSearch({
             >
               {pageLoading
                 ? "--"
-                : "$" + trimDecimal(currentData?.marketCap.toString())}
+                : trimDecimal(currentData?.marketCap.toString())}
             </p>
           </div>
           <div className="flex items-center justify-between rounded-xl bg-[#1E212899] p-2">
@@ -334,7 +328,7 @@ export default function ProjectSearch({
             >
               {pageLoading
                 ? "--"
-                : "$" + trimDecimal(currentData?.totalLiquidity.toString())}
+                : trimDecimal(currentData?.totalLiquidity.toString())}
             </p>
           </div>
           <div className="flex items-center justify-between rounded-xl bg-[#1E212899] p-2">
@@ -352,7 +346,7 @@ export default function ProjectSearch({
             >
               {pageLoading
                 ? "--"
-                : "$" + trimDecimal(currentData?.totalSupply.toString())}
+                : trimDecimal(currentData?.totalSupply.toString())}
             </p>
           </div>
           <div className="flex items-center justify-between rounded-xl bg-[#1E212899] p-2">
@@ -369,7 +363,7 @@ export default function ProjectSearch({
             >
               {pageLoading
                 ? "--"
-                : trimDecimal(currentData?.holders.toString())}
+                : trimDecimal(currentData?.holders.toString()).replace("$", "")}
             </p>
           </div>
           <div className="flex items-center justify-between rounded-xl bg-[#1E212899] p-2">
@@ -382,9 +376,7 @@ export default function ProjectSearch({
                     : "#fff",
               }}
             >
-              {pageLoading
-                ? "--"
-                : "$" + trimDecimal(currentData?.fdv.toString())}
+              {pageLoading ? "--" : trimDecimal(currentData?.fdv.toString())}
             </p>
           </div>
           <div className="flex items-center justify-between rounded-xl bg-[#1E212899] p-2">
@@ -401,7 +393,7 @@ export default function ProjectSearch({
             >
               {pageLoading
                 ? "--"
-                : "$" + trimDecimal(currentData?.volume24h.toString())}
+                : trimDecimal(currentData?.volume24h.toString())}
             </p>
           </div>
         </div>
@@ -417,7 +409,7 @@ export default function ProjectSearch({
                   : "text-[#fff]"
               }
             >
-              {pageLoading ? "--" : currentData?.priceChange5m + "%"}
+              {pageLoading ? "--" : checkPercent(currentData?.priceChange5m)}
             </p>
           </div>
           <div className="flex flex-col">
@@ -431,7 +423,7 @@ export default function ProjectSearch({
                   : "text-[#fff]"
               }
             >
-              {pageLoading ? "--" : currentData?.priceChange1h + "%"}
+              {pageLoading ? "--" : checkPercent(currentData?.priceChange1h)}
             </p>
           </div>
           <div className="flex flex-col">
@@ -445,7 +437,7 @@ export default function ProjectSearch({
                   : "text-[#fff]"
               }
             >
-              {pageLoading ? "--" : currentData?.priceChange4h + "%"}
+              {pageLoading ? "--" : checkPercent(currentData?.priceChange4h)}
             </p>
           </div>
           <div className="flex flex-col">
@@ -459,7 +451,7 @@ export default function ProjectSearch({
                   : "text-[#fff]"
               }
             >
-              {pageLoading ? "--" : currentData?.priceChange24h + "%"}
+              {pageLoading ? "--" : checkPercent(currentData?.priceChange24h)}
             </p>
           </div>
         </div>
