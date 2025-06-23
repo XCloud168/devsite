@@ -274,13 +274,13 @@ export function FeaturedCard({
                 {/*    </p>*/}
                 {/*  </div>*/}
                 {/*)}*/}
-                {parseInt(signal.times) >= 3 && (
-                  <div className="rounded-full bg-primary text-black">
-                    <p className="scale-75 text-xs">
-                      {t("signals.signal.repeatedMentions")}
-                    </p>
-                  </div>
-                )}
+                {/*{parseInt(signal.times) >= 3 && (*/}
+                {/*  <div className="rounded-full bg-primary text-black">*/}
+                {/*    <p className="scale-75 text-xs">*/}
+                {/*      {t("signals.signal.repeatedMentions")}*/}
+                {/*    </p>*/}
+                {/*  </div>*/}
+                {/*)}*/}
                 {!signal.source.isAccurate && (
                   <Popover>
                     <PopoverTrigger asChild>
