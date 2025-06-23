@@ -97,12 +97,14 @@ export default function ProjectSearch({
   };
 
   function trimDecimal(value?: string): string {
-    if (!value) return "--";
-    if (value === "--") return "--";
+    if (!value || value === "--") return "--";
+
     const num = parseFloat(value);
     if (isNaN(num)) return value;
+
     const absNum = Math.abs(num);
     let formatted: string;
+
     if (absNum >= 1_000_000_000) {
       formatted = (num / 1_000_000_000).toFixed(2).replace(/\.?0+$/, "") + "B";
     } else if (absNum >= 1_000_000) {
@@ -110,8 +112,16 @@ export default function ProjectSearch({
     } else if (absNum >= 1_000) {
       formatted = (num / 1_000).toFixed(2).replace(/\.?0+$/, "") + "K";
     } else {
-      formatted = num.toString();
+      // 小于 1000 的情况
+      const isInteger = Number.isInteger(num);
+      if (isInteger) {
+        formatted = num.toString();
+      } else {
+        // 保留最多4位小数，去掉末尾多余的0
+        formatted = num.toFixed(4).replace(/\.?0+$/, "");
+      }
     }
+
     return `$${formatted}`;
   }
 
