@@ -124,5 +124,8 @@ export async function getUserProfile() {
     inviteCode: profile?.inviteCode,
     enableNotification: profile?.enableNotification,
     notificationSound: profile?.notificationSound,
+    rewardPoints: profile?.rewardPoints,
+    agentCode: profile?.agentCode,
+    referrerCode: profile?.referrerCode,
   };
 }

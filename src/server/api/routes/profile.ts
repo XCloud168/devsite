@@ -5,7 +5,7 @@ import { createError } from "@/lib/errors";
 import { withServerResult } from "@/lib/server-result";
 import { db } from "@/server/db";
 import { profiles } from "@/server/db/schema";
-import { and, count, eq, ne, or } from "drizzle-orm";
+import { and, count, eq, ne, or, not } from "drizzle-orm";
 import { getUserProfile } from "./auth";
 
 /**
@@ -152,6 +152,8 @@ export async function getUserProfileById(userId: string) {
         enableNotification: true,
         notificationSound: true,
         rewardPoints: true,
+        agentCode: true,
+        referrerCode: true,
       }
     });
     
@@ -160,5 +162,41 @@ export async function getUserProfileById(userId: string) {
     }
 
     return profile;
+  });
+}
+
+/**
+ * 更新用户的推荐代理商代码
+ * @param referrerCode - 代理商代码
+ * @returns 更新结果
+ */
+export async function updateUserReferrerCode(referrerCode: string) {
+  return withServerResult(async () => {
+    const user = await getUserProfile();
+    if (!user) {
+      throw createError.unauthorized("Please login first");
+    }
+
+    // 检查代理商代码是否存在且不是用户自己
+    const agent = await db.query.profiles.findFirst({
+      where: and(
+        eq(profiles.agentCode, referrerCode),
+        not(eq(profiles.id, user.id))
+      ),
+    });
+    if (!agent) {
+      throw createError.invalidParams("Invalid referrer code");
+    }
+
+    await db
+      .update(profiles)
+      .set({
+        referrerCode,
+      })
+      .where(eq(profiles.id, user.id));
+
+    return {
+      success: true,
+    };
   });
 }
