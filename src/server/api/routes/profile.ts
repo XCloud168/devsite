@@ -154,6 +154,7 @@ export async function getUserProfileById(userId: string) {
         rewardPoints: true,
         agentCode: true,
         referrerCode: true,
+        evmAddress: true,
       }
     });
     
@@ -192,6 +193,48 @@ export async function updateUserReferrerCode(referrerCode: string) {
       .update(profiles)
       .set({
         referrerCode,
+      })
+      .where(eq(profiles.id, user.id));
+
+    return {
+      success: true,
+    };
+  });
+}
+
+/**
+ * 绑定用户的 EVM 钱包地址，一旦绑定不可更改
+ * @param evmAddress - EVM 钱包地址
+ * @returns 更新结果
+ */
+export async function bindUserEvmAddress(evmAddress: string) {
+  return withServerResult(async () => {
+    const user = await getUserProfile();
+    if (!user) {
+      throw createError.unauthorized("Please login first");
+    }
+    // 检查用户是否已经绑定过钱包地址
+    if (user.evmAddress) {
+      throw createError.invalidParams("Wallet address already bound");
+    }
+
+    // 检查钱包地址格式是否正确 (0x开头的42位十六进制字符串)
+    if (!/^0x[0-9a-fA-F]{40}$/.test(evmAddress)) {
+      throw createError.invalidParams("Invalid EVM address format");
+    }
+
+    // 检查该钱包地址是否已被其他用户绑定
+    const existingBind = await db.query.profiles.findFirst({
+      where: eq(profiles.evmAddress, evmAddress),
+    });
+    if (existingBind) {
+      throw createError.invalidParams("This wallet address is already bound to another account");
+    }
+
+    await db
+      .update(profiles)
+      .set({
+        evmAddress,
       })
       .where(eq(profiles.id, user.id));
 

@@ -57,6 +57,9 @@ export const profiles = pgTable(
       withTimezone: true,
     }),
 
+    // EVM 钱包地址
+    evmAddress: varchar("evm_address", { length: 255 }), // 以太坊/EVM 兼容链地址
+
     // 杂项设置
     enableNotification: boolean("enable_notification").default(true),
     notificationSound: varchar("notification_sound", { length: 256 }),
@@ -67,6 +70,7 @@ export const profiles = pgTable(
     index("email_idx").on(table.email),
     index("agent_code_idx").on(table.agentCode),
     index("referrer_code_idx").on(table.referrerCode),
+    index("evm_address_idx").on(table.evmAddress),
   ],
 ).enableRLS();
 
