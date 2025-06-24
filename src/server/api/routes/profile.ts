@@ -151,6 +151,7 @@ export async function getUserProfileById(userId: string) {
         inviterSkipped: true,
         enableNotification: true,
         notificationSound: true,
+        rewardPoints: true,
       }
     });
     

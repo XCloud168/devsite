@@ -5,6 +5,7 @@ import {
   timestamp,
   uuid,
   varchar,
+  integer,
 } from "drizzle-orm/pg-core";
 
 import { users } from "./auth";
@@ -40,6 +41,9 @@ export const profiles = pgTable(
       .defaultNow()
       .notNull()
       .$onUpdate(() => new Date()),
+
+    // 新增积分字段
+    rewardPoints: integer("reward_points").default(0).notNull(),
 
     // 会员有效期
     membershipExpiredAt: timestamp("membership_expired_at", {

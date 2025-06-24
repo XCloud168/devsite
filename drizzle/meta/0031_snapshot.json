@@ -1,5 +1,5 @@
 {
-  "id": "fad79ccc-6a72-4308-91d7-ed286568b782",
+  "id": "d0b91a54-98bd-48ed-80d6-1b282cf90bd2",
   "prevId": "420cd808-08c2-411c-a9e8-208ca0389294",
   "version": "7",
   "dialect": "postgresql",
@@ -1262,6 +1262,13 @@
           "notNull": true,
           "default": "now()"
         },
+        "reward_points": {
+          "name": "reward_points",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 0
+        },
         "membership_expired_at": {
           "name": "membership_expired_at",
           "type": "timestamp with time zone",
@@ -2409,27 +2416,6 @@
           "columns": [
             {
               "expression": "shilling",
-              "isExpression": false,
-              "asc": true,
-              "nulls": "last"
-            }
-          ],
-          "isUnique": false,
-          "concurrently": false,
-          "method": "btree",
-          "with": {}
-        },
-        "idx_tweet_info_created_at_contract": {
-          "name": "idx_tweet_info_created_at_contract",
-          "columns": [
-            {
-              "expression": "tweet_created_at",
-              "isExpression": false,
-              "asc": false,
-              "nulls": "last"
-            },
-            {
-              "expression": "contract_address",
               "isExpression": false,
               "asc": true,
               "nulls": "last"

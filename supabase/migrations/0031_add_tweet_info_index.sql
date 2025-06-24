@@ -1,1 +1,1 @@
-CREATE INDEX "idx_tweet_info_created_at_contract" ON "site_tweet_info" USING btree ("tweet_created_at" DESC NULLS LAST,"contract_address");
+ALTER TABLE "site_profiles" ADD COLUMN "reward_points" integer DEFAULT 0 NOT NULL;
