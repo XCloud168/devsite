@@ -27,6 +27,11 @@ import {
   paymentAddresses,
   payments,
   paymentsRelations,
+  incomeRecords,
+  incomeRecordsRelations,
+  withdrawalRecords,
+  withdrawalRecordsRelations,
+  configs,
 } from "./schemas/payment";
 import {
   news,
@@ -64,4 +69,9 @@ export {
   newsRelations,
   newsEntity,
   newsEntityRelations,
+  incomeRecords,
+  incomeRecordsRelations,
+  withdrawalRecords,
+  withdrawalRecordsRelations,
+  configs,
 };

@@ -246,6 +246,20 @@
       "when": 1750831055572,
       "tag": "0034_add_income_record",
       "breakpoints": true
+    },
+    {
+      "idx": 35,
+      "version": "7",
+      "when": 1750833799060,
+      "tag": "0035_add_configs",
+      "breakpoints": true
+    },
+    {
+      "idx": 36,
+      "version": "7",
+      "when": 1750835433068,
+      "tag": "0036_add_RLS",
+      "breakpoints": true
     }
   ]
 }
