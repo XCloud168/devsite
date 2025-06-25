@@ -290,3 +290,48 @@ export async function getMyInviteInfo() {
   });
 }
 
+/**
+ * 提交提现申请
+ * @param amount - 提现金额
+ * @returns 提现申请结果
+ */
+export async function submitWithdrawalRequest(amount: number) {
+  return withServerResult(async () => {
+    const user = await getUserProfile();
+    if (!user) {
+      throw createError.unauthorized("Please login first");
+    }
+
+    // 验证提现金额
+    if (amount <= 0) {
+      throw createError.invalidParams("Withdrawal amount must be positive");
+    }
+
+    // 检查余额是否足够
+    const profile = await db.query.profiles.findFirst({
+      where: eq(profiles.id, user.id),
+      columns: {
+        balance: true,
+      },
+    });
+
+    if (!profile || Number(profile.balance ?? 0) < amount) {
+      throw createError.invalidParams("Insufficient balance");
+    }
+
+    // 创建提现记录
+    await db.insert(withdrawalRecords).values({
+      userId: user.id,
+      amount: String(amount),
+      status: "pending",
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    });
+
+    return {
+      success: true,
+      message: "Withdrawal request submitted successfully.",
+    };
+  });
+}
+

@@ -2,6 +2,7 @@ import {
   type PAYMENT_STATUS,
   type PLAN_TYPE,
   type SUPPORTED_CHAIN,
+  type WITHDRAWAL_STATUS,
 } from "@/types/constants";
 import { relations } from "drizzle-orm";
 import {
@@ -137,11 +138,9 @@ export const withdrawalRecords = pgTable(
       .references(() => profiles.id),
     amount: numeric("amount", { precision: 10, scale: 2 }).notNull(),
     status: varchar("status", { length: 255 })
-      .$type<"pending" | "processing" | "completed" | "failed">()
+      .$type<WITHDRAWAL_STATUS>()
       .default("pending")
       .notNull(),
-    walletAddress: varchar("wallet_address", { length: 255 }),
-    txHash: varchar("tx_hash", { length: 255 }),
     description: varchar("description", { length: 500 }),
     createdAt: timestamp("created_at", { withTimezone: true })
       .defaultNow()

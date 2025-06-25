@@ -260,6 +260,13 @@
       "when": 1750835433068,
       "tag": "0036_add_RLS",
       "breakpoints": true
+    },
+    {
+      "idx": 37,
+      "version": "7",
+      "when": 1750838641152,
+      "tag": "0037_del_wrong_field",
+      "breakpoints": true
     }
   ]
 }

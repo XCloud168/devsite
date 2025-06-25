@@ -27,3 +27,11 @@ export type SIGNAL_PROVIDER_TYPE = "twitter" | "announcement" | "news";
  * 用户类型
  */
 export type USER_TYPE = "super_influencer" | "institution_projects" | "kol_opinions" | "user_follow";
+
+/**
+ * 提现状态
+ */
+export type WITHDRAWAL_STATUS = "pending" | "processing" | "completed" | "failed";
+export const WITHDRAWAL_STATUS_LIST: WITHDRAWAL_STATUS[] = [
+  "pending", "processing", "completed", "failed"
+];
