@@ -160,6 +160,24 @@
         "updateError": "Failed to update settings"
     },
     "my": {
+        "reward": {
+            "bindSuccess": "Bind Success",
+            "bindFailed": "Bind Failed",
+            "totalCommission": "Total Commission",
+            "withdrawable": "Wthdrawable",
+            "withdraw": "Withdraw",
+            "walletAddress": "Wallet Address",
+            "bindFirst": "You must bind wallet address first.",
+            "amount": "Withdraw Amount",
+            "rewardTip1": "Min. Withdrawal: 10 USDT ",
+            "input": "Please enter the amount to withdraw",
+            "bindFirstBtn": "Bind wallet address first",
+            "exceeds": "Exceeds the withdrawable amount",
+            "myPoint": "my Points",
+            "pointTip": "Earn an additional 100 points for each VIP user you invite.",
+            "withdrawSuccess": "Withdraw Success",
+            "withdrawFailed": "Withdraw Failed"
+        },
         "title": "User Center",
         "description": "Manage your account settings and preferences",
         "sections": {},

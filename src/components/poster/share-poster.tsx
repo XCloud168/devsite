@@ -47,10 +47,10 @@ export default function SharePoster({ children }: { children: ReactNode }) {
   return (
     <Dialog>
       <DialogTrigger className="w-full text-xs text-[#949C9E]">
-        <Button className="flex w-full items-center gap-2">
+        <div className="flex w-full items-center gap-2">
           <Share2 size={16} />
           {t("my.inviteCode.share.button")}
-        </Button>
+        </div>
       </DialogTrigger>
       <DialogContent className="w-[400px] bg-black">
         <DialogHeader className="hidden">

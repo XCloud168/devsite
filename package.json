@@ -34,6 +34,7 @@
     "@radix-ui/react-switch": "^1.2.5",
     "@radix-ui/react-tabs": "^1.1.12",
     "@radix-ui/react-tooltip": "^1.2.7",
+    "@rainbow-me/rainbowkit": "^2.2.8",
     "@supabase/ssr": "^0.5.2",
     "@supabase/supabase-js": "^2.50.0",
     "@t3-oss/env-nextjs": "^0.12.0",
@@ -68,6 +69,8 @@
     "tailwind-scrollbar": "^4.0.2",
     "tailwindcss-animate": "^1.0.7",
     "ua-parser-js": "^2.0.3",
+    "viem": "^2.31.4",
+    "wagmi": "^2.15.6",
     "yet-another-react-lightbox": "^3.23.2",
     "zod": "^3.25.67",
     "zod-error": "^1.5.0"
