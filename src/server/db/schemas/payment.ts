@@ -90,3 +90,90 @@ export const paymentsRelations = relations(payments, ({ one }) => ({
     references: [profiles.id],
   }),
 }));
+
+export const incomeRecords = pgTable(
+  "income_records",
+  {
+    id: uuid("id").primaryKey().defaultRandom().notNull(),
+    userId: uuid("user_id")
+      .notNull()
+      .references(() => profiles.id),
+    paymentId: uuid("payment_id")
+      .references(() => payments.id),
+    amount: numeric("amount", { precision: 10, scale: 2 }).notNull(),
+    description: varchar("description", { length: 500 }),
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .defaultNow()
+      .notNull(),
+    updatedAt: timestamp("updated_at", { withTimezone: true })
+      .defaultNow()
+      .notNull()
+      .$onUpdate(() => new Date()),
+  },
+  (table) => [
+    index("income_records_user_id_idx").on(table.userId),
+    index("income_records_payment_id_idx").on(table.paymentId),
+    index("income_records_created_at_idx").on(table.createdAt),
+  ],
+).enableRLS();
+
+export const incomeRecordsRelations = relations(incomeRecords, ({ one }) => ({
+  user: one(profiles, {
+    fields: [incomeRecords.userId],
+    references: [profiles.id],
+  }),
+  payment: one(payments, {
+    fields: [incomeRecords.paymentId],
+    references: [payments.id],
+  }),
+}));
+
+export const withdrawalRecords = pgTable(
+  "withdrawal_records",
+  {
+    id: uuid("id").primaryKey().defaultRandom().notNull(),
+    userId: uuid("user_id")
+      .notNull()
+      .references(() => profiles.id),
+    amount: numeric("amount", { precision: 10, scale: 2 }).notNull(),
+    status: varchar("status", { length: 255 })
+      .$type<"pending" | "processing" | "completed" | "failed">()
+      .default("pending")
+      .notNull(),
+    walletAddress: varchar("wallet_address", { length: 255 }),
+    txHash: varchar("tx_hash", { length: 255 }),
+    description: varchar("description", { length: 500 }),
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .defaultNow()
+      .notNull(),
+    updatedAt: timestamp("updated_at", { withTimezone: true })
+      .defaultNow()
+      .notNull()
+      .$onUpdate(() => new Date()),
+  },
+  (table) => [
+    index("withdrawal_records_user_id_idx").on(table.userId),
+    index("withdrawal_records_status_idx").on(table.status),
+    index("withdrawal_records_created_at_idx").on(table.createdAt),
+  ],
+).enableRLS();
+
+export const withdrawalRecordsRelations = relations(withdrawalRecords, ({ one }) => ({
+  user: one(profiles, {
+    fields: [withdrawalRecords.userId],
+    references: [profiles.id],
+  }),
+}));
+
+export const configs = pgTable(
+  "configs",
+  {
+    id: uuid("id").primaryKey().defaultRandom().notNull(),
+    // 返佣比例，默认20%，可精确到小数点后两位
+    commissionRate: numeric("commission_rate", { precision: 5, scale: 2 }).default("20.00").notNull(),
+    // 可扩展更多配置项
+    description: varchar("description", { length: 255 }),
+    createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+    updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow().notNull().$onUpdate(() => new Date()),
+  }
+);

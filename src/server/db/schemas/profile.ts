@@ -6,6 +6,7 @@ import {
   uuid,
   varchar,
   integer,
+  numeric,
 } from "drizzle-orm/pg-core";
 
 import { users } from "./auth";
@@ -63,6 +64,10 @@ export const profiles = pgTable(
     // 杂项设置
     enableNotification: boolean("enable_notification").default(true),
     notificationSound: varchar("notification_sound", { length: 256 }),
+
+    // 新增佣金和余额字段
+    total: numeric("total", { precision: 10, scale: 2 }).default("0.00").notNull(),
+    balance: numeric("balance", { precision: 10, scale: 2 }).default("0.00").notNull(),
   },
   (table) => [
     index("invite_code_idx").on(table.inviteCode),
@@ -71,6 +76,8 @@ export const profiles = pgTable(
     index("agent_code_idx").on(table.agentCode),
     index("referrer_code_idx").on(table.referrerCode),
     index("evm_address_idx").on(table.evmAddress),
+    index("total_idx").on(table.total),
+    index("balance_idx").on(table.balance),
   ],
 ).enableRLS();
 

@@ -7,6 +7,8 @@ import { db } from "@/server/db";
 import { profiles } from "@/server/db/schema";
 import { and, count, eq, ne, or, not } from "drizzle-orm";
 import { getUserProfile } from "./auth";
+import { payments,configs } from "@/server/db/schemas/payment";
+import { withdrawalRecords } from "@/server/db/schemas/payment";
 
 /**
  * 获取我的邀请记录
@@ -155,6 +157,8 @@ export async function getUserProfileById(userId: string) {
         agentCode: true,
         referrerCode: true,
         evmAddress: true,
+        total: true,
+        balance: true,
       }
     });
     
@@ -243,3 +247,46 @@ export async function bindUserEvmAddress(evmAddress: string) {
     };
   });
 }
+
+/**
+ * 获取我的邀请信息
+ * @returns 邀请信息
+ */
+export async function getMyInviteInfo() {
+  return withServerResult(async () => {
+    const user = await getUserProfile();
+    if (!user) {
+      throw createError.unauthorized("Please login first");
+    }
+
+    // 1. 返佣比例
+    const config = await db.select().from(configs).limit(1);
+    const commissionRate = config[0]?.commissionRate ?? "--";
+
+    // 2. 我邀请的所有用户
+    const invitedUsers = await db
+      .select()
+      .from(profiles)
+      .where(eq(profiles.inviterId, user.id));
+
+    const invitedUserCount = invitedUsers.length;
+
+    // 3. 一付费用户数（有效会员）
+    const now = new Date();
+    const paidUsers = invitedUsers.filter(u => u.membershipExpiredAt && u.membershipExpiredAt > now);
+    const paidUserCount = paidUsers.length;
+
+
+    // 5. 邀请明细列表
+    // 可根据需要返回更多字段
+    const inviteDetails = invitedUsers;
+
+    return {
+      commissionRate,
+      invitedUserCount,
+      paidUserCount,
+      inviteDetails,
+    };
+  });
+}
+

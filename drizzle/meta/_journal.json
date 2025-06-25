@@ -239,6 +239,13 @@
       "when": 1750757200912,
       "tag": "0033_add_evm_address",
       "breakpoints": true
+    },
+    {
+      "idx": 34,
+      "version": "7",
+      "when": 1750831055572,
+      "tag": "0034_add_income_record",
+      "breakpoints": true
     }
   ]
 }

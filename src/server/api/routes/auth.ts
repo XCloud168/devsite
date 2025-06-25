@@ -128,6 +128,8 @@ export async function getUserProfile() {
     rewardPoints: profile?.rewardPoints,
     agentCode: profile?.agentCode,
     referrerCode: profile?.referrerCode,
-    evmAddress: profile?.evmAddress
+    evmAddress: profile?.evmAddress,
+    total: profile?.total,
+    balance: profile?.balance,
   };
 }
