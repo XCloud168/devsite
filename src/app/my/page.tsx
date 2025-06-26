@@ -16,6 +16,7 @@ import Reward from "@/app/my/_components/reward";
 import { getContractInfo as getContract } from "@/server/api/routes/signal";
 import {
   bindUserEvmAddress,
+  getMyInviteInfo,
   submitWithdrawalRequest,
 } from "@/server/api/routes/profile";
 
@@ -46,6 +47,8 @@ export default async function PersonalCenter({
     "use server";
     return await submitWithdrawalRequest(amount);
   };
+  const { data: inviteInfo } = await getMyInviteInfo();
+
   return (
     <div className="container mx-auto px-4 py-8">
       <h1 className="mb-8 text-3xl font-bold">{t("title")}</h1>
@@ -103,6 +106,11 @@ export default async function PersonalCenter({
             balance={user.balance}
             submitWithdrawalAction={submitWithdrawal}
             rewardPoints={user.rewardPoints}
+            inviteInfo={{
+              commissionRate: inviteInfo?.commissionRate ?? "-",
+              invitedUserCount: inviteInfo?.invitedUserCount ?? 0,
+              paidUserCount: inviteInfo?.paidUserCount ?? 0,
+            }}
           />
           <InviteRecords
             records={records}

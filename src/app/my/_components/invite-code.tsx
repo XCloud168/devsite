@@ -124,7 +124,7 @@ export function InviteCode({ inviteCode, totalInvites }: InviteCodeProps) {
           </div>
         </div>
       </CardContent>
-      <CardFooter>
+      <CardFooter className="block">
         <SharePoster>
           <div>
             <div className="mt-10 flex w-full items-center justify-center">
@@ -145,6 +145,10 @@ export function InviteCode({ inviteCode, totalInvites }: InviteCodeProps) {
             </div>
           </div>
         </SharePoster>
+        <div className="mt-6 space-y-1 px-8">
+          <p className="text-sm">{t("apply")}</p>
+          <p className="text-sm">masbate1688@gmail.com</p>
+        </div>
         {/*<Dialog>*/}
         {/*  <DialogTrigger asChild>*/}
         {/*    <Button className="flex w-full items-center gap-2">*/}

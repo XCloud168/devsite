@@ -173,10 +173,15 @@
             "input": "Please enter the amount to withdraw",
             "bindFirstBtn": "Bind wallet address first",
             "exceeds": "Exceeds the withdrawable amount",
-            "myPoint": "my Points",
+            "myPoint": "My Points",
             "pointTip": "Earn an additional 100 points for each VIP user you invite.",
             "withdrawSuccess": "Withdraw Success",
-            "withdrawFailed": "Withdraw Failed"
+            "withdrawFailed": "Withdraw Failed",
+            "myInvitation": "My invitation",
+            "invitedUsers": "Invite dUsers",
+            "paidUsers": "Paid Users",
+            "commissionRate": "Commission Rate",
+            "invitationTip": "Earn a lifetime 20% commission on each successful VIP referral."
         },
         "title": "User Center",
         "description": "Manage your account settings and preferences",
@@ -186,6 +191,7 @@
             "description": "Share this code with friends to invite them",
             "totalInvites": "Total Invitations",
             "totalInvitesDescription": "View Your Referral Data",
+            "apply": "Apply for Agency",
             "code": {
                 "label": "Invitation Code",
                 "copy": "Copy"

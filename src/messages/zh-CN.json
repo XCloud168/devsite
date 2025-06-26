@@ -177,7 +177,12 @@
             "myPoint": "我的积分",
             "pointTip": "提示：每邀请一个VIP用户，额外获得100积分.",
             "withdrawSuccess": "提现成功",
-            "withdrawFailed": "提现失败"
+            "withdrawFailed": "提现失败",
+            "myInvitation": "我的邀请",
+            "invitedUsers": "已邀请用户数",
+            "paidUsers": "已付费用户数",
+            "commissionRate": "返佣比例",
+            "invitationTip": "每成功推荐一位VIP用户，您将永久享受其20%的订阅佣金！"
         },
         "title": "个人中心",
         "description": "管理您的账户设置和偏好",
@@ -186,6 +191,7 @@
             "description": "分享邀请码给好友",
             "totalInvites": "总邀请数",
             "totalInvitesDescription": "查看您的邀请统计",
+            "apply": "申请代理商",
             "code": {
                 "label": "邀请码",
                 "copy": "复制"
