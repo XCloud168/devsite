@@ -37,7 +37,7 @@ export default function Reward({
   submitWithdrawalAction: (amount: number) => Promise<ServerResult>;
   total?: string;
   balance?: string;
-  rewardPoints?: string;
+  rewardPoints?: number;
 }) {
   const t = useTranslations("my");
   const { address, isConnected } = useAccount();
