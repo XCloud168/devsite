@@ -5,6 +5,8 @@ import {
   timestamp,
   uuid,
   varchar,
+  integer,
+  numeric,
 } from "drizzle-orm/pg-core";
 
 import { users } from "./auth";
@@ -41,19 +43,41 @@ export const profiles = pgTable(
       .notNull()
       .$onUpdate(() => new Date()),
 
+    // 新增积分字段
+    rewardPoints: integer("reward_points").default(0).notNull(),
+
+    // 上次积分发放日期
+    lastPointsDate: varchar("last_points_date", { length: 10 }), // YYYY-MM-DD
+
+    // 代理商信息
+    agentCode: varchar("agent_code", { length: 10 }).unique(), // 代理商自己的编号，唯一且可空
+    referrerCode: varchar("referrer_code", { length: 10 }), // 推荐此用户的代理商编号
+
     // 会员有效期
     membershipExpiredAt: timestamp("membership_expired_at", {
       withTimezone: true,
     }),
 
+    // EVM 钱包地址
+    evmAddress: varchar("evm_address", { length: 255 }), // 以太坊/EVM 兼容链地址
+
     // 杂项设置
     enableNotification: boolean("enable_notification").default(true),
     notificationSound: varchar("notification_sound", { length: 256 }),
+
+    // 新增佣金和余额字段
+    total: numeric("total", { precision: 10, scale: 2 }).default("0.00").notNull(),
+    balance: numeric("balance", { precision: 10, scale: 2 }).default("0.00").notNull(),
   },
   (table) => [
     index("invite_code_idx").on(table.inviteCode),
     index("inviter_id_idx").on(table.inviterId),
     index("email_idx").on(table.email),
+    index("agent_code_idx").on(table.agentCode),
+    index("referrer_code_idx").on(table.referrerCode),
+    index("evm_address_idx").on(table.evmAddress),
+    index("total_idx").on(table.total),
+    index("balance_idx").on(table.balance),
   ],
 ).enableRLS();
 

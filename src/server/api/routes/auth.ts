@@ -4,6 +4,7 @@ import { db } from "@/server/db";
 import { profiles } from "@/server/db/schema";
 import { createClient } from "@/utils/supabase/server";
 import { and, eq, isNull } from "drizzle-orm";
+import { EvmAddress } from "moralis/common-evm-utils";
 import { revalidatePath } from "next/cache";
 
 export async function checkInviteCode(code: string) {
@@ -124,5 +125,11 @@ export async function getUserProfile() {
     inviteCode: profile?.inviteCode,
     enableNotification: profile?.enableNotification,
     notificationSound: profile?.notificationSound,
+    rewardPoints: profile?.rewardPoints,
+    agentCode: profile?.agentCode,
+    referrerCode: profile?.referrerCode,
+    evmAddress: profile?.evmAddress,
+    total: profile?.total,
+    balance: profile?.balance,
   };
 }

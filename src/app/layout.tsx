@@ -9,6 +9,7 @@ import "./globals.css";
 import RealtimeSignal from "@/components/signals/realtime-signal";
 import React from "react";
 import { UAParser } from "ua-parser-js";
+import { Web3Providers } from "@/app/providers";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -111,13 +112,15 @@ export default async function RootLayout({
             enableSystem={false}
             disableTransitionOnChange
           >
-            <QueryProvider>
-              <div className="relative flex min-h-screen flex-col">
-                <main className="flex-1">{children}</main>
-                <Toaster richColors position="bottom-right" />
-                {!isMobile && <RealtimeSignal />}
-              </div>
-            </QueryProvider>
+            <Web3Providers>
+              <QueryProvider>
+                <div className="relative flex min-h-screen flex-col">
+                  <main className="flex-1">{children}</main>
+                  <Toaster richColors position="bottom-right" />
+                  {!isMobile && <RealtimeSignal />}
+                </div>
+              </QueryProvider>
+            </Web3Providers>
           </ThemeProvider>
         </NextIntlClientProvider>
       </body>

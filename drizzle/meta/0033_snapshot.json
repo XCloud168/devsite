@@ -1,6 +1,6 @@
 {
-  "id": "d0b91a54-98bd-48ed-80d6-1b282cf90bd2",
-  "prevId": "420cd808-08c2-411c-a9e8-208ca0389294",
+  "id": "80854e0c-d46f-4be9-b7a8-972240da28eb",
+  "prevId": "820ff1fc-153e-4655-ada6-94ec6b0f69fc",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
@@ -1269,9 +1269,33 @@
           "notNull": true,
           "default": 0
         },
+        "last_points_date": {
+          "name": "last_points_date",
+          "type": "varchar(10)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "agent_code": {
+          "name": "agent_code",
+          "type": "varchar(10)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "referrer_code": {
+          "name": "referrer_code",
+          "type": "varchar(10)",
+          "primaryKey": false,
+          "notNull": false
+        },
         "membership_expired_at": {
           "name": "membership_expired_at",
           "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "evm_address": {
+          "name": "evm_address",
+          "type": "varchar(255)",
           "primaryKey": false,
           "notNull": false
         },
@@ -1334,6 +1358,51 @@
           "concurrently": false,
           "method": "btree",
           "with": {}
+        },
+        "agent_code_idx": {
+          "name": "agent_code_idx",
+          "columns": [
+            {
+              "expression": "agent_code",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "referrer_code_idx": {
+          "name": "referrer_code_idx",
+          "columns": [
+            {
+              "expression": "referrer_code",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "evm_address_idx": {
+          "name": "evm_address_idx",
+          "columns": [
+            {
+              "expression": "evm_address",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
         }
       },
       "foreignKeys": {
@@ -1372,6 +1441,13 @@
           "nullsNotDistinct": false,
           "columns": [
             "invite_code"
+          ]
+        },
+        "site_profiles_agent_code_unique": {
+          "name": "site_profiles_agent_code_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "agent_code"
           ]
         }
       },

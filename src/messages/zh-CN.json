@@ -161,6 +161,24 @@
         "updateError": "设置更新失败"
     },
     "my": {
+        "reward": {
+            "bindSuccess": "绑定成功",
+            "bindFailed": "绑定失败，请联系客服",
+            "totalCommission": "累计获得佣金",
+            "withdrawable": "可提现佣金",
+            "withdraw": "提现",
+            "walletAddress": "钱包地址",
+            "bindFirst": "请先绑定钱包再进行提现操作",
+            "amount": "提现数量",
+            "rewardTip1": "提现数量最低10USDT",
+            "input": "请输入提现数量",
+            "bindFirstBtn": "请先绑定钱包",
+            "exceeds": "超过可提现数量",
+            "myPoint": "我的积分",
+            "pointTip": "提示：每邀请一个VIP用户，额外获得100积分.",
+            "withdrawSuccess": "提现成功",
+            "withdrawFailed": "提现失败"
+        },
         "title": "个人中心",
         "description": "管理您的账户设置和偏好",
         "inviteCode": {

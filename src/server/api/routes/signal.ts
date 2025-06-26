@@ -14,7 +14,7 @@ import {
   tweetInfo,
   tweetUsers,
 } from "@/server/db/schema";
-import { and, count, eq, inArray, lte, sql } from "drizzle-orm";
+import { and, count, eq, inArray, lte, sql, gte, lt } from "drizzle-orm";
 import { getUserProfile } from "./auth";
 
 /**
@@ -758,5 +758,141 @@ export async function getContractInfo(contractAddress: string) {
       chainLogoUrl: data.chain_logo_url,
       days: data.days,
     };
+  });
+}
+
+export async function getTagStatisticsByMonth(
+  type: string,
+  filter: {
+    entityId: string;
+    month: string; // 格式如 '2025-06'
+  },
+) {
+  return withServerResult(async () => {
+    const conditions = [];
+    let tags = [];
+
+    // 解析月份，生成起止时间
+    const [yearStr, monthStr] = filter.month.split('-');
+    const year = Number(yearStr) || 2025;
+    const month = Number(monthStr) || 6;
+    const startDate = new Date(year, month - 1, 1);
+    const endDate = new Date(year, month, 1);
+
+    // 假如你有 signals.dateCreated 和 signals.createdAt 两种可能
+    if ('dateCreated' in signals) {
+      conditions.push(
+        gte(signals.dateCreated, startDate),
+        lt(signals.dateCreated, endDate),
+      );
+    }
+
+    switch (type) {
+      case SIGNAL_PROVIDER_TYPE.ANNOUNCEMENT:
+        if (filter.entityId) {
+          conditions.push(eq(signals.entityId, filter.entityId));
+        }
+        conditions.push(
+          eq(signals.providerType, SIGNAL_PROVIDER_TYPE.ANNOUNCEMENT),
+        );
+
+        const whereClause =
+          conditions.length > 0 ? and(...conditions) : undefined;
+
+        tags = await db
+          .select({
+            id: signals.entityId,
+            name: exchange.name,
+            logo: exchange.logo,
+            signalsCount: count(
+              sql`CASE WHEN ${signals.projectId} IS NOT NULL THEN 1 ELSE NULL END`,
+            ),
+            riseCount: count(
+              sql`CASE WHEN ${announcement.highRate24H}::numeric > 0 THEN 1 ELSE NULL END`,
+            ),
+            fallCount: count(
+              sql`CASE WHEN ${announcement.lowRate24H}::numeric < 0 THEN 1 ELSE NULL END`,
+            ),
+            avgRiseRate: sql`ROUND(AVG(${announcement.highRate24H}), 2)`,
+            avgFallRate: sql`ROUND(AVG(${announcement.lowRate24H}), 2)`,
+            projectIds: sql`COALESCE(jsonb_agg(DISTINCT ${signals.projectId}) FILTER (WHERE ${announcement.highRate24H}::numeric > 0), jsonb '[]')`,
+          })
+          .from(signals)
+          .leftJoin(announcement, eq(signals.providerId, announcement.id))
+          .leftJoin(exchange, eq(signals.entityId, exchange.id))
+          .where(whereClause)
+          .groupBy(signals.entityId, exchange.name, exchange.logo);
+        break;
+
+      case SIGNAL_PROVIDER_TYPE.NEWS:
+        if (filter.entityId) {
+          conditions.push(eq(signals.entityId, filter.entityId));
+        }
+        conditions.push(eq(signals.providerType, SIGNAL_PROVIDER_TYPE.NEWS));
+
+        const newsWhereClause =
+          conditions.length > 0 ? and(...conditions) : undefined;
+
+        tags = await db
+          .select({
+            id: signals.entityId,
+            name: newsEntity.name,
+            logo: newsEntity.logo,
+            signalsCount: count(
+              sql`CASE WHEN ${news.projectId} IS NOT NULL THEN 1 ELSE NULL END`,
+            ),
+            riseCount: count(
+              sql`CASE WHEN ${news.highRate24H}::numeric > 0 THEN 1 ELSE NULL END`,
+            ),
+            fallCount: count(
+              sql`CASE WHEN ${news.lowRate24H}::numeric < 0 THEN 1 ELSE NULL END`,
+            ),
+            avgRiseRate: sql`ROUND(AVG(${news.highRate24H}), 2)`,
+            avgFallRate: sql`ROUND(AVG(${news.lowRate24H}), 2)`,
+            projectIds: sql`COALESCE(jsonb_agg(DISTINCT ${signals.projectId}) FILTER (WHERE ${news.highRate24H}::numeric > 0), jsonb '[]')`,
+          })
+          .from(signals)
+          .leftJoin(news, eq(signals.providerId, news.id))
+          .leftJoin(newsEntity, eq(signals.entityId, newsEntity.id))
+          .where(newsWhereClause)
+          .groupBy(signals.entityId, newsEntity.name, newsEntity.logo);
+        break;
+
+      case SIGNAL_PROVIDER_TYPE.TWITTER:
+      default:
+        if (filter.entityId) {
+          conditions.push(eq(signals.entityId, filter.entityId));
+        }
+        conditions.push(eq(signals.providerType, SIGNAL_PROVIDER_TYPE.TWITTER));
+
+        const tweetWhereClause =
+          conditions.length > 0 ? and(...conditions) : undefined;
+
+        tags = await db
+          .select({
+            id: signals.entityId,
+            name: tweetUsers.name,
+            logo: tweetUsers.avatar,
+            signalsCount: count(
+              sql`CASE WHEN ${tweetInfo.projectId} IS NOT NULL THEN 1 ELSE NULL END`,
+            ),
+            riseCount: count(
+              sql`CASE WHEN ${tweetInfo.highRate24H}::numeric > 0 THEN 1 ELSE NULL END`,
+            ),
+            fallCount: count(
+              sql`CASE WHEN ${tweetInfo.lowRate24H}::numeric < 0 THEN 1 ELSE NULL END`,
+            ),
+            avgRiseRate: sql`ROUND(AVG(${tweetInfo.highRate24H}), 2)`,
+            avgFallRate: sql`ROUND(AVG(${tweetInfo.lowRate24H}), 2)`,
+          })
+          .from(signals)
+          .leftJoin(tweetInfo, eq(signals.providerId, tweetInfo.id))
+          .leftJoin(tweetUsers, eq(signals.entityId, tweetUsers.id))
+          .where(tweetWhereClause)
+          .groupBy(signals.entityId, tweetUsers.name, tweetUsers.avatar);
+        break;
+    }
+
+    return tags;
   });
 }

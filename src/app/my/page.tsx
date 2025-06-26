@@ -12,6 +12,12 @@ import { redirect } from "next/navigation";
 import { InviteCode } from "./_components/invite-code";
 import { InviteRecords } from "./_components/invite-records";
 import { SubscribeButton } from "./_components/subscribe-button";
+import Reward from "@/app/my/_components/reward";
+import { getContractInfo as getContract } from "@/server/api/routes/signal";
+import {
+  bindUserEvmAddress,
+  submitWithdrawalRequest,
+} from "@/server/api/routes/profile";
 
 export default async function PersonalCenter({
   searchParams,
@@ -32,6 +38,14 @@ export default async function PersonalCenter({
   const isExpired =
     user.membershipExpiredAt && new Date(user.membershipExpiredAt) < new Date();
 
+  const bindAddress = async (address: string) => {
+    "use server";
+    return await bindUserEvmAddress(address);
+  };
+  const submitWithdrawal = async (amount: number) => {
+    "use server";
+    return await submitWithdrawalRequest(amount);
+  };
   return (
     <div className="container mx-auto px-4 py-8">
       <h1 className="mb-8 text-3xl font-bold">{t("title")}</h1>
@@ -81,11 +95,21 @@ export default async function PersonalCenter({
           />
         </div>
         {/* Invitation Records Card */}
-        <InviteRecords
-          records={records}
-          pagination={pagination}
-          fetchRecords={fetchInviteRecords}
-        />
+        <div className="h-full w-full">
+          <Reward
+            evmAddress={user.evmAddress}
+            bindAddressAction={bindAddress}
+            total={user.total}
+            balance={user.balance}
+            submitWithdrawalAction={submitWithdrawal}
+            rewardPoints={user.rewardPoints}
+          />
+          <InviteRecords
+            records={records}
+            pagination={pagination}
+            fetchRecords={fetchInviteRecords}
+          />
+        </div>
       </div>
     </div>
   );
