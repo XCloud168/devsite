@@ -31,7 +31,7 @@ export type USER_TYPE = "super_influencer" | "institution_projects" | "kol_opini
 /**
  * 提现状态
  */
-export type WITHDRAWAL_STATUS = "pending" | "processing" | "completed" | "failed";
+export type WITHDRAWAL_STATUS = "pending" | "processing" | "deducted" | "completed" | "failed";
 export const WITHDRAWAL_STATUS_LIST: WITHDRAWAL_STATUS[] = [
   "pending", "processing", "completed", "failed"
 ];

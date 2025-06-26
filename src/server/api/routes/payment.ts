@@ -1,6 +1,6 @@
 "use server";
 
-import { and, desc, eq, gte } from "drizzle-orm";
+import { and, desc, eq, gte, sql } from "drizzle-orm";
 import { Erc20Transaction } from "moralis/common-evm-utils";
 
 import {
@@ -16,6 +16,7 @@ import { type PLAN_TYPE, type SUPPORTED_CHAIN } from "@/types/constants";
 import assert from "assert";
 import dayjs from "dayjs";
 import { getUserProfile } from "./auth";
+import { configs, incomeRecords, withdrawalRecords } from "@/server/db/schemas/payment";
 
 /**
  * Checkout a plan
@@ -228,8 +229,8 @@ async function _transferUsdtCallback(
     // 更新会员订阅状态
     await _updateSubscriptionStatus(payment.userId, payment.planType);
 
-    // // 更新返佣
-    // await _updateReferral(tx, payment.userId, payment.planType);
+    // 更新返佣
+    await _updateReferral(payment.id, payment.userId, payment.amount.toString());
   });
 }
 
@@ -425,4 +426,177 @@ async function _getAvailableAddress(
   });
 
   return availableAddress;
+}
+
+/**
+ * 处理邀请返佣
+ * @param paymentId - 支付ID
+ * @param userId - 付费用户的ID
+ * @param paymentAmountStr - 支付金额 (字符串形式)
+ */
+async function _updateReferral(paymentId: string, userId: string, paymentAmountStr: string) {
+  // 1. 查询用户的邀请人
+  const userProfile = await db.query.profiles.findFirst({
+    where: eq(profiles.id, userId),
+    columns: {
+      inviterId: true,
+    },
+  });
+
+  // 如果没有邀请人，则不进行任何操作
+  if (!userProfile?.inviterId) {
+    return;
+  }
+
+  const inviterId = userProfile.inviterId;
+
+  // 2. 从配置中获取返佣率
+  const config = await db.query.configs.findFirst();
+  const commissionRate = config?.commissionRate;
+
+  // 如果没有设置返佣率，则不进行任何操作
+  if (!commissionRate) {
+    console.warn("Commission rate is not configured.");
+    return;
+  }
+
+  // 3. 计算返佣金额
+  const paymentAmount = Number(paymentAmountStr);
+  const rate = Number(commissionRate) / 100;
+  const commissionAmount = paymentAmount * rate;
+
+  // 确保返佣金额大于0
+  if (commissionAmount <= 0) {
+    return;
+  }
+  
+  const commissionAmountStr = commissionAmount.toFixed(2);
+
+  // 使用事务确保数据一致性
+  await db.transaction(async (tx) => {
+    // 4. 为邀请人创建一条收入记录
+    await tx.insert(incomeRecords).values({
+      userId: inviterId,
+      amount: commissionAmountStr,
+      paymentId: paymentId,
+      description: `来自用户 ${userId} 的邀请返佣`,
+    });
+
+    // 5. 更新邀请人的余额和总收入
+    await tx
+      .update(profiles)
+      .set({
+        balance: sql`${profiles.balance} + ${commissionAmountStr}`,
+        total: sql`${profiles.total} + ${commissionAmountStr}`,
+      })
+      .where(eq(profiles.id, inviterId));
+  });
+}
+
+/**
+ * 处理提现记录 - 定时任务调用
+ * 查找状态为deducted的提现记录，扣除用户余额，更新状态
+ */
+export async function processWithdrawals() {
+  return withServerResult(async () => {
+    // 查找5条状态为deducted的提现记录
+    const pendingWithdrawals = await db.query.withdrawalRecords.findMany({
+      where: (withdrawalRecords, { eq }) => eq(withdrawalRecords.status, "deducted"),
+      limit: 5,
+      orderBy: (withdrawalRecords) => [withdrawalRecords.createdAt],
+    });
+
+    if (pendingWithdrawals.length === 0) {
+      return { processed: 0, message: "No withdrawal records to process" };
+    }
+
+    const results = [];
+
+    for (const record of pendingWithdrawals) {
+      try {
+        // 在事务中处理每条记录
+        await db.transaction(async (tx) => {
+          // 查询用户信息
+          const userProfile = await tx.query.profiles.findFirst({
+            where: (profiles, { eq }) => eq(profiles.id, record.userId),
+            columns: {
+              balance: true,
+            },
+          });
+
+          if (!userProfile) {
+            throw new Error(`User not found: ${record.userId}`);
+          }
+
+          const currentBalance = Number(userProfile.balance);
+          const withdrawalAmount = Number(record.amount);
+
+          // 检查余额是否足够
+          if (currentBalance < withdrawalAmount) {
+            // 余额不足，标记为失败
+            await tx
+              .update(withdrawalRecords)
+              .set({ 
+                status: "failed",
+                description: `余额不足。当前余额: ${currentBalance}, 提现金额: ${withdrawalAmount}`
+              })
+              .where(eq(withdrawalRecords.id, record.id));
+            
+            results.push({
+              id: record.id,
+              status: "failed",
+              reason: "余额不足"
+            });
+            return;
+          }
+
+          // 扣除用户余额
+          await tx
+            .update(profiles)
+            .set({
+              balance: sql`${profiles.balance} - ${withdrawalAmount}`,
+            })
+            .where(eq(profiles.id, record.userId));
+
+          // 更新提现记录状态为完成
+          await tx
+            .update(withdrawalRecords)
+            .set({ 
+              status: "completed",
+              description: "提现处理完成"
+            })
+            .where(eq(withdrawalRecords.id, record.id));
+
+          results.push({
+            id: record.id,
+            status: "completed",
+            amount: withdrawalAmount
+          });
+        });
+      } catch (error) {
+        console.error(`处理提现记录失败: ${record.id}`, error);
+        
+        // 更新状态为失败
+        await db
+          .update(withdrawalRecords)
+          .set({ 
+            status: "failed",
+            description: `处理失败: ${error instanceof Error ? error.message : '未知错误'}`
+          })
+          .where(eq(withdrawalRecords.id, record.id));
+
+        results.push({
+          id: record.id,
+          status: "failed",
+          reason: error instanceof Error ? error.message : '未知错误'
+        });
+      }
+    }
+
+    return {
+      processed: pendingWithdrawals.length,
+      results,
+      message: `处理了 ${pendingWithdrawals.length} 条提现记录`
+    };
+  });
 }
