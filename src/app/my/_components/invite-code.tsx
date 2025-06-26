@@ -145,7 +145,7 @@ export function InviteCode({ inviteCode, totalInvites }: InviteCodeProps) {
             </div>
           </div>
         </SharePoster>
-        <div className="mt-6 space-y-1 px-8">
+        <div className="mt-6 space-y-1">
           <p className="text-sm">{t("apply")}</p>
           <p className="text-sm">masbate1688@gmail.com</p>
         </div>
