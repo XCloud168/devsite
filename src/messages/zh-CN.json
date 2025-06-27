@@ -176,13 +176,14 @@
             "exceeds": "超过可提现数量",
             "myPoint": "我的积分",
             "pointTip": "提示：每邀请一个VIP用户，额外获得100积分.",
-            "withdrawSuccess": "提现成功",
-            "withdrawFailed": "提现失败",
+            "withdrawSuccess": "提现申请提交成功",
+            "withdrawFailed": "提现申请提交失败",
             "myInvitation": "我的邀请",
             "invitedUsers": "已邀请用户数",
             "paidUsers": "已付费用户数",
             "commissionRate": "返佣比例",
-            "invitationTip": "每成功推荐一位VIP用户，您将永久享受其20%的订阅佣金！"
+            "invitationTip": "每成功推荐一位VIP用户，您将永久享受其20%的订阅佣金！",
+            "below": "输入金额小于最低提现要求"
         },
         "title": "个人中心",
         "description": "管理您的账户设置和偏好",

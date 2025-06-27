@@ -175,13 +175,14 @@
             "exceeds": "Exceeds the withdrawable amount",
             "myPoint": "My Points",
             "pointTip": "Earn an additional 100 points for each VIP user you invite.",
-            "withdrawSuccess": "Withdraw Success",
-            "withdrawFailed": "Withdraw Failed",
+            "withdrawSuccess": "Withdrawal application submitted",
+            "withdrawFailed": "Withdrawal application Failed",
             "myInvitation": "My invitation",
             "invitedUsers": "Invite dUsers",
             "paidUsers": "Paid Users",
             "commissionRate": "Commission Rate",
-            "invitationTip": "Earn a lifetime 20% commission on each successful VIP referral."
+            "invitationTip": "Earn a lifetime 20% commission on each successful VIP referral.",
+            "below": "Amount below minimum withdrawal."
         },
         "title": "User Center",
         "description": "Manage your account settings and preferences",

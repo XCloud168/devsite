@@ -53,13 +53,13 @@ export default function Reward({
   >(undefined);
   const [inputValue, setInputValue] = useState<string>("");
   const hasConnectedOnce = useRef(false);
-  const [currentBalance, setCurrentBalance] = useState<number>(0);
+  // const [currentBalance, setCurrentBalance] = useState<number>(0);
   useEffect(() => {
     setCurrentAddress(evmAddress);
   }, [evmAddress]);
-  useEffect(() => {
-    if (balance) setCurrentBalance(parseFloat(balance));
-  }, [balance]);
+  // useEffect(() => {
+  //   if (balance) setCurrentBalance(parseFloat(balance));
+  // }, [balance]);
   useEffect(() => {
     if (isConnected && address) {
       if (hasConnectedOnce.current) {
@@ -80,7 +80,10 @@ export default function Reward({
   };
   const handleSubmit = (val: string) => {
     if (isNaN(parseFloat(val))) return;
-    if (parseFloat(val) < 10) return;
+    if (parseFloat(val) < 10) {
+      toast.error(t("reward.below"));
+      return;
+    }
     if (total && parseFloat(val) > parseFloat(total)) {
       toast.error(t("reward.exceeds"));
       return;
@@ -89,7 +92,7 @@ export default function Reward({
       .then(() => {
         toast.success(t("reward.withdrawSuccess"));
         setOpen(false);
-        setCurrentBalance(currentBalance - parseFloat(val));
+        // setCurrentBalance(currentBalance - parseFloat(val));
       })
       .catch(() => {
         toast.error(t("reward.withdrawFailed"));
@@ -110,9 +113,7 @@ export default function Reward({
         <div className="flex flex-col justify-between rounded-xl bg-[#2b2b2b26] px-8 py-5">
           <p className="text-xs text-white/40">{t("reward.withdrawable")}</p>
           <div className="flex items-end gap-1 space-y-4">
-            <p className="text-2xl font-semibold text-[#09CB6F]">
-              {currentBalance}
-            </p>
+            <p className="text-2xl font-semibold text-[#09CB6F]">{balance}</p>
             <p className="pb-1 text-sm text-[#09CB6F]">USDT</p>
             <Dialog open={open}>
               <DialogTrigger
