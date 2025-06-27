@@ -182,7 +182,8 @@
             "paidUsers": "Paid Users",
             "commissionRate": "Commission Rate",
             "invitationTip": "Earn a lifetime 20% commission on each successful VIP referral.",
-            "below": "Amount below minimum withdrawal."
+            "below": "Amount below minimum withdrawal.",
+            "processing": "Processing"
         },
         "title": "User Center",
         "description": "Manage your account settings and preferences",
