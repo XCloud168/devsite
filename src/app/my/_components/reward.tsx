@@ -128,107 +128,107 @@ export default function Reward({
           <div className="flex items-end gap-1 space-y-4">
             <p className="text-2xl font-semibold text-[#09CB6F]">{balance}</p>
             <p className="pb-1 text-sm text-[#09CB6F]">USDT</p>
-            {currentStatus === undefined ||
-            currentStatus === "completed" ||
-            currentStatus === "failed" ? (
-              <Dialog open={open}>
-                <DialogTrigger
-                  onClick={() => setOpen(true)}
-                  className="ml-auto text-sm text-[#09CB6F]"
-                >
-                  {t("reward.withdraw")}
-                </DialogTrigger>
-                <DialogContent className="w-[400px] bg-black p-5">
-                  <DialogHeader>
-                    <DialogTitle className="flex items-center justify-between">
-                      <p>{t("reward.withdraw")}</p>
-                      <X
-                        onClick={() => setOpen(false)}
-                        className="cursor-pointer"
-                      />
-                    </DialogTitle>
-                    <DialogDescription></DialogDescription>
-                  </DialogHeader>
-                  <div className="space-y-5">
-                    <div className="flex items-center justify-between">
-                      <p className="text-xs text-white/40">
-                        {t("reward.withdrawable")}
-                      </p>
-                      <div className="flex items-end gap-1 space-y-4">
-                        <p className="text-xl font-semibold text-[#09CB6F]">
-                          {balance}
-                        </p>
-                        <p className="text-sm text-[#09CB6F]">USDT</p>
-                      </div>
-                    </div>
-
-                    <p className="text-xs text-white/40">
-                      {t("reward.walletAddress")}
-                    </p>
-
-                    <div className="!mt-2 flex w-full items-center gap-2 rounded-lg bg-[#1E2128] p-2">
-                      <Wallet size={16} />
-                      <p className="w-64 overflow-hidden truncate text-sm">
-                        {currentAddress
-                          ? currentAddress
-                          : isConnected
-                            ? address
-                            : t("reward.bindFirst")}
-                      </p>
-                      {currentAddress ? null : !isConnected ? (
-                        <div
-                          className="ml-auto [&>div>button]:text-xs [&>div>button]:text-[#09CB6F]"
-                          onClick={() => {
-                            setOpen(false);
-                          }}
-                        >
-                          <ConnectButton />{" "}
-                        </div>
-                      ) : (
-                        <p
-                          className="cursor-pointer break-keep text-xs text-[#09CB6F]"
-                          onClick={() => handleBind(address)}
-                        >
-                          {t("reward.bind")}
-                        </p>
-                      )}
-                    </div>
-                    <div className="flex justify-between">
-                      <p className="text-xs text-white/40">
-                        {t("reward.amount")}
-                      </p>
-                      <p className="text-xs text-white/40">
-                        *{t("reward.rewardTip1")}
-                      </p>
-                    </div>
-                    <Input
-                      placeholder={`${t("reward.input")}`}
-                      disabled={!currentAddress}
-                      value={inputValue}
-                      onChange={(e) => setInputValue(e.target.value)}
-                      className="!mt-2"
-                    ></Input>
-                    <div className="mt-2 flex justify-center">
-                      <Button
-                        className="mt-2 px-4"
-                        disabled={!currentAddress || btnLoading}
-                        onClick={() => handleSubmit(inputValue)}
-                      >
-                        {currentAddress
-                          ? t("reward.withdraw")
-                          : t("reward.bindFirstBtn")}
-                        {currentAddress && btnLoading ? (
-                          <Loader2 className="h-24 w-24 animate-spin text-black" />
-                        ) : null}
-                      </Button>
-                    </div>
-                  </div>
-                </DialogContent>
-              </Dialog>
-            ) : (
+            {currentStatus === "pending" || currentStatus === "processing" ? (
               <p className="ml-auto text-sm text-[#09CB6F]">
                 {t("reward.processing")}
               </p>
+            ) : (
+              currentStatus !== undefined && (
+                <Dialog open={open}>
+                  <DialogTrigger
+                    onClick={() => setOpen(true)}
+                    className="ml-auto text-sm text-[#09CB6F]"
+                  >
+                    {t("reward.withdraw")}
+                  </DialogTrigger>
+                  <DialogContent className="w-[400px] bg-black p-5">
+                    <DialogHeader>
+                      <DialogTitle className="flex items-center justify-between">
+                        <p>{t("reward.withdraw")}</p>
+                        <X
+                          onClick={() => setOpen(false)}
+                          className="cursor-pointer"
+                        />
+                      </DialogTitle>
+                      <DialogDescription></DialogDescription>
+                    </DialogHeader>
+                    <div className="space-y-5">
+                      <div className="flex items-center justify-between">
+                        <p className="text-xs text-white/40">
+                          {t("reward.withdrawable")}
+                        </p>
+                        <div className="flex items-end gap-1 space-y-4">
+                          <p className="text-xl font-semibold text-[#09CB6F]">
+                            {balance}
+                          </p>
+                          <p className="text-sm text-[#09CB6F]">USDT</p>
+                        </div>
+                      </div>
+
+                      <p className="text-xs text-white/40">
+                        {t("reward.walletAddress")}
+                      </p>
+
+                      <div className="!mt-2 flex w-full items-center gap-2 rounded-lg bg-[#1E2128] p-2">
+                        <Wallet size={16} />
+                        <p className="w-64 overflow-hidden truncate text-sm">
+                          {currentAddress
+                            ? currentAddress
+                            : isConnected
+                              ? address
+                              : t("reward.bindFirst")}
+                        </p>
+                        {currentAddress ? null : !isConnected ? (
+                          <div
+                            className="ml-auto [&>div>button]:text-xs [&>div>button]:text-[#09CB6F]"
+                            onClick={() => {
+                              setOpen(false);
+                            }}
+                          >
+                            <ConnectButton />{" "}
+                          </div>
+                        ) : (
+                          <p
+                            className="cursor-pointer break-keep text-xs text-[#09CB6F]"
+                            onClick={() => handleBind(address)}
+                          >
+                            {t("reward.bind")}
+                          </p>
+                        )}
+                      </div>
+                      <div className="flex justify-between">
+                        <p className="text-xs text-white/40">
+                          {t("reward.amount")}
+                        </p>
+                        <p className="text-xs text-white/40">
+                          *{t("reward.rewardTip1")}
+                        </p>
+                      </div>
+                      <Input
+                        placeholder={`${t("reward.input")}`}
+                        disabled={!currentAddress}
+                        value={inputValue}
+                        onChange={(e) => setInputValue(e.target.value)}
+                        className="!mt-2"
+                      ></Input>
+                      <div className="mt-2 flex justify-center">
+                        <Button
+                          className="mt-2 px-4"
+                          disabled={!currentAddress || btnLoading}
+                          onClick={() => handleSubmit(inputValue)}
+                        >
+                          {currentAddress
+                            ? t("reward.withdraw")
+                            : t("reward.bindFirstBtn")}
+                          {currentAddress && btnLoading ? (
+                            <Loader2 className="h-24 w-24 animate-spin text-black" />
+                          ) : null}
+                        </Button>
+                      </div>
+                    </div>
+                  </DialogContent>
+                </Dialog>
+              )
             )}
           </div>
         </div>
