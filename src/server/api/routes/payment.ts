@@ -626,13 +626,20 @@ export async function processWithdrawals(withdrawalId?: string) {
 }
 
 /**
- * 查询提现记录表中最新一条记录的状态
- * @returns 最新提现记录的状态及相关信息
+ * 查询当前用户最新一条提现记录的状态
+ * @returns 当前用户最新提现记录的状态及相关信息
  */
 export async function getLatestWithdrawalStatus() {
   return withServerResult(async () => {
-    // 查询最新一条提现记录（按createdAt倒序排列）
+    // 获取当前用户
+    const user = await getUserProfile();
+    if (!user) {
+      throw createError.unauthorized("请先登录");
+    }
+
+    // 查询当前用户最新一条提现记录
     const latestRecord = await db.query.withdrawalRecords.findFirst({
+      where: (withdrawalRecords, { eq }) => eq(withdrawalRecords.userId, user.id),
       orderBy: (withdrawalRecords) => [desc(withdrawalRecords.createdAt)],
     });
 
