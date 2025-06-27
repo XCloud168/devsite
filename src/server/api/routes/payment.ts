@@ -496,15 +496,39 @@ async function _updateReferral(paymentId: string, userId: string, paymentAmountS
 /**
  * 处理提现记录 - 定时任务调用
  * 查找状态为deducted的提现记录，扣除用户余额，更新状态
+ * @param withdrawalId - 可选的提现记录ID，如果传入则只处理该条记录
  */
-export async function processWithdrawals() {
+export async function processWithdrawals(withdrawalId?: string) {
   return withServerResult(async () => {
-    // 查找5条状态为deducted的提现记录
-    const pendingWithdrawals = await db.query.withdrawalRecords.findMany({
-      where: (withdrawalRecords, { eq }) => eq(withdrawalRecords.status, "deducted"),
-      limit: 5,
-      orderBy: (withdrawalRecords) => [withdrawalRecords.createdAt],
-    });
+    let pendingWithdrawals;
+    
+    if (withdrawalId) {
+      // 如果传入了提现记录ID，只处理该条记录
+      const record = await db.query.withdrawalRecords.findFirst({
+        where: (withdrawalRecords, { eq }) => eq(withdrawalRecords.id, withdrawalId),
+      });
+      
+      if (!record) {
+        return { processed: 0, message: "提现记录不存在" };
+      }
+      
+      // 检查状态是否为deducted
+      if (record.status !== "deducted") {
+        return { 
+          processed: 0, 
+          message: `提现记录状态不正确，当前状态: ${record.status}` 
+        };
+      }
+      
+      pendingWithdrawals = [record];
+    } else {
+      // 没有传入ID，按原逻辑处理5条状态为deducted的记录
+      pendingWithdrawals = await db.query.withdrawalRecords.findMany({
+        where: (withdrawalRecords, { eq }) => eq(withdrawalRecords.status, "deducted"),
+        limit: 5,
+        orderBy: (withdrawalRecords) => [withdrawalRecords.createdAt],
+      });
+    }
 
     if (pendingWithdrawals.length === 0) {
       return { processed: 0, message: "No withdrawal records to process" };
@@ -597,6 +621,32 @@ export async function processWithdrawals() {
       processed: pendingWithdrawals.length,
       results,
       message: `处理了 ${pendingWithdrawals.length} 条提现记录`
+    };
+  });
+}
+
+/**
+ * 查询提现记录表中最新一条记录的状态
+ * @returns 最新提现记录的状态及相关信息
+ */
+export async function getLatestWithdrawalStatus() {
+  return withServerResult(async () => {
+    // 查询最新一条提现记录（按createdAt倒序排列）
+    const latestRecord = await db.query.withdrawalRecords.findFirst({
+      orderBy: (withdrawalRecords) => [desc(withdrawalRecords.createdAt)],
+    });
+
+    if (!latestRecord) {
+      return {};
+    }
+
+    return {
+      id: latestRecord.id,
+      status: latestRecord.status,
+      amount: latestRecord.amount,
+      userId: latestRecord.userId,
+      createdAt: latestRecord.createdAt,
+      description: latestRecord.description,
     };
   });
 }
