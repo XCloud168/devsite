@@ -13,12 +13,12 @@ import { InviteCode } from "./_components/invite-code";
 import { InviteRecords } from "./_components/invite-records";
 import { SubscribeButton } from "./_components/subscribe-button";
 import Reward from "@/app/my/_components/reward";
-import { getContractInfo as getContract } from "@/server/api/routes/signal";
 import {
   bindUserEvmAddress,
   getMyInviteInfo,
   submitWithdrawalRequest,
 } from "@/server/api/routes/profile";
+import { getLatestWithdrawalStatus } from "@/server/api/routes/payment";
 
 export default async function PersonalCenter({
   searchParams,
@@ -48,6 +48,10 @@ export default async function PersonalCenter({
     return await submitWithdrawalRequest(amount);
   };
   const { data: inviteInfo } = await getMyInviteInfo();
+  const getStatus = async () => {
+    "use server";
+    return await getLatestWithdrawalStatus();
+  };
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -111,6 +115,7 @@ export default async function PersonalCenter({
               invitedUserCount: inviteInfo?.invitedUserCount ?? 0,
               paidUserCount: inviteInfo?.paidUserCount ?? 0,
             }}
+            getStatusAction={getStatus}
           />
           <InviteRecords
             records={records}
