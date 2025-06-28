@@ -104,18 +104,19 @@ export function InviteRecords({
   };
 
   return (
-    <Card className="w-full overflow-x-auto">
+    <Card className="w-full">
       <CardHeader>
         <CardTitle>{t("title")}</CardTitle>
         <CardDescription>{t("description")}</CardDescription>
       </CardHeader>
-      <CardContent className="">
+      <CardContent className="overflow-x-auto">
         <div className="relative">
           {isPending && (
             <div className="absolute inset-0 flex items-center justify-center bg-background/50">
               <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
             </div>
           )}
+
           <Table>
             <TableHeader>
               <TableRow>
@@ -127,13 +128,15 @@ export function InviteRecords({
             <TableBody>
               {currentRecords.map((record) => (
                 <TableRow key={record.id}>
-                  <TableCell className="font-medium">
+                  <TableCell className="break-keep font-medium">
                     {record.username}
                   </TableCell>
-                  <TableCell>
+                  <TableCell className="break-keep">
                     {new Date(record.createdAt).toLocaleString()}
                   </TableCell>
-                  <TableCell>{getMemberStatus(record)}</TableCell>
+                  <TableCell className="break-keep">
+                    {getMemberStatus(record)}
+                  </TableCell>
                 </TableRow>
               ))}
             </TableBody>

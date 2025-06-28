@@ -119,14 +119,14 @@ export default function Reward({
           <p className="text- text-xs text-white/40">
             {t("reward.totalCommission")}
           </p>
-          <div className="flex items-end gap-1 space-y-4">
+          <div className="flex items-end gap-1 md:space-y-4">
             <p className="text-2xl font-semibold text-[#F0E4A2]">{total}</p>
             <p className="pb-1 text-sm text-[#F0E4A2]">USDT</p>
           </div>
         </div>
         <div className="flex flex-row justify-between rounded-xl bg-[#2b2b2b26] px-8 py-5 md:flex-col">
           <p className="text-xs text-white/40">{t("reward.withdrawable")}</p>
-          <div className="flex flex-col gap-1 space-y-4 md:flex-row">
+          <div className="flex flex-col gap-1 md:flex-row md:space-y-4">
             <div className="flex items-end gap-1">
               <p className="text-2xl font-semibold text-[#09CB6F]">{balance}</p>
               <p className="pb-1 text-sm text-[#09CB6F]">USDT</p>
