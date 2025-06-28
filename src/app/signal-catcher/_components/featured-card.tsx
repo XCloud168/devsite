@@ -163,6 +163,11 @@ export function FeaturedCard({
           address: signal.project.blastContract,
           chainId: "81457",
         },
+        {
+          chain: "Unknown Contract",
+          address: signal.project.otherContract,
+          chainId: null,
+        },
       ].filter((contract) => contract.address && contract.address.trim() !== "")
     : [];
   return (
