@@ -83,7 +83,11 @@ export function InviteCode({ inviteCode, totalInvites }: InviteCodeProps) {
         <div className="space-y-2">
           <div className="text-sm font-medium">{t("code.label")}</div>
           <div className="flex items-center gap-2">
-            <Input value={inviteCode} readOnly className="font-medium" />
+            <Input
+              value={inviteCode}
+              readOnly
+              className="w-48 overflow-hidden text-sm font-medium md:w-full"
+            />
             <Button
               variant="outline"
               onClick={() => copyToClipboard(inviteCode, "code")}
@@ -101,7 +105,7 @@ export function InviteCode({ inviteCode, totalInvites }: InviteCodeProps) {
             <Input
               value={inviteLink}
               readOnly
-              className="text-sm"
+              className="w-48 overflow-hidden truncate text-sm md:w-full"
               title={inviteLink}
             />
             <Button

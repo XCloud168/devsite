@@ -58,7 +58,7 @@ export default async function PersonalCenter({
       <h1 className="mb-8 text-3xl font-bold">{t("title")}</h1>
       <div className="mb-8 flex w-full flex-wrap gap-5 md:flex-nowrap">
         {/* Membership Status Card */}
-        <div className="flex w-full min-w-[320px] flex-col gap-5 md:w-fit">
+        <div className="flex w-full flex-col gap-5 md:min-w-[320px]">
           <Card>
             <CardHeader>
               <CardTitle>{t("membershipStatus.title")}</CardTitle>

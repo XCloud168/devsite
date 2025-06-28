@@ -104,12 +104,12 @@ export function InviteRecords({
   };
 
   return (
-    <Card className="w-full">
+    <Card className="w-full overflow-x-auto">
       <CardHeader>
         <CardTitle>{t("title")}</CardTitle>
         <CardDescription>{t("description")}</CardDescription>
       </CardHeader>
-      <CardContent>
+      <CardContent className="">
         <div className="relative">
           {isPending && (
             <div className="absolute inset-0 flex items-center justify-center bg-background/50">
