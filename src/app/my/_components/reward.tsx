@@ -23,6 +23,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import { Card } from "@/components/ui/card";
 
 export default function Reward({
   evmAddress,
@@ -115,7 +116,7 @@ export default function Reward({
   return (
     <>
       <div className="mb-5 grid grid-cols-1 gap-4 md:grid-cols-3">
-        <div className="flex flex-row justify-between rounded-xl bg-[#2b2b2b26] px-8 py-4 md:flex-col">
+        <Card className="flex flex-row justify-between rounded-xl px-8 py-4 md:flex-col">
           <p className="text- text-xs text-white/40">
             {t("reward.totalCommission")}
           </p>
@@ -123,8 +124,8 @@ export default function Reward({
             <p className="text-2xl font-semibold text-[#F0E4A2]">{total}</p>
             <p className="pb-1 text-sm text-[#F0E4A2]">USDT</p>
           </div>
-        </div>
-        <div className="flex flex-row justify-between rounded-xl bg-[#2b2b2b26] px-8 py-5 md:flex-col">
+        </Card>
+        <Card className="flex flex-row justify-between rounded-xl px-8 py-5 md:flex-col">
           <p className="text-xs text-white/40">{t("reward.withdrawable")}</p>
           <div className="flex flex-col gap-1 md:flex-row md:space-y-4">
             <div className="flex items-end gap-1">
@@ -233,8 +234,8 @@ export default function Reward({
               </Dialog>
             )}
           </div>
-        </div>
-        <div className="flex flex-row justify-between rounded-xl bg-[#2b2b2b26] px-8 py-5 md:flex-col">
+        </Card>
+        <Card className="flex flex-row justify-between rounded-xl px-8 py-5 md:flex-col">
           <div className="flex items-center gap-1">
             <p className="text-xs text-white/40">{t("reward.myPoint")}</p>
             <Popover>
@@ -254,11 +255,13 @@ export default function Reward({
               {rewardPoints}
             </p>
           </div>
-        </div>
+        </Card>
       </div>
-      <p className="text-wihte/60 mb-4 text-sm">{t("reward.myInvitation")}</p>
+      <p className="text-wihte/60 mb-4 px-2 text-sm">
+        {t("reward.myInvitation")}
+      </p>
       <div className="mb-5 grid grid-cols-1 gap-4 md:grid-cols-3">
-        <div className="flex flex-row justify-between rounded-xl bg-[#2b2b2b26] px-8 py-4 md:flex-col">
+        <Card className="flex flex-row justify-between rounded-xl px-8 py-4 md:flex-col">
           <p className="text- text-xs text-white/40">
             {t("reward.invitedUsers")}
           </p>
@@ -267,14 +270,14 @@ export default function Reward({
               {inviteInfo.invitedUserCount}
             </p>
           </div>
-        </div>
-        <div className="flex flex-row justify-between rounded-xl bg-[#2b2b2b26] px-8 py-4 md:flex-col">
+        </Card>
+        <Card className="flex flex-row justify-between rounded-xl px-8 py-4 md:flex-col">
           <p className="text- text-xs text-white/40">{t("reward.paidUsers")}</p>
           <div className="flex items-end gap-1 space-y-4">
             <p className="text-2xl font-semibold">{inviteInfo.paidUserCount}</p>
           </div>
-        </div>
-        <div className="flex flex-row justify-between rounded-xl bg-[#2b2b2b26] px-8 py-4 md:flex-col">
+        </Card>
+        <Card className="flex flex-row justify-between rounded-xl px-8 py-4 md:flex-col">
           {/*<p className="text- text-xs text-white/40">返佣比例</p>*/}
           <div className="flex items-center gap-1">
             <p className="text-xs text-white/40">
@@ -296,7 +299,7 @@ export default function Reward({
               {inviteInfo.commissionRate}%
             </p>
           </div>
-        </div>
+        </Card>
       </div>
     </>
   );
