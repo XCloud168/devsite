@@ -32,6 +32,7 @@ import {
   withdrawalRecords,
   withdrawalRecordsRelations,
   configs,
+  systemLogs,
 } from "./schemas/payment";
 import {
   news,
@@ -74,4 +75,5 @@ export {
   withdrawalRecords,
   withdrawalRecordsRelations,
   configs,
+  systemLogs,
 };

@@ -12,6 +12,7 @@ import {
   timestamp,
   uuid,
   varchar,
+  text,
 } from "drizzle-orm/pg-core";
 import { pgTable } from "./base";
 import { profiles } from "./profile";
@@ -176,3 +177,25 @@ export const configs = pgTable(
     updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow().notNull().$onUpdate(() => new Date()),
   }
 ).enableRLS();
+
+export const systemLogs = pgTable(
+  "system_logs",
+  {
+    id: uuid("id").primaryKey().defaultRandom().notNull(),
+    logName: varchar("log_name", { length: 255 }).notNull(),
+    content: text("content").notNull(),
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .defaultNow()
+      .notNull(),
+    updatedAt: timestamp("updated_at", { withTimezone: true })
+      .defaultNow()
+      .notNull()
+      .$onUpdate(() => new Date()),
+  },
+  (table) => [
+    index("system_logs_log_name_idx").on(table.logName),
+    index("system_logs_created_at_idx").on(table.createdAt),
+  ],
+).enableRLS();
+
+export const systemLogsRelations = relations(systemLogs, ({}) => ({}));
