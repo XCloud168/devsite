@@ -3,6 +3,10 @@
         {
             "path": "/api/payment/check",
             "schedule": "1 0 * * *"
+        },
+        {
+            "path": "/api/payment/process-withdrawals",
+            "schedule": "2 0 * * *" 
         }
     ]
 }
