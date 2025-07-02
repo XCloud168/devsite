@@ -272,7 +272,7 @@
         "loading": "Processing...",
         "plans": {
             "monthly": {
-                "name": "Monthly VIP",
+                "name": "Monthly Plan",
                 "features": [
                     "Custom monitoring for efficient token selection",
                     "Real-time curated signals to seize key opportunities",
@@ -281,7 +281,7 @@
                 ]
             },
             "quarterly": {
-                "name": "6 Mos VIP",
+                "name": "6-Month Plan",
                 "features": [
                     "Custom monitoring for efficient token selection",
                     "Real-time curated signals to seize key opportunities",
@@ -290,7 +290,7 @@
                 ]
             },
             "yearly": {
-                "name": "Annual VIP",
+                "name": "Annual Plan",
                 "features": [
                     "Custom monitoring for efficient token selection",
                     "Real-time curated signals to seize key opportunities",
