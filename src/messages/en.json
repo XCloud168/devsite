@@ -281,7 +281,7 @@
                 ]
             },
             "quarterly": {
-                "name": "Quarterly VIP",
+                "name": "6 Mos VIP",
                 "features": [
                     "Custom monitoring for efficient token selection",
                     "Real-time curated signals to seize key opportunities",
@@ -378,7 +378,7 @@
         },
         "kol": {
             "followers": "followers",
-            "kol": "KOL Opinions",
+            "kol": "KOL Signals",
             "myKol": "Watch List",
             "follow": "Monitor",
             "withToken": "Token Insights",

@@ -323,7 +323,7 @@
                 ]
             },
             "quarterly": {
-                "name": "季度VIP",
+                "name": "半年VIP",
                 "features": [
                     "自定义监控，高效筛选代币信息",
                     "精选信号实时推送，把握关键时机",
@@ -378,7 +378,7 @@
         },
         "kol": {
             "followers": "粉丝",
-            "kol": "KOL观点",
+            "kol": "KOL信号",
             "myKol": "我的监控",
             "follow": "添加监控",
             "withToken": "代币相关",

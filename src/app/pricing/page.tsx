@@ -26,7 +26,7 @@ export default async function PricingPage() {
         </p>
       </div>
 
-      <div className="mx-auto grid max-w-5xl grid-cols-1 gap-8 md:grid-cols-3">
+      <div className="mx-auto grid max-w-3xl grid-cols-1 gap-8 md:grid-cols-2">
         {Object.entries(PRICING_PLANS).map(([key, plan]) => (
           <Card key={key} className="flex flex-col">
             <CardHeader>

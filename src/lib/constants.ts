@@ -52,20 +52,20 @@ export const FEE_CONFIG: IFeeConfig = {
 };
 
 export const PRICING_PLANS = {
-  monthly: {
-    id: "monthly",
-    price: 49.9,
-    originalPrice: 49.9,
-  },
+  // monthly: {
+  //   id: "monthly",
+  //   price: 49.9,
+  //   originalPrice: 49.9,
+  // },
   quarterly: {
     id: "quarterly",
-    price: 127.5,
-    originalPrice: 150,
+    price: 5994,
+    originalPrice: 5994,
   },
   yearly: {
     id: "yearly",
-    price: 449.5,
-    originalPrice: 599,
+    price: 11988,
+    originalPrice: 11988,
   },
 };
 
