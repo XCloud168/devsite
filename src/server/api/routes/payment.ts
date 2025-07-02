@@ -450,6 +450,23 @@ async function _updateReferral(paymentId: string, userId: string, paymentAmountS
 
   const inviterId = userProfile.inviterId;
 
+  // 查询邀请人会员信息
+  const inviterProfile = await db.query.profiles.findFirst({
+    where: eq(profiles.id, inviterId),
+    columns: {
+      membershipExpiredAt: true,
+    },
+  });
+
+  // 判断邀请人是否是会员（未过期）
+  if (
+    !inviterProfile?.membershipExpiredAt ||
+    dayjs(inviterProfile.membershipExpiredAt).isBefore(dayjs())
+  ) {
+    // 不是会员或已过期，不返佣
+    return;
+  }
+
   // 2. 从配置中获取返佣率
   const config = await db.query.configs.findFirst();
   const commissionRate = config?.commissionRate;
