@@ -3,13 +3,26 @@
 "use server";
 
 /**
- * 获取 OKX memepump 榜单（精简字段版）
- * @param chainId 链ID（如501为Solana）
+ * 获取 OKX memepump 榜单（支持多条件筛选）
+ * @param params 查询参数
+ * @param params.chainId 链ID（如501为Solana）
+ * @param params.protocolIdList 协议ID列表（逗号分隔字符串，直接传给接口）
+ * @param params.change5Min 5分钟涨跌区间（如"20,30"）
+ * @param params.marketCap 市值区间（如"10000,50000"）
+ * @param params.tokenCreateTime 创建时间区间（如"1751534995000,1751535995000"）
  * @returns 精简后的榜单列表
  */
-export async function getOkxMemepumpList(chainId: string) {
+export async function getOkxMemepumpList(params: {
+  chainId: string;
+  protocolIdList?: string;
+  change5Min?: string;
+  marketCap?: string;
+  tokenCreateTime?: string;
+}) {
+  const { chainId, protocolIdList, change5Min, marketCap, tokenCreateTime } = params;
+
   // 构造接口URL
-  const url = `https://web3.okx.com/priapi/v1/dx/market/v2/memefun/ranking/list?rankType=4&chainId=${chainId}&protocolIdList=&t=${Date.now()}`;
+  const url = `https://web3.okx.com/priapi/v1/dx/market/v2/memefun/ranking/list?rankType=4&chainId=${chainId}&protocolIdList=${protocolIdList ?? ""}&t=${Date.now()}`;
   console.log("[memepump] 请求URL:", url);
 
   // 发起请求
@@ -45,7 +58,7 @@ export async function getOkxMemepumpList(chainId: string) {
   console.log("[memepump] 返回数据data长度:", Array.isArray(result.data) ? result.data.length : "无data字段");
 
   // 只保留需要的字段
-  const filteredList = (result.data || []).map((item: any) => ({
+  let filteredList = (result.data || []).map((item: any) => ({
     tokenName: item.tokenName,
     tokenSymbol: item.tokenSymbol,
     tokenLogoUrl: item.tokenLogoUrl,
@@ -64,8 +77,53 @@ export async function getOkxMemepumpList(chainId: string) {
     txs1H: item.txs1H,
     txsBuy1H: item.txsBuy1H,
     txsSell1H: item.txsSell1H,
-    // 你可以根据需要添加更多字段
   }));
+
+  // 本地筛选
+  // change5Min
+  if (change5Min) {
+    const [minStr, maxStr] = change5Min.split(",");
+    const min = minStr !== undefined && minStr !== "" ? Number(minStr) : undefined;
+    const max = maxStr !== undefined && maxStr !== "" ? Number(maxStr) : undefined;
+    filteredList = filteredList.filter((item: any) => {
+      const val = Number(item.change5Min);
+      if (isNaN(val)) return false;
+      if (min !== undefined && max !== undefined) return val >= min && val <= max;
+      if (min !== undefined) return val >= min;
+      if (max !== undefined) return val <= max;
+      return true;
+    });
+  }
+
+  // marketCap
+  if (marketCap) {
+    const [minStr, maxStr] = marketCap.split(",");
+    const min = minStr !== undefined && minStr !== "" ? Number(minStr) : undefined;
+    const max = maxStr !== undefined && maxStr !== "" ? Number(maxStr) : undefined;
+    filteredList = filteredList.filter((item: any) => {
+      const val = Number(item.marketCap);
+      if (isNaN(val)) return false;
+      if (min !== undefined && max !== undefined) return val >= min && val <= max;
+      if (min !== undefined) return val >= min;
+      if (max !== undefined) return val <= max;
+      return true;
+    });
+  }
+
+  // tokenCreateTime
+  if (tokenCreateTime) {
+    const [minStr, maxStr] = tokenCreateTime.split(",");
+    const min = minStr !== undefined && minStr !== "" ? Number(minStr) : undefined;
+    const max = maxStr !== undefined && maxStr !== "" ? Number(maxStr) : undefined;
+    filteredList = filteredList.filter((item: any) => {
+      const val = Number(item.tokenCreateTime);
+      if (isNaN(val)) return false;
+      if (min !== undefined && max !== undefined) return val >= min && val <= max;
+      if (min !== undefined) return val >= min;
+      if (max !== undefined) return val <= max;
+      return true;
+    });
+  }
 
   console.log("[memepump] 精简后返回条数:", filteredList.length);
 
