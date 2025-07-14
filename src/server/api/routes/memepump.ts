@@ -2,6 +2,8 @@
 
 "use server";
 
+import axios from 'axios';
+
 /**
  * 获取 OKX memepump 榜单（支持多条件筛选）
  * @param params 查询参数
@@ -28,11 +30,18 @@ export async function getOkxMemepumpList(params: {
   // 发起请求
   let response;
   try {
-    response = await fetch(url, {
+    response = await axios.get(url, {
       headers: {
         "Content-Type": "application/json",
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
       },
-      signal: AbortSignal.timeout(30000),
+      // 代理配置 - 根据你的实际代理地址修改
+      proxy: {
+        host: '192.168.3.8',
+        port: 7890,  // 常见的代理端口：7890(Clash), 1080(SOCKS), 8080(HTTP)
+        protocol: 'http'
+      },
+      timeout: 30000,
     });
   } catch (err) {
     console.error("[memepump] 请求异常:", err);
@@ -41,20 +50,12 @@ export async function getOkxMemepumpList(params: {
 
   console.log("[memepump] 响应状态:", response.status);
 
-  if (!response.ok) {
-    const text = await response.text();
-    console.error("[memepump] 响应失败:", text);
+  if (response.status !== 200) {
+    console.error("[memepump] 响应失败:", response.data);
     throw new Error("获取OKX榜单失败");
   }
 
-  let result;
-  try {
-    result = await response.json();
-  } catch (err) {
-    console.error("[memepump] JSON解析失败:", err);
-    throw new Error("OKX榜单响应解析失败");
-  }
-
+  const result = response.data;
   console.log("[memepump] 返回数据data长度:", Array.isArray(result.data) ? result.data.length : "无data字段");
 
   // 只保留需要的字段
