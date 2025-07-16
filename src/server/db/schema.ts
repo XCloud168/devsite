@@ -22,6 +22,7 @@ import {
   tweetUsersRelations,
   watchlist,
   watchlistRelations,
+  tweetUserGainStats,
 } from "./schemas/tweet";
 import {
   paymentAddresses,
@@ -76,4 +77,5 @@ export {
   withdrawalRecordsRelations,
   configs,
   systemLogs,
+  tweetUserGainStats,
 };
