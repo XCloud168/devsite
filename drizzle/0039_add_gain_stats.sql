@@ -1,0 +1,1 @@
+CREATE INDEX "tweet_info_date_created_idx" ON "site_tweet_info" USING btree ("date_created");

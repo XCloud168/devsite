@@ -1,7 +1,7 @@
 "use server";
 
 import { db } from "@/server/db";
-import { tweetInfo, tweetUsers } from "@/server/db/schemas/tweet";
+import { tweetInfo, tweetUsers,tweetUserGainStats } from "@/server/db/schemas/tweet";
 import { and, count, desc, eq, inArray, isNotNull, sql, asc } from "drizzle-orm";
 import { withServerResult } from "@/lib/server-result";
 import { type USER_TYPE } from "@/types/constants";
@@ -13,7 +13,7 @@ import { projects } from "@/server/db/schemas/signal";
  * @param period 统计周期，默认为"24h"，可选"7d"或"30d"
  * @returns Twitter用户涨幅统计
  */
-export async function getTwitterUserGains(period = "24h") {
+export async function getTwitterUserGainsold(period = "24h") {
   return withServerResult(async () => {
     const timeAgo = new Date();
     let highRateFieldName: string;
@@ -947,3 +947,46 @@ export async function getTop24hGainTweets() {
     return formattedResults;
   });
 }
+
+/**
+ * 基于统计表的Twitter用户涨幅排行榜
+ * @param period 统计周期，仅支持"7d"或"30d"
+ * @returns Twitter用户涨幅统计
+ */
+export async function getTwitterUserGains(period: "7d" | "30d") {
+  return withServerResult(async () => {
+    // 查询统计表
+    const stats = await db
+      .select({
+        id: tweetUserGainStats.userId,
+        name: tweetUserGainStats.name,
+        screenName: tweetUserGainStats.screenName,
+        avatar: tweetUserGainStats.avatar,
+        followersCount: tweetUserGainStats.followersCount,
+        signalsCount: tweetUserGainStats.signalsCount,
+        maxHighRate: tweetUserGainStats.maxHighRate,
+        maxHighRateProject: {
+          id: tweetUserGainStats.maxHighRateProject,
+          symbol: tweetUserGainStats.maxHighRateProjectSymbol,
+          logo: tweetUserGainStats.maxHighRateProjectLogo,
+        },
+        positiveRatePercentage: tweetUserGainStats.positiveRatePercentage,
+      })
+      .from(tweetUserGainStats)
+      .where(eq(tweetUserGainStats.period, period))
+      .orderBy(desc(tweetUserGainStats.maxHighRate))
+      .limit(50)
+      .execute();
+
+    // 按胜率降序排序（如需和原函数一致）
+    const sortedStats = stats.sort((a, b) => {
+      const winRateA = parseFloat(a.positiveRatePercentage as string);
+      const winRateB = parseFloat(b.positiveRatePercentage as string);
+      return winRateB - winRateA;
+    });
+
+    return sortedStats;
+  });
+}
+
+

@@ -1,0 +1,1 @@
+CREATE UNIQUE INDEX "uniq_user_period" ON "site_tweet_user_gain_stats" USING btree ("user_id","period");

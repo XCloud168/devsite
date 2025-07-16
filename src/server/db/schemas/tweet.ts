@@ -153,6 +153,7 @@ export const tweetInfo = pgTable(
     index("quoted_tweet_idx").on(table.quotedTweet),
     index("project_and_signal_time_idx").on(table.projectId, table.signalTime),
     index("shilling_idx").on(table.shilling),
+    index("tweet_info_date_created_idx").on(table.dateCreated),
   ],
 ).enableRLS();
 
@@ -232,3 +233,31 @@ export const tweetUsersRelations = relations(tweetUsers, ({ many }) => ({
 export type TweetInfo = InferSelectModel<typeof tweetInfo>;
 export type Watchlist = InferSelectModel<typeof watchlist>;
 export type TweetUsers = InferSelectModel<typeof tweetUsers>;
+
+
+export const tweetUserGainStats = pgTable(
+  "tweet_user_gain_stats",
+  {
+    id: uuid("id").primaryKey().defaultRandom().notNull(),
+    userId: uuid("user_id").notNull(),
+    period: varchar("period", { length: 10 }).notNull(), // '24h', '7d', '30d'
+    signalsCount: integer("signals_count").default(0),
+    maxHighRate: numeric("max_high_rate", { precision: 10, scale: 2 }).default("0"),
+    maxHighRateProject: uuid("max_high_rate_proj"),
+    // 新增字段
+    maxHighRateProjectSymbol: varchar("max_high_rate_proj_symbol", { length: 32 }),
+    maxHighRateProjectLogo: varchar("max_high_rate_proj_logo", { length: 1024 }),
+    positiveRatePercentage: numeric("positive_rate_pct", { precision: 5, scale: 2 }).default("0"),
+    statTime: timestamp("stat_time", { withTimezone: true }).defaultNow(),
+    // 可选：用户快照信息
+    name: varchar("name", { length: 255 }),
+    screenName: varchar("screen_name", { length: 255 }),
+    avatar: varchar("avatar", { length: 1024 }),
+    followersCount: integer("followers_count"),
+  },
+  (table) => [
+    index("tweet_user_gain_stats_user_period_idx").on(table.userId, table.period),
+    index("tweet_user_gain_stats_period_idx").on(table.period),
+    uniqueIndex("uniq_user_period").on(table.userId, table.period),
+  ]
+);
