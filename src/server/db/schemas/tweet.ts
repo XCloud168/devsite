@@ -258,5 +258,6 @@ export const tweetUserGainStats = pgTable(
   (table) => [
     index("tweet_user_gain_stats_user_period_idx").on(table.userId, table.period),
     index("tweet_user_gain_stats_period_idx").on(table.period),
+    uniqueIndex("uniq_user_period").on(table.userId, table.period),
   ]
 );
