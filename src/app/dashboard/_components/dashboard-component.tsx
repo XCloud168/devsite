@@ -11,7 +11,7 @@ export type Menu = {
   value: string;
 };
 interface Props {
-  getWinRankingListAction: (period: string) => Promise<ServerResult>;
+  getWinRankingListAction: (period: "7d" | "30d") => Promise<ServerResult>;
   get24hRankingListAction: () => Promise<ServerResult>;
   isMobile?: boolean;
   isMember?: boolean | null;

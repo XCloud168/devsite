@@ -1,8 +1,21 @@
 "use server";
 
 import { db } from "@/server/db";
-import { tweetInfo, tweetUsers,tweetUserGainStats } from "@/server/db/schemas/tweet";
-import { and, count, desc, eq, inArray, isNotNull, sql, asc } from "drizzle-orm";
+import {
+  tweetInfo,
+  tweetUsers,
+  tweetUserGainStats,
+} from "@/server/db/schemas/tweet";
+import {
+  and,
+  count,
+  desc,
+  eq,
+  inArray,
+  isNotNull,
+  sql,
+  asc,
+} from "drizzle-orm";
 import { withServerResult } from "@/lib/server-result";
 import { type USER_TYPE } from "@/types/constants";
 import { projects } from "@/server/db/schemas/signal";
@@ -92,7 +105,7 @@ export async function getTwitterUserGainsold(period = "24h") {
       .orderBy(sql`MAX(${sql.raw(highRateFieldName)})::numeric DESC`)
       .limit(50)
       .execute();
-       // 按照胜率排序
+    // 按照胜率排序
     const sortedStats = stats.sort((a, b) => {
       const winRateA = parseFloat(a.positiveRatePercentage as string);
       const winRateB = parseFloat(b.positiveRatePercentage as string);
@@ -336,7 +349,6 @@ export async function getTwitterUserProjectsPerformance(
   period = "7d",
 ) {
   return withServerResult(async () => {
-
     // 获取周期内推文对应的所有项目的涨跌幅数据
     const projectsPerformance = await getProjectsPerformance(userId, period);
 
@@ -599,23 +611,23 @@ async function getDailyWinRate(userId: string, days: number) {
  * @param period 统计周期，默认为"7d"，可选"30d"
  * @returns 按项目分组后每个项目涨幅最高的推文，最多20条
  */
-async function getProjectsPerformance(userId: string, period = '7d') {
+async function getProjectsPerformance(userId: string, period = "7d") {
   // 根据period计算timeAgo和选择涨幅、跌幅字段
   const now = new Date();
   let timeAgo: Date;
   let highRateField: any;
   let lowRateField: any;
 
-  if (period === '7d') {
+  if (period === "7d") {
     timeAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000); // 7天前
     highRateField = tweetInfo.highRate7D;
     lowRateField = tweetInfo.lowRate7D;
-  } else if (period === '30d') {
+  } else if (period === "30d") {
     timeAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000); // 30天前
     highRateField = tweetInfo.highRate30D;
     lowRateField = tweetInfo.lowRate30D;
   } else {
-    throw new Error('Invalid period specified');
+    throw new Error("Invalid period specified");
   }
 
   // 查询用户在时间周期内的所有含项目ID的推文
@@ -661,8 +673,7 @@ async function getProjectsPerformance(userId: string, period = '7d') {
   // 将Map中的值转换成数组并按涨幅排序
   const result = Array.from(projectMap.values())
     .sort(
-      (a, b) =>
-        parseFloat(String(b.highRate)) - parseFloat(String(a.highRate)),
+      (a, b) => parseFloat(String(b.highRate)) - parseFloat(String(a.highRate)),
     )
     .slice(0, 20); // 只取前20条
 
@@ -672,23 +683,23 @@ async function getProjectsPerformance(userId: string, period = '7d') {
 /**
  * 获取项目统计数据
  */
-async function getProjectStats(userId: string, period = '7d') {
+async function getProjectStats(userId: string, period = "7d") {
   // 根据period计算timeAgo
   const now = new Date();
   let timeAgo: Date;
   let highPriceField: any;
   let highRateField: any;
 
-  if (period === '7d') {
+  if (period === "7d") {
     timeAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000); // 7天前
     highPriceField = tweetInfo.highPrice7D;
     highRateField = tweetInfo.highRate7D;
-  } else if (period === '30d') {
+  } else if (period === "30d") {
     timeAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000); // 30天前
     highPriceField = tweetInfo.highPrice30D;
     highRateField = tweetInfo.highRate30D;
   } else {
-    throw new Error('Invalid period specified');
+    throw new Error("Invalid period specified");
   }
 
   // 从数据库中按时间正序查询所有符合条件的数据
@@ -718,15 +729,15 @@ async function getProjectStats(userId: string, period = '7d') {
   const uniqueProjectStats = new Map<string, any>();
 
   for (const info of tweetInfos) {
-    const projectId = info.projectId ?? '';
+    const projectId = info.projectId ?? "";
     if (!uniqueProjectStats.has(projectId)) {
       uniqueProjectStats.set(projectId, {
         projectId: info.projectId,
         symbol: info.symbol,
         logo: info.logo,
-        signalPrice: parseFloat(info.signalPrice ?? '0'),
-        highPrice: parseFloat(info.highPrice ?? '0'),
-        highRate: parseFloat(info.highRate ?? '0'),
+        signalPrice: parseFloat(info.signalPrice ?? "0"),
+        highPrice: parseFloat(info.highPrice ?? "0"),
+        highRate: parseFloat(info.highRate ?? "0"),
         mentionCount: 1, // 初始化mentionCount为1
       });
     } else {
@@ -892,8 +903,8 @@ export async function getTop24hGainTweets() {
           isNotNull(tweetInfo.projectId),
           sql`${tweetInfo.dateCreated} > ${timeAgo.toISOString()}`,
           // 确保涨幅为正数
-          sql`${tweetInfo.highRate24H}::numeric > 0`
-        )
+          sql`${tweetInfo.highRate24H}::numeric > 0`,
+        ),
       )
       .orderBy(desc(tweetInfo.highRate24H)) // 按涨幅降序排序
       .limit(15) // 获取多于5条以确保去重后仍有5条
@@ -980,13 +991,11 @@ export async function getTwitterUserGains(period: "7d" | "30d") {
 
     // 按胜率降序排序（如需和原函数一致）
     const sortedStats = stats.sort((a, b) => {
-      const winRateA = parseFloat(a.positiveRatePercentage as string);
-      const winRateB = parseFloat(b.positiveRatePercentage as string);
+      const winRateA = parseFloat(a.positiveRatePercentage!);
+      const winRateB = parseFloat(b.positiveRatePercentage!);
       return winRateB - winRateA;
     });
 
     return sortedStats;
   });
 }
-
-
