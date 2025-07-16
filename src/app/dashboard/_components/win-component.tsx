@@ -26,7 +26,7 @@ import {
 import { CircleAlert } from "lucide-react";
 import { toast } from "sonner";
 interface Props {
-  getWinRankingListAction: (period: string) => Promise<ServerResult>;
+  getWinRankingListAction: (period: "7d" | "30d") => Promise<ServerResult>;
   isMobile?: boolean;
   isMember?: boolean | null;
 }
@@ -319,7 +319,7 @@ export function WinComponent({
             }
             setSelectedTab(e);
             setPageLoading(true);
-            getWinRankingListAction(e).then((res) => {
+            getWinRankingListAction(e as "7d" | "30d").then((res) => {
               setTableData(res.data);
               setPageLoading(false);
             });

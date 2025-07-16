@@ -12,7 +12,7 @@ export default async function DashboardPage() {
   const headersList = await headers();
   const userAgent = headersList.get("user-agent") || "";
   const { device } = UAParser(userAgent);
-  const getWinRankingList = async (period: string) => {
+  const getWinRankingList = async (period: "7d" | "30d") => {
     "use server";
     return await getTwitterUserGains(period);
   };
