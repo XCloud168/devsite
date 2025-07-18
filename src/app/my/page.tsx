@@ -19,6 +19,24 @@ import {
   submitWithdrawalRequest,
 } from "@/server/api/routes/profile";
 import { getLatestWithdrawalStatus } from "@/server/api/routes/payment";
+import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import Image from "next/image";
+import { QRCode } from "@/components/qrcode";
+import React from "react";
+import { LicenseDialog } from "@/app/my/_components/license-dialog";
+import {
+  downloadLicense,
+  generateLicense,
+  getLicenseRecordsByEmail,
+} from "@/server/api/routes/license";
 
 export default async function PersonalCenter({
   searchParams,
@@ -52,6 +70,18 @@ export default async function PersonalCenter({
     "use server";
     return await getLatestWithdrawalStatus();
   };
+  const getLicenseRecord = async (email: string) => {
+    "use server";
+    return await getLicenseRecordsByEmail(email);
+  };
+  const generateUserLicense = async (email: string) => {
+    "use server";
+    return await generateLicense({ customer_email: email });
+  };
+  const download = async (email: string) => {
+    "use server";
+    return await downloadLicense(email);
+  };
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -79,6 +109,13 @@ export default async function PersonalCenter({
                           ).toLocaleDateString(),
                         })}
                       </p>
+                      <LicenseDialog
+                        getLicenseRecordAction={getLicenseRecord}
+                        generateUserLicenseAction={generateUserLicense}
+                        email={user.email}
+                        downloadAction={download}
+                        membershipExpiredAt={user.membershipExpiredAt}
+                      />
                     </>
                   ) : (
                     <>

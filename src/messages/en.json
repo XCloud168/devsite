@@ -160,6 +160,16 @@
         "updateError": "Failed to update settings"
     },
     "my": {
+        "license": {
+            "expiresOn": "Expires on {date}",
+            "automated": "Automated Trading Authorization",
+            "bindEmail": "Please bind your email to proceed.",
+            "bind": "Bind",
+            "certificate": "Download the certificate before deployment.",
+            "deploy": "How to deploy?",
+            "download": "Download",
+            "bindSuccess": "Bind success"
+        },
         "reward": {
             "bindSuccess": "Bind Success",
             "bindFailed": "Bind Failed",
@@ -283,19 +293,25 @@
             "quarterly": {
                 "name": "6-Month Plan",
                 "features": [
-                    "Custom monitoring for efficient token selection",
-                    "Real-time curated signals to seize key opportunities",
-                    "Priority buy/sell decisions to boost investment success",
-                    "Standalone app alerts to avoid message distractions"
+                    "Real-time, high win-rate signal alerts;",
+                    "Unlimited smart trading accounts;",
+                    "Unlimited custom trading strategies;",
+                    "One quantitative trading strategy;",
+                    "Lifetime referral rewards;",
+                    "Daily points bonuses;",
+                    "One free private deployment session."
                 ]
             },
             "yearly": {
                 "name": "Annual Plan",
                 "features": [
-                    "Custom monitoring for efficient token selection",
-                    "Real-time curated signals to seize key opportunities",
-                    "Priority buy/sell decisions to boost investment success",
-                    "Standalone app alerts to avoid message distractions"
+                    "Real-time, high win-rate signal alerts;",
+                    "Unlimited smart trading accounts;",
+                    "Unlimited custom trading strategies;",
+                    "One quantitative trading strategy;",
+                    "Lifetime referral rewards;",
+                    "Daily points bonuses;",
+                    "One free private deployment session."
                 ]
             }
         }
@@ -303,7 +319,7 @@
     "payment": {
         "dialog": {
             "title": "Payment Order",
-            "description": "Please pay with cryptocurrency and click 'Payment Confirmed' after completion.",
+            "description": "All plans include full feature access. Masbate delivers a pro-level Web3 investing experience.",
             "network": {
                 "title": "Network",
                 "switching": "Switching",
