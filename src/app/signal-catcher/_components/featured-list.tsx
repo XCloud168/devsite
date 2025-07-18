@@ -106,7 +106,15 @@ export function FeaturedList({
         cursor,
       );
       setSignalList((prev) =>
-        refresh ? response.data.items : prev.concat(response.data.items),
+        refresh
+          ? response.data.items.filter(
+              (item: SignalItems) => item.status === "published",
+            )
+          : prev.concat(
+              response.data.items.filter(
+                (item: SignalItems) => item.status === "published",
+              ),
+            ),
       );
       setNextCursor(response.data.pagination.nextCursor);
       // setCurrentPage(response.data.pagination.currentPage);
