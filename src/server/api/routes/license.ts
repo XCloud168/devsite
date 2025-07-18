@@ -26,20 +26,22 @@ function calcValidDays(expiredAt: string | Date | null | undefined): number {
 }
 
 // 1. 生成 License
-export async function generateLicense(params?: {
+export async function generateLicense(params: {
+  customer_email: string; // 必填
   customer_name?: string;
   valid_days?: number;
   features?: { max_users?: number; max_wallets?: number };
 }) {
+  if (!params.customer_email) throw new Error("customer_email（邮箱）不能为空");
   const user = await checkMembership();
-  const valid_days = params?.valid_days ?? calcValidDays(user.membershipExpiredAt);
+  const valid_days = params.valid_days ?? calcValidDays(user.membershipExpiredAt);
   const features = {
-    max_users: params?.features?.max_users ?? 5,
-    max_wallets: params?.features?.max_wallets ?? 10,
+    max_users: params.features?.max_users ?? 5,
+    max_wallets: params.features?.max_wallets ?? 10,
   };
   const data = {
-    customer_name: params?.customer_name ?? user.username ?? "未命名用户",
-    customer_email: user.id, // 用唯一id
+    customer_name: params.customer_name ?? user.username ?? "未命名用户",
+    customer_email: params.customer_email, // 用传入的邮箱
     valid_days,
     features,
   };
@@ -55,11 +57,11 @@ export async function generateLicense(params?: {
   return res.json();
 }
 
-// 2. 查询所有生成记录
+// 2. 查询所有生成记录（不需要参数，查所有）
 export async function getAllLicenseRecords() {
-  const user = await checkMembership();
+  await checkMembership();
   const res = await fetch(
-    `${API_BASE}/license-records?customer_email=${encodeURIComponent(user.id)}`,
+    `${API_BASE}/license-records`,
     {
       headers: {
         "X-API-Secret": API_TOKEN,
@@ -70,12 +72,12 @@ export async function getAllLicenseRecords() {
   return res.json();
 }
 
-// 3. 按邮箱（用户id）查询生成记录
-export async function getLicenseRecordsByEmail(email?: string) {
-  const user = await checkMembership();
-  const targetId = email ?? user.id;
+// 3. 按邮箱查询生成记录（邮箱必填）
+export async function getLicenseRecordsByEmail(customer_email: string) {
+  if (!customer_email) throw new Error("customer_email（邮箱）不能为空");
+  await checkMembership();
   const res = await fetch(
-    `${API_BASE}/license-records?customer_email=${encodeURIComponent(targetId)}`,
+    `${API_BASE}/license-records?customer_email=${encodeURIComponent(customer_email)}`,
     {
       headers: {
         "X-API-Secret": API_TOKEN,
@@ -86,11 +88,11 @@ export async function getLicenseRecordsByEmail(email?: string) {
   return res.json();
 }
 
-// 4. 分页查询生成记录
+// 4. 分页查询生成记录（不需要参数，查所有分页）
 export async function getLicenseRecordsByPage(skip = 0, limit = 10) {
-  const user = await checkMembership();
+  await checkMembership();
   const res = await fetch(
-    `${API_BASE}/license-records?customer_email=${encodeURIComponent(user.id)}&skip=${skip}&limit=${limit}`,
+    `${API_BASE}/license-records?skip=${skip}&limit=${limit}`,
     {
       headers: {
         "X-API-Secret": API_TOKEN,
@@ -101,12 +103,12 @@ export async function getLicenseRecordsByPage(skip = 0, limit = 10) {
   return res.json();
 }
 
-// 5. 下载证书
-export async function downloadLicense(email?: string) {
-  const user = await checkMembership();
-  const targetId = email ?? user.id;
+// 5. 下载证书（邮箱必填）
+export async function downloadLicense(customer_email: string) {
+  if (!customer_email) throw new Error("customer_email（邮箱）不能为空");
+  await checkMembership();
   const res = await fetch(
-    `${API_BASE}/download-license/${encodeURIComponent(targetId)}`,
+    `${API_BASE}/download-license/${encodeURIComponent(customer_email)}`,
     {
       headers: {
         "X-API-Secret": API_TOKEN,
