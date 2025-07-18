@@ -70,7 +70,7 @@ export function LicenseDialog({
           <DialogTitle className="text-white">{t("automated")}</DialogTitle>
           <DialogDescription></DialogDescription>
         </DialogHeader>
-        <div className="space-y-4 px-2">
+        <div className="space-y-5 px-2">
           {!email ? <p className="text-xs">{t("bindEmail")}</p> : null}
           {!email ? (
             <div className="flex w-full gap-2">
@@ -87,23 +87,30 @@ export function LicenseDialog({
                   });
                 }}
               >
-                绑定
+                {t("bind")}
               </Button>
             </div>
           ) : null}
-          <p className="text-xs">{t("certificate")}</p>
+          <p className="text-sm">{t("certificate")}</p>
           <div className="flex items-center gap-2">
-            <div className="h-9 w-9 bg-[url(/images/license.svg)] bg-contain"></div>
+            <div className="h-10 w-10 bg-[url(/images/license.svg)] bg-contain"></div>
             <div className="space-y-1">
-              <p className="text-xs">License.lic</p>
-              <p className="text-xs text-[#FF4B4BCC]">
+              <p className="font-semibold">License.lic</p>
+              <p className="text-sm text-[#FF4B4BCC]">
                 {t.rich("expiresOn", {
                   date: new Date(membershipExpiredAt ?? 0).toLocaleDateString(),
                 })}
               </p>
             </div>
+          </div>
+
+          <div className="flex w-full cursor-pointer items-center justify-between rounded-lg bg-[#1E2128] p-2">
+            <p className="text-xs">{t("deploy")}</p>
+            <MoveRight size={14} />
+          </div>
+          <div className="flex w-full items-center justify-center">
             <Button
-              className="ml-auto"
+              className="px-8"
               disabled={!canDownload || btnLoading}
               onClick={() => {
                 setBtnLoading(true);
@@ -116,12 +123,6 @@ export function LicenseDialog({
               {t("download")}
             </Button>
           </div>
-
-          <div className="flex w-full cursor-pointer items-center justify-between rounded-lg bg-[#1E2128] p-2">
-            <p className="text-xs">{t("deploy")}</p>
-            <MoveRight size={14} />
-          </div>
-          <div className="flex w-full items-center justify-center"></div>
         </div>
       </DialogContent>
     </Dialog>
